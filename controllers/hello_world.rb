@@ -1,3 +1,3 @@
-get '/hello_world' do
+gets '/hello_world' do
   "Hello, World!"
 end
