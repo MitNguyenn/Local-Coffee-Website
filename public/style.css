@@ -1,3 +1,60 @@
-h1 {
-  font-family: Arial, Helvetica, sans-serif;
+body {
+  margin: 0;
+  font-family: "Fredoka One", cursive;
+  background-color: #fdf5e6;
+  color: #4b2c20;
+}
+
+.navbar {
+  background-color: #a67458;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-icon,
+.user-icon {
+  font-size: 24px;
+  color: #fdf5e6;
+  cursor: pointer;
+}
+
+.hero {
+  height: 60vh;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url("coffee_bg.avif");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  color: #fdf5e6;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.intro-text {
+  padding: 50px;
+  text-align: center;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 25px;
+  background-color: #a67458;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: #4b2c20;
 }
