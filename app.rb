@@ -7,3 +7,5 @@ require_relative "db/db"
 require_all "models"
 
 enable :sessions
+
+require_relative 'controllers/hello_world'
