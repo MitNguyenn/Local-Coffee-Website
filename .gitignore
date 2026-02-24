@@ -1,3 +1,6 @@
 .DS_Store
 *.log
 _coverage/
+
+.bundle/
+vendor/
