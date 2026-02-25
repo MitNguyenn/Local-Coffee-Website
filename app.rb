@@ -8,4 +8,4 @@ require_all "models"
 
 enable :sessions
 
-require_relative 'controllers/hello_world'
+require_relative 'controllers/routes'

@@ -9,10 +9,20 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="menu-icon">☰</div>
-    <div class="user-icon">
-        <img src="profile.png" width="50" height="50">
+    <div class="dropdown">
+    <div onclick="toggleDropdown()" class="menu-icon">☰</div>
+    
+    <div id="myDropdown" class="dropdown-content">
+      <a href="/">Home</a>
+      <a href="/coffee-beans">Coffee Beans</a>
+      <a href="/staff-portal">Staff Portal</a>
+      <a href="/help">Help</a>
     </div>
+  </div>
+
+  <div class="user-icon">
+    <img src="profile.png" width="50" height="50">
+  </div>
   </nav>
 
   <main>
@@ -22,5 +32,25 @@
   <footer>
     <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
   </footer>
+
+  <script>
+
+function toggleDropdown() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+
+window.onclick = function(event) {
+  if (!event.target.matches('.menu-icon')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
 </body>
 </html>
