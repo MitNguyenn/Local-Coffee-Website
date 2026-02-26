@@ -20,5 +20,5 @@ post '/login' do
   email = params[:email]
   password1 = params[:password1]
   password2 = params[:password2]
-  "email = #{email}"
+  "email = #{email}, password1 = #{password1}, password2 = #{password2}"
 end
