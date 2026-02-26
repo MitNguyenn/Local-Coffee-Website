@@ -10,12 +10,15 @@ get '/hello_world' do
 end
 
 get '/login' do
+  @email = ""
+  @password1 = ""
+  @password2 = ""
   erb :login_screen
 end
 
 post '/login' do
-  puts email
-  puts password1
-  puts password2
-  "POST login page"
+  email = params[:email]
+  password1 = params[:password1]
+  password2 = params[:password2]
+  "email = #{email}"
 end
