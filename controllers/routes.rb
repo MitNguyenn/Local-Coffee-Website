@@ -18,7 +18,7 @@ get '/staff-portal' do
 end
 
 get '/log-in' do
-  erb :account_settings
+  erb :login_screen
 end
 
 get '/account-settings' do
