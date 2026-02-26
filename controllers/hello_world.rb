@@ -12,3 +12,10 @@ end
 get '/login' do
   erb :login_screen
 end
+
+post '/login' do
+  puts email
+  puts password1
+  puts password2
+  "POST login page"
+end

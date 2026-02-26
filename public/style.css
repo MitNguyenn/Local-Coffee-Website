@@ -102,4 +102,6 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  outline: black;
+  outline-width: 5px;
 }
