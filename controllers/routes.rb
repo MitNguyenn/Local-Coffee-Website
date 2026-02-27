@@ -37,6 +37,14 @@ get '/log-out' do
   erb :log_out
 end
 
+get '/forgot' do
+  erb :forgot_password
+end
+
+get '/register' do
+  erb :register_account
+end
+
 get '/login' do
   @email = ""
   @password1 = ""
@@ -50,3 +58,4 @@ post '/login' do
   password2 = params[:password2]
   "email = #{email}, password1 = #{password1}, password2 = #{password2}"
 end
+
