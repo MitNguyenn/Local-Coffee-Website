@@ -13,7 +13,7 @@ class userAccount
   # Creates getter methods so you can read these attributes later
   attr_accessor :firstName, :lastName, :email, :passwordHash, :phoneNumber, :postalAddress, :accountType
 
-  def init(firstName, lastName, email, passsword, phoneNumber, postalAddress, accountType)
+  def initialize(firstName, lastName, email, passsword, phoneNumber, postalAddress, accountType)
     @firstName     = firstName
     @lastName      = lastName
     @email         = email
@@ -27,7 +27,7 @@ end
 class beanInstance
   attr_accessor :beanType, :beanBlend, :beanRoast, :currentStock
 
-  def init(btype,bblend,broast,currentStock)
+  def initialize(btype,bblend,broast,currentStock)
     @beanType = btype
     @beanBlend = bblend
     @beanRoast = broast
@@ -91,6 +91,16 @@ def insertNewAccount(user)
   puts "Successfully inserted account for: #{user.email}"
 rescue SQLite3::ConstraintException => e
   puts "Failed to insert account: #{e.message}"
+end
+
+#INPUTS
+#email
+def collectUserData(userEmail)
+  row = $db.execute("SELECT * FROM account WHERE email = ? LIMIT 1", [userEmail]).first
+  return nil if row.nil?
+
+  userObject = userAccount.new(*row[1..-1])
+  return userObject
 end
 
 
