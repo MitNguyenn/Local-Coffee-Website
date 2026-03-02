@@ -24,7 +24,16 @@ class userAccount
   end
 end
 
+class beanInstance
+  attr_accessor :beanType, :beanBlend, :beanRoast, :currentStock
 
+  def init(btype,bblend,broast,currentStock)
+    @beanType = btype
+    @beanBlend = bblend
+    @beanRoast = broast
+    @currentStock = currentStock
+  end
+end
 
 
 #DATABASE FUNCTIONS
@@ -107,4 +116,19 @@ end
 def deleteUserAccount(email)
   $db.execute "DELETE FROM account WHERE email = ?", [email]
   puts "Deleted account with email #{email}."
+end
+
+
+#BEANS TABLE
+def initBeanTable
+  $db.execute <<-SQL
+    CREATE TABLE IF NOT EXISTS bean (
+      beanID INTEGER PRIMARY KEY,
+      beanType TEXT NOT NULL,
+      beanBlend TEXT NOT NULL,
+      beanRoast TEXT NOT NULL,
+      currentStock INT NOT NULL
+    );
+  SQL
+  puts "created bean table"
 end
