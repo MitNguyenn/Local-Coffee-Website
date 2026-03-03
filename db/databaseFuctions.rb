@@ -196,3 +196,7 @@ def deleteBean(beanID)
   puts "Deleted bean with ID #{beanID}."
 end
 
+#initAccountTable
+#initBeanTable
+
+
