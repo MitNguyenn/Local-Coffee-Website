@@ -1,5 +1,5 @@
 require_relative "validation"
-# ... Add "require" statements for your own helpers here ...
+require_relative "../db/database_helper"
 
 # Register helpers with Sinatra
 helpers do
@@ -8,6 +8,9 @@ helpers do
 
   # This is so that we include useful validation methods
   include Validation
+
+  # This is so that we can use database helper methods
+  include DatabaseHelper
 
   # ... Add your own helper modules here ...
 end
