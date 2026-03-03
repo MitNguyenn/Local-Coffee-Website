@@ -4,3 +4,6 @@ _coverage/
 
 .bundle/
 vendor/ 
+
+# used for debugging
+output.txt

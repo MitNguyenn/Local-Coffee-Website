@@ -2,8 +2,14 @@
     <h2>Our Coffee Beans</h2>
 </div>
 
-<div class="product-card">
-  <img src="coffee_beans_example.png" alt="a pack of tasty coffee beans">
-  <h3>Fancy Optimus Prime xbox 360 WiFi Beans</h3>
-  <button class="add-to-basket">Add to Basket</button>
+<div class="catalog-grid">
+  <% @beans.each do |bean| %>
+    <div class="product-card">
+      <img src="/coffee_beans_example.png" alt="<%= bean[:name] %>">
+      <h3><%= bean[:name] %></h3>
+      <p>£<%= sprintf('%.2f', bean[:price]) %></p>
+      <button class="add-to-basket">Add to Basket</button>
+    </div>
+  <% end %>
+[cite_start]<%# Note: Your source 3 mentions params handling for login but the logic here applies to your coffee-beans route [cite: 3] %>
 </div>

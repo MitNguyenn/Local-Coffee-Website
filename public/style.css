@@ -236,16 +236,19 @@ footer {
   justify-content: center;
 }
 
+.catalog-grid {
+    display: flex;       
+    flex-wrap: wrap;
+    gap: 20px;           
+    justify-content: center;
+}
+
 .product-card {
-  background-color: #FFF;
-  width: 250px;
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 15px; /* Creates the rounded corners */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    flex: 0 1 300px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
 }
 
 .product-card img {
@@ -257,7 +260,7 @@ footer {
 .add-to-basket {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #a67458;
   color: white;
   border: none;
   border-radius: 8px;

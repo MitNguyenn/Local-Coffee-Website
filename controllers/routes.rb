@@ -6,6 +6,7 @@ get '/' do
 end
 
 get '/coffee-beans' do
+    @beans = DB[:beans].all
   erb :beans
 end
 
