@@ -4,7 +4,6 @@ require "bcrypt"
 # --- HELPER FUNCTIONS ---
 
 def hashUserPasssword(rawPassword)
-  # FIX: Corrected BCrypt syntax (::Password.create) and variable assignment
   return BCrypt::Password.create(rawPassword).to_s
 end
 
@@ -17,7 +16,6 @@ class USERACCOUNT
     @firstName     = firstName
     @lastName      = lastName
     @email         = email
-    # FIX: Corrected variable name from 'passsword' to 'password'
     @passwordHash  = hashUserPasssword(password)
     @phoneNumber   = phoneNumber
     @postalAddress = postalAddress
@@ -42,7 +40,6 @@ $db = SQLite3::Database.new "db.sqlite3"
 
 def clearDatabase
   $db.close if $db
-  # FIX: Changed "database.db" to "db.sqlite3" to match the actual file name
   dbPath = "db.sqlite3"
   File.delete(dbPath) if File.exist?(dbPath)
 
@@ -103,15 +100,3 @@ def insertNewBean(beanObject)
   $db.execute(sql, [beanObject.beanType, beanObject.beanBlend, beanObject.beanRoast, beanObject.currentStock])
   puts "Successfully inserted bean: #{beanObject.beanType}"
 end
-
-# --- EXECUTION ---
-
-# Initialize the tables first!
-initAccountTable
-initBeanTable
-
-acc = USERACCOUNT.new("John", "Doe", "abc@hot.org", "password123", "555-1234", "123 Main St", "customer")
-insertNewAccount(acc)
-
-bean = BEANINSTANCE.new("Arabica", "Single Origin", "Medium", 100)
-insertNewBean(bean)
