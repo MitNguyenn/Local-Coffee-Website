@@ -1,6 +1,6 @@
 require "require_all"
 require "sinatra"
-require "sinatra/reloader"
+require "rqrcode"
 
 require_all "controllers"
 require_relative "helpers/helpers"
@@ -12,7 +12,7 @@ enable :sessions
 require_relative 'controllers/routes'
 
 # Initialize database tables on startup
-configure do
-  DatabaseHelper.init_account_table
-  DatabaseHelper.init_bean_table
-end
+# configure do
+#   DatabaseHelper.init_account_table
+#   DatabaseHelper.init_bean_table
+# end

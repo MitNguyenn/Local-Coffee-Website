@@ -273,3 +273,13 @@ html {
   font-size: 15px;
   color: rgba(128, 128, 128, 0.288);
 }
+
+.qr-code-container svg {
+  width: 220px;
+  height: 220px;
+  margin: 20px auto;
+  display: block;
+  border: 10px solid white; 
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}

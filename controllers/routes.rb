@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'sinatra/reloader' if development?
 require "bcrypt"
 
 
@@ -59,7 +58,26 @@ get '/account-settings' do
   erb :account_settings
 end
 
-get '/loyalty-card' do 
+get '/loyalty-card' do
+  # redirect '/log-in' unless session[:user_id]
+
+  # qr_content = "user_id:#{session[:user_id]}"
+
+  # qrcode = RQRCode::QRCode.new(qr_content)
+
+  qr_content = "TEST-USER-12345"
+
+  qrcode = RQRCode::QRCode.new(qr_content)
+
+  @qr_svg = qrcode.as_svg(
+    color: "4b2c20", 
+    shape_rendering: "crispEdges",
+    module_size: 6,
+    standalone: true,
+    use_path: true,
+    viewbox: true
+  )
+
   erb :loyalty_card
 end
 
