@@ -1,11 +1,6 @@
 require "sqlite3"
 require "bcrypt"
-
-# --- HELPER FUNCTIONS ---
-
-def hashUserPasssword(rawPassword)
-  return BCrypt::Password.create(rawPassword).to_s
-end
+require_relative "database_helper"
 
 # --- CLASSES ---
 
@@ -16,7 +11,7 @@ class USERACCOUNT
     @firstName     = firstName
     @lastName      = lastName
     @email         = email
-    @passwordHash  = hashUserPasssword(password)
+    @passwordHash  = BCrypt::Password.create(password).to_s
     @phoneNumber   = phoneNumber
     @postalAddress = postalAddress
     @accountType   = accountType
@@ -32,71 +27,4 @@ class BEANINSTANCE
     @beanRoast    = broast
     @currentStock = currentStock
   end
-end
-
-# --- DATABASE FUNCTIONS ---
-
-$db = SQLite3::Database.new "db.sqlite3"
-
-def clearDatabase
-  $db.close if $db
-  dbPath = "db.sqlite3"
-  File.delete(dbPath) if File.exist?(dbPath)
-
-  $db = SQLite3::Database.new "db.sqlite3"
-  puts "Database reset"
-end
-
-def initAccountTable
-  $db.execute <<-SQL
-    CREATE TABLE IF NOT EXISTS account (
-      userID INTEGER PRIMARY KEY,
-      firstName TEXT NOT NULL,
-      lastName TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE,
-      passwordHash TEXT NOT NULL,
-      phoneNumber TEXT NOT NULL,
-      postalAddress TEXT NOT NULL,
-      accountType TEXT NOT NULL
-    );
-  SQL
-  puts "created account table"
-end
-
-def insertNewAccount(user)
-  sql = <<-SQL
-    INSERT INTO account (
-      firstName, lastName, email, passwordHash, 
-      phoneNumber, postalAddress, accountType
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)
-  SQL
-
-  $db.execute(sql, [
-    user.firstName, user.lastName, user.email,
-    user.passwordHash, user.phoneNumber, 
-    user.postalAddress, user.accountType
-  ])
-  
-  puts "Successfully inserted account for: #{user.email}"
-rescue SQLite3::ConstraintException => e
-  puts "Failed to insert account: #{e.message}"
-end
-
-def initBeanTable
-  $db.execute <<-SQL
-    CREATE TABLE IF NOT EXISTS bean (
-      beanID INTEGER PRIMARY KEY,
-      beanType TEXT NOT NULL,
-      beanBlend TEXT NOT NULL,
-      beanRoast TEXT NOT NULL,
-      currentStock INT NOT NULL
-    );
-  SQL
-  puts "created bean table"
-end
-
-def insertNewBean(beanObject)
-  sql = "INSERT INTO bean (beanType, beanBlend, beanRoast, currentStock) VALUES (?, ?, ?, ?)"
-  $db.execute(sql, [beanObject.beanType, beanObject.beanBlend, beanObject.beanRoast, beanObject.currentStock])
-  puts "Successfully inserted bean: #{beanObject.beanType}"
 end
