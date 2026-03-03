@@ -35,14 +35,18 @@ post '/login' do
   if doesExist
     if user_pass_hash == collectUserData(user_email).passwordHash
       session[:user_id] = 1
-      redirect '/'
+      puts "Login successful for: #{user_email}"
+      userData = collectUserData(user_email)
+      template = File.read('views/home.erb')
+      render = erb.new(template)
+      render.result(binding)
     else
-      @error = "Invalid email or password"
+      @error = "Invalid password"
       erb :login_screen
     end
   else
-    @error = "Invalid email or password"
-    erb :login
+    @error = "Invalid email"
+    erb :login_screen
   end
 end
 
