@@ -30,7 +30,7 @@ post '/login' do
   user_email = params[:email]
   user_pass  = params[:password1]
 
-  user = collectUserData(user_email) # Assume this returns a user object or nil
+  user = collect_user_data(user_email) # Assume this returns a user object or nil
 
   if user && BCrypt::Password.new(user.password_hash) == user_pass
     session[:user_id] = user.id

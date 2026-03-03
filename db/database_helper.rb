@@ -70,4 +70,16 @@ module DatabaseHelper
     $db.execute(sql, [bean_object.beanType, bean_object.beanBlend, bean_object.beanRoast, bean_object.currentStock])
     puts "Successfully inserted bean: #{bean_object.beanType}"
   end
+
+  def collect_user_data(email)
+    sql = "SELECT * FROM account WHERE email = ?"
+    result = $db.execute(sql, [email])
+    
+    if result.empty?
+      return nil
+    else
+      user_data = result[0]
+      return user_data
+    end
+  end
 end
