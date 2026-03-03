@@ -93,6 +93,11 @@ rescue SQLite3::ConstraintException => e
   puts "Failed to insert account: #{e.message}"
 end
 
+def checkAccountExists(email)
+  row = $db.execute("SELECT 1 FROM account WHERE email = ? LIMIT 1", [email]).first
+  return !row.nil?
+end
+
 #INPUTS
 #email
 def collectUserData(userEmail)
