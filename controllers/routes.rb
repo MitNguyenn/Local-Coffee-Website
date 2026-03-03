@@ -21,6 +21,18 @@ get '/log-in' do
   erb :login_screen
 end
 
+post '/login' do
+  user = User.find_by(email: params[:email])
+  if user && user.password == params[:password1]
+    session[:user_id] = user.id
+    redirect '/'
+  else
+    @error = "Invalid credentials"
+    erb :login
+  end
+end
+
+
 get '/account-settings' do
   erb :account_settings
 end
@@ -34,7 +46,16 @@ get '/my-orders' do
 end
 
 get '/log-out' do
-  erb :log_out
+  session.clear  
+  redirect '/'
+end
+
+get '/forgot' do
+  erb :forgot_password
+end
+
+get '/register' do
+  erb :register_account
 end
 
 get '/login' do
@@ -50,3 +71,4 @@ post '/login' do
   password2 = params[:password2]
   "email = #{email}, password1 = #{password1}, password2 = #{password2}"
 end
+
