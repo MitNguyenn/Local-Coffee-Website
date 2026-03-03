@@ -34,6 +34,17 @@ end
 
 
 get '/account-settings' do
+  # need to figure out how to pull data from database
+  # hard coded temp data
+  @first_name = "First"
+  @last_name = "Last"
+  @dob = "01/01/01"
+  @phone = "+44 07000 000000"
+  @email = "test@gmail.com"
+  @password = "password"
+  @postcode = "S10 3AB"
+  # address number/house name could be stored seperately
+  @address = "1 Endcliffe Cresent"
   erb :account_settings
 end
 
@@ -71,4 +82,3 @@ post '/login' do
   password2 = params[:password2]
   "email = #{email}, password1 = #{password1}, password2 = #{password2}"
 end
-
