@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader' if development?
+load 'db/databaseFuctions.rb'
 
 get '/' do
   erb :home
@@ -18,21 +19,34 @@ get '/staff-portal' do
 end
 
 get '/log-in' do
+  @email = ""
+  @password1 = ""
+  @password2 = ""
   erb :login_screen
 end
 
 post '/login' do
   user_email = params[:email]
   user_pass  = params[:password1]
-
+  user_pass_hash = hashUserPassword(user_pass)
   puts "Login attempt for: #{user_email}"
 
-  if user_email == "admin@coffee.com" && user_pass == "password123"
-    session[:user_id] = 1
-    redirect '/'
+  doesExist = checkAccountExists(user_email)
+  if doesExist
+    if user_pass_hash == collectUserData(user_email).passwordHash
+      session[:user_id] = 1
+      puts "Login successful for: #{user_email}"
+      userData = collectUserData(user_email)
+      template = File.read('views/home.erb')
+      render = erb.new(template)
+      render.result(binding)
+    else
+      @error = "Invalid password"
+      erb :login_screen
+    end
   else
-    @error = "Invalid email or password"
-    erb :login
+    @error = "Invalid email"
+    erb :login_screen
   end
 end
 
@@ -73,16 +87,6 @@ get '/register' do
   erb :register_account
 end
 
-get '/login' do
-  @email = ""
-  @password1 = ""
-  @password2 = ""
-  erb :login_screen
-end
-
-post '/login' do
-  email = params[:email]
-  password1 = params[:password1]
-  password2 = params[:password2]
-  "email = #{email}, password1 = #{password1}, password2 = #{password2}"
+post '/register' do
+  "do something lmao"
 end
