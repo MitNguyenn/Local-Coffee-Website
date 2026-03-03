@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Account Settings</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class = "NAVBAR">
+      <h1> </h1>
+    </div>
+
+    <div class = "HEADER">
+      <h2>Account Settings </h2>
+    </div>
+
+    # add profile picture beside greeting if were doing them
+    <div class = "greeting">
+      <h3>Hi Name, </h3>
+      <h4>Account Info: </h4>
+    </div>
+
+    <div class = "account-info">
+      <label for = "first_name">First Name:</label><br>
+      <input type = "text" id = "first_name" first_name = "first_name", value = "<%= @first_name %>"><br>
+      <label for = "last_name">Last Name:</label><br>
+      <input type = "text" id = "last_name" first_name = "last_name", value = "<%= @last_name %>"><br>
+      <label for = "date_of_birth">Date of Birth:</label><br>
+      <input type = "text" id = "date_of_birth" date_of_birth = "date_of_birth", value = "<%= @date_of_birth %>"><br>
+      <label for = "email">Email:</label><br>
+      <input type = "text" id = "email" name = "email", value = "<%= @email %>"><br>
+      <label for = "password">Password:</label><br>
+      <input type = "password" id = "password" name = "password", value = "<%= @password %>"><br>
+    </div>
+
+    <div class = "HEADER">
+      <h4>Address Info: </h4>
+    </div>
+
+    <div class = "address-info">
+      <label for = "address">Address<label><br>
+      <input type = "text" id = "address" address = "address", value = "<%= @address %>"><br>
+      <label for = "postcode">Postcode<label><br>
+      <input type = "text" id = "postcode" post_code = "postcode", value = "<%= @postcode %>"><br>
+      
+    </div>
+  </body>
+</html>

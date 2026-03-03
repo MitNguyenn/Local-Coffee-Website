@@ -1,25 +1,96 @@
 body {
   margin: 0;
+  padding-top: 60px;
   font-family: "Fredoka One", cursive;
   background-color: #fdf5e6;
   color: #4b2c20;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
 }
 
 .navbar {
   background-color: #a67458;
-  padding: 15px 30px;
+  height: 80px;
+  padding: 0 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
 }
 
 .menu-icon {
-  font-size: 24px;
+  font-size: 28px;
   color: #fdf5e6;
   cursor: pointer;
+  user-select: none;
+}
+
+.user-icon img {
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: block;
+}
+
+.user-icon img:hover {
+  transform: scale(1.1);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content,
+.user-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fdf5e6;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.user-dropdown-content {
+  right: 0;
+}
+
+.dropdown-content a,
+.user-dropdown-content a {
+  color: #4b2c20;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.dropdown-content a:hover,
+.user-dropdown-content a:hover {
+  background-color: #a67458;
+  color: white;
+}
+
+.show {
+  display: block !important;
 }
 
 .hero {
+  margin-top: 0;
   height: 60vh;
   background:
     linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
@@ -27,14 +98,20 @@ body {
   background-size: cover;
   background-position: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  color: #fdf5e6;
 }
 
 .hero h1 {
   font-size: 4rem;
-  color: #fdf5e6;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+.hero h2 {
+  font-size: 1.7rem;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -45,57 +122,112 @@ body {
 
 .btn {
   display: inline-block;
-  padding: 10px 25px;
+  padding: 12px 30px;
   background-color: #a67458;
   color: white;
+  cursor: grabbing;
   text-decoration: none;
   border-radius: 25px;
-  margin-top: 20px;
   transition: 0.3s;
+  font-size: 1.1rem;
 }
 
 .btn:hover {
   background-color: #4b2c20;
 }
 
-footer {
-  text-align: center;
+.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 100px 20px;
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
+.login-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fdf5e6;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: 10px;
+.login-card h2 {
+  margin-bottom: 25px;
 }
-.dropdown-content a {
-  color: #4b2c20;
-  padding: 12px 16px;
-  text-decoration: none;
+
+.input-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.input-group label {
   display: block;
-  font-family: sans-serif;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
 }
 
-.dropdown-content a:hover {
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: #a67458;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
   background-color: #a67458;
   color: white;
+  border: none;
+  border-radius: 25px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
 }
 
-.show {
-  display: block;
+.login-btn:hover {
+  background-color: #4b2c20;
+}
+
+.extra-links {
+  margin-top: 20px;
+  font-size: 0.85rem;
+}
+
+.extra-links a {
+  color: #a67458;
+  text-decoration: none;
+}
+
+.extra-links a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  background-color: #a67458;
+  color: #fdf5e6;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.menu-preview {
+  text-align: center;
 }
 
 html {
