@@ -32,6 +32,7 @@ post '/login' do
   end
 end
 
+
 get '/account-settings' do
   erb :account_settings
 end
@@ -45,7 +46,8 @@ get '/my-orders' do
 end
 
 get '/log-out' do
-  erb :log_out
+  session.clear  
+  redirect '/'
 end
 
 get '/forgot' do
