@@ -1,7 +1,9 @@
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require "bcrypt"
-
+require_relative '../db/db.rb'
+require_relative '../models/userObject.rb'
+require_relative '../models/beanObject.rb'
 
 get '/' do
   erb :home
@@ -27,9 +29,17 @@ get '/log-in' do
 end
 
 post '/login' do
-  user_email = params[:email]
-  user_pass  = params[:password1]
-end
+  user = UserObject.first(email: params[:email]) # Finder method
+
+  # Data Processed
+  if user && BCrypt::Password.new(user.password_hash) == params[:password1]
+    session[:user_id] = user.id
+    # GOTO
+    redirect '/'
+  else
+    @error = "Invalid credentials"
+    erb :login_screen
+  end
 
 get '/register' do
   erb :register_account
