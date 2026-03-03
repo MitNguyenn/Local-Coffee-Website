@@ -21,6 +21,18 @@ get '/log-in' do
   erb :login_screen
 end
 
+post '/login' do
+  user = User.find_by(email: params[:email])
+  if user && user.password == params[:password1]
+    session[:user_id] = user.id
+    redirect '/'
+  else
+    @error = "Invalid credentials"
+    erb :login
+  end
+end
+
+
 get '/account-settings' do
   # need to figure out how to pull data from database
   # hard coded temp data
@@ -45,7 +57,8 @@ get '/my-orders' do
 end
 
 get '/log-out' do
-  erb :log_out
+  session.clear  
+  redirect '/'
 end
 
 get '/forgot' do
