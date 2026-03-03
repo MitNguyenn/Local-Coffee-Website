@@ -97,3 +97,47 @@ footer {
 .show {
   display: block;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+.form-field{
+  margin-left: 40pt;
+  margin-top: 90pt;
+  font-size: 30px;
+}
+
+.box_size{
+  padding: 10px;
+  width: 400px;
+}
+
+.description_box{
+  padding:10px;
+  width: 400px;
+  height: 130px;
+}
+
+.submit_button{
+  background-color: #2C3E50;
+  color: white;
+  padding: 18px 36px;
+  border-radius: 12px;
+  font-size: 30px;
+}
+
+.submit_button:hover{
+  background-color: #1F2D3A;
+}
+
+.redirect a{
+  text-decoration: none;
+  font-size: 15px;
+  color: rgba(128, 128, 128, 0.288);
+}
+
+.redirect{
+  font-size: 15px;
+  color: rgba(128, 128, 128, 0.288);
+}
