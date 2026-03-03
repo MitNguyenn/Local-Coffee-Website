@@ -1,6 +1,10 @@
 require 'sinatra'
 require 'sinatra/reloader' if development?
+require "bcrypt"
 load 'db/databaseFuctions.rb'
+
+#temp
+
 
 get '/' do
   erb :home
@@ -26,9 +30,16 @@ get '/log-in' do
 end
 
 post '/login' do
+  def hashUserPasssword(rawPassword)
+    passwordHash bcrypt::Password.create(rawPassword)
+    return passwordHash
+  end
   user_email = params[:email]
   user_pass  = params[:password1]
-  user_pass_hash = hashUserPassword(user_pass)
+  # user_pass_hash = hashUserPassword(user_pass)
+  # user_pass_hash = Password.create(user_pass)
+  user_pass_hash = user_pass
+
   puts "Login attempt for: #{user_email}"
 
   doesExist = checkAccountExists(user_email)

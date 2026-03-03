@@ -9,7 +9,7 @@ def hashUserPasssword(rawPassword)
   return passwordHash
 end
 
-class userAccount
+class USERACCOUNT
   # Creates getter methods so you can read these attributes later
   attr_accessor :firstName, :lastName, :email, :passwordHash, :phoneNumber, :postalAddress, :accountType
 
@@ -24,7 +24,7 @@ class userAccount
   end
 end
 
-class beanInstance
+class BEANINSTANCE
   attr_accessor :beanType, :beanBlend, :beanRoast, :currentStock
 
   def initialize(btype,bblend,broast,currentStock)
@@ -69,7 +69,7 @@ def initAccountTable
 end
 
 #INPUTS
-#inputs object of class userAccount
+#inputs object of class USERACCOUNT
 def insertNewAccount(user)
   sql = <<-SQL
     INSERT INTO account (
@@ -104,7 +104,7 @@ def collectUserData(userEmail)
   row = $db.execute("SELECT * FROM account WHERE email = ? LIMIT 1", [userEmail]).first
   return nil if row.nil?
 
-  userObject = userAccount.new(*row[1..-1])
+  userObject = USERACCOUNT.new(*row[1..-1])
   return userObject
   puts "Collected data for account: #{userEmail}"
 end
@@ -129,7 +129,7 @@ end
 
 #INPUTS
 #email?
-def deleteUserAccount(email)
+def deleteUSERACCOUNT(email)
   $db.execute "DELETE FROM account WHERE email = ?", [email]
   puts "Deleted account with email #{email}."
 end
@@ -150,8 +150,8 @@ def initBeanTable
 end
 
 #INPUTS
-#object of class beanInstance
-def insertNewBean(beanInstance)
+#object of class BEANINSTANCE
+def insertNewBean(beanObject)
   sql = <<-SQL
     INSERT INTO bean (
       beanType, beanBlend, beanRoast, currentStock
@@ -159,13 +159,13 @@ def insertNewBean(beanInstance)
   SQL
 
   $db.execute(sql, [
-    beanInstance.beanType,
-    beanInstance.beanBlend,
-    beanInstance.beanRoast,
-    beanInstance.currentStock
+    beanObject.beanType,
+    beanObject.beanBlend,
+    beanObject.beanRoast,
+    beanObject.currentStock
   ])
   
-  puts "Successfully inserted bean: #{beanInstance.beanType} #{beanInstance.beanBlend} #{beanInstance.beanRoast}"
+  puts "Successfully inserted bean: #{beanObject.beanType} #{beanObject.beanBlend} #{beanObject.beanRoast}"
 rescue SQLite3::ConstraintException => e
   puts "Failed to insert bean: #{e.message}"
 end
