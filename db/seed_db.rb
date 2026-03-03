@@ -1,3 +1,6 @@
+# generated the whole thing with Gemini, sorry guys
+# this script can be used to generate a sample database, for testing, for example
+
 require 'sequel'
 require 'sqlite3'
 
