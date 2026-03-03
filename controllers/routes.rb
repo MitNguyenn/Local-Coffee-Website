@@ -30,36 +30,21 @@ get '/log-in' do
 end
 
 post '/login' do
-  def hashUserPasssword(rawPassword)
-    passwordHash bcrypt::Password.create(rawPassword)
-    return passwordHash
-  end
   user_email = params[:email]
   user_pass  = params[:password1]
-  # user_pass_hash = hashUserPassword(user_pass)
-  # user_pass_hash = Password.create(user_pass)
-  user_pass_hash = user_pass
 
-  puts "Login attempt for: #{user_email}"
+  user = collectUserData(user_email) # Assume this returns a user object or nil
 
-  doesExist = checkAccountExists(user_email)
-  if doesExist
-    if user_pass_hash == collectUserData(user_email).passwordHash
-      session[:user_id] = 1
-      puts "Login successful for: #{user_email}"
-      userData = collectUserData(user_email)
-      template = File.read('views/home.erb')
-      render = erb.new(template)
-      render.result(binding)
-    else
-      @error = "Invalid password"
-      erb :login_screen
-    end
+  if user && BCrypt::Password.new(user.password_hash) == user_pass
+    session[:user_id] = user.id
+    puts "Login successful for: #{user_email}"
+    redirect '/home' # Better to redirect than manually render
   else
-    @error = "Invalid email"
+    @error = "Invalid email or password"
     erb :login_screen
   end
 end
+
 
 
 get '/account-settings' do
