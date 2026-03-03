@@ -101,6 +101,7 @@ def collectUserData(userEmail)
 
   userObject = userAccount.new(*row[1..-1])
   return userObject
+  puts "Collected data for account: #{userEmail}"
 end
 
 
@@ -142,3 +143,51 @@ def initBeanTable
   SQL
   puts "created bean table"
 end
+
+#INPUTS
+#object of class beanInstance
+def insertNewBean(beanInstance)
+  sql = <<-SQL
+    INSERT INTO bean (
+      beanType, beanBlend, beanRoast, currentStock
+    ) VALUES (?, ?, ?, ?)
+  SQL
+
+  $db.execute(sql, [
+    beanInstance.beanType,
+    beanInstance.beanBlend,
+    beanInstance.beanRoast,
+    beanInstance.currentStock
+  ])
+  
+  puts "Successfully inserted bean: #{beanInstance.beanType} #{beanInstance.beanBlend} #{beanInstance.beanRoast}"
+rescue SQLite3::ConstraintException => e
+  puts "Failed to insert bean: #{e.message}"
+end
+
+
+#INPUTS
+#beanID as an int
+#changes as a hash map
+def updateBeanData(beanID, changeHash)
+  setClause = changeHash.keys.map { |column| "#{column} = ?" }.join(", ")
+
+  values = changeHash.values
+  
+  values << beanID
+
+  sql = "UPDATE bean SET #{setClause} WHERE beanID = ?"
+
+  $db.execute(sql, values)
+  puts "Updated #{changeHash.keys.join(', ')} for bean ID: #{beanID}"
+rescue SQLite3::SQLException => e
+  puts "Update failed: #{e.message}"
+end
+
+#INPUTS
+#beanID as an int
+def deleteBean(beanID)
+  $db.execute "DELETE FROM bean WHERE beanID = ?", [beanID]
+  puts "Deleted bean with ID #{beanID}."
+end
+
