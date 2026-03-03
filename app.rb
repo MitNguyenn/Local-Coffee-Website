@@ -9,3 +9,7 @@ require_all "db/databaseFuctions.rb"
 enable :sessions
 
 require_relative 'controllers/routes'
+
+# Initialize database tables on startup
+init_account_table
+init_bean_table
