@@ -1,6 +1,5 @@
 require "require_all"
 require "sinatra"
-require "sinatra/reloader"
 
 require_all "controllers"
 require_relative "helpers/helpers"
