@@ -7,3 +7,4 @@ vendor/
 
 # used for debugging
 output.txt
+Gemfile.lock
