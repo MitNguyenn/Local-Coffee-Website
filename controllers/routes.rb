@@ -1,9 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require "bcrypt"
-load 'db/databaseFuctions.rb'
-
-#temp
 
 
 get '/' do
