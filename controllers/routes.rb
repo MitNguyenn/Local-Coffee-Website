@@ -3,7 +3,7 @@ require 'sinatra/reloader' if development?
 require "bcrypt"
 require_relative '../db/db.rb'
 require_relative '../db/databaseHelper'
-require_relative '../models/userObject.rb'
+require_relative '../models/userAccount.rb'
 require_relative '../models/beanObject.rb'
 
 get '/' do

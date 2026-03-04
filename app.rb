@@ -8,14 +8,12 @@ require_relative "db/db"
 require_relative "db/databaseHelper"
 require_all "models"
 enable :sessions
-require_relative '../db/db.rb'
-require_relative '../db/databaseHelper'
-require_relative '../models/userObject.rb'
-require_relative '../models/beanObject.rb'
+
 require_relative 'controllers/routes'
 
 # Initialize database tables on startup
 configure do
   DatabaseHelper.init_account_table
   DatabaseHelper.init_bean_table
+end
 end
