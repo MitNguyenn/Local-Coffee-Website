@@ -13,4 +13,10 @@ helpers do
   include DatabaseHelper
 
   # ... Add your own helper modules here ...
+
+  def current_user
+    return false unless session[:user_id]
+    true
+    #add lookup to database here
+  end
 end

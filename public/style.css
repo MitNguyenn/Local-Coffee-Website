@@ -162,6 +162,66 @@ main {
   margin-bottom: 15px;
 }
 
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%; 
+}
+
+.edit-icon {
+  position: absolute;
+  right: 12px;
+  top: 57.5%;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  display: none;
+}
+
+.edit-icon,
+.reveal-password {
+  position: absolute;
+  right: 10px;
+  top: 57.5%;
+  width: 18px;
+  cursor: pointer;
+}
+
+.reveal-password {
+  position: absolute;
+  right: 12px;
+  top: 57.5%;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+
+}
+
+.input-wrapper:hover .edit-icon {
+  display: inline;
+}
+
+.input-wrapper label {
+  display: block;
+  text-align: left;
+  margin-top: 8px;
+  margin-bottom: 3px;
+  font-size: 0.9rem;
+}
+
+.detail-header {
+  display: block;
+  text-align: left;
+  margin-top: 25px;
+  margin-bottom: 0px;
+  font-size: 1.1rem;
+}
+
+.account-input {
+  padding-right: 40px; 
+}
+
+
 .input-group label {
   display: block;
   margin-bottom: 5px;

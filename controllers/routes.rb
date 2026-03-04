@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require "bcrypt"
 
+enable :sessions
 
 get '/' do
   erb :home
@@ -42,20 +43,23 @@ post '/login' do
   end
 end
 
+get "/account-settings" do
+  #use this once database working
+  #redirect "/log-in" unless current_user
 
+    #user = current_user
+    # need to figure out how to pull data from database
+    # hard coded temp data
+    @first_name = "First" #user.first_name
+    @last_name = "Last" #user.last_name
+    @date_of_birth = "01/01/01" #user.date_of_birth
+    @phone = "+44 07000 000000" #user.phone
+    @email = "test@gmail.com" #user.email
+    @password = "password" #user.password_hash 
+    @postcode = "S10 3AB" #user.postcode
+    # address number/house name could be stored seperately
+    @address = "1 Endcliffe Cresent" #user.address
 
-get '/account-settings' do
-  # need to figure out how to pull data from database
-  # hard coded temp data
-  @first_name = "First"
-  @last_name = "Last"
-  @dob = "01/01/01"
-  @phone = "+44 07000 000000"
-  @email = "test@gmail.com"
-  @password = "password"
-  @postcode = "S10 3AB"
-  # address number/house name could be stored seperately
-  @address = "1 Endcliffe Cresent"
   erb :account_settings
 end
 
