@@ -5,8 +5,8 @@ require "sinatra/reloader"
 require_all "controllers"
 require_relative "helpers/helpers"
 require_relative "db/db"
+require_relative "db/databaseHelper"
 require_all "models"
-require_all "db/databaseFuctions.rb"
 enable :sessions
 
 require_relative 'controllers/routes'

@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require "bcrypt"
 require_relative '../db/db.rb'
+require_relative '../db/databaseHelper'
 require_relative '../models/userObject.rb'
 require_relative '../models/beanObject.rb'
 
@@ -29,7 +30,7 @@ get '/log-in' do
 end
 
 post '/login' do
-  user = UserObject.first(email: params[:email]) # Finder method
+  user = UserObject.first(email: params[:email]) # Finder
 
   # Data Processed
   if user && BCrypt::Password.new(user.password_hash) == params[:password1]
@@ -40,13 +41,55 @@ post '/login' do
     @error = "Invalid credentials"
     erb :login_screen
   end
+end
 
 get '/register' do
   erb :register_account
 end
 
 post '/register' do
-  "do something lmao"
+  # Use validation helpers to validate input
+  email = params[:email]
+  password = params[:password]
+  first_name = params[:first_name]
+  last_name = params[:last_name]
+  phone = params[:phone]
+  address = params[:address]
+
+  # Validate email format
+  unless str_email_address?(email)
+    @error = "Invalid email format"
+    return erb :register_account
+  end
+
+  # Validate phone number
+  unless str_uk_telephone?(phone)
+    @error = "Invalid UK phone number"
+    return erb :register_account
+  end
+
+  # Validate password length
+  unless str_min_length?(password, 8)
+    @error = "Password must be at least 8 characters"
+    return erb :register_account
+  end
+
+  # Create new user account
+  user = UserObject.create(
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
+    password_hash: BCrypt::Password.create(password).to_s,
+    phone: phone,
+    address: address,
+    account_type: "customer"
+  )
+
+  session[:user_id] = user.id
+  redirect '/'
+rescue => e
+  @error = "Registration failed: #{e.message}"
+  erb :register_account
 end
 
 get '/account-settings' do

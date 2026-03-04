@@ -1,4 +1,6 @@
-class UserObject < Sequel::Model
+require "bcrypt"
+
+class UserObject < Sequel::Model(:user_objects)
   # Add validation from the slides to handle errors
   def validate
     super
