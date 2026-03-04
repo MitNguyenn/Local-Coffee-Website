@@ -63,6 +63,22 @@ get "/account-settings" do
   erb :account_settings
 end
 
+get '/change-password' do
+  erb :change_password
+end
+
+post '/change-password' do
+  password1 = params[:password1]
+  password2 = params[:password2]
+  if password1 == password2
+    redirect '/account-settings'
+    # Here you would also want to update the user's password in the database
+  else
+    @error = "Passwords do not match"
+    return erb :change_password
+  end
+end
+
 get '/loyalty-card' do 
   erb :loyalty_card
 end

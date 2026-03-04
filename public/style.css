@@ -262,6 +262,13 @@ input[type="password"]:focus {
   background-color: #4b2c20;
 }
 
+
+.login-btn:disabled {
+  background-color: #a67558bb;
+  color: #FFFFFFbb;
+  cursor: not-allowed;
+}
+
 .extra-links {
   margin-top: 20px;
   font-size: 0.85rem;
@@ -332,4 +339,9 @@ html {
 .redirect{
   font-size: 15px;
   color: rgba(128, 128, 128, 0.288);
+}
+
+.error-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
 }
