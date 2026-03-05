@@ -1,12 +1,7 @@
 require 'sinatra'
 require 'bcrypt'
 require_relative '../db/db.rb'
-
-helpers do 
-  include ERB::Util
-  include Validation
-  include passwordCheck
-end
+require_relative '../helpers/helpers'
 
 get '/' do
   erb :home
@@ -39,8 +34,10 @@ post '/login' do
   user = DB[:accounts].where(email: @email).first
   if user && user[:hashedPassword] == hash_password(password) then
     session[:user_id] = user.id
+    puts "Login successful for email: #{@email}"
     redirect '/'
   else
+    puts "Login failed for email: #{@email}"
     @error = "Invalid email or password"
     erb :login_screen
   end
