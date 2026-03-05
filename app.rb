@@ -10,7 +10,7 @@ enable :sessions
 require_relative 'controllers/routes'
 
 # Initialize database tables on startup
-configure do
-  DatabaseHelper.init_account_table
-  DatabaseHelper.init_bean_table
-end
+# configure do
+#   DatabaseHelper.init_account_table
+#   DatabaseHelper.init_bean_table
+# end
