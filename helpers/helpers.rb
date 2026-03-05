@@ -1,5 +1,5 @@
 require_relative "validation"
-require_relative "../db/database_helper"
+require_relative "../db/databaseHelper"
 
 # Register helpers with Sinatra
 helpers do
@@ -13,4 +13,10 @@ helpers do
   include DatabaseHelper
 
   # ... Add your own helper modules here ...
+
+  def current_user
+    return false unless session[:user_id]
+    true
+    #add lookup to database here
+  end
 end
