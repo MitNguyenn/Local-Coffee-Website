@@ -1,14 +1,39 @@
 <main class="login-container">
-  <div class="login-card">
-    <h2>Your Loyalty QR</h2>
-    <p>Show this to the barista to earn points!</p>
+  <div class="loyalty-card-detailed">
+    
+    <div class="loyalty-main-info">
+      <div class="user-details">
+        <p><strong>First Name:</strong><br>John</p>
+        <p><strong>Last Name:</strong><br>Doe</p>
+        <p><strong>Loyalty Card Number:</strong><br>01234567</p>
+      </div>
+      
+      <div class="qr-section">
+        <div class="qr-placeholder">
+          <%= @qr_svg %>
+        </div>
+        <p class="qr-label">barcode</p>
+      </div>
+    </div>
 
-    <div class="qr-code-container">
-      <%= @qr_svg %>
+    <div class="stamps-section">
+      <h3>Stamps</h3>
+      <div class="stamps-grid">
+        <div class="stamp filled"></div>
+        <div class="stamp filled"></div>
+        <div class="stamp filled"></div>
+        <div class="stamp"></div>
+        <div class="stamp"></div>
+        <div class="stamp"></div>
+        <div class="stamp"></div>
+        <div class="stamp"></div>
+        <div class="stamp"></div>
+        <div class="stamp"></div>
+      </div>
+      <p>After 10, the next coffee is on us!</p>
     </div>
 
     <div class="extra-links">
-      <p>Points Balance: <strong>250</strong></p>
       <a href="/">Back to Home</a>
     </div>
   </div>
