@@ -3,15 +3,16 @@ require "sinatra"
 
 require_all "controllers"
 require_relative "helpers/helpers"
-require_relative "db/db"
 require_all "models"
-require_all "db/databaseFuctions.rb"
 enable :sessions
 
 require_relative 'controllers/routes'
 
-# Initialize database tables on startup
-#configure do
-#  DatabaseHelper.init_account_table
-#  DatabaseHelper.init_bean_table
-#end
+require "helpers/helpers.rb"
+#Database + models
+
+require_all "models/account.rb"
+require_all "models/bean.rb"
+require_all "models/order.rb"
+require_all "models/ticket.rb"
+require "db/db.rb"
