@@ -116,7 +116,6 @@ post '/change-password' do
   end
 end
 
-get '/loyalty-card' do 
 get '/loyalty-card' do
   # redirect '/login' unless session[:user_id]
 
