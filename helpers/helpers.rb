@@ -1,5 +1,4 @@
 require_relative "validation"
-require_relative "../db/database_helper"
 
 # Register helpers with Sinatra
 helpers do
@@ -10,7 +9,6 @@ helpers do
   include Validation
 
   # This is so that we can use database helper methods
-  include DatabaseHelper
 
   # ... Add your own helper modules here ...
 

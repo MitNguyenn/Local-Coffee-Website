@@ -1,11 +1,7 @@
 require 'sinatra'
-require 'sinatra/reloader' if development?
 require "bcrypt"
-
-enable :sessions
 require_relative '../db/db.rb'
-require_relative '../db/databaseHelper'
-require_relative '../models/userAccount.rb'
+
 get '/' do
   erb :home
 end
@@ -43,23 +39,6 @@ post '/login' do
     erb :login_screen
   end
 end
-
-get "/account-settings" do
-  #use this once database working
-  #redirect "/log-in" unless current_user
-
-    #user = current_user
-    # need to figure out how to pull data from database
-    # hard coded temp data
-    @first_name = "First" #user.first_name
-    @last_name = "Last" #user.last_name
-    @date_of_birth = "01/01/01" #user.date_of_birth
-    @phone = "+44 07000 000000" #user.phone
-    @email = "test@gmail.com" #user.email
-    @password = "password" #user.password_hash 
-    @postcode = "S10 3AB" #user.postcode
-    # address number/house name could be stored seperately
-    @address = "1 Endcliffe Cresent" #user.address
 
 get '/register' do
   erb :register_account
@@ -138,7 +117,25 @@ post '/change-password' do
   end
 end
 
-get '/loyalty-card' do 
+get '/loyalty-card' do
+  # redirect '/login' unless session[:user_id]
+
+  # @user = DB[:users].where(id: session[:user_id]).first
+
+  # qrcode = RQRCode::QRCode.new("user_id:#{@user[:id]}")
+
+  qr_content = "TEST-USER-12345"
+
+  qrcode = RQRCode::QRCode.new(qr_content)
+  @qr_svg = qrcode.as_svg(
+    color: "4b2c20", 
+    shape_rendering: "crispEdges",
+    module_size: 6,
+    standalone: true,
+    use_path: true,
+    viewbox: true
+  )
+
   erb :loyalty_card
 end
 
