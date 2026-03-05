@@ -32,7 +32,7 @@ post '/log-in' do
   puts @password
 
   user = DB[:accounts].where(email: @email).first
-  # if user && user[:hashedPassword] == hash_password(password) then
+  
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
     session[:user_id] = user.id
     puts "Login successful for email: #{@email}"
