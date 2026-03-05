@@ -44,7 +44,6 @@ get '/register' do
 end
 
 post '/register' do
-  # Use validation helpers to validate input
   email = params[:email]
   password = params[:password]
   first_name = params[:first_name]
@@ -52,25 +51,21 @@ post '/register' do
   phone = params[:phone]
   address = params[:address]
 
-  # Validate email format
   unless str_email_address?(email)
     @error = "Invalid email format"
     return erb :register_account
   end
 
-  # Validate phone number
   unless str_uk_telephone?(phone)
     @error = "Invalid UK phone number"
     return erb :register_account
   end
 
-  # Validate password length
   unless str_min_length?(password, 8)
     @error = "Password must be at least 8 characters"
     return erb :register_account
   end
 
-  # Create new user account
   user = UserObject.create(
     first_name: first_name,
     last_name: last_name,
@@ -89,15 +84,29 @@ rescue => e
 end
 
 get '/account-settings' do
-  @first_name = "First"
-  @last_name = "Last"
-  @dob = "01/01/01"
-  @phone = "+44 07000 000000"
-  @email = "test@gmail.com"
-  @password = "password"
-  @postcode = "S10 3AB"
-  @address = "1 Endcliffe Cresent"
+  redirect '/login' unless session[:user_id]
+
+  user = DB[:Accounts].where(UserID: session[:user_id]).first
+
+  @first_name = user[:First_Name]
+  @last_name  = user[:Last_name]
+  @email      = user[:email]
+  @address    = user[:Postal_address]
+  @postcode   = user[:Phone_number] 
+
   erb :account_settings
+end
+
+post '/update-account' do
+  redirect '/log-in' unless session[:user_id]
+
+  DB[:Accounts].where(UserID: session[:user_id]).update(
+    First_Name:     params[:First_Name],
+    Last_name:      params[:Last_name],
+    Postal_address: params[:Postal_address]
+  )
+
+  redirect '/account-settings'
 end
 
 get '/change-password' do
@@ -109,7 +118,6 @@ post '/change-password' do
   password2 = params[:password2]
   if password1 == password2
     redirect '/account-settings'
-    # Here you would also want to update the user's password in the database
   else
     @error = "Passwords do not match"
     return erb :change_password
