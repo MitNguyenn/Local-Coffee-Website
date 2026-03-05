@@ -297,7 +297,6 @@ footer {
   text-align: center;
 }
 
-<<<<<<< HEAD
 .page-title {
   width:100%;
   display: flex;
@@ -333,7 +332,19 @@ footer {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-=======
+}
+
+
+.buy {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #a67458;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -381,5 +392,4 @@ html {
 .error-message {
   margin-top: 10px;
   font-size: 0.9rem;
->>>>>>> master
 }
