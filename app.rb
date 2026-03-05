@@ -8,4 +8,3 @@ require_all "models"
 enable :sessions
 
 require_relative 'controllers/routes'
-include "helpers/helpers.rb"
