@@ -1,5 +1,6 @@
 require "require_all"
 require "sinatra"
+require "rqrcode"
 
 require_all "controllers"
 require_relative "helpers/helpers"
@@ -15,3 +16,7 @@ require_relative 'controllers/routes'
 #  DatabaseHelper.init_account_table
 #  DatabaseHelper.init_bean_table
 #end
+# configure do
+#   DatabaseHelper.init_account_table
+#   DatabaseHelper.init_bean_table
+# end
