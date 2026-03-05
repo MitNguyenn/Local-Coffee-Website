@@ -21,21 +21,25 @@ end
 
 get '/log-in' do
   @email = ""
-  @password1 = ""
-  @password2 = ""
+  @password = ""
   erb :login_screen
 end
 
-post '/login' do
+post '/log-in' do
   @email = params[:email]
-  password = params[:password]
+  @password = params[:password]
+
+  puts @password
 
   user = DB[:accounts].where(email: @email).first
-  if user && user[:hashedPassword] == hash_password(password) then
+  # if user && user[:hashedPassword] == hash_password(password) then
+  if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
     session[:user_id] = user.id
     puts "Login successful for email: #{@email}"
     redirect '/'
   else
+    puts BCrypt::Password.new(user[:hashedPassword])
+    puts password
     puts "Login failed for email: #{@email}"
     @error = "Invalid email or password"
     erb :login_screen
