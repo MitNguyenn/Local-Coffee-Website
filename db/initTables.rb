@@ -1,7 +1,7 @@
 require 'sequel'
-
+require 'sqlite3'
 # Connect to the database
-DB = Sequel.connect("sqlite://db/db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # Table 1: Accounts
 DB.create_table? :Accounts do

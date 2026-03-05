@@ -1,8 +1,9 @@
 require 'sequel'
+require 'sqlite3'
 require 'bcrypt'
 
 # Connect to the same database file
-DB = Sequel.connect("sqlite://db/db.sqlite3")
+DB = Sequel.connect("sqlite://db.sqlite3")
 
 # 1. Clear existing data (optional, prevents duplicates if you run it twice)
 DB[:Tickets].delete
