@@ -1,1 +1,37 @@
-help innit
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Support</title>
+    <link rel="styesheet" href="public/style.css">
+    <link rel="icon" type="image/x-icon" href="coffee.png">
+</head>
+
+<body>
+    <div class="form-field">
+        <div class="redirect">
+            <a href="/home">Home / </a> <span>Help</span>
+        </div>
+        <form method="post" action="/project/db/">
+            <p>Your name</p>
+            <input type="text" name="form_username" class="box_size""/>
+        </form>
+
+        <form method="post" action="/project/db">
+            <p>Your email address</p>
+            <input type="text" name="form_useremail" class="box_size"/>
+        </form>
+
+        <form method="post" action="/project/db">
+            <p>Request Description</p>
+            <input type="text" name="form_request_description" class="description_box""/><br><br><br>
+        </form>
+
+        <form method="post" action="/project/db">
+            <input type="submit" value="Submit" class="submit_button"/>
+        </form>
+    </div>
+</body>
+
+</html>
+

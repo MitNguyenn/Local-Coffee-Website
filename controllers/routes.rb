@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'sinatra/reloader' if development?
-load 'db/databaseFuctions.rb'
+require "bcrypt"
+
+enable :sessions
 
 get '/' do
   erb :home
@@ -29,42 +31,53 @@ end
 post '/login' do
   user_email = params[:email]
   user_pass  = params[:password1]
-  user_pass_hash = hashUserPassword(user_pass)
-  puts "Login attempt for: #{user_email}"
 
-  doesExist = checkAccountExists(user_email)
-  if doesExist
-    if user_pass_hash == collectUserData(user_email).passwordHash
-      session[:user_id] = 1
-      puts "Login successful for: #{user_email}"
-      userData = collectUserData(user_email)
-      template = File.read('views/home.erb')
-      render = erb.new(template)
-      render.result(binding)
-    else
-      @error = "Invalid password"
-      erb :login_screen
-    end
+  user = collect_user_data(user_email) # Assume this returns a user object or nil
+
+  if user && BCrypt::Password.new(user.password_hash) == user_pass
+    session[:user_id] = user.id
+    puts "Login successful for: #{user_email}"
+    redirect '/home' # Better to redirect than manually render
   else
-    @error = "Invalid email"
+    @error = "Invalid email or password"
     erb :login_screen
   end
 end
 
+get "/account-settings" do
+  #use this once database working
+  #redirect "/log-in" unless current_user
 
-get '/account-settings' do
-  # need to figure out how to pull data from database
-  # hard coded temp data
-  @first_name = "First"
-  @last_name = "Last"
-  @dob = "01/01/01"
-  @phone = "+44 07000 000000"
-  @email = "test@gmail.com"
-  @password = "password"
-  @postcode = "S10 3AB"
-  # address number/house name could be stored seperately
-  @address = "1 Endcliffe Cresent"
+    #user = current_user
+    # need to figure out how to pull data from database
+    # hard coded temp data
+    @first_name = "First" #user.first_name
+    @last_name = "Last" #user.last_name
+    @date_of_birth = "01/01/01" #user.date_of_birth
+    @phone = "+44 07000 000000" #user.phone
+    @email = "test@gmail.com" #user.email
+    @password = "password" #user.password_hash 
+    @postcode = "S10 3AB" #user.postcode
+    # address number/house name could be stored seperately
+    @address = "1 Endcliffe Cresent" #user.address
+
   erb :account_settings
+end
+
+get '/change-password' do
+  erb :change_password
+end
+
+post '/change-password' do
+  password1 = params[:password1]
+  password2 = params[:password2]
+  if password1 == password2
+    redirect '/account-settings'
+    # Here you would also want to update the user's password in the database
+  else
+    @error = "Passwords do not match"
+    return erb :change_password
+  end
 end
 
 get '/loyalty-card' do 
