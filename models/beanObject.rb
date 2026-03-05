@@ -1,4 +1,4 @@
-class BEANOBJECT < Sequel::Model(:bean_instances)
+class BeanObject < Sequel::Model(:bean_instances)
   # Add any bean-specific validation or methods here
   def validate
     super

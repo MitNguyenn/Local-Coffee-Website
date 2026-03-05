@@ -1,6 +1,13 @@
 require "bcrypt"
+require "sequel"
+
+require_relative '../models/userAccount.rb'
+require_relative '../models/beanObject.rb'
+
+DB = Sequel.sqlite('db.sqlite3')
 
 module DatabaseHelper
+  extend self
   def hash_user_password(raw_password)
     return BCrypt::Password.create(raw_password).to_s
   end
@@ -68,3 +75,24 @@ module DatabaseHelper
     UserObject.first(email: email)
   end
 end
+
+
+DatabaseHelper.clear_database
+DatabaseHelper.init_account_table
+DatabaseHelper.init_bean_table
+
+#input test data
+DatabaseHelper.insert_new_account(UserObject.new(
+  first_name: "John",
+  last_name: "Doe",
+  email: "abc@fun.org",
+  password: "password123",
+  phone: "07123456789",
+  address: "123 Coffee St, London",
+  account_type: "customer"))
+
+DatabaseHelper.insert_new_bean(BEANOBJECT.new(
+  bean_type: "Arabica",
+  bean_blend: "Single Origin",
+  bean_roast: "Medium",
+  current_stock: 100))
