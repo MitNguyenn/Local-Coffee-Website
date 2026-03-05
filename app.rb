@@ -1,5 +1,6 @@
 require "require_all"
 require "sinatra"
+require "rqrcode"
 
 require_all "controllers"
 require_relative "helpers/helpers"
