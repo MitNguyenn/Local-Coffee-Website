@@ -1,6 +1,12 @@
 require 'sinatra'
-require "bcrypt"
+require 'bcrypt'
 require_relative '../db/db.rb'
+
+helpers do 
+  include ERB::Util
+  include Validation
+  include passwordCheck
+end
 
 get '/' do
   erb :home
@@ -26,15 +32,15 @@ get '/log-in' do
 end
 
 post '/login' do
-  user = UserObject.first(email: params[:email]) # Finder
+  @email = params[:email]
+  password = params[:password]
 
-  # Data Processed
-  if user && BCrypt::Password.new(user.password_hash) == params[:password1]
+  user = DB[:accounts].where(email: @email).first
+  if user && user[:hashedPassword] == hash_password(password) then
     session[:user_id] = user.id
-    # GOTO
     redirect '/'
   else
-    @error = "Invalid credentials"
+    @error = "Invalid email or password"
     erb :login_screen
   end
 end

@@ -8,11 +8,4 @@ require_all "models"
 enable :sessions
 
 require_relative 'controllers/routes'
-
-# require "helpers/helpers.rb"
-
-require_all "models/account.rb"
-require_all "models/bean.rb"
-require_all "models/order.rb"
-require_all "models/ticket.rb"
-# require "db/db.rb"
+include "helpers/helpers.rb"

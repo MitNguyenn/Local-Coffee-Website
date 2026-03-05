@@ -8,10 +8,8 @@ helpers do
   # This is so that we include useful validation methods
   include Validation
 
-  # This is so that we can use database helper methods
-
-  # ... Add your own helper modules here ...
-
+  include passwordCheck
+  
   def current_user
     return false unless session[:user_id]
     true
