@@ -1,4 +1,8 @@
-require_relative "validation"
+# ../ means "go up one folder" (out of controllers, into project)
+# then we go into the helpers folder
+require_relative "../helpers/validation"
+require_relative "../helpers/passwordCheck"
+
 
 # Register helpers with Sinatra
 helpers do
@@ -8,7 +12,7 @@ helpers do
   # This is so that we include useful validation methods
   include Validation
 
-  include passwordCheck
+  include PasswordCheck
   
   def current_user
     return false unless session[:user_id]

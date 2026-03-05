@@ -1,7 +1,7 @@
 require 'bcrypt'
 
-module passwordCheck
-  def password_hash(password)
+module PasswordCheck
+  def hash_password(password)
     hashed_password = BCrypt::Password.create(password).to_s
     return hashed_password
   end
