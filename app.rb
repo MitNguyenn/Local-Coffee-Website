@@ -12,6 +12,8 @@ enable :sessions
 require_relative 'controllers/routes'
 
 #Database
-require_all "models/beanObject.rb"
-require_all "models/userAccount.rb"
+require_all "models/account.rb"
+require_all "models/bean.rb"
+require_all "models/order.rb"
+require_all "models/ticket.rb"
 require "db/db.rb"

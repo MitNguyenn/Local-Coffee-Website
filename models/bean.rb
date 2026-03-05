@@ -1,7 +1,10 @@
-class BeanObject < Sequel::Model(:bean_instances)
-  # Add any bean-specific validation or methods here
+class Bean < Sequel::Model(:Beans)
+  set_primary_key :BeanID
+
   def validate
     super
-    errors.add(:bean_type, "is required") if !bean_type || bean_type.empty?
+    errors.add(:Bean_type, "is required") if !Bean_type || Bean_type.empty?
+    # Validates current stock is a number (integer in PDF)
+    errors.add(:Current_stock, "must be a number") if Current_stock && !Current_stock.is_a?(Integer)
   end
 end

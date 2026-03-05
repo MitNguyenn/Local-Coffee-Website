@@ -1,5 +1,13 @@
-class orderObject < Sequel::Model(:orders)
-  def self.create_order(user_id, ticket_id, total_price)
-    create(user_id: user_id, ticket_id: ticket_id, total_price: total_price)
+class Order < Sequel::Model(:Orders)
+  set_primary_key :OrderID
+
+  # Data flow helper to handle the real (float) totalCost from PDF
+  def self.create_order(user_id, contents, cost, type)
+    create(
+      UserID: user_id, 
+      OrderContents: contents, 
+      totalCost: cost, 
+      Order_Type: type
+    )
   end
 end
