@@ -157,3 +157,8 @@ end
 get '/forgot' do
   erb :forgot_password
 end
+
+get '/metrics' do
+  sales_data = DB[:orders].group_and_count(:product_id).all
+  erb :metrics
+end
