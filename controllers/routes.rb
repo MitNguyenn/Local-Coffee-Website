@@ -53,11 +53,12 @@ end
 post '/register' do
   # Use validation helpers to validate input
   email = params[:email]
-  password = params[:password]
+  password1 = params[:password1]
+  password2 = params[:password2]
   first_name = params[:first_name]
   last_name = params[:last_name]
-  phone = params[:phone]
-  address = params[:address]
+  phone_number = params[:phone_number]
+  postcode = params[:postcode]
 
   # Validate email format
   unless str_email_address?(email)
@@ -66,7 +67,7 @@ post '/register' do
   end
 
   # Validate phone number
-  unless str_uk_telephone?(phone)
+  unless str_uk_telephone?(phone_number)
     @error = "Invalid UK phone number"
     return erb :register_account
   end
@@ -78,23 +79,24 @@ post '/register' do
   end
 
   # Validate password length
-  unless str_min_length?(password, 8)
+  unless str_min_length?(password1, 8)
     @error = "Password must be at least 8 characters"
     return erb :register_account
   end
 
   # Create new user account
-  user = UserObject.create(
-    first_name: first_name,
-    last_name: last_name,
+  user = Account.create(
+    First_Name: first_name,
+    Last_name: last_name,
     email: email,
-    password_hash: BCrypt::Password.create(password).to_s,
-    phone: phone,
-    address: address,
-    account_type: "customer"
+    #password_hash: BCrypt::Password.create(password).to_s,
+    password: password1,
+    Phone_number: phone_number,
+    Postal_address: postcode,
+    :"Account_type" => "customer"
   )
 
-  session[:user_id] = user.id
+  session[:user_id] = user.UserID
   redirect '/'
 rescue => e
   @error = "Registration failed: #{e.message}"
@@ -133,6 +135,10 @@ end
 
 get '/loyalty-card' do
   redirect '/log-in' unless logged_in?
+
+  # Fetch logged in user details
+  @user = Account[session[:user_id]]
+
   # redirect '/login' unless session[:user_id]
 
   # @user = DB[:users].where(id: session[:user_id]).first
@@ -156,7 +162,7 @@ end
 
 get '/my-orders' do
   redirect '/log-in' unless logged_in?
-  
+
   erb :my_orders
 end
 

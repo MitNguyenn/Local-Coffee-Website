@@ -15,6 +15,11 @@
     <main class="login-container">
   <div class="login-card">
     <h2>Create an account</h2>
+
+    <% if @error %>
+      <p class="error-message"><%= @error %></p>
+    <% end %>
+
     <form method="POST" action="/register">
     
       <div class="input-group">
