@@ -1,6 +1,7 @@
 require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
+require 'json'
 
 # Connect to the same database file
 DB = Sequel.connect("sqlite://db.sqlite3")
@@ -44,30 +45,31 @@ DB[:Beans].insert(
 )
 
 # 4. Seed Orders (Table 3)
+# Example 1: Simple Hash (Item name => Quantity)
+content_1 = { "Arabia" => 1, "Perusian" => 2 }.to_json
+
+# Example 2: Detailed Array (Includes price at time of purchase)
+content_2 = [
+  { name: "Arabia", qty: 2, price: 5.50 },
+  { name: "House Blend", qty: 1, price: 4.00 }
+].to_json
+
 DB[:Orders].insert(
   UserID: john_id,
-  OrderContents: "2x Arabica Espresso",
-  Order_Type: "Online",
-  Payment_method: "Card",
-  totalCost: 15.50,
-  
-  # New Fields
-  location: "123 Delivery St, London", # Provide address for 'Online' types
-  is_delivered: false,                # Explicitly setting state
-  is_completed: false                 # Explicitly setting state
+  OrderContents: content_1,
+  Order_Type: 'In-Person',
+  Payment_method: 'Card',
+  totalCost: 15.50
 )
 
 DB[:Orders].insert(
   UserID: jane_id,
-  OrderContents: "1x Flat White",
-  Order_Type: "In-Person",
-  Payment_method: "Cash",
-  totalCost: 3.50,
-  location: "In-Store",  # Consistent with your requirement
-  is_delivered: true,    # Typically true immediately for in-person
-  is_completed: true
+  OrderContents: content_2,
+  Order_Type: 'Delivery',
+  Payment_method: 'PayPal',
+  totalCost: 15.00,
+  location: '123 Coffee Lane'
 )
-
 
 # 5. Seed Tickets (Table 4)
 DB[:Tickets].insert(

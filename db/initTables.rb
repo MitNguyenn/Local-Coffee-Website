@@ -1,5 +1,7 @@
 require 'sequel'
 require 'sqlite3'
+require 'json'
+
 # Connect to the database
 DB = Sequel.sqlite("db.sqlite3")
 
@@ -32,16 +34,14 @@ end
 DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
-  String :OrderContents
-  String :Order_Type      # e.g., 'In-Person' or 'Delivery'
+  String :OrderContents    # We will store a JSON string here
+  String :Order_Type       # 'In-Person' or 'Delivery'
   String :Payment_method
   Float :totalCost
-  
-  # New Fields
-  DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP # When order was placed
-  String :location, default: 'In-Store'                   # 'In-Store' or delivery address
-  TrueClass :is_delivered, default: false                 # Boolean: has it been delivered?
-  TrueClass :is_completed, default: false                 # Boolean: is the entire order finished?
+  DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP
+  String :location, default: 'In-Store'
+  TrueClass :is_delivered, default: false
+  TrueClass :is_completed, default: false
 end
 
 
