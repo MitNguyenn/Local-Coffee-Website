@@ -14,7 +14,7 @@ helpers do
   include Validation
 
   # This is so that we can use database helper methods
-  # include DatabaseHelper
+  include AnalyzeData
 
   # ... Add your own helper modules here ...
 

@@ -159,6 +159,9 @@ get '/forgot' do
 end
 
 get '/metrics' do
-  sales_data = DB[:orders].group_and_count(:product_id).all
-  erb :metrics
+  @sales_data = DB[:orders].all
+  puts @sales_data
+  #analyze @sales_data to extract insights for the metrics page
+  
+  erb :metrics_page
 end
