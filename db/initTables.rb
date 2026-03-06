@@ -3,6 +3,10 @@ require 'sqlite3'
 # Connect to the database
 DB = Sequel.sqlite("db.sqlite3")
 
+# 1. Clear existing data (optional, prevents duplicates if you run it twice)
+DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
+
+# 2. Create tables (if they don't exist)
 # Table 1: Accounts
 DB.create_table? :Accounts do
   primary_key :UserID
@@ -29,10 +33,17 @@ DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
   String :OrderContents
-  String :Order_Type
+  String :Order_Type      # e.g., 'In-Person' or 'Delivery'
   String :Payment_method
   Float :totalCost
+  
+  # New Fields
+  DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP # When order was placed
+  String :location, default: 'In-Store'                   # 'In-Store' or delivery address
+  TrueClass :is_delivered, default: false                 # Boolean: has it been delivered?
+  TrueClass :is_completed, default: false                 # Boolean: is the entire order finished?
 end
+
 
 # Table 4: Tickets
 DB.create_table? :Tickets do

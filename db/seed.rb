@@ -15,7 +15,7 @@ DB[:Accounts].delete
 # Using BCrypt as per the "Sanitisation" lecture slides
 password_hash = BCrypt::Password.create("password123")
 
-DB[:Accounts].insert(
+john_id = DB[:Accounts].insert(
   First_Name: "John",
   Last_name: "Smith",
   email: "abc123@funtime.org.uk",
@@ -23,6 +23,16 @@ DB[:Accounts].insert(
   Phone_number: "12345678901",
   Postal_address: "S1 2BC",
   Account_type: "Admin"
+)
+
+jane_id = DB[:Accounts].insert(
+  First_Name: "Jane",
+  Last_name: "Doe",
+  email: "jane.doe@example.com",
+  hashedPassword: BCrypt::Password.create("securepassword").to_s,
+  Phone_number: "09876543210",
+  Postal_address: "S2 3DE",
+  Account_type: "Customer"
 )
 
 # 3. Seed Beans (Table 2)
@@ -34,18 +44,34 @@ DB[:Beans].insert(
 )
 
 # 4. Seed Orders (Table 3)
-# We use the ID of the user we just created (likely 1)
 DB[:Orders].insert(
-  UserID: 1,
+  UserID: john_id,
   OrderContents: "2x Arabica Espresso",
   Order_Type: "Online",
   Payment_method: "Card",
-  totalCost: 15.50
+  totalCost: 15.50,
+  
+  # New Fields
+  location: "123 Delivery St, London", # Provide address for 'Online' types
+  is_delivered: false,                # Explicitly setting state
+  is_completed: false                 # Explicitly setting state
 )
+
+DB[:Orders].insert(
+  UserID: jane_id,
+  OrderContents: "1x Flat White",
+  Order_Type: "In-Person",
+  Payment_method: "Cash",
+  totalCost: 3.50,
+  location: "In-Store",  # Consistent with your requirement
+  is_delivered: true,    # Typically true immediately for in-person
+  is_completed: true
+)
+
 
 # 5. Seed Tickets (Table 4)
 DB[:Tickets].insert(
-  userID: 1,
+  userID: jane_id,
   ticketType: "Account",
   ticketContent: "I cannot update my postal address in the settings.",
   ticketResolved: false

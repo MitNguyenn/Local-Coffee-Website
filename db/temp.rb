@@ -6,12 +6,17 @@ require 'bcrypt'
 DB = Sequel.connect("sqlite://db.sqlite3")
 
 #seed order table with some data for the metrics page
+# add fields matching updated Orders schema
 DB[:Orders].insert(
   UserID: 1,
   OrderContents: "2x Arabica Espresso",
   Order_Type: "Online",
   Payment_method: "Card",
-  totalCost: 15.50
+  totalCost: 15.50,
+  created_at: Time.now,
+  location: "In-Store",
+  is_delivered: false,
+  is_completed: false
 )
 
 DB[:Orders].insert(
@@ -19,7 +24,11 @@ DB[:Orders].insert(
   OrderContents: "1x Arabica Latte",
   Order_Type: "In-store",
   Payment_method: "Cash",
-  totalCost: 4.00
+  totalCost: 4.00,
+  created_at: Time.now,
+  location: "In-Store",
+  is_delivered: false,
+  is_completed: false
 )
 
 DB[:Orders].insert(
@@ -27,7 +36,11 @@ DB[:Orders].insert(
   OrderContents: "3x Arabica Cappuccino",
   Order_Type: "Online",
   Payment_method: "Card",
-  totalCost: 18.00
+  totalCost: 18.00,
+  created_at: Time.now,
+  location: "In-Store",
+  is_delivered: false,
+  is_completed: false
 )
 
 puts "Database seeded successfully with sample orders for metrics page!"
