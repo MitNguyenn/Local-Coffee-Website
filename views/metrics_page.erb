@@ -1,49 +1,66 @@
-<div class="manager-dashboard">
-  <h1 class="m-dash__title">Manager Insights</h1>
+<div class="m-dash-wrapper">
+  <header class="m-dash-header">
+    <h1 class="m-dash-header__title">Managerial Analytics</h1>
+  </header>
 
-  <div class="m-dash__hero-grid">
+  <!-- Hero Stats Grid -->
+  <div class="m-dash-grid m-dash-grid--hero">
     <div class="m-dash-card">
-      <h3 class="m-dash-card__title">Gross Revenue</h3>
-      <p class="m-dash-card__data">£<%= sprintf('%.2f', @metrics[:total_sales]) %></p>
+      <h3 class="m-dash-card__label">Gross Revenue</h3>
+      <p class="m-dash-card__value">£<%= sprintf('%.2f', @metrics[:total_sales]) %></p>
     </div>
     
     <div class="m-dash-card">
-      <h3 class="m-dash-card__title">Avg. Ticket Size</h3>
-      <p class="m-dash-card__data">£<%= sprintf('%.2f', @metrics[:avg_order_value]) %></p>
+      <h3 class="m-dash-card__label">Avg. Order Value</h3>
+      <p class="m-dash-card__value">£<%= sprintf('%.2f', @metrics[:avg_order_value]) %></p>
     </div>
 
     <div class="m-dash-card">
-      <h3 class="m-dash-card__title">Bestselling Bean</h3>
-      <p class="m-dash-card__data m-dash-card__data--accent">
-        <%= @metrics[:most_popular_product] %>
-      </p>
+      <h3 class="m-dash-card__label">Top 3 Ranking</h3>
+      <div class="m-dash-ranking">
+        <% if @metrics[:top_products].any? %>
+          <% @metrics[:top_products].each_with_index do |(name, qty), index| %>
+            <div class="m-dash-ranking__row">
+              <span class="m-dash-ranking__index">#<%= index + 1 %></span>
+              <span class="m-dash-ranking__name"><%= name %></span>
+              <span class="m-dash-ranking__qty"><%= qty %> sold</span>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="m-dash-ranking__empty">No sales data found.</p>
+        <% end %>
+      </div>
     </div>
   </div>
 
-  <div class="m-dash__split-view">
-    <section class="m-dash-section">
-      <h3>Revenue by Order Type</h3>
+  <!-- Detail Split View -->
+  <div class="m-dash-grid m-dash-grid--split">
+    <section class="m-dash-panel">
+      <h2 class="m-dash-panel__title">Sales by Channel</h2>
       <table class="m-dash-table">
         <% @metrics[:sales_by_category].each do |type, total| %>
           <tr>
-            <td><%= type %></td>
-            <td><strong>£<%= sprintf('%.2f', total) %></strong></td>
+            <td><%= type || "General" %></td>
+            <td class="m-dash-table__price">£<%= sprintf('%.2f', total) %></td>
           </tr>
         <% end %>
       </table>
     </section>
 
-    <section class="m-dash-section">
-      <h3>Monthly Growth</h3>
+    <section class="m-dash-panel">
+      <h2 class="m-dash-panel__title">Monthly Revenue</h2>
       <table class="m-dash-table">
         <thead>
-          <tr><th>Reporting Month</th><th>Net Total</th></tr>
+          <tr>
+            <th>Month</th>
+            <th>Total</th>
+          </tr>
         </thead>
         <tbody>
           <% @metrics[:monthly_sales].each do |month, total| %>
             <tr>
               <td><%= month %></td>
-              <td><strong>£<%= sprintf('%.2f', total) %></strong></td>
+              <td class="m-dash-table__price">£<%= sprintf('%.2f', total) %></td>
             </tr>
           <% end %>
         </tbody>
