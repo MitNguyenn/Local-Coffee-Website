@@ -2,7 +2,7 @@ require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
 require 'json'
-
+require 'date'
 # Connect to the same database file
 DB = Sequel.connect("sqlite://db.sqlite3")
 
@@ -37,38 +37,138 @@ jane_id = DB[:Accounts].insert(
 )
 
 # 3. Seed Beans (Table 2)
+# Light Roast Single Origin
 DB[:Beans].insert(
-  Bean_type: "Arabica",
-  Bean_blend: "Espresso",
+  Bean_type: "Ethiopian",
+  Bean_blend: "Yirgacheffe",
+  Bean_roast: "Light",
+  Current_stock: 350
+)
+
+# Medium Roast House Blend
+DB[:Beans].insert(
+  Bean_type: "Colombian",
+  Bean_blend: "House Blend",
+  Bean_roast: "Medium",
+  Current_stock: 1200
+)
+
+# Dark Roast Single Origin
+DB[:Beans].insert(
+  Bean_type: "Sumatra",
+  Bean_blend: "Mandheling",
+  Bean_roast: "Dark",
+  Current_stock: 200
+)
+
+# Medium-Dark South American
+DB[:Beans].insert(
+  Bean_type: "Brazilian",
+  Bean_blend: "Santos",
   Bean_roast: "Medium-dark",
-  Current_stock: 500
+  Current_stock: 800
+)
+
+# Specialty Light-Medium
+DB[:Beans].insert(
+  Bean_type: "Guatemalan",
+  Bean_blend: "Antigua",
+  Bean_roast: "Light-medium",
+  Current_stock: 150
+)
+
+# Decaf Option
+DB[:Beans].insert(
+  Bean_type: "Peruvian",
+  Bean_blend: "Swiss Water Decaf",
+  Bean_roast: "Medium",
+  Current_stock: 400
 )
 
 # 4. Seed Orders (Table 3)
-# Example 1: Simple Hash (Item name => Quantity)
-content_1 = { "Arabia" => 1, "Perusian" => 2 }.to_json
+# Helper to create dates in the past
 
-# Example 2: Detailed Array (Includes price at time of purchase)
-content_2 = [
-  { name: "Arabia", qty: 2, price: 5.50 },
-  { name: "House Blend", qty: 1, price: 4.00 }
-].to_json
+# Helper to create dates in the past
+def days_ago(n)
+  Time.now - (n * 86400)
+end
 
+# 1. Recent Online Order - John
 DB[:Orders].insert(
   UserID: john_id,
-  OrderContents: content_1,
-  Order_Type: 'In-Person',
-  Payment_method: 'Card',
-  totalCost: 15.50
+  OrderContents: { "Arabica Espresso" => 2, "Vanilla Latte" => 1 }.to_json,
+  Order_Type: "Online",
+  Payment_method: "Card",
+  totalCost: 15.50,
+  created_at: days_ago(1),
+  location: "Delivery",
+  is_delivered: true,
+  is_completed: true
 )
 
+# 2. In-Store Order from last week - Jane
 DB[:Orders].insert(
   UserID: jane_id,
-  OrderContents: content_2,
-  Order_Type: 'Delivery',
-  Payment_method: 'PayPal',
-  totalCost: 15.00,
-  location: '123 Coffee Lane'
+  OrderContents: { "Arabica Espresso" => 1 }.to_json,
+  Order_Type: "In-Person",
+  Payment_method: "Cash",
+  totalCost: 3.50,
+  created_at: days_ago(8),
+  location: "In-Store",
+  is_delivered: false,
+  is_completed: true
+)
+
+# 3. Large Order from last month - John
+DB[:Orders].insert(
+  UserID: john_id,
+  OrderContents: { "Ethiopian Yirgacheffe" => 3, "Arabica Espresso" => 1 }.to_json,
+  Order_Type: "Online",
+  Payment_method: "PayPal",
+  totalCost: 28.00,
+  created_at: days_ago(35),
+  location: "Delivery",
+  is_delivered: true,
+  is_completed: true
+)
+
+# 4. Pending Delivery - Jane
+DB[:Orders].insert(
+  UserID: jane_id,
+  OrderContents: { "Colombian Roast" => 2 }.to_json,
+  Order_Type: "Online",
+  Payment_method: "Card",
+  totalCost: 12.00,
+  created_at: Time.now,
+  location: "Delivery",
+  is_delivered: false,
+  is_completed: false
+)
+
+# 5. In-Person Order with multiple items - John
+DB[:Orders].insert(
+  UserID: john_id,
+  OrderContents: { "Colombian Roast" => 1, "Vanilla Latte" => 2 }.to_json,
+  Order_Type: "In-Person",
+  Payment_method: "Card",
+  totalCost: 14.50,
+  created_at: days_ago(3),
+  location: "In-Store",
+  is_delivered: false,
+  is_completed: true
+)
+
+# 6. Order from two months ago - Jane
+DB[:Orders].insert(
+  UserID: jane_id,
+  OrderContents: { "Ethiopian Yirgacheffe" => 1 }.to_json,
+  Order_Type: "Online",
+  Payment_method: "Card",
+  totalCost: 9.00,
+  created_at: days_ago(65),
+  location: "Delivery",
+  is_delivered: true,
+  is_completed: true
 )
 
 # 5. Seed Tickets (Table 4)
