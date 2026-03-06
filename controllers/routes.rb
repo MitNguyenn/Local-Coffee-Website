@@ -160,8 +160,9 @@ end
 
 get '/metrics' do
   @sales_data = DB[:orders].all
-  puts @sales_data
+  puts @sales_data.class
   #analyze @sales_data to extract insights for the metrics page
+  @metrics = analyze_sales_data(@sales_data)
   
   erb :metrics_page
 end

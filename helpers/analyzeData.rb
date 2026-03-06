@@ -1,17 +1,13 @@
+#inputs array of hashes of sales data, outputs hash of metrics for the metrics page
+#metrics wanted = total sales, average order value, most popular product, sales by category, sales over time (daily/weekly/monthly)
+
 module AnalyzeData
   def analyze_sales_data(sales_data)
-
-    total_sales = sales_data.reduce(0) { |sum, order| sum + order[:total_amount] }
-    
-    # Example: Group sales by product category
-    sales_by_category = sales_data.group_by { |order| order[:category] }.transform_values do |orders|
-      orders.reduce(0) { |sum, order| sum + order[:total_amount] }
-    end
-
-    {
-      total_sales: total_sales,
-      sales_by_category: sales_by_category
-      # Add more insights as needed
-    }
+    metrics = {}
+    puts "Analyzing sales data..."
+    # Placeholder for actual analysis logic
+    return metrics
   end
 end
+
+

@@ -3,6 +3,7 @@
 # then we go into the helpers folder
 require_relative "../helpers/validation"
 require_relative "../helpers/passwordCheck"
+require_relative "../helpers/analyzeData"
 
 
 # Register helpers with Sinatra
