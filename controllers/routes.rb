@@ -34,13 +34,10 @@ post '/log-in' do
   user = DB[:accounts].where(email: @email).first
   
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
-    session[:user_id] = user.id
+    session[:user_id] = user[:UserID]
     puts "Login successful for email: #{@email}"
     redirect '/'
   else
-    puts BCrypt::Password.new(user[:hashedPassword])
-    puts password
-    puts "Login failed for email: #{@email}"
     @error = "Invalid email or password"
     erb :login_screen
   end
