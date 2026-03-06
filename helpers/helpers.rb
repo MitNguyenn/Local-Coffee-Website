@@ -1,3 +1,4 @@
+
 # ../ means "go up one folder" (out of controllers, into project)
 # then we go into the helpers folder
 require_relative "../helpers/validation"
@@ -11,6 +12,11 @@ helpers do
 
   # This is so that we include useful validation methods
   include Validation
+
+  # This is so that we can use database helper methods
+  # include DatabaseHelper
+
+  # ... Add your own helper modules here ...
 
   include PasswordCheck
   

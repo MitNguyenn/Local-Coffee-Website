@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Badly Brewed Coffee</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/x-icon" href="coffee.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <main class="login-container">
+  <div class="login-card">
+    <h2>Create an account</h2>
+    <form method="POST" action="/login">
+    
+      <div class="input-group">
+        <label for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name" value="<%= @first_name %>" placeholder="Enter your first name">
+      </div>
+
+      <div class="input-group">
+        <label for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name" value="<%= @last_name %>" placeholder="Enter your last name">
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" value="<%= @email %>" placeholder="Enter your email">
+      </div>
+      
+      <div class="input-group">
+        <label for="password1">Password</label>
+        <input type="password" id="password1" name="password1" placeholder="••••••••••••">
+      </div>
+
+      <div class="input-group">
+        <label for="password2">Retype password</label>
+        <input type="password" id="password2" name="password2" placeholder="••••••••••••">
+      </div>
+
+      <div class="input-group">
+        <label for="phone_number">Phone Number</label>
+        <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number">
+      </div>
+
+      <div class="input-group">
+        <label for="postcode">Postcode</label>
+        <input type="text" id="postcode" name="postcode" placeholder="Enter your postcode">
+      </div>
+
+      <!--Check for password1 matches password2 -->
+      <!--Add data to the database-->
+
+      <button type="submit" class="login-btn">Register</button>
+    </form>
+  </div>
+</main>
+  </body>
+</html>
