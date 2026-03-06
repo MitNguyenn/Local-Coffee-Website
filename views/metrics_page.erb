@@ -1,0 +1,53 @@
+<div class="manager-dashboard">
+  <h1 class="m-dash__title">Manager Insights</h1>
+
+  <div class="m-dash__hero-grid">
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__title">Gross Revenue</h3>
+      <p class="m-dash-card__data">£<%= sprintf('%.2f', @metrics[:total_sales]) %></p>
+    </div>
+    
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__title">Avg. Ticket Size</h3>
+      <p class="m-dash-card__data">£<%= sprintf('%.2f', @metrics[:avg_order_value]) %></p>
+    </div>
+
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__title">Bestselling Bean</h3>
+      <p class="m-dash-card__data m-dash-card__data--accent">
+        <%= @metrics[:most_popular_product] %>
+      </p>
+    </div>
+  </div>
+
+  <div class="m-dash__split-view">
+    <section class="m-dash-section">
+      <h3>Revenue by Order Type</h3>
+      <table class="m-dash-table">
+        <% @metrics[:sales_by_category].each do |type, total| %>
+          <tr>
+            <td><%= type %></td>
+            <td><strong>£<%= sprintf('%.2f', total) %></strong></td>
+          </tr>
+        <% end %>
+      </table>
+    </section>
+
+    <section class="m-dash-section">
+      <h3>Monthly Growth</h3>
+      <table class="m-dash-table">
+        <thead>
+          <tr><th>Reporting Month</th><th>Net Total</th></tr>
+        </thead>
+        <tbody>
+          <% @metrics[:monthly_sales].each do |month, total| %>
+            <tr>
+              <td><%= month %></td>
+              <td><strong>£<%= sprintf('%.2f', total) %></strong></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>

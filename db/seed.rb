@@ -79,4 +79,4 @@ DB[:Tickets].insert(
   ticketResolved: false
 )
 
-puts "Database seeded successfully with updated table names!"
+puts "Database seeded successfully"
