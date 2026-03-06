@@ -71,6 +71,12 @@ post '/register' do
     return erb :register_account
   end
 
+  # Check passwords match
+  unless password1 == password2
+    @error = "Passwords don't match"
+    return erb :register_account
+  end
+
   # Validate password length
   unless str_min_length?(password, 8)
     @error = "Password must be at least 8 characters"
@@ -96,6 +102,8 @@ rescue => e
 end
 
 get '/account-settings' do
+  redirect '/log-in' unless logged_in?
+
   @first_name = "First"
   @last_name = "Last"
   @dob = "01/01/01"
@@ -124,6 +132,7 @@ post '/change-password' do
 end
 
 get '/loyalty-card' do
+  redirect '/log-in' unless logged_in?
   # redirect '/login' unless session[:user_id]
 
   # @user = DB[:users].where(id: session[:user_id]).first
@@ -146,6 +155,8 @@ get '/loyalty-card' do
 end
 
 get '/my-orders' do
+  redirect '/log-in' unless logged_in?
+  
   erb :my_orders
 end
 
