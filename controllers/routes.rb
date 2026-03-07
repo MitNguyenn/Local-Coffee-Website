@@ -171,3 +171,10 @@ end
 get '/forgot' do
   erb :forgot_password
 end
+
+get '/metrics' do
+  #NEED TO CHECK SESSION TO SEE IF ACCOUNT HAS CORRECT LEVEL
+  @metrics = analyze_sales_data
+  puts @metrics
+  erb :metrics_page
+end
