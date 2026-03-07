@@ -131,30 +131,25 @@ post '/change-password' do
 end
 
 get '/loyalty-card' do
-  redirect '/log-in' unless logged_in?
+  redirect '/log-in' unless session[:user_id]  # fix: lowercase :user_id
 
-  # Fetch logged in user details
-  @user = Account[session[:user_id]]
+  @user = DB[:Accounts].where(UserID: session[:user_id]).first  # fix: query Accounts table directly
 
-  # redirect '/login' unless session[:user_id]
+  if @user
+    qrcode = RQRCode::QRCode.new("UserID:#{@user[:UserID]}")  # fix: use hash syntax
 
-  # @user = DB[:users].where(id: session[:user_id]).first
-
-  # qrcode = RQRCode::QRCode.new("user_id:#{@user[:id]}")
-
-  qr_content = "TEST-USER-12345"
-
-  qrcode = RQRCode::QRCode.new(qr_content)
-  @qr_svg = qrcode.as_svg(
-    color: "4b2c20", 
-    shape_rendering: "crispEdges",
-    module_size: 6,
-    standalone: true,
-    use_path: true,
-    viewbox: true
-  )
-
-  erb :loyalty_card
+    @qr_svg = qrcode.as_svg(
+      color: "4b2c20", 
+      shape_rendering: "crispEdges",
+      module_size: 6,
+      standalone: true,
+      use_path: true,
+      viewbox: true
+    )
+    erb :loyalty_card
+  else
+    "Error: Account not found in database."
+  end
 end
 
 get '/my-orders' do
