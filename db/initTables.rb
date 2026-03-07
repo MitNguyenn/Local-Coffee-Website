@@ -11,7 +11,7 @@ DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
 # 2. Create tables (if they don't exist)
 # Table 1: Accounts
 DB.create_table? :Accounts do
-  Integer :Loyalty_Num, primary_key: true
+  Integer :UserID, primary_key: true
   String :First_Name
   String :Last_name
   String :email, unique: true, null: false
@@ -33,7 +33,7 @@ end
 # Table 3: Orders
 DB.create_table? :Orders do
   primary_key :OrderID
-  foreign_key :Loyalty_Num, :Accounts
+  foreign_key :UserID, :Accounts
   String :OrderContents    # We will store a JSON string here
   String :Order_Type       # 'In-Person' or 'Delivery'
   String :Payment_method
@@ -48,7 +48,7 @@ end
 # Table 4: Tickets
 DB.create_table? :Tickets do
   primary_key :ticketID
-  foreign_key :Loyalty_Num, :Accounts
+  foreign_key :UserID, :Accounts
   String :ticketType
   String :ticketContent
   FalseClass :ticketResolved, default: false

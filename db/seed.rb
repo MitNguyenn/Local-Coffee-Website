@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db.sqlite3")
+DB = Sequel.connect("sqlite://db/db.sqlite3")
 
 DB[:Tickets].delete
 DB[:Orders].delete
@@ -16,7 +16,7 @@ password_hash = BCrypt::Password.create("password123")
 
 john_loyalty = 10000001
 DB[:Accounts].insert(
-  Loyalty_Num: john_loyalty,
+  UserID: john_loyalty,
   First_Name: "John",
   Last_name: "Smith",
   email: "abc123@funtime.org.uk",
@@ -28,7 +28,7 @@ DB[:Accounts].insert(
 
 jane_loyalty = 87654321
 DB[:Accounts].insert(
-  Loyalty_Num: jane_loyalty,
+  UserID: jane_loyalty,
   First_Name: "Jane",
   Last_name: "Doe",
   email: "jane.doe@example.com",
@@ -47,7 +47,7 @@ def days_ago(n)
 end
 
 DB[:Orders].insert(
-  Loyalty_Num: john_loyalty, 
+  UserID: john_loyalty, 
   OrderContents: { "Arabica Espresso" => 2, "Vanilla Latte" => 1 }.to_json,
   Order_Type: "Online",
   Payment_method: "Card",
@@ -59,7 +59,7 @@ DB[:Orders].insert(
 )
 
 DB[:Orders].insert(
-  Loyalty_Num: jane_loyalty, 
+  UserID: jane_loyalty, 
   OrderContents: { "Colombian Roast" => 2 }.to_json,
   Order_Type: "Online",
   Payment_method: "Card",
@@ -72,7 +72,7 @@ DB[:Orders].insert(
 
 
 DB[:Tickets].insert(
-  Loyalty_Num: jane_loyalty, 
+  UserID: jane_loyalty, 
   ticketType: "Account",
   ticketContent: "I cannot update my postal address in the settings.",
   ticketResolved: false

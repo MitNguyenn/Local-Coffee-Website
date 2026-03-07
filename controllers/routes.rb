@@ -57,10 +57,10 @@ post '/register' do
   phone_number = params[:phone_number]
   postcode = params[:postcode]
 
-  loyalty_num = nil
+  UserID = nil
   loop do
-    loyalty_num = rand(10000000..99999999)
-    break unless Account[loyalty_num]
+    UserID = rand(10000000..99999999)
+    break unless Account[UserID]
   end
 
   # Validate email format
@@ -90,7 +90,7 @@ post '/register' do
 
   # Create new user account
   user = Account.create(
-    Loyalty_Num: loyalty_num,
+    UserID: UserID,
     First_Name: first_name,
     Last_name: last_name,
     email: email,
@@ -101,7 +101,7 @@ post '/register' do
     :"Account_type" => "customer"
   )
 
-  session[:user_id] = user.Loyalty_Num
+  session[:user_id] = user.UserID
   redirect '/'
 rescue => e
   @error = "Registration failed: #{e.message}"
@@ -142,12 +142,12 @@ get '/loyalty-card' do
   # 1. Standard session check
   redirect '/log-in' unless session[:user_id]
 
-  # 2. Fix: Change UserID to Loyalty_Num to match your updated schema
-  @user = DB[:Accounts].where(Loyalty_Num: session[:user_id]).first
+  # 2. Fix: Change UserID to UserID to match your updated schema
+  @user = DB[:Accounts].where(UserID: session[:user_id]).first
 
   if @user
-    # 3. Fix: Use Hash access [:Loyalty_Num] for the QR code data
-    qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:Loyalty_Num]}")
+    # 3. Fix: Use Hash access [:UserID] for the QR code data
+    qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:UserID]}")
 
     @qr_svg = qrcode.as_svg(
       color: "4b2c20", 

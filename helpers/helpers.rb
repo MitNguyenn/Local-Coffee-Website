@@ -26,7 +26,7 @@ helpers do
     return nil unless session[:user_id]
     
 
-    @current_user ||= DB[:Accounts].where(Loyalty_Num: session[:user_id]).first
+    @current_user ||= DB[:Accounts].where(UserID: session[:user_id]).first
   end
 
   def logged_in?
