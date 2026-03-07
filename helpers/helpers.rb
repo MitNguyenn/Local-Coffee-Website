@@ -22,11 +22,11 @@ helpers do
   include PasswordCheck
   
   def current_user
-    # returns nil if nobody is logged in
+
     return nil unless session[:user_id]
     
-    # memoizing the result so the db isn't queried everytime
-    @current_user ||= DB[:Accounts].where(UserID: session[:user_id]).first
+
+    @current_user ||= DB[:Accounts].where(Loyalty_Num: session[:user_id]).first
   end
 
   def logged_in?

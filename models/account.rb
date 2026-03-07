@@ -2,7 +2,9 @@ require "bcrypt"
 
 class Account < Sequel::Model(:Accounts)
   # Ensure the primary key matches your PDF
-  set_primary_key :UserID
+  set_primary_key :Loyalty_Num
+
+  unrestrict_primary_key
 
   def validate
     super
