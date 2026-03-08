@@ -131,7 +131,6 @@ post '/change-password' do
   password2 = params[:password2]
   if password1 == password2
     redirect '/account-settings'
-    # Here you would also want to update the user's password in the database
   else
     @error = "Passwords do not match"
     return erb :change_password
@@ -139,14 +138,11 @@ post '/change-password' do
 end
 
 get '/loyalty-card' do
-  # 1. Standard session check
   redirect '/log-in' unless session[:user_id]
 
-  # 2. Fix: Change UserID to UserID to match your updated schema
   @user = DB[:Accounts].where(UserID: session[:user_id]).first
 
   if @user
-    # 3. Fix: Use Hash access [:UserID] for the QR code data
     qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:UserID]}")
 
     @qr_svg = qrcode.as_svg(
