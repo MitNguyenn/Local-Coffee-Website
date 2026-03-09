@@ -160,9 +160,15 @@ get '/loyalty-card' do
 end
 
 get '/my-orders' do
-  redirect '/log-in' unless logged_in?
-  @my_orders = DB[:Orders].where(UserID: session[:user_id]).all
+  if !logged_in?
+    puts "User not logged in, redirecting to log-in page."
+    redirect '/log-in'
+  end
 
+  puts "Fetching orders for user ID: #{session[:user_id]}"
+  @my_orders = DB[:Orders].where(UserID: session[:user_id]).all
+  puts "Orders retrieved: #{@my_orders.inspect}"
+  
   erb :my_orders
 end
 

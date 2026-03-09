@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db/db.sqlite3")
+DB = Sequel.connect("sqlite://db.sqlite3")
 
 DB[:Tickets].delete
 DB[:Orders].delete
@@ -78,4 +78,4 @@ DB[:Tickets].insert(
   ticketResolved: false
 )
 
-puts "Database seeded successfully with Loyalty Numbers as Primary Keys!"
+puts "Database seeded successfully with userID as Primary Keys!"
