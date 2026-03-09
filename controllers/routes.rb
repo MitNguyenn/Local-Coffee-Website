@@ -161,6 +161,7 @@ end
 
 get '/my-orders' do
   redirect '/log-in' unless logged_in?
+  @my_orders = DB[:Orders].where(UserID: session[:user_id]).all
 
   erb :my_orders
 end
