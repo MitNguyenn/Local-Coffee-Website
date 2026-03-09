@@ -46,28 +46,60 @@ def days_ago(n)
   Time.now - (n * 86400)
 end
 
+# --- LIVE ORDERS ---
+
+# John's new live order
 DB[:Orders].insert(
   UserID: john_loyalty, 
-  OrderContents: { "Arabica Espresso" => 2, "Vanilla Latte" => 1 }.to_json,
+  OrderContents: { "Flat White" => 1, "Pain au Chocolat" => 2 }.to_json,
+  Order_Type: "In-Store",
+  Payment_method: "Cash",
+  totalCost: 8.50,
+  created_at: Time.now,
+  location: "Counter",
+  is_delivered: false,
+  is_completed: false
+)
+
+# Jane's new live order
+DB[:Orders].insert(
+  UserID: jane_loyalty, 
+  OrderContents: { "Iced Caramel Macchiato" => 1 }.to_json,
+  Order_Type: "Online",
+  Payment_method: "Apple Pay",
+  totalCost: 4.75,
+  created_at: Time.now,
+  location: "Pickup Shelf",
+  is_delivered: false,
+  is_completed: false
+)
+
+# --- PAST ORDERS ---
+
+# John's past order (3 days ago)
+DB[:Orders].insert(
+  UserID: john_loyalty, 
+  OrderContents: { "Americano" => 1 }.to_json,
   Order_Type: "Online",
   Payment_method: "Card",
-  totalCost: 15.50,
-  created_at: days_ago(1),
+  totalCost: 3.00,
+  created_at: days_ago(3),
   location: "Delivery",
   is_delivered: true,
   is_completed: true
 )
 
+# Jane's past order (7 days ago)
 DB[:Orders].insert(
   UserID: jane_loyalty, 
-  OrderContents: { "Colombian Roast" => 2 }.to_json,
+  OrderContents: { "Cappuccino" => 2, "Lemon Cake" => 1 }.to_json,
   Order_Type: "Online",
   Payment_method: "Card",
-  totalCost: 12.00,
-  created_at: Time.now,
+  totalCost: 11.20,
+  created_at: days_ago(7),
   location: "Delivery",
-  is_delivered: false,
-  is_completed: false
+  is_delivered: true,
+  is_completed: true
 )
 
 
