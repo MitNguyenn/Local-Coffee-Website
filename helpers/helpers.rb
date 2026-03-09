@@ -4,7 +4,7 @@
 require_relative "../helpers/validation"
 require_relative "../helpers/passwordCheck"
 require_relative "../helpers/analyzeData"
-requrie_relative "../helpers/myOrders"
+require_relative "../helpers/myOrders"
 
 
 # Register helpers with Sinatra
