@@ -5,15 +5,14 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db/db.sqlite3")
+DB = Sequel.connect("sqlite://db.sqlite3")
 
-DB[:Tickets].delete
-DB[:Orders].delete
-DB[:Beans].delete
-DB[:Accounts].delete
+# Clear existing data
+[:Tickets, :Orders, :Beans, :Accounts].each { |table| DB[table].delete }
 
 password_hash = BCrypt::Password.create("password123")
 
+# --- ACCOUNTS ---
 john_loyalty = 10000001
 DB[:Accounts].insert(
   UserID: john_loyalty,
@@ -38,39 +37,88 @@ DB[:Accounts].insert(
   Account_type: "Customer"
 )
 
+# --- BEANS ---
 DB[:Beans].insert(Bean_type: "Ethiopian", Bean_blend: "Yirgacheffe", Bean_roast: "Light", Current_stock: 350)
 DB[:Beans].insert(Bean_type: "Colombian", Bean_blend: "House Blend", Bean_roast: "Medium", Current_stock: 1200)
 
-
+# --- HELPERS ---
 def days_ago(n)
-  Time.now - (n * 86400)
+  Time.now - (n * 86400) - (rand(3600..7200)) # Subtracted random seconds for variety
 end
 
-DB[:Orders].insert(
-  UserID: john_loyalty, 
-  OrderContents: { "Arabica Espresso" => 2, "Vanilla Latte" => 1 }.to_json,
-  Order_Type: "Online",
-  Payment_method: "Card",
-  totalCost: 15.50,
-  created_at: days_ago(1),
-  location: "Delivery",
-  is_delivered: true,
-  is_completed: true
-)
+MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Espresso", "Pain au Chocolat", "Croissant", "Lemon Cake", "Blueberry Muffin"]
 
+def random_contents
+  items = {}
+  rand(1..3).times do
+    items[MENU_ITEMS.sample] = rand(1..2)
+  end
+  items.to_json
+end
+
+# --- SEEDING LIVE ORDERS (Today) ---
+
+# John's Live Orders
+2.times do |i|
+  DB[:Orders].insert(
+    UserID: john_loyalty, 
+    OrderContents: random_contents,
+    Order_Type: "In-Store",
+    Payment_method: ["Cash", "Card"].sample,
+    totalCost: rand(4.50..15.00).round(2),
+    created_at: Time.now - (i * 1800),
+    location: "Counter",
+    is_delivered: false,
+    is_completed: false
+  )
+end
+
+# Jane's Live Orders
 DB[:Orders].insert(
   UserID: jane_loyalty, 
-  OrderContents: { "Colombian Roast" => 2 }.to_json,
+  OrderContents: { "Iced Latte" => 1, "Blueberry Muffin" => 1 }.to_json,
   Order_Type: "Online",
-  Payment_method: "Card",
-  totalCost: 12.00,
+  Payment_method: "Apple Pay",
+  totalCost: 7.20,
   created_at: Time.now,
-  location: "Delivery",
+  location: "Pickup Shelf",
   is_delivered: false,
   is_completed: false
 )
 
+# --- SEEDING PAST ORDERS (History) ---
 
+# John's History (15 Orders over last 30 days)
+15.times do |i|
+  DB[:Orders].insert(
+    UserID: john_loyalty, 
+    OrderContents: random_contents,
+    Order_Type: ["Online", "In-Store"].sample,
+    Payment_method: "Card",
+    totalCost: rand(3.00..20.00).round(2),
+    created_at: days_ago(i + 1),
+    location: "Delivery",
+    is_delivered: true,
+    is_completed: true
+  )
+end
+
+# Jane's History (10 Orders over last 20 days)
+10.times do |i|
+  DB[:Orders].insert(
+    UserID: jane_loyalty, 
+    OrderContents: random_contents,
+    Order_Type: "Online",
+    Payment_method: "Apple Pay",
+    totalCost: rand(5.00..12.00).round(2),
+    created_at: days_ago(i + 2),
+    location: "Delivery",
+    is_delivered: true,
+    is_completed: true
+  )
+end
+
+# --- TICKETS ---
 DB[:Tickets].insert(
   UserID: jane_loyalty, 
   ticketType: "Account",
@@ -78,4 +126,4 @@ DB[:Tickets].insert(
   ticketResolved: false
 )
 
-puts "Database seeded successfully with Loyalty Numbers as Primary Keys!"
+puts "Database seeded successfully!"

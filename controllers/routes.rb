@@ -160,14 +160,20 @@ get '/loyalty-card' do
 end
 
 get '/my-orders' do
-  redirect '/log-in' unless logged_in?
+  if !logged_in?
+    puts "User not logged in, redirecting to log-in page."
+    redirect '/log-in'
+  end
 
+  puts "Fetching orders for user ID: #{session[:user_id]}"
+  @current_orders = fetch_current_orders(session[:user_id])
+  @past_orders = fetch_past_orders(session[:user_id])
   erb :my_orders
 end
 
 get '/log-out' do
   session.clear  
-  redirect '/'
+  redirect '/log-in'
 end
 
 get '/forgot' do

@@ -4,6 +4,7 @@
 require_relative "../helpers/validation"
 require_relative "../helpers/passwordCheck"
 require_relative "../helpers/analyzeData"
+require_relative "../helpers/myOrders"
 
 
 # Register helpers with Sinatra
@@ -20,7 +21,7 @@ helpers do
   # ... Add your own helper modules here ...
 
   include PasswordCheck
-  
+  include MyOrders
   def current_user
 
     return nil unless session[:user_id]
