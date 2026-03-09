@@ -166,9 +166,8 @@ get '/my-orders' do
   end
 
   puts "Fetching orders for user ID: #{session[:user_id]}"
-  @my_orders = DB[:Orders].where(UserID: session[:user_id]).all
-  puts "Orders retrieved: #{@my_orders.inspect}"
-  
+  @current_orders = fetch_current_orders(session[:user_id])
+  @past_orders = fetch_past_orders(session[:user_id])
   erb :my_orders
 end
 
