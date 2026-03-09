@@ -3,7 +3,7 @@ require 'sqlite3'
 require 'bcrypt'
 
 # Connect to the same database file
-DB = Sequel.connect("sqlite://db.sqlite3")
+DB = Sequel.connect("sqlite://db/db.sqlite3")
 
 # 1. Clear existing data (optional, prevents duplicates if you run it twice)
 DB[:Tickets].delete
@@ -26,12 +26,57 @@ DB[:Accounts].insert(
 )
 
 # 3. Seed Beans (Table 2)
-DB[:Beans].insert(
-  Bean_type: "Arabica",
-  Bean_blend: "Espresso",
-  Bean_roast: "Medium-dark",
-  Current_stock: 500
+# DB[:Beans].insert(
+#   BeanType: "Arabica",
+#   BeanBlend: "Espresso",
+#   BeanRoast: "Medium-dark",
+#   CurrentStock: 500
+# )
+
+# seeding beans and coffee drinks
+DB[:Drinks].delete
+DB[:Beans].delete
+
+puts "Seeding Beans..."
+
+# 3. Seed Beans and capture the IDs
+# We use .insert to get the auto-incremented ID back
+arabica_id = DB[:Beans].insert(
+  Name: "House Arabica",
+  Roast: "Medium",
+  PricePerBag: 9.50,
+  CurrentStock: 50
 )
+
+robusta_id = DB[:Beans].insert(
+  Name: "Dark Robusta",
+  Roast: "Dark",
+  PricePerBag: 7.25,
+  CurrentStock: 30
+)
+
+decaf_id = DB[:Beans].insert(
+  Name: "Swiss Water Decaf",
+  Roast: "Light",
+  PricePerBag: 10.00,
+  CurrentStock: 20
+)
+
+puts "Seeding Drinks..."
+
+# 4. Seed Drinks using the IDs from above
+drinks_data = [
+  { BeanID: arabica_id, Beverage: "Americano", Size: "Regular", Price: 3.20 },
+  { BeanID: arabica_id, Beverage: "Latte",     Size: "Large",   Price: 3.80 },
+  { BeanID: robusta_id, Beverage: "Espresso",  Size: "Single",  Price: 2.50 },
+  { BeanID: robusta_id, Beverage: "Flat White",Size: "Regular", Price: 3.40 },
+  { BeanID: decaf_id,   Beverage: "Cappuccino",Size: "Regular", Price: 3.60 }
+]
+
+drinks_data.each do |drink|
+  DB[:Drinks].insert(drink)
+end
+#
 
 # 4. Seed Orders (Table 3)
 # We use the ID of the user we just created (likely 1)

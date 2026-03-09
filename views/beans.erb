@@ -2,12 +2,12 @@
     <h2>Our Coffee Beans</h2>
 </div>
 
-<div class="catalog-grid" id="beans-container">
+<div class="catalog-grid" id="item-container">
   <% @beans.each do |bean| %>
-    <div class="product-card" data-bean-id="<%= bean[:id] %>">
+    <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
       <img src="/coffee_beans_example.png" alt="<%= bean[:name] %>">
       <h3><%= bean[:name] %></h3>
-      <p>£<%= sprintf('%.2f', bean[:price]) %></p>
+      <p>£<%= sprintf('%.2f', bean[:PricePerBag]) %></p>
       <button class="add-to-basket">Add to basket</button>
       <button class="buy">Buy</button>
     </div>
@@ -15,7 +15,7 @@
 </div>
 
 <script>
-  const container = document.getElementById('beans-container');
+  const container = document.getElementById('item-container');
 
   container.addEventListener('click', (event) => {
     if (event.target.classList.contains('add-to-basket')) {
@@ -23,16 +23,12 @@
         event.target.textContent = "Added! ✅";
         
         // do other stuff (actually add to the basket, update database, ...)
-        setTimeout(() => { /* example of stuff going on */ }, 1000);
-
-        event.target.textContent = "Remove from basket";
+        setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
       } else {
         event.target.textContent = "Removed!";
 
         // do other stuff (remove from basket, update database, ...)
-        setTimeout(() => { /*Example of stuff going on*/ }, 1000);
-        
-        event.target.textContent = "Add to basket";
+        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
       }
      return; // Stop here so we don't redirect
     }
@@ -41,7 +37,7 @@
 
     if (card) {
       const id = card.dataset.beanId;
-      window.location.href = `/coffee-beans/${id}`;
+      window.location.href = `/product/?type=bean&id=${card.dataset.beanId}`;
     }
   });
 </script>

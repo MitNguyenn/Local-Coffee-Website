@@ -1,0 +1,9 @@
+<div class="product">
+  <h2><%= @item.Name %></h2>
+  <p>Roast Level: <%= @item.Roast %></p>
+  <p>Price: £<%= sprintf('%.2f', @item.PricePerBag) %></p>
+  
+  <%# Generate QR Code logic %>
+  <% qrcode = RQRCode::QRCode.new("http://your-site.com/product-details?type=bean&id=#{@item.BeanID}") %>
+  <%= qrcode.as_svg(module_size: 4) %>
+</div>

@@ -1,7 +1,7 @@
 require 'sequel'
 require 'sqlite3'
 # Connect to the database
-DB = Sequel.sqlite("db.sqlite3")
+DB = Sequel.sqlite("db/db.sqlite3")
 
 # Table 1: Accounts
 DB.create_table? :Accounts do
@@ -15,13 +15,27 @@ DB.create_table? :Accounts do
   String :Account_type # e.g., 'Admin', 'Customer'
 end
 
-# Table 2: Beans
+# Create Beans Table
 DB.create_table? :Beans do
   primary_key :BeanID
-  String :Bean_type
-  String :Bean_blend
-  String :Bean_roast
-  Integer :Current_stock
+  String :Name, null: false
+  String :Roast
+  Decimal :PricePerBag, size: [10, 2]
+  Integer :CurrentStock, default: 0
+end
+
+# Create Drinks Table with Composite Key
+DB.create_table? :Drinks do
+  Integer :BeanID
+  String :Beverage
+  String :Size
+  Decimal :Price, size: [10, 2]
+  
+  # Define the Composite Primary Key
+  primary_key [:BeanID, :Beverage]
+  
+  # Link to the Beans table
+  foreign_key [:BeanID], :Beans
 end
 
 # Table 3: Orders

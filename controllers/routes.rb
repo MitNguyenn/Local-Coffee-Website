@@ -8,8 +8,30 @@ get '/' do
 end
 
 get '/coffee-beans' do
-    @beans = DB[:beans].all
+  @beans = Bean.all
   erb :beans
+end
+
+get '/drinks' do
+  @drinks = Drink.all
+  erb :drinks
+end
+
+# product page
+get '/product/' do
+  @type = params[:type]
+
+  if @type == 'bean'
+    @item = Bean[params[:id]]
+    @template = :bean-details
+  elsif @type == 'drink'
+    @item = Drink.where(BeanID: params[:bean_id], Beverage: params[:name]).first
+    @template = :drink_details
+  else 
+    halt 404, "Product type not found."
+  end
+
+  erb @template
 end
 
 get '/help' do

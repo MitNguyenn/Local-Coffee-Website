@@ -1,0 +1,8 @@
+<div class="product-detail-container">
+  <h1><%= @item.Beverage %></h1>
+  <p>Size: <%= @item.Size %></p>
+  <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
+  
+  <button class="add-to-basket">Add to Basket</button>
+  <a href="/drinks">Back to Catalog</a>
+</div>
