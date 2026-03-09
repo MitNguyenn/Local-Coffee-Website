@@ -173,7 +173,7 @@ end
 
 get '/log-out' do
   session.clear  
-  redirect '/'
+  redirect '/log-in'
 end
 
 get '/forgot' do
