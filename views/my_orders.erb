@@ -15,7 +15,7 @@
         <div class="my-orders-card">
           <div class="my-orders-header">
             <span class="my-orders-title">Order #<%= order[:user_seq] %></span>
-            <span class="my-orders-date"><%= order[:created_at].strftime("%H:%M") %></span>
+            <span class="my-orders-date"><%= order[:CreatedAt].strftime("%H:%M") %></span>
           </div>
           <div class="my-orders-grid">
             <div>
@@ -28,7 +28,7 @@
             <div>
               <strong>Total:</strong> £<%= '%.2f' % order[:totalCost] %><br>
               <strong>Status:</strong> 
-              <span class="my-orders-badge"><%= order[:is_delivered] ? "On the way" : "Preparing" %></span>
+              <span class="my-orders-badge"><%= order[:IsDelivered] ? "On the way" : "Preparing" %></span>
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
         <div class="my-orders-card" style="border-color: #eee; opacity: 0.9;">
           <div class="my-orders-header">
             <span class="my-orders-title">Order #<%= order[:user_seq] %></span>
-            <span class="my-orders-date"><%= order[:created_at].strftime("%d %b %Y") %></span>
+            <span class="my-orders-date"><%= order[:CreatedAt].strftime("%d %b %Y") %></span>
           </div>
           <div class="my-orders-grid">
             <div>

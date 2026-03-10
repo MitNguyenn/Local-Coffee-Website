@@ -51,9 +51,9 @@ post '/register' do
   email = params[:email]
   password1 = params[:password1]
   password2 = params[:password2]
-  first_name = params[:first_name]
-  last_name = params[:last_name]
-  phone_number = params[:phone_number]
+  FirstName = params[:FirstName]
+  LastName = params[:LastName]
+  PhoneNumber = params[:PhoneNumber]
   postcode = params[:postcode]
 
   UserID = nil
@@ -68,8 +68,8 @@ post '/register' do
   end
 
   # Validate phone number
-  unless str_uk_telephone?(phone_number)
-    puts "Phone validation failed for input: #{phone_number}"
+  unless str_uk_telephone?(PhoneNumber)
+    puts "Phone validation failed for input: #{PhoneNumber}"
     @error = "Invalid UK phone number."
     return erb :register_account
   end
@@ -90,13 +90,13 @@ post '/register' do
   # Create new user account
   user = Account.create(
     UserID: UserID,
-    First_Name: first_name,
-    Last_name: last_name,
+    FirstName: FirstName,
+    LastName: LastName,
     email: email,
     #password_hash: BCrypt::Password.create(password).to_s,
     password: password1,
-    Phone_number: phone_number,
-    Postal_address: postcode,
+    PhoneNumber: PhoneNumber,
+    Postcode: postcode,
     :"Account_type" => "customer"
   )
 
@@ -119,9 +119,9 @@ post '/update-account' do
   redirect '/log-in' unless session[:user_id]
 
   DB[:Accounts].where(UserID: session[:user_id]).update(
-    First_Name:     params[:First_Name],
-    Last_name:      params[:Last_name],
-    Postal_address: params[:Postal_address]
+    FirstName:     params[:FirstName],
+    LastName:      params[:LastName],
+    Postcode: params[:Postcode]
   )
 
   redirect '/account-settings?success=1'

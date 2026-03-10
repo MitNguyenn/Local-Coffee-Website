@@ -13,14 +13,14 @@
   <main class="login-container">
     <div class="login-card">
       
-      <h2>Hi, <%= @user[:First_Name]%> </h2>
+      <h2>Hi, <%= @user[:FirstName]%> </h2>
 
       <h3 class="detail-header">Personal Details</h3>
 
       <form method="POST" action="/update-account">
         <div class="input-wrapper">
         <label for="firstname">First Name</label>
-          <input type="text" name = "First_Name" value="<%= @user[:First_Name] %>" readonly class="account-input">
+          <input type="text" name = "FirstName" value="<%= @user[:FirstName] %>" readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -28,7 +28,7 @@
 
         <div class="input-wrapper">
         <label for="lastname">Last Name</label>
-          <input type="text" name = "Last_name" value="<%= @user[:Last_name] %>" readonly class="account-input">
+          <input type="text" name = "LastName" value="<%= @user[:LastName] %>" readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -76,7 +76,7 @@
 
         <div class="input-wrapper">
         <label for="postcode">Postcode</label>
-          <input type="text" name = "Postal_address" value="<%= @user[:Postal_address] %>" readonly class="account-input" caret-color=transparent>
+          <input type="text" name = "Postcode" value="<%= @user[:Postcode] %>" readonly class="account-input" caret-color=transparent>
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">

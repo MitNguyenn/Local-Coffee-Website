@@ -29,14 +29,14 @@ module AnalyzeData
 
     # 3. Sales by Order Type
     metrics[:sales_by_category] = DB[:Orders]
-      .group(:Order_Type)
-      .select(:Order_Type, Sequel.function(:sum, :totalCost).as(:total))
-      .to_hash(:Order_Type, :total)
+      .group(:OrderType)
+      .select(:OrderType, Sequel.function(:sum, :totalCost).as(:total))
+      .to_hash(:OrderType, :total)
 
     # 4. Monthly Timeline
     metrics[:monthly_sales] = DB[:Orders]
       .select(
-        Sequel.function(:strftime, '%Y-%m', :created_at).as(:month),
+        Sequel.function(:strftime, '%Y-%m', :CreatedAt).as(:month),
         Sequel.function(:sum, :totalCost).as(:total)
       )
       .group(:month)

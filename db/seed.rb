@@ -16,30 +16,30 @@ password_hash = BCrypt::Password.create("password123")
 john_loyalty = 10000001
 DB[:Accounts].insert(
   UserID: john_loyalty,
-  First_Name: "John",
-  Last_name: "Smith",
+  FirstName: "John",
+  LastName: "Smith",
   email: "abc123@funtime.org.uk",
   hashedPassword: password_hash,
-  Phone_number: "12345678901",
-  Postal_address: "S1 2BC",
+  PhoneNumber: "12345678901",
+  Postcode: "S1 2BC",
   Account_type: "Admin"
 )
 
 jane_loyalty = 87654321
 DB[:Accounts].insert(
   UserID: jane_loyalty,
-  First_Name: "Jane",
-  Last_name: "Doe",
+  FirstName: "Jane",
+  LastName: "Doe",
   email: "jane.doe@example.com",
   hashedPassword: BCrypt::Password.create("securepassword").to_s,
-  Phone_number: "09876543210",
-  Postal_address: "S2 3DE",
+  PhoneNumber: "09876543210",
+  Postcode: "S2 3DE",
   Account_type: "Customer"
 )
 
 # --- BEANS ---
-DB[:Beans].insert(Bean_type: "Ethiopian", Bean_blend: "Yirgacheffe", Bean_roast: "Light", Current_stock: 350)
-DB[:Beans].insert(Bean_type: "Colombian", Bean_blend: "House Blend", Bean_roast: "Medium", Current_stock: 1200)
+DB[:Beans].insert(BeanType: "Ethiopian", BeanBlend: "Yirgacheffe", BeanRoast: "Light", Current_stock: 350)
+DB[:Beans].insert(BeanType: "Colombian", BeanBlend: "House Blend", BeanRoast: "Medium", Current_stock: 1200)
 
 # --- HELPERS ---
 def days_ago(n)
@@ -63,13 +63,13 @@ end
   DB[:Orders].insert(
     UserID: john_loyalty, 
     OrderContents: random_contents,
-    Order_Type: "In-Store",
-    Payment_method: ["Cash", "Card"].sample,
+    OrderType: "In-Store",
+    PaymentMethod: ["Cash", "Card"].sample,
     totalCost: rand(4.50..15.00).round(2),
-    created_at: Time.now - (i * 1800),
-    location: "Counter",
-    is_delivered: false,
-    is_completed: false
+    CreatedAt: Time.now - (i * 1800),
+    Location: "Counter",
+    IsDelivered: false,
+    IsCompleted: false
   )
 end
 
@@ -77,13 +77,13 @@ end
 DB[:Orders].insert(
   UserID: jane_loyalty, 
   OrderContents: { "Iced Latte" => 1, "Blueberry Muffin" => 1 }.to_json,
-  Order_Type: "Online",
-  Payment_method: "Apple Pay",
+  OrderType: "Online",
+  PaymentMethod: "Apple Pay",
   totalCost: 7.20,
-  created_at: Time.now,
-  location: "Pickup Shelf",
-  is_delivered: false,
-  is_completed: false
+  CreatedAt: Time.now,
+  Location: "Pickup Shelf",
+  IsDelivered: false,
+  IsCompleted: false
 )
 
 # --- SEEDING PAST ORDERS (History) ---
@@ -93,13 +93,13 @@ DB[:Orders].insert(
   DB[:Orders].insert(
     UserID: john_loyalty, 
     OrderContents: random_contents,
-    Order_Type: ["Online", "In-Store"].sample,
-    Payment_method: "Card",
+    OrderType: ["Online", "In-Store"].sample,
+    PaymentMethod: "Card",
     totalCost: rand(3.00..20.00).round(2),
-    created_at: days_ago(i + 1),
-    location: "Delivery",
-    is_delivered: true,
-    is_completed: true
+    CreatedAt: days_ago(i + 1),
+    Location: "Delivery",
+    IsDelivered: true,
+    IsCompleted: true
   )
 end
 
@@ -108,13 +108,13 @@ end
   DB[:Orders].insert(
     UserID: jane_loyalty, 
     OrderContents: random_contents,
-    Order_Type: "Online",
-    Payment_method: "Apple Pay",
+    OrderType: "Online",
+    PaymentMethod: "Apple Pay",
     totalCost: rand(5.00..12.00).round(2),
-    created_at: days_ago(i + 2),
-    location: "Delivery",
-    is_delivered: true,
-    is_completed: true
+    CreatedAt: days_ago(i + 2),
+    Location: "Delivery",
+    IsDelivered: true,
+    IsCompleted: true
   )
 end
 

@@ -12,21 +12,23 @@ DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
 # Table 1: Accounts
 DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
-  String :First_Name
-  String :Last_name
+  String :FirstName
+  String :LastName
+  Integer :StampCount, default: 0, null: false
   String :email, unique: true, null: false
   String :hashedPassword
-  String :Phone_number, size: 11
-  String :Postal_address, size: 7
-  String :Account_type 
+  String :PhoneNumber, size: 11
+  String :Postcode, size: 7
+  String :Address
+  String :Account_type
 end
 
 # Table 2: Beans
 DB.create_table? :Beans do
   primary_key :BeanID
-  String :Bean_type
-  String :Bean_blend
-  String :Bean_roast
+  String :BeanType
+  String :BeanBlend
+  String :BeanRoast
   Integer :Current_stock
 end
 
@@ -35,13 +37,13 @@ DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
   String :OrderContents    # We will store a JSON string here
-  String :Order_Type       # 'In-Person' or 'Delivery'
-  String :Payment_method
+  String :OrderType       # 'In-Person' or 'Delivery'
+  String :PaymentMethod
   Float :totalCost
-  DateTime :created_at, default: Sequel::CURRENT_TIMESTAMP
-  String :location, default: 'In-Store'
-  TrueClass :is_delivered, default: false
-  TrueClass :is_completed, default: false
+  DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+  String :Location, default: 'In-Store'
+  TrueClass :IsDelivered, default: false
+  TrueClass :IsCompleted, default: false
 end
 
 
