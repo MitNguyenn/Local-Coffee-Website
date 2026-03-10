@@ -203,3 +203,12 @@ get '/user-tickets' do
   @past_tickets = DB[:Tickets].where(TicketResolved: true).all
   erb :ticket_management
 end
+
+get '/ticket/:id' do
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless userAccountLevel == 'manager' || userAccountLevel == 'administrator'
+
+  @ticket = DB[:Tickets].where(ticketID: params[:id]).first
+  erb :ticket_resolve
+end

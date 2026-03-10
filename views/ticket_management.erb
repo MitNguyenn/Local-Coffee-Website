@@ -1,14 +1,21 @@
 <div class="my-orders-container">
+  <!-- TAB NAVIGATION -->
   <div class="my-orders-nav">
-    <!-- IDs and onclick match the showTab function -->
-    <button class="my-orders-nav-btn active" id="btn-open" onclick="showTab('open')">Open Tickets</button>
-    <button class="my-orders-nav-btn" id="btn-resolved" onclick="showTab('resolved')">Resolved History</button>
+    <button class="my-orders-nav-btn active" id="btn-open" onclick="showTab('open')">
+      Open Tickets (<%= @live_tickets.count %>)
+    </button>
+    <button class="my-orders-nav-btn" id="btn-resolved" onclick="showTab('resolved')">
+      Resolved History
+    </button>
   </div>
 
   <!-- OPEN TICKETS SECTION -->
   <div id="view-open" class="my-orders-section active">
     <% if @live_tickets.empty? %>
-      <p class="m-dash-panel__title" style="text-align:center;">No active support tickets.</p>
+      <div class="my-orders-card" style="text-align: center; padding: 3rem;">
+        <p class="m-dash-panel__title">No active support tickets.</p>
+        <p style="color: #a0aec0; font-size: 0.9rem;">Need help? Contact our baristas in-store.</p>
+      </div>
     <% else %>
       <% @live_tickets.each do |ticket| %>
         <div class="my-orders-card ticket-border-open">
@@ -16,13 +23,19 @@
             <span class="my-orders-title"><%= ticket[:TicketType] %></span>
             <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %H:%M") %></span>
           </div>
+          
           <div class="my-orders-grid">
             <div class="ticket-content-text">
-              <%= ticket[:TicketContent] %>
+              <%= ticket[:TicketContent].length > 100 ? ticket[:TicketContent][0..100] + "..." : ticket[:TicketContent] %>
             </div>
-            <div style="text-align: right;">
-              <span class="ticket-id-tag">ID: #<%= ticket[:ticketID] %></span><br>
-              <span class="my-orders-badge status-open">Pending</span>
+            
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;">
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span>
+              
+              <!-- DYNAMIC DETAILS BUTTON -->
+              <a href="/ticket/<%= ticket[:ticketID] %>" class="view-details-btn">View Full Ticket</a>
+              
+              <span class="my-orders-badge status-open">Pending Review</span>
             </div>
           </div>
         </div>
@@ -33,20 +46,25 @@
   <!-- RESOLVED TICKETS SECTION -->
   <div id="view-resolved" class="my-orders-section">
     <% if @past_tickets.empty? %>
-      <p class="m-dash-panel__title" style="text-align:center;">Your resolved history is empty.</p>
+      <div class="my-orders-card" style="text-align: center; padding: 3rem;">
+        <p class="m-dash-panel__title">Your resolved history is empty.</p>
+      </div>
     <% else %>
       <% @past_tickets.each do |ticket| %>
         <div class="my-orders-card ticket-resolved-dim">
           <div class="my-orders-header">
-            <span class="my-orders-title"><%= ticket[:TicketType] %></span>
+            <span class="my-orders-title" style="color: #718096;"><%= ticket[:TicketType] %></span>
             <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %Y") %></span>
           </div>
+          
           <div class="my-orders-grid">
-            <div class="ticket-content-text" style="color: #718096; font-style: italic;">
-              <%= ticket[:TicketContent] %>
+            <div class="ticket-content-text" style="color: #a0aec0; font-style: italic;">
+              <%= ticket[:TicketContent].length > 80 ? ticket[:TicketContent][0..80] + "..." : ticket[:TicketContent] %>
             </div>
+            
             <div style="text-align: right;">
-              <span class="ticket-id-tag">ID: #<%= ticket[:ticketID] %></span><br>
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span><br>
+              <a href="/ticket/<%= ticket[:ticketID] %>" class="view-details-btn" style="background: #718096;">View Archive</a><br>
               <span class="my-orders-badge status-resolved">Resolved</span>
             </div>
           </div>
@@ -58,15 +76,32 @@
 
 <script>
 function showTab(type) {
-  // 1. Hide all sections
-  document.querySelectorAll('.my-orders-section').forEach(s => s.classList.remove('active'));
-  // 2. Show the selected section
-  const selectedSection = document.getElementById('view-' + type);
-  if (selectedSection) selectedSection.classList.add('active');
+  // 1. Remove active class from all sections and hide them
+  const sections = document.querySelectorAll('.my-orders-section');
+  sections.forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+
+  // 2. Show the specific section
+  const targetSection = document.getElementById('view-' + type);
+  if (targetSection) {
+    targetSection.classList.add('active');
+    targetSection.style.display = 'block';
+  }
   
   // 3. Update button styling
-  document.querySelectorAll('.my-orders-nav-btn').forEach(b => b.classList.remove('active'));
-  const selectedBtn = document.getElementById('btn-' + type);
-  if (selectedBtn) selectedBtn.classList.add('active');
+  const buttons = document.querySelectorAll('.my-orders-nav-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+  
+  const targetBtn = document.getElementById('btn-' + type);
+  if (targetBtn) {
+    targetBtn.classList.add('active');
+  }
 }
+
+// Initializing the view on load
+window.onload = function() {
+    showTab('open');
+};
 </script>
