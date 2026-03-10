@@ -21,22 +21,23 @@ end
 
 get '/log-in' do
   @email = ""
-  @password1 = ""
-  @password2 = ""
+  @password = ""
   erb :login_screen
 end
 
-post '/login' do
+post '/log-in' do
   @email = params[:email]
-  password = params[:password]
+  @password = params[:password]
+
+  puts @password
 
   user = DB[:accounts].where(email: @email).first
-  if user && user[:hashedPassword] == hash_password(password) then
-    session[:user_id] = user.id
+  
+  if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
+    session[:user_id] = user[:UserID]
     puts "Login successful for email: #{@email}"
     redirect '/'
   else
-    puts "Login failed for email: #{@email}"
     @error = "Invalid email or password"
     erb :login_screen
   end
@@ -47,44 +48,59 @@ get '/register' do
 end
 
 post '/register' do
-  # Use validation helpers to validate input
   email = params[:email]
-  password = params[:password]
+  password1 = params[:password1]
+  password2 = params[:password2]
   first_name = params[:first_name]
   last_name = params[:last_name]
-  phone = params[:phone]
-  address = params[:address]
+  phone_number = params[:phone_number]
+  postcode = params[:postcode]
 
-  # Validate email format
+  UserID = nil
+  loop do
+    UserID = rand(10000000..99999999)
+    break unless Account[UserID]
+  end
+
   unless str_email_address?(email)
-    @error = "Invalid email format"
+    @error = "Invalid email format."
     return erb :register_account
   end
 
   # Validate phone number
-  unless str_uk_telephone?(phone)
-    @error = "Invalid UK phone number"
+  unless str_uk_telephone?(phone_number)
+    puts "Phone validation failed for input: #{phone_number}"
+    @error = "Invalid UK phone number."
+    return erb :register_account
+  end
+
+  # Check passwords match
+  unless password1 == password2
+    @error = "Passwords do not match."
     return erb :register_account
   end
 
   # Validate password length
-  unless str_min_length?(password, 8)
-    @error = "Password must be at least 8 characters"
+  unless str_min_length?(password1, 12)
+    @error = "Password must be at least 12 characters."
     return erb :register_account
   end
 
+
   # Create new user account
-  user = UserObject.create(
-    first_name: first_name,
-    last_name: last_name,
+  user = Account.create(
+    UserID: UserID,
+    First_Name: first_name,
+    Last_name: last_name,
     email: email,
-    password_hash: BCrypt::Password.create(password).to_s,
-    phone: phone,
-    address: address,
-    account_type: "customer"
+    #password_hash: BCrypt::Password.create(password).to_s,
+    password: password1,
+    Phone_number: phone_number,
+    Postal_address: postcode,
+    :"Account_type" => "customer"
   )
 
-  session[:user_id] = user.id
+  session[:user_id] = user.UserID
   redirect '/'
 rescue => e
   @error = "Registration failed: #{e.message}"
@@ -92,15 +108,23 @@ rescue => e
 end
 
 get '/account-settings' do
-  @first_name = "First"
-  @last_name = "Last"
-  @dob = "01/01/01"
-  @phone = "+44 07000 000000"
-  @email = "test@gmail.com"
-  @password = "password"
-  @postcode = "S10 3AB"
-  @address = "1 Endcliffe Cresent"
+  redirect '/log-in' unless logged_in?
+
+  @user = DB[:Accounts].where(UserID: session[:user_id]).first
+
   erb :account_settings
+end
+
+post '/update-account' do
+  redirect '/log-in' unless session[:user_id]
+
+  DB[:Accounts].where(UserID: session[:user_id]).update(
+    First_Name:     params[:First_Name],
+    Last_name:      params[:Last_name],
+    Postal_address: params[:Postal_address]
+  )
+
+  redirect '/account-settings?success=1'
 end
 
 get '/change-password' do
@@ -112,7 +136,6 @@ post '/change-password' do
   password2 = params[:password2]
   if password1 == password2
     redirect '/account-settings'
-    # Here you would also want to update the user's password in the database
   else
     @error = "Passwords do not match"
     return erb :change_password
@@ -120,36 +143,51 @@ post '/change-password' do
 end
 
 get '/loyalty-card' do
-  # redirect '/login' unless session[:user_id]
+  redirect '/log-in' unless session[:user_id]
 
-  # @user = DB[:users].where(id: session[:user_id]).first
+  @user = DB[:Accounts].where(UserID: session[:user_id]).first
 
-  # qrcode = RQRCode::QRCode.new("user_id:#{@user[:id]}")
+  if @user
+    qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:UserID]}")
 
-  qr_content = "TEST-USER-12345"
-
-  qrcode = RQRCode::QRCode.new(qr_content)
-  @qr_svg = qrcode.as_svg(
-    color: "4b2c20", 
-    shape_rendering: "crispEdges",
-    module_size: 6,
-    standalone: true,
-    use_path: true,
-    viewbox: true
-  )
-
-  erb :loyalty_card
+    @qr_svg = qrcode.as_svg(
+      color: "4b2c20", 
+      shape_rendering: "crispEdges",
+      module_size: 6,
+      standalone: true,
+      use_path: true,
+      viewbox: true
+    )
+    erb :loyalty_card
+  else
+    "Error: Account not found in database."
+  end
 end
 
 get '/my-orders' do
+  if !logged_in?
+    puts "User not logged in, redirecting to log-in page."
+    redirect '/log-in'
+  end
+
+  puts "Fetching orders for user ID: #{session[:user_id]}"
+  @current_orders = fetch_current_orders(session[:user_id])
+  @past_orders = fetch_past_orders(session[:user_id])
   erb :my_orders
 end
 
 get '/log-out' do
   session.clear  
-  redirect '/'
+  redirect '/log-in'
 end
 
 get '/forgot' do
   erb :forgot_password
+end
+
+get '/metrics' do
+  #NEED TO CHECK SESSION TO SEE IF ACCOUNT HAS CORRECT LEVEL
+  @metrics = analyze_sales_data
+  puts @metrics
+  erb :metrics_page
 end

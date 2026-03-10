@@ -5,4 +5,8 @@ module PasswordCheck
     hashed_password = BCrypt::Password.create(password).to_s
     return hashed_password
   end
+
+  def getPlaintextPassword(hashed_password)
+    BCrypt::Password.new(hashed_password)
+  end
 end

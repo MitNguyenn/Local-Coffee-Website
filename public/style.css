@@ -220,7 +220,7 @@ main {
   padding-right: 40px;
 }
 
-.account-input[readonly]{
+.account-input[readonly] {
   cursor: default;
   caret-color: transparent;
 }
@@ -259,7 +259,7 @@ input[type="password"]:focus {
   color: white;
   border: none;
   border-radius: 25px;
-  font-family: "Fredoka One", cursive;
+  font-family: "Lilita one", sans-serif;
   font-size: 1.1rem;
   cursor: pointer;
   transition: background 0.3s;
@@ -486,4 +486,251 @@ html {
 .stamp.filled {
   background-color: #a67458;
   background-image: radial-gradient(circle, #a67458 20%, #4b2c20 80%);
+}
+
+/* Metrics Page */
+
+/* Container Namespace */
+.m-dash-wrapper {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
+  color: #1a202c;
+  /* Background definition removed to inherit from parent */
+}
+
+.m-dash-header {
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 1rem;
+}
+
+.m-dash-header__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin: 0;
+}
+
+/* Grid Layouts */
+.m-dash-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.m-dash-grid--hero {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.m-dash-grid--split {
+  grid-template-columns: 1fr 2fr;
+}
+
+@media (max-width: 850px) {
+  .m-dash-grid--split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card Styling */
+.m-dash-card,
+.m-dash-panel {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.m-dash-card__label {
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.m-dash-card__value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
+
+/* Ranking Component */
+.m-dash-ranking {
+  margin-top: 1rem;
+}
+
+.m-dash-ranking__row {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.m-dash-ranking__index {
+  font-weight: 700;
+  color: #d4a373; /* Coffee Gold */
+  width: 2.5rem;
+}
+
+.m-dash-ranking__name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.m-dash-ranking__qty {
+  font-size: 0.8rem;
+  background: #f1f5f9;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+}
+
+.m-dash-ranking__empty {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* Table Styling */
+.m-dash-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.m-dash-panel__title {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #4a5568;
+}
+
+.m-dash-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  color: #a0aec0;
+  padding: 0.75rem;
+  border-bottom: 2px solid #edf2f7;
+}
+
+.m-dash-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.m-dash-table__price {
+  font-weight: 700;
+  text-align: right;
+}
+
+.my-orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+}
+
+/* The Toggle Buttons */
+.my-orders-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+.my-orders-nav-btn {
+  flex: 1;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 2px solid #222;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.my-orders-nav-btn.active {
+  background: #222;
+  color: #fff;
+}
+
+/* Sections */
+.my-orders-section {
+  display: none;
+}
+.my-orders-section.active {
+  display: block;
+}
+
+/* Order Cards */
+.my-orders-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+.my-orders-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.my-orders-date {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.my-orders-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+}
+.my-orders-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.my-orders-items li {
+  padding: 4px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.my-orders-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #a67458;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-family: "Lilita one", sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #4b2c20;
+}
+
+.submit-btn:disabled {
+  background-color: #a67558bb;
+  color: #ffffffbb;
+  cursor: not-allowed;
 }
