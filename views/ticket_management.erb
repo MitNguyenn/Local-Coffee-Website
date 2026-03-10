@@ -1,27 +1,28 @@
-<div class="my-tickets-container">
+<div class="my-orders-container">
   <div class="my-orders-nav">
+    <!-- IDs and onclick match the showTab function -->
     <button class="my-orders-nav-btn active" id="btn-open" onclick="showTab('open')">Open Tickets</button>
-    <button class="my-orders-nav-btn" id="btn-resolved" onclick="showTab('resolved')">Resolved</button>
+    <button class="my-orders-nav-btn" id="btn-resolved" onclick="showTab('resolved')">Resolved History</button>
   </div>
 
-  <!-- OPEN TICKETS -->
+  <!-- OPEN TICKETS SECTION -->
   <div id="view-open" class="my-orders-section active">
     <% if @live_tickets.empty? %>
-      <p>No active support tickets.</p>
+      <p class="m-dash-panel__title" style="text-align:center;">No active support tickets.</p>
     <% else %>
       <% @live_tickets.each do |ticket| %>
-        <div class="my-orders-card">
+        <div class="my-orders-card ticket-border-open">
           <div class="my-orders-header">
             <span class="my-orders-title"><%= ticket[:TicketType] %></span>
             <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %H:%M") %></span>
           </div>
           <div class="my-orders-grid">
-            <div class="my-orders-items">
-              <p><%= ticket[:TicketContent] %></p>
+            <div class="ticket-content-text">
+              <%= ticket[:TicketContent] %>
             </div>
-            <div>
-              <strong>ID:</strong> #<%= ticket[:ticketID] %><br>
-              <span class="my-orders-badge" style="background: #ffd700; color: #000;">Pending Review</span>
+            <div style="text-align: right;">
+              <span class="ticket-id-tag">ID: #<%= ticket[:ticketID] %></span><br>
+              <span class="my-orders-badge status-open">Pending</span>
             </div>
           </div>
         </div>
@@ -29,24 +30,24 @@
     <% end %>
   </div>
 
-  <!-- RESOLVED TICKETS -->
+  <!-- RESOLVED TICKETS SECTION -->
   <div id="view-resolved" class="my-orders-section">
     <% if @past_tickets.empty? %>
-      <p>You have no resolved tickets.</p>
+      <p class="m-dash-panel__title" style="text-align:center;">Your resolved history is empty.</p>
     <% else %>
       <% @past_tickets.each do |ticket| %>
-        <div class="my-orders-card" style="border-color: #eee; opacity: 0.8;">
+        <div class="my-orders-card ticket-resolved-dim">
           <div class="my-orders-header">
             <span class="my-orders-title"><%= ticket[:TicketType] %></span>
             <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %Y") %></span>
           </div>
           <div class="my-orders-grid">
-            <div class="my-orders-items">
-              <p><i><%= ticket[:TicketContent] %></i></p>
+            <div class="ticket-content-text" style="color: #718096; font-style: italic;">
+              <%= ticket[:TicketContent] %>
             </div>
-            <div>
-              <strong>ID:</strong> #<%= ticket[:ticketID] %><br>
-              <span class="my-orders-badge" style="background: #4CAF50;">Resolved</span>
+            <div style="text-align: right;">
+              <span class="ticket-id-tag">ID: #<%= ticket[:ticketID] %></span><br>
+              <span class="my-orders-badge status-resolved">Resolved</span>
             </div>
           </div>
         </div>
@@ -57,12 +58,15 @@
 
 <script>
 function showTab(type) {
-  // Toggle Views
+  // 1. Hide all sections
   document.querySelectorAll('.my-orders-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('view-' + type).classList.add('active');
+  // 2. Show the selected section
+  const selectedSection = document.getElementById('view-' + type);
+  if (selectedSection) selectedSection.classList.add('active');
   
-  // Toggle Buttons
+  // 3. Update button styling
   document.querySelectorAll('.my-orders-nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('btn-' + type).classList.add('active');
+  const selectedBtn = document.getElementById('btn-' + type);
+  if (selectedBtn) selectedBtn.classList.add('active');
 }
 </script>

@@ -734,3 +734,112 @@ html {
   color: #ffffffbb;
   cursor: not-allowed;
 }
+
+/* Ticket Management Page */
+/* Container Layout */
+.my-orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: inherit;
+}
+
+/* Tab Navigation */
+.my-orders-nav {
+  display: flex;
+  gap: 0; /* Flush buttons look more modern */
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.my-orders-nav-btn {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s ease;
+}
+
+.my-orders-nav-btn.active {
+  background: #a67458; /* Your Brand Brown */
+  color: #fff;
+}
+
+/* Visibility Toggle */
+.my-orders-section {
+  display: none;
+}
+.my-orders-section.active {
+  display: block;
+}
+
+/* Ticket Cards */
+.my-orders-card {
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s;
+}
+
+.ticket-border-open {
+  border-left: 5px solid #a67458;
+}
+
+.ticket-resolved-dim {
+  background-color: #f8fafc;
+  opacity: 0.9;
+}
+
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.my-orders-title {
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.ticket-content-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+.ticket-id-tag {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+
+/* Badges */
+.my-orders-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.status-open {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+}
