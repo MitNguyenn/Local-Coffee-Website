@@ -6,3 +6,5 @@ _coverage/
 vendor/ 
 
 Gemfile.lock
+
+.env

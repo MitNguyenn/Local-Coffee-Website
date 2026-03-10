@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="/css/my-orders.css">
+
+<div class="my-orders-container">
+  <div class="my-orders-nav">
+    <button class="my-orders-nav-btn active" id="btn-live" onclick="showTab('live')">Live Orders</button>
+    <button class="my-orders-nav-btn" id="btn-past" onclick="showTab('past')">Order History</button>
+  </div>
+
+  <!-- LIVE ORDERS -->
+  <div id="view-live" class="my-orders-section active">
+    <% if @current_orders.empty? %>
+      <p>No active orders at the moment.</p>
+    <% else %>
+      <% @current_orders.each do |order| %>
+        <div class="my-orders-card">
+          <div class="my-orders-header">
+            <span class="my-orders-title">Order #<%= order[:user_seq] %></span>
+            <span class="my-orders-date"><%= order[:created_at].strftime("%H:%M") %></span>
+          </div>
+          <div class="my-orders-grid">
+            <div>
+              <ul class="my-orders-items">
+                <% order[:OrderContents].each do |item, qty| %>
+                  <li><strong><%= qty %>x</strong> <%= item %></li>
+                <% end %>
+              </ul>
+            </div>
+            <div>
+              <strong>Total:</strong> £<%= '%.2f' % order[:totalCost] %><br>
+              <strong>Status:</strong> 
+              <span class="my-orders-badge"><%= order[:is_delivered] ? "On the way" : "Preparing" %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- PAST ORDERS -->
+  <div id="view-past" class="my-orders-section">
+    <% if @past_orders.empty? %>
+      <p>Your order history is empty.</p>
+    <% else %>
+      <% @past_orders.each do |order| %>
+        <div class="my-orders-card" style="border-color: #eee; opacity: 0.9;">
+          <div class="my-orders-header">
+            <span class="my-orders-title">Order #<%= order[:user_seq] %></span>
+            <span class="my-orders-date"><%= order[:created_at].strftime("%d %b %Y") %></span>
+          </div>
+          <div class="my-orders-grid">
+            <div>
+              <ul class="my-orders-items">
+                <% order[:OrderContents].each do |item, qty| %>
+                  <li><%= qty %>x <%= item %></li>
+                <% end %>
+              </ul>
+            </div>
+            <div>
+              <strong>Total:</strong> £<%= '%.2f' % order[:totalCost] %><br>
+              <span class="my-orders-badge">Completed</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+function showTab(type) {
+  // Toggle Views
+  document.querySelectorAll('.my-orders-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('view-' + type).classList.add('active');
+  
+  // Toggle Buttons
+  document.querySelectorAll('.my-orders-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + type).classList.add('active');
+}
+</script>
