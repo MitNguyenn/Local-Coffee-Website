@@ -20,44 +20,29 @@
       <form method="POST" action="/update-account">
         <div class="input-wrapper">
         <label for="firstname">First Name</label>
-          <input type="text" name = "First_Name" value="<%= @user[:First_Name] %>" readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "First_Name" value="<%= @user[:First_Name] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
         <label for="lastname">Last Name</label>
-          <input type="text" name = "Last_name" value="<%= @user[:Last_name] %>" readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "Last_name" value="<%= @user[:Last_name] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
         <label for="date">Date of Birth</label>
-          <input type="text" name = "date_of_birth" value="<%= @date_of_birth %>" readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "date_of_birth" value="<%= @date_of_birth %>" class="account-input">
         </div>
 
         <h3 class="detail-header">Account Details</h3>
         
         <div class="input-wrapper">
         <label for="email">Email</label>
-          <input type="text" name = "email" value="<%= @user[:email] %>" readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "email" value="<%= @user[:email] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
         <label for="password">Password</label>
-          <input type="password" name = "hashedPassword" value="<%= @user[:hashedPassword] %>" readonly class="account-input">
-          <img src="eye-crossed.png"  
-          class="reveal-password"
-          onclick="togglePassword(this)">
+          <input type="password" name = "hashedPassword" value="<%= @user[:hashedPassword] %>" class="account-input">
         </div>
 
         <div class="extra-links">
@@ -68,18 +53,12 @@
         
         <div class="input-wrapper">
         <label for="address">Address</label>
-          <input type="text" value="<%= @user[:Address] %>" readonly class="account-input" caret-color=transparent>
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name="Address" value="<%= @user[:Address] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
         <label for="postcode">Postcode</label>
-          <input type="text" name = "Postal_address" value="<%= @user[:Postal_address] %>" readonly class="account-input" caret-color=transparent>
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "Postal_address" value="<%= @user[:Postal_address] %>" class="account-input">
         </div>
         <br>
         <br>
@@ -90,32 +69,6 @@
 <% end %>
      </div>
   </main>
-  <script>
-    function enableEdit(icon) {
-      const input = icon.previousElementSibling;
-      if (input.hasAttribute('readonly')) {
-        input.removeAttribute('readonly');
-        input.focus();
-        icon.src = 'check.png';
-      } else {
-        input.setAttribute('readonly', true);
-        icon.src = 'edit.png';
-      }
-    }
-
-    function togglePassword(icon) {
-      const wrapper = icon.parentElement;
-      const input = wrapper.querySelector('input');
-
-      if (input.type === "password") {
-        input.type = "text";
-        icon.src = "eye-open.png";
-      } else {
-        input.type = "password";
-        icon.src = "eye-crossed.png";
-      }
-      }
-  </script>
   </body>
 </html>
 
