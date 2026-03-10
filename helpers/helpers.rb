@@ -1,4 +1,3 @@
-
 # ../ means "go up one folder" (out of controllers, into project)
 # then we go into the helpers folder
 require_relative "../helpers/validation"
