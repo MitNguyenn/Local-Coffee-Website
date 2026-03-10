@@ -67,19 +67,12 @@ post '/register' do
     return erb :register_account
   end
 
-<<<<<<< HEAD
-  unless str_uk_telephone?(phone)
-=======
   # Validate phone number
   unless str_uk_telephone?(phone_number)
->>>>>>> master
     @error = "Invalid UK phone number"
     return erb :register_account
   end
 
-<<<<<<< HEAD
-  unless str_min_length?(password, 8)
-=======
   # Check passwords match
   unless password1 == password2
     @error = "Passwords don't match"
@@ -88,23 +81,16 @@ post '/register' do
 
   # Validate password length
   unless str_min_length?(password1, 8)
->>>>>>> master
     @error = "Password must be at least 8 characters"
     return erb :register_account
   end
 
-<<<<<<< HEAD
-  user = UserObject.create(
-    first_name: first_name,
-    last_name: last_name,
-=======
 
   # Create new user account
   user = Account.create(
     UserID: UserID,
     First_Name: first_name,
     Last_name: last_name,
->>>>>>> master
     email: email,
     #password_hash: BCrypt::Password.create(password).to_s,
     password: password1,
@@ -121,29 +107,10 @@ rescue => e
 end
 
 get '/account-settings' do
-<<<<<<< HEAD
-  redirect '/login' unless session[:user_id]
-
-  user = DB[:Accounts].where(UserID: session[:user_id]).first
-
-  @first_name = user[:First_Name]
-  @last_name  = user[:Last_name]
-  @email      = user[:email]
-  @address    = user[:Postal_address]
-  @postcode   = user[:Phone_number] 
-
-=======
   redirect '/log-in' unless logged_in?
 
-  @first_name = "First"
-  @last_name = "Last"
-  @dob = "01/01/01"
-  @phone = "+44 07000 000000"
-  @email = "test@gmail.com"
-  @password = "password"
-  @postcode = "S10 3AB"
-  @address = "1 Endcliffe Cresent"
->>>>>>> master
+  @user = DB[:Accounts].where(UserID: session[:user_id]).first
+
   erb :account_settings
 end
 

@@ -13,14 +13,14 @@
   <main class="login-container">
     <div class="login-card">
       
-      <h2>Hi, <%= @first_name %> </h2>
+      <h2>Hi, <%= @user[:First_Name]%> </h2>
 
       <h3 class="detail-header">Personal Details</h3>
 
       <form method="POST" action="/update-account">
         <div class="input-wrapper">
         <label for="firstname">First Name</label>
-          <input type="text" value="<%= @first_name %>" 
+          <input type="text" value="<%= @user[:First_Name] %>" 
           readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
@@ -29,7 +29,7 @@
 
         <div class="input-wrapper">
         <label for="lastname">Last Name</label>
-          <input type="text" value="<%= @last_name %>" 
+          <input type="text" value="<%= @user[:Last_name] %>" 
           readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
@@ -49,7 +49,7 @@
         
         <div class="input-wrapper">
         <label for="email">Email</label>
-          <input type="text" value="<%= @email %>" 
+          <input type="text" value="<%= @user[:email] %>" 
           readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
@@ -58,9 +58,9 @@
 
         <div class="input-wrapper">
         <label for="password">Password</label>
-          <input type="password" value="<%= @password %>" 
+          <input type="password" value="<%= @user[:hashedPassword] %>" 
           readonly class="account-input">
-          <img src="eye-crossed.png"
+          <img src="eye-crossed.png"  
           class="reveal-password"
           onclick="togglePassword(this)">
         </div>
@@ -73,7 +73,7 @@
         
         <div class="input-wrapper">
         <label for="address">Address</label>
-          <input type="text" value="<%= @address %>" 
+          <input type="text" value="<%= @user[:Address] %>" 
           readonly class="account-input" caret-color=transparent>
           <img src="edit.png"
           class="edit-icon"
@@ -82,13 +82,15 @@
 
         <div class="input-wrapper">
         <label for="postcode">Postcode</label>
-          <input type="text" value="<%= @postcode %>" 
+          <input type="text" value="<%= @user[:Postal_address] %>" 
           readonly class="account-input" caret-color=transparent>
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
         </div>
-
+        <br>
+        <br>
+        <input type = "submit" value="Submit" class = "submit-btn">
       </form>
      </div>
   </main>
