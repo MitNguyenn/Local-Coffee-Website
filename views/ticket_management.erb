@@ -1,0 +1,68 @@
+<div class="my-tickets-container">
+  <div class="my-orders-nav">
+    <button class="my-orders-nav-btn active" id="btn-open" onclick="showTab('open')">Open Tickets</button>
+    <button class="my-orders-nav-btn" id="btn-resolved" onclick="showTab('resolved')">Resolved</button>
+  </div>
+
+  <!-- OPEN TICKETS -->
+  <div id="view-open" class="my-orders-section active">
+    <% if @live_tickets.empty? %>
+      <p>No active support tickets.</p>
+    <% else %>
+      <% @live_tickets.each do |ticket| %>
+        <div class="my-orders-card">
+          <div class="my-orders-header">
+            <span class="my-orders-title"><%= ticket[:TicketType] %></span>
+            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %H:%M") %></span>
+          </div>
+          <div class="my-orders-grid">
+            <div class="my-orders-items">
+              <p><%= ticket[:TicketContent] %></p>
+            </div>
+            <div>
+              <strong>ID:</strong> #<%= ticket[:ticketID] %><br>
+              <span class="my-orders-badge" style="background: #ffd700; color: #000;">Pending Review</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- RESOLVED TICKETS -->
+  <div id="view-resolved" class="my-orders-section">
+    <% if @past_tickets.empty? %>
+      <p>You have no resolved tickets.</p>
+    <% else %>
+      <% @past_tickets.each do |ticket| %>
+        <div class="my-orders-card" style="border-color: #eee; opacity: 0.8;">
+          <div class="my-orders-header">
+            <span class="my-orders-title"><%= ticket[:TicketType] %></span>
+            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %Y") %></span>
+          </div>
+          <div class="my-orders-grid">
+            <div class="my-orders-items">
+              <p><i><%= ticket[:TicketContent] %></i></p>
+            </div>
+            <div>
+              <strong>ID:</strong> #<%= ticket[:ticketID] %><br>
+              <span class="my-orders-badge" style="background: #4CAF50;">Resolved</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+function showTab(type) {
+  // Toggle Views
+  document.querySelectorAll('.my-orders-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('view-' + type).classList.add('active');
+  
+  // Toggle Buttons
+  document.querySelectorAll('.my-orders-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + type).classList.add('active');
+}
+</script>

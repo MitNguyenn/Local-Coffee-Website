@@ -20,7 +20,7 @@ DB.create_table? :Accounts do
   String :PhoneNumber, size: 11
   String :Postcode, size: 7
   String :Address
-  String :Account_type
+  String :AccountType
 end
 
 # Table 2: Beans
