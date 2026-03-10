@@ -54,6 +54,7 @@ DB.create_table? :Tickets do
   String :ticketType
   String :ticketContent
   FalseClass :ticketResolved, default: false
+  DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
 puts "Database tables initialized successfully!"
