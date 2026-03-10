@@ -69,6 +69,7 @@ post '/register' do
 
   # Validate phone number
   unless str_uk_telephone?(phone_number)
+    puts "Phone validation failed for input: #{phone_number}"
     @error = "Invalid UK phone number."
     return erb :register_account
   end
