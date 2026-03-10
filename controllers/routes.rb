@@ -123,7 +123,7 @@ post '/update-account' do
     Postal_address: params[:Postal_address]
   )
 
-  redirect '/account-settings'
+  redirect '/account-settings?success=1'
 end
 
 get '/change-password' do
