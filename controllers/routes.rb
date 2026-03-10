@@ -63,25 +63,25 @@ post '/register' do
   end
 
   unless str_email_address?(email)
-    @error = "Invalid email format"
+    @error = "Invalid email format."
     return erb :register_account
   end
 
   # Validate phone number
   unless str_uk_telephone?(phone_number)
-    @error = "Invalid UK phone number"
+    @error = "Invalid UK phone number."
     return erb :register_account
   end
 
   # Check passwords match
   unless password1 == password2
-    @error = "Passwords don't match"
+    @error = "Passwords do not match."
     return erb :register_account
   end
 
   # Validate password length
-  unless str_min_length?(password1, 8)
-    @error = "Password must be at least 8 characters"
+  unless str_min_length?(password1, 12)
+    @error = "Password must be at least 12 characters."
     return erb :register_account
   end
 
