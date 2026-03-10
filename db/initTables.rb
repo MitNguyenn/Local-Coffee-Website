@@ -51,9 +51,9 @@ end
 DB.create_table? :Tickets do
   primary_key :ticketID
   foreign_key :UserID, :Accounts
-  String :ticketType
-  String :ticketContent
-  FalseClass :ticketResolved, default: false
+  String :TicketType
+  String :TicketContent
+  FalseClass :TicketResolved, default: false
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 

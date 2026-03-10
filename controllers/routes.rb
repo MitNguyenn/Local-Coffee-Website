@@ -191,3 +191,12 @@ get '/metrics' do
   puts @metrics
   erb :metrics_page
 end
+
+get '/user-tickets' do
+  redirect '/log-in' unless session[:user_id]
+  redirect '/' unless session[:account_type] == 'manager' || session[:account_type] == 'admin'
+
+  @live_tickets = DB[:Tickets].where(TicketResolved: false).all
+  @past_tickets = DB[:Tickets].where(TicketResolved: true).all
+  erb :user_tickets
+end
