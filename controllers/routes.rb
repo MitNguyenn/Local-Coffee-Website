@@ -23,7 +23,7 @@ get '/product/' do
 
   if @type == 'bean'
     @item = Bean[params[:id]]
-    @template = :bean-details
+    @template = :bean_details
   elsif @type == 'drink'
     @item = Drink.where(BeanID: params[:bean_id], Beverage: params[:name]).first
     @template = :drink_details
@@ -207,8 +207,6 @@ end
 get '/forgot' do
   erb :forgot_password
 end
-<<<<<<< HEAD
-=======
 
 get '/metrics' do
   #NEED TO CHECK SESSION TO SEE IF ACCOUNT HAS CORRECT LEVEL
@@ -216,4 +214,3 @@ get '/metrics' do
   puts @metrics
   erb :metrics_page
 end
->>>>>>> master

@@ -1,7 +1,8 @@
 <div class="product-detail-container">
   <h1><%= @item.Name %></h1>
   <p>Roast Level: <strong><%= @item.Roast %></strong></p>
-  <p>Price: £<%= sprintf('%.2f', @item.PricePerBag) %></p>
+  <p>Pack weight: <strong><%= @item.PackWeight %>g</strong></p>
+  <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
   
   <button class="add-to-basket">Add to Basket</button>
   <a href="/coffee-beans">Back to Catalog</a>

@@ -488,6 +488,10 @@ html {
   background-image: radial-gradient(circle, #a67458 20%, #4b2c20 80%);
 }
 
+.page-title {
+  text-align: center;
+}
+
 .catalog-grid {
     display: flex;       
     flex-wrap: wrap;
@@ -509,7 +513,7 @@ html {
   border-radius: 10px;
 }
 
-.add-to-basket {
+.add-to-basket-button {
   margin-top: 10px;
   padding: 10px 20px;
   background-color: #a67458;
@@ -519,7 +523,7 @@ html {
   cursor: pointer;
 }
 
-.buy {
+.buy-button {
   margin-top: 10px;
   padding: 10px 20px;
   background-color: #a67458;

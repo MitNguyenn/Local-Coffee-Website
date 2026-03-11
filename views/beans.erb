@@ -6,10 +6,10 @@
   <% @beans.each do |bean| %>
     <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
       <img src="/coffee_beans_example.png" alt="<%= bean[:name] %>">
-      <h3><%= bean[:name] %></h3>
-      <p>£<%= sprintf('%.2f', bean[:PricePerBag]) %></p>
-      <button class="add-to-basket">Add to basket</button>
-      <button class="buy">Buy</button>
+      <h3><%= bean[:Name] %></h3>
+      <p>£<%= sprintf('%.2f', bean[:Price]) %></p>
+      <button class="add-to-basket-button">Add to basket</button>
+      <button class="buy-button">Buy</button>
     </div>
   <% end %>
 </div>
@@ -18,7 +18,7 @@
   const container = document.getElementById('item-container');
 
   container.addEventListener('click', (event) => {
-    if (event.target.classList.contains('add-to-basket')) {
+    if (event.target.classList.contains('add-to-basket-button')) {
       if (event.target.textContent == "Add to basket") {
         event.target.textContent = "Added! ✅";
         
