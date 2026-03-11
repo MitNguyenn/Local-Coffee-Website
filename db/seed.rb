@@ -76,17 +76,12 @@ end
 
 # --- Drinks ---
 drinks_list = [
-  # Using Ethiopian Breeze (ID: 1)
   { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 3.00 },
   { BeanID: 1, Beverage: "Cold Brew",     Size: "Large",   Price: 4.20 },
-  # Using Andean Gold (ID: 2)
   { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
   { BeanID: 2, Beverage: "Cappuccino",    Size: "Large",   Price: 3.90 },
-  # Using Amazonian Night (ID: 3)
   { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.20 },
-  # Using Maya Sunrise (ID: 4)
   { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.40 },
-  # Using Hanoi Fuel (ID: 5)
   { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.80 },
   { BeanID: 5, Beverage: "Cortado",       Size: "Small",   Price: 3.10 }
 ]
