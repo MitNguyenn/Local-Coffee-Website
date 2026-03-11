@@ -1,27 +1,37 @@
 require 'sequel'
 require 'sqlite3'
+require 'json'
+
 # Connect to the database
 DB = Sequel.sqlite("db/db.sqlite3")
 
+# 1. Clear existing data (optional, prevents duplicates if you run it twice)
+DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
+
+# 2. Create tables (if they don't exist)
 # Table 1: Accounts
 DB.create_table? :Accounts do
-  primary_key :UserID
-  String :First_Name
-  String :Last_name
+  Integer :UserID, primary_key: true
+  String :FirstName
+  String :LastName
+  Integer :StampCount, default: 0, null: false
   String :email, unique: true, null: false
   String :hashedPassword
-  String :Phone_number, size: 11
-  String :Postal_address, size: 7
-  String :Account_type # e.g., 'Admin', 'Customer'
+  String :PhoneNumber, size: 11
+  String :Postcode, size: 7
+  String :Address
+  String :Account_type
 end
 
 # Create Beans Table
 DB.create_table? :Beans do
   primary_key :BeanID
-  String :Name, null: false
-  String :Roast
-  Decimal :PricePerBag, size: [10, 2]
-  Integer :CurrentStock, default: 0
+  String :Name
+  String :Type 
+  String :Roast 
+  Integer :PackWeight
+  Double :Price
+  Integer :CurrentStock
 end
 
 # Create Drinks Table with Composite Key
@@ -42,19 +52,24 @@ end
 DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
-  String :OrderContents
-  String :Order_Type
-  String :Payment_method
+  String :OrderContents    # We will store a JSON string here
+  String :OrderType       # 'In-Person' or 'Delivery'
+  String :PaymentMethod
   Float :totalCost
+  DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+  String :Location, default: 'In-Store'
+  TrueClass :IsDelivered, default: false
+  TrueClass :IsCompleted, default: false
 end
 
 # Table 4: Tickets
 DB.create_table? :Tickets do
   primary_key :ticketID
-  foreign_key :userID, :Accounts
+  foreign_key :UserID, :Accounts
   String :ticketType
   String :ticketContent
   FalseClass :ticketResolved, default: false
+  DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
 puts "Database tables initialized successfully!"

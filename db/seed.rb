@@ -1,99 +1,160 @@
 require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
+require 'json'
+require 'date'
 
-# Connect to the same database file
+# Connect to the database
 DB = Sequel.connect("sqlite://db/db.sqlite3")
 
-# 1. Clear existing data (optional, prevents duplicates if you run it twice)
-DB[:Tickets].delete
-DB[:Orders].delete
-DB[:Beans].delete
-DB[:Accounts].delete
+# Clear existing data in correct order to respect foreign keys
+[:Tickets, :Orders, :Beans, :Accounts].each do |table| 
+  DB[table].delete if DB.table_exists?(table)
+end
 
-# 2. Seed Accounts (Table 1)
-# Using BCrypt as per the "Sanitisation" lecture slides
 password_hash = BCrypt::Password.create("password123")
 
-DB[:Accounts].insert(
-  First_Name: "John",
-  Last_name: "Smith",
-  email: "abc123@funtime.org.uk",
-  hashedPassword: password_hash,
-  Phone_number: "12345678901",
-  Postal_address: "S1 2BC",
-  Account_type: "Admin"
-)
-
-# 3. Seed Beans (Table 2)
-# DB[:Beans].insert(
-#   BeanType: "Arabica",
-#   BeanBlend: "Espresso",
-#   BeanRoast: "Medium-dark",
-#   CurrentStock: 500
-# )
-
-# seeding beans and coffee drinks
-DB[:Drinks].delete
-DB[:Beans].delete
-
-puts "Seeding Beans..."
-
-# 3. Seed Beans and capture the IDs
-# We use .insert to get the auto-incremented ID back
-arabica_id = DB[:Beans].insert(
-  Name: "House Arabica",
-  Roast: "Medium",
-  PricePerBag: 9.50,
-  CurrentStock: 50
-)
-
-robusta_id = DB[:Beans].insert(
-  Name: "Dark Robusta",
-  Roast: "Dark",
-  PricePerBag: 7.25,
-  CurrentStock: 30
-)
-
-decaf_id = DB[:Beans].insert(
-  Name: "Swiss Water Decaf",
-  Roast: "Light",
-  PricePerBag: 10.00,
-  CurrentStock: 20
-)
-
-puts "Seeding Drinks..."
-
-# 4. Seed Drinks using the IDs from above
-drinks_data = [
-  { BeanID: arabica_id, Beverage: "Americano", Size: "Regular", Price: 3.20 },
-  { BeanID: arabica_id, Beverage: "Latte",     Size: "Large",   Price: 3.80 },
-  { BeanID: robusta_id, Beverage: "Espresso",  Size: "Single",  Price: 2.50 },
-  { BeanID: robusta_id, Beverage: "Flat White",Size: "Regular", Price: 3.40 },
-  { BeanID: decaf_id,   Beverage: "Cappuccino",Size: "Regular", Price: 3.60 }
+# --- 1. ACCOUNTS ---
+# Staff Roles: administrator, barista, manager
+staff_data = [
+  ["John", "Admin", "admin@cafe.com", "administrator"],
+  ["Alice", "Barista", "alice@cafe.com", "barista"],
+  ["Charlie", "Manager", "manager@cafe.com", "manager"]
 ]
 
-drinks_data.each do |drink|
+staff_data.each do |first, last, email, role|
+  DB[:Accounts].insert(
+    UserID: rand(100000..199999),
+    FirstName: first,
+    LastName: last,
+    StampCount: 0,
+    email: email,
+    hashedPassword: password_hash,
+    PhoneNumber: "07#{rand(100000000..999999999)}",
+    Postcode: "S1 1AA",
+    Address: "1 Cafe Lane, Sheffield",
+    Account_type: role
+  )
+end
+
+15.times do |i|
+  DB[:Accounts].insert(
+    UserID: 200000 + i,
+    FirstName: ["Liam", "Emma", "Noah", "Olivia", "James"].sample,
+    LastName: ["Smith", "Jones", "Brown", "Taylor"].sample,
+    StampCount: rand(0..9),
+    email: "customer#{i}@example.com",
+    hashedPassword: password_hash,
+    PhoneNumber: "07#{rand(100000000..999999999)}",
+    Postcode: "S#{rand(1..10)} 2BB",
+    Address: "#{rand(1..100)} Residence Rd, Sheffield",
+    Account_type: "customer"
+  )
+end
+
+# --- BEANS ---
+bean_list = [
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 350, 12.50, 20],
+  [2, "Andean Gold", "House Blend", "Medium", 1200, 24.99, 15],
+  [3, "Amazonian Night", "Santos", "Dark", 800, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 450, 14.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 600, 11.00, 50]
+]
+
+bean_list.each do |id, name, type, roast, weight, price, stock|
+  DB[:Beans].insert(
+    BeanID: id,
+    Name: name,
+    Type: type, 
+    Roast: roast, 
+    PackWeight: weight,
+    Price: price,
+    CurrentStock: stock
+  )
+end
+# --- ---
+
+# --- Drinks ---
+drinks_list = [
+  # Using Ethiopian Breeze (ID: 1)
+  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 3.00 },
+  { BeanID: 1, Beverage: "Cold Brew",     Size: "Large",   Price: 4.20 },
+  # Using Andean Gold (ID: 2)
+  { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
+  { BeanID: 2, Beverage: "Cappuccino",    Size: "Large",   Price: 3.90 },
+  # Using Amazonian Night (ID: 3)
+  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.20 },
+  # Using Maya Sunrise (ID: 4)
+  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.40 },
+  # Using Hanoi Fuel (ID: 5)
+  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.80 },
+  { BeanID: 5, Beverage: "Cortado",       Size: "Small",   Price: 3.10 }
+]
+
+puts "Seeding Drinks..."
+drinks_list.each do |drink|
   DB[:Drinks].insert(drink)
 end
-#
+# --- ---
 
-# 4. Seed Orders (Table 3)
-# We use the ID of the user we just created (likely 1)
-DB[:Orders].insert(
-  UserID: 1,
-  OrderContents: "2x Arabica Espresso",
-  Order_Type: "Online",
-  Payment_method: "Card",
-  totalCost: 15.50
-)
+# --- HELPERS ---
+MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
+bean_types = DB[:Beans].map(:BeanType)
 
-# 5. Seed Tickets (Table 4)
-DB[:Tickets].insert(
-  userID: 1,
-  ticketType: "Account",
-  ticketContent: "I cannot update my postal address in the settings.",
-  ticketResolved: false
-)
+def days_ago(n)
+  Time.now - (n * 86400) - rand(3600..7200)
+end
 
-puts "Database seeded successfully with updated table names!"
+# Function to generate the JSON string for OrderContents
+def generate_json_contents(beans)
+  order_map = {}
+  # Add 1-3 random menu items
+  rand(1..3).times do
+    order_map[MENU_ITEMS.sample] = rand(1..2)
+  end
+  # 40% chance to include a specific bean variety
+  if rand < 0.4
+    order_map["#{beans.sample} Beans (250g)"] = 1
+  end
+  order_map.to_json
+end
+
+# --- 4. ORDERS ---
+customer_ids = DB[:Accounts].where(Account_type: "customer").map(:UserID)
+
+40.times do |i|
+  # First 5 orders are "Recent/Live", the rest are historical
+  is_past = i > 5 
+  
+  DB[:Orders].insert(
+    UserID: customer_ids.sample,
+    OrderContents: generate_json_contents(bean_types),
+    OrderType: ["In-Person", "Delivery"].sample,
+    PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
+    totalCost: rand(3.50..22.00).round(2),
+    CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
+    Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
+    IsDelivered: is_past,
+    IsCompleted: is_past
+  )
+end
+
+# --- 5. TICKETS ---
+complaint_samples = [
+  "My coffee was cold.",
+  "The delivery driver couldn't find my flat.",
+  "I haven't received my loyalty stamps for my last visit.",
+  "The bag of beans I bought had a hole in it.",
+  "Payment failed but money left my account."
+]
+
+10.times do
+  DB[:Tickets].insert(
+    UserID: customer_ids.sample,
+    ticketType: ["Complaint", "Technical", "Query"].sample,
+    ticketContent: complaint_samples.sample,
+    ticketResolved: [true, false].sample
+  )
+end
+
+puts "Seed complete: 4 tables populated (Accounts, Beans, Orders, Tickets)."

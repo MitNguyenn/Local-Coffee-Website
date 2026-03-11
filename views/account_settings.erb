@@ -13,15 +13,14 @@
   <main class="login-container">
     <div class="login-card">
       
-      <h2>Hi, <%= @first_name %> </h2>
+      <h2>Hi, <%= @user[:FirstName]%> </h2>
 
       <h3 class="detail-header">Personal Details</h3>
 
-      <form method="POST" action="/login">
+      <form method="POST" action="/update-account">
         <div class="input-wrapper">
         <label for="firstname">First Name</label>
-          <input type="text" value="<%= @first_name %>" 
-          readonly class="account-input">
+          <input type="text" name = "FirstName" value="<%= @user[:FirstName] %>" readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -29,8 +28,7 @@
 
         <div class="input-wrapper">
         <label for="lastname">Last Name</label>
-          <input type="text" value="<%= @last_name %>" 
-          readonly class="account-input">
+          <input type="text" name = "LastName" value="<%= @user[:LastName] %>" readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -38,8 +36,7 @@
 
         <div class="input-wrapper">
         <label for="date">Date of Birth</label>
-          <input type="text" value="<%= @date_of_birth %>"
-          readonly class="account-input">
+          <input type="text" name = "date_of_birth" value="<%= @date_of_birth %>" readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -49,8 +46,7 @@
         
         <div class="input-wrapper">
         <label for="email">Email</label>
-          <input type="text" value="<%= @email %>" 
-          readonly class="account-input">
+          <input type="text" name = "email" value="<%= @user[:email] %>" readonly class="account-input">
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -58,9 +54,8 @@
 
         <div class="input-wrapper">
         <label for="password">Password</label>
-          <input type="password" value="<%= @password %>" 
-          readonly class="account-input">
-          <img src="eye-crossed.png"
+          <input type="password" name = "hashedPassword" value="<%= @user[:hashedPassword] %>" readonly class="account-input">
+          <img src="eye-crossed.png"  
           class="reveal-password"
           onclick="togglePassword(this)">
         </div>
@@ -73,8 +68,7 @@
         
         <div class="input-wrapper">
         <label for="address">Address</label>
-          <input type="text" value="<%= @address %>" 
-          readonly class="account-input" caret-color=transparent>
+          <input type="text" value="<%= @user[:Address] %>" readonly class="account-input" caret-color=transparent>
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
@@ -82,14 +76,18 @@
 
         <div class="input-wrapper">
         <label for="postcode">Postcode</label>
-          <input type="text" value="<%= @postcode %>" 
-          readonly class="account-input" caret-color=transparent>
+          <input type="text" name = "Postcode" value="<%= @user[:Postcode] %>" readonly class="account-input" caret-color=transparent>
           <img src="edit.png"
           class="edit-icon"
           onclick="enableEdit(this)">
         </div>
-
+        <br>
+        <br>
+        <input type = "submit" value="Submit" class = "submit-btn">
       </form>
+      <% if params[:success] %>
+  <p style="color: green;">Profile updated successfully!</p>
+<% end %>
      </div>
   </main>
   <script>
