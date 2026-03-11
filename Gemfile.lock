@@ -5,6 +5,7 @@ GEM
     bcrypt (3.1.21)
     bigdecimal (4.0.1)
     chunky_png (1.4.0)
+    dotenv (3.2.0)
     json (2.19.0)
     logger (1.7.0)
     multi_json (1.19.1)
@@ -56,6 +57,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
+  dotenv
   json
   puma
   rackup
@@ -71,6 +73,7 @@ CHECKSUMS
   bcrypt (3.1.21) sha256=5964613d750a42c7ee5dc61f7b9336fb6caca429ba4ac9f2011609946e4a2dcf
   bigdecimal (4.0.1) sha256=8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7
   chunky_png (1.4.0) sha256=89d5b31b55c0cf4da3cf89a2b4ebc3178d8abe8cbaf116a1dba95668502fdcfe
+  dotenv (3.2.0) sha256=e375b83121ea7ca4ce20f214740076129ab8514cd81378161f11c03853fe619d
   json (2.19.0) sha256=bc5202f083618b3af7aba3184146ec9d820f8f6de261838b577173475e499d9a
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   multi_json (1.19.1) sha256=7aefeff8f2c854bf739931a238e4aea64592845e0c0395c8a7d2eea7fdd631b7
