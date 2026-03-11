@@ -1,0 +1,48 @@
+<div class="page-title">
+    <h2>Our Hot Drinks</h2>
+</div>
+
+<div class="catalog-grid" id="item-container">
+  <% @drinks.each do |drink| %>
+    <%# We use the method names defined in your seed/table design %>
+    <div class="product-card" 
+         data-bean-id="<%= drink.BeanID %>" 
+         data-beverage="<%= drink.Beverage %>">
+      
+      <img src="/drink_example.png" alt="<%= drink.Beverage %>">
+      <h3><%= drink.Beverage %></h3>
+      <span class="size-tag"><%= drink.Size %></span>
+      <p class="price">£<%= sprintf('%.2f', drink.Price) %></p>
+      <button class="add-to-basket-button">Add to basket</button>
+      <button class="buy-button">Buy Now</button>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  const container = document.getElementById('item-container');
+
+  container.addEventListener('click', (event) => {
+    if (event.target.classList.contains('add-to-basket-button')) {
+      if (event.target.textContent == "Add to basket") {
+        event.target.textContent = "Added! ✅";
+        
+        // do other stuff (actually add to the basket, update database, ...)
+        setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
+      } else {
+        event.target.textContent = "Removed!";
+
+        // do other stuff (remove from basket, update database, ...)
+        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
+      }
+     return; // Stop here so we don't redirect
+    }
+    const card = event.target.closest('.product-card');
+    if (card) {
+      const beanId = card.dataset.beanId;
+      const bevName = encodeURIComponent(card.dataset.beverage);
+      
+      window.location.href = `/product/?type=drink&bean_id=${card.dataset.beanId}&name=${bevName}`;
+    }
+  });
+</script>

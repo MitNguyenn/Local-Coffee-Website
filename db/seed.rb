@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db.sqlite3")
+DB = Sequel.connect("sqlite://db/db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Accounts].each do |table| 
@@ -37,7 +37,6 @@ staff_data.each do |first, last, email, role|
   )
 end
 
-# 15 Customers
 15.times do |i|
   DB[:Accounts].insert(
     UserID: 200000 + i,
@@ -53,25 +52,52 @@ end
   )
 end
 
-# --- 2. BEANS ---
+# --- BEANS ---
 bean_list = [
-  ["Ethiopian", "Yirgacheffe", "Light", 350],
-  ["Colombian", "House Blend", "Medium", 1200],
-  ["Brazilian", "Santos", "Dark", 800],
-  ["Guatemalan", "Antigua", "Medium", 450],
-  ["Vietnamese", "Robusta", "Dark", 600]
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 350, 12.50, 20],
+  [2, "Andean Gold", "House Blend", "Medium", 1200, 24.99, 15],
+  [3, "Amazonian Night", "Santos", "Dark", 800, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 450, 14.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 600, 11.00, 50]
 ]
 
-bean_list.each do |type, blend, roast, stock|
+bean_list.each do |id, name, type, roast, weight, price, stock|
   DB[:Beans].insert(
-    BeanType: type, 
-    BeanBlend: blend, 
-    BeanRoast: roast, 
-    Current_stock: stock
+    BeanID: id,
+    Name: name,
+    Type: type, 
+    Roast: roast, 
+    PackWeight: weight,
+    Price: price,
+    CurrentStock: stock
   )
 end
+# --- ---
 
-# --- 3. HELPERS ---
+# --- Drinks ---
+drinks_list = [
+  # Using Ethiopian Breeze (ID: 1)
+  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 3.00 },
+  { BeanID: 1, Beverage: "Cold Brew",     Size: "Large",   Price: 4.20 },
+  # Using Andean Gold (ID: 2)
+  { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
+  { BeanID: 2, Beverage: "Cappuccino",    Size: "Large",   Price: 3.90 },
+  # Using Amazonian Night (ID: 3)
+  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.20 },
+  # Using Maya Sunrise (ID: 4)
+  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.40 },
+  # Using Hanoi Fuel (ID: 5)
+  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.80 },
+  { BeanID: 5, Beverage: "Cortado",       Size: "Small",   Price: 3.10 }
+]
+
+puts "Seeding Drinks..."
+drinks_list.each do |drink|
+  DB[:Drinks].insert(drink)
+end
+# --- ---
+
+# --- HELPERS ---
 MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
 bean_types = DB[:Beans].map(:BeanType)
 

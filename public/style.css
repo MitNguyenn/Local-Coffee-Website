@@ -488,6 +488,50 @@ html {
   background-image: radial-gradient(circle, #a67458 20%, #4b2c20 80%);
 }
 
+.page-title {
+  text-align: center;
+}
+
+.catalog-grid {
+    display: flex;       
+    flex-wrap: wrap;
+    gap: 20px;           
+    justify-content: center;
+}
+
+.product-card {
+    flex: 0 1 300px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.product-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.add-to-basket-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #a67458;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.buy-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #a67458;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 /* Metrics Page */
 
 /* Container Namespace */

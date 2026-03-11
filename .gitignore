@@ -5,6 +5,8 @@ _coverage/
 .bundle/
 vendor/ 
 
+# used for debugging
+output.txt
 Gemfile.lock
 
 .env

@@ -3,7 +3,7 @@ require 'sqlite3'
 require 'json'
 
 # Connect to the database
-DB = Sequel.sqlite("db.sqlite3")
+DB = Sequel.sqlite("db/db.sqlite3")
 
 # 1. Clear existing data (optional, prevents duplicates if you run it twice)
 DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
@@ -23,13 +23,29 @@ DB.create_table? :Accounts do
   String :Account_type
 end
 
-# Table 2: Beans
+# Create Beans Table
 DB.create_table? :Beans do
   primary_key :BeanID
-  String :BeanType
-  String :BeanBlend
-  String :BeanRoast
-  Integer :Current_stock
+  String :Name
+  String :Type 
+  String :Roast 
+  Integer :PackWeight
+  Double :Price
+  Integer :CurrentStock
+end
+
+# Create Drinks Table with Composite Key
+DB.create_table? :Drinks do
+  Integer :BeanID
+  String :Beverage
+  String :Size
+  Decimal :Price, size: [10, 2]
+  
+  # Define the Composite Primary Key
+  primary_key [:BeanID, :Beverage]
+  
+  # Link to the Beans table
+  foreign_key [:BeanID], :Beans
 end
 
 # Table 3: Orders
@@ -45,7 +61,6 @@ DB.create_table? :Orders do
   TrueClass :IsDelivered, default: false
   TrueClass :IsCompleted, default: false
 end
-
 
 # Table 4: Tickets
 DB.create_table? :Tickets do
