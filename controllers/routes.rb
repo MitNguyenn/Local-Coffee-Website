@@ -191,3 +191,4 @@ get '/metrics' do
   puts @metrics
   erb :metrics_page
 end
+

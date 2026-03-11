@@ -20,12 +20,20 @@
         <form method="post" action="/project/db">
             <p>Your email address</p>
             <input type="text" name="form_useremail" class="box_size"/>
-        </form>
+        </form><br>
+
+        <label for="problem_type">Problem type</label>
+        <select name="problem_type" id="problem_type" class="problem_box">
+            <option value="query">Query</option>
+            <option value="technical">Technical</option>
+            <option value="complaint">Complaint</option>
+            <option value="other">Other</option>
+        </select> <br>
 
         <form method="post" action="/project/db">
             <p>Request Description</p>
             <input type="text" name="form_request_description" class="description_box""/><br><br><br>
-        </form>
+        </form> 
 
         <form method="post" action="/project/db">
             <input type="submit" value="Submit" class="submit_button"/>

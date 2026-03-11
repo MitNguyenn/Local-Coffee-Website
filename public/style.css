@@ -734,3 +734,12 @@ html {
   color: #ffffffbb;
   cursor: not-allowed;
 }
+
+.problem_box{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: skyblue;
+}
