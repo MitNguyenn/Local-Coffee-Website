@@ -10,3 +10,5 @@ output.txt
 Gemfile.lock
 
 .env
+
+.sqlite3
