@@ -57,12 +57,11 @@ function toggleDropdown() {
 }
 
 function toggleDropdownUser() {
-    document.getElementById("userDropdown").classList.toggle("show");
+  document.getElementById("userDropdown").classList.toggle("show");
 }
 
 
 window.onclick = function(event) {
-
   if (!event.target.closest('.menu-icon')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
     for (var i = 0; i < dropdowns.length; i++) {
