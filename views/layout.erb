@@ -1,114 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Badly Brewed Coffee</title>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="icon" type="image/x-icon" href="coffee.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Badly Brewed Coffee</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="coffee.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+  </head>
 
-<body>
-
-
-<nav class="navbar">
-  <div class="dropdown">
-    <div onclick="toggleDropdown()" class="menu-icon">☰</div>
-    <div id="myDropdown" class="dropdown-content">
-      <a href="/">Home</a>
-      <a href="/coffee-beans">Coffee Beans</a>
-      <a href="/drinks">Drinks</a>
-      <a href="/staff-portal">Staff Portal</a>
-      <a href="/help">Help</a>
-    </div>
-  </div>
-
-  <div class="nav-right">
-
-<div class="dropdown">
-  <div onclick="toggleDropdownCart()" class="cart">
-    <img src="cart.png" alt="cart-icon" width="50" height="50">
-    <% if session[:basket] && session[:basket].any? %>
-      <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
-    <% end %>
-  </div>
-
-  <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
-    <div class="cart-header">Your Basket</div>
-      <div class="cart-items-list">
-        <% if session[:basket] && session[:basket].any? %>
-          <% session[:basket].each do |item_id| %>
-            <div class="cart-item">
-              <span>Item #<%= item_id %></span> </div>
-          <% end %>
-          <hr>
-          <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
-        <% else %>
-          <p class="empty-msg">Your basket is empty!</p>
-        <% end %>
+  <body>
+    <nav class="navbar">
+      <div class="dropdown">
+        <div onclick="toggleDropdown()" class="menu-icon">☰</div>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="/">Home</a>
+          <a href="/coffee-beans">Coffee Beans</a>
+          <a href="/drinks">Drinks</a>
+          <a href="/staff-portal">Staff Portal</a>
+          <a href="/help">Help</a>
+        </div>
       </div>
-    </div>
-  </div>
-    <div class="dropdown">
-      <div onclick="toggleDropdownUser()" class="user-icon">
-        <img src="profile.png" width="50" height="50">
+
+      <div class="nav-right">
+        <div class="dropdown">
+          <div onclick="toggleDropdownCart()" class="cart">
+            <img src="cart.png" alt="cart-icon" width="50" height="50">
+            <% if session[:basket] && session[:basket].any? %>
+              <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
+            <% end %>
+          </div>
+
+          <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
+            <div class="cart-header">Your Basket</div>
+              <div class="cart-items-list">
+                <% if session[:basket] && session[:basket].any? %>
+                  <% session[:basket].each do |item_id| %>
+                    <div class="cart-item">
+                      <span>Item #<%= item_id %></span>
+                    </div>
+                  <% end %>
+                  <hr>
+                  <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+                <% else %>
+                  <p class="empty-msg">Your basket is empty!</p>
+                <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <div onclick="toggleDropdownUser()" class="user-icon">
+            <img src="profile.png" width="50" height="50">
+          </div>
+          <div id="userDropdown" class="user-dropdown-content">
+            <% if !logged_in? %>
+              <a href="/log-in">Log in</a>
+            <% else %>
+              <a href="/account-settings">Account settings</a>
+              <a href="/loyalty-card">Loyalty Card</a>
+              <a href="/my-orders">My Orders</a>
+              <a href="/log-out">Log out</a>
+            <% end %>
+          </div>
+        </div>
       </div>
-      <div id="userDropdown" class="user-dropdown-content">
-        <% if !logged_in? %>
-          <a href="/log-in">Log in</a>
-        <% else %>
-          <a href="/account-settings">Account settings</a>
-          <a href="/loyalty-card">Loyalty Card</a>
-          <a href="/my-orders">My Orders</a>
-          <a href="/log-out">Log out</a>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</nav>
+    </nav>
 
 
-  <main>
-    <%= yield %>
-  </main>
+    <main>
+      <%= yield %>
+    </main>
 
-  <footer>
-    <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
-  </footer>
+    <footer>
+      <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
+    </footer>
 
-  <script>
+    <script>
+      function toggleDropdown() {
+        document.getElementById("myDropdown").classList.toggle("show");
+      }
 
-function toggleDropdown() {
-  document.getElementById("myDropdown").classList.toggle("show");
-}
+      function toggleDropdownCart() {
+        document.getElementById("cartDropdown").classList.toggle("show");
+      }
 
-function toggleDropdownCart() {
-  document.getElementById("cartDropdown").classList.toggle("show");
-}
+      function toggleDropdownUser() {
+        document.getElementById("userDropdown").classList.toggle("show");
+      }
 
-function toggleDropdownUser() {
-  document.getElementById("userDropdown").classList.toggle("show");
-}
 
-window.onclick = function(event) {
-  // Close Menu
-  if (!event.target.closest('.menu-icon')) {
-    closeDropdowns("dropdown-content");
-  }
-  // Close User
-  if (!event.target.closest('.user-icon')) {
-    closeDropdowns("user-dropdown-content");
-  }
-  // Close Cart (Add this part)
-  if (!event.target.closest('.cart')) {
-    var dropdowns = document.getElementById("cartDropdown");
-    if (dropdowns && dropdowns.classList.contains('show')) {
-      dropdowns.classList.remove('show');
-    }
-  }
-}
-</script>
-</body>
+      window.onclick = function(event) {
+        // If user clicked outside the menu, close the menu
+        if (!event.target.closest('.menu-icon')) {
+          closeDropdowns("dropdown-content");
+        }
+
+        // Close Cart (Add this part)
+        if (!event.target.closest('.cart')) {
+          var dropdowns = document.getElementById("cartDropdown");
+          if (dropdowns && dropdowns.classList.contains('show')) {
+            dropdowns.classList.remove('show');
+          }
+        }
+        // If user clicked outside the user icon, close user dropdown
+        if (!event.target.closest('.user-icon')) {
+          closeDropdowns("user-dropdown-content");
+        }
+      }
+
+
+      function closeDropdowns(className) {
+        var dropdowns = document.getElementsByClassName(className);
+        for (var i = 0; i < dropdowns.length; i++) {
+          if (dropdowns[i].classList.contains('show')) {
+            dropdowns[i].classList.remove('show');
+          }
+        }
+      }
+
+    </script>
+  </body>
 </html>
