@@ -57,7 +57,7 @@ post '/log-in' do
   user = DB[:accounts].where(email: @email).first
   
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
-    session[:user_id] = user[:UserID]
+    session[:UserID] = user[:UserID]
     puts "Login successful for email: #{@email}"
     redirect '/'
   else
@@ -120,10 +120,10 @@ post '/register' do
     password: password1,
     PhoneNumber: PhoneNumber,
     Postcode: postcode,
-    :"Account_type" => "customer"
+    :"AccountType" => "customer"
   )
 
-  session[:user_id] = user.UserID
+  session[:UserID] = user.UserID
   redirect '/'
 rescue => e
   @error = "Registration failed: #{e.message}"
@@ -133,15 +133,15 @@ end
 get '/account-settings' do
   redirect '/log-in' unless logged_in?
 
-  @user = DB[:Accounts].where(UserID: session[:user_id]).first
+  @user = DB[:Accounts].where(UserID: session[:UserID]).first
 
   erb :account_settings
 end
 
 post '/update-account' do
-  redirect '/log-in' unless session[:user_id]
+  redirect '/log-in' unless session[:UserID]
 
-  DB[:Accounts].where(UserID: session[:user_id]).update(
+  DB[:Accounts].where(UserID: session[:UserID]).update(
     FirstName:     params[:FirstName],
     LastName:      params[:LastName],
     Postcode: params[:Postcode]
@@ -166,9 +166,9 @@ post '/change-password' do
 end
 
 get '/loyalty-card' do
-  redirect '/log-in' unless session[:user_id]
+  redirect '/log-in' unless session[:UserID]
 
-  @user = DB[:Accounts].where(UserID: session[:user_id]).first
+  @user = DB[:Accounts].where(UserID: session[:UserID]).first
 
   if @user
     qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:UserID]}")
@@ -193,9 +193,9 @@ get '/my-orders' do
     redirect '/log-in'
   end
 
-  puts "Fetching orders for user ID: #{session[:user_id]}"
-  @current_orders = fetch_current_orders(session[:user_id])
-  @past_orders = fetch_past_orders(session[:user_id])
+  puts "Fetching orders for user ID: #{session[:UserID]}"
+  @current_orders = fetch_current_orders(session[:UserID])
+  @past_orders = fetch_past_orders(session[:UserID])
   erb :my_orders
 end
 
@@ -209,8 +209,29 @@ get '/forgot' do
 end
 
 get '/metrics' do
-  #NEED TO CHECK SESSION TO SEE IF ACCOUNT HAS CORRECT LEVEL
+  redirect '/log-in' unless session[:UserID]
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/' unless userAccountLevel == 'manager'
   @metrics = analyze_sales_data
   puts @metrics
   erb :metrics_page
+end
+
+get '/user-tickets' do
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless userAccountLevel == 'manager' || userAccountLevel == 'administrator'
+
+  @live_tickets = DB[:Tickets].where(TicketResolved: false).all
+  @past_tickets = DB[:Tickets].where(TicketResolved: true).all
+  erb :ticket_management
+end
+
+get '/ticket/:id' do
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless userAccountLevel == 'manager' || userAccountLevel == 'administrator'
+
+  @ticket = DB[:Tickets].where(ticketID: params[:id]).first
+  erb :ticket_resolve
 end

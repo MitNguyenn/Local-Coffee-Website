@@ -3,7 +3,7 @@ require 'sqlite3'
 require 'json'
 
 # Connect to the database
-DB = Sequel.sqlite("db/db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # 1. Clear existing data (optional, prevents duplicates if you run it twice)
 DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
@@ -20,7 +20,7 @@ DB.create_table? :Accounts do
   String :PhoneNumber, size: 11
   String :Postcode, size: 7
   String :Address
-  String :Account_type
+  String :AccountType
 end
 
 # Create Beans Table
@@ -66,9 +66,9 @@ end
 DB.create_table? :Tickets do
   primary_key :ticketID
   foreign_key :UserID, :Accounts
-  String :ticketType
-  String :ticketContent
-  FalseClass :ticketResolved, default: false
+  String :TicketType
+  String :TicketContent
+  FalseClass :TicketResolved, default: false
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 

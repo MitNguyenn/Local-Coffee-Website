@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db/db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Accounts].each do |table| 
@@ -33,7 +33,7 @@ staff_data.each do |first, last, email, role|
     PhoneNumber: "07#{rand(100000000..999999999)}",
     Postcode: "S1 1AA",
     Address: "1 Cafe Lane, Sheffield",
-    Account_type: role
+    AccountType: role
   )
 end
 
@@ -48,7 +48,7 @@ end
     PhoneNumber: "07#{rand(100000000..999999999)}",
     Postcode: "S#{rand(1..10)} 2BB",
     Address: "#{rand(1..100)} Residence Rd, Sheffield",
-    Account_type: "customer"
+    AccountType: "customer"
   )
 end
 
@@ -115,7 +115,7 @@ def generate_json_contents(beans)
 end
 
 # --- 4. ORDERS ---
-customer_ids = DB[:Accounts].where(Account_type: "customer").map(:UserID)
+customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 40.times do |i|
   # First 5 orders are "Recent/Live", the rest are historical
@@ -146,9 +146,9 @@ complaint_samples = [
 10.times do
   DB[:Tickets].insert(
     UserID: customer_ids.sample,
-    ticketType: ["Complaint", "Technical", "Query"].sample,
-    ticketContent: complaint_samples.sample,
-    ticketResolved: [true, false].sample
+    TicketType: ["Complaint", "Technical", "Query"].sample,
+    TicketContent: complaint_samples.sample,
+    TicketResolved: [true, false].sample
   )
 end
 

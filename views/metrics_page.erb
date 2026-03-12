@@ -68,3 +68,67 @@
     </section>
   </div>
 </div>
+
+<button id="download-btn" class="m-download-btn" data-metrics='<%= @metrics.to_json %>'>
+  Download Data As CSV
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('download-btn');
+  
+  if (btn) {
+    btn.addEventListener('click', function() {
+      // 1. Get the data from the attribute safely
+      const rawData = this.getAttribute('data-metrics');
+      const metrics = JSON.parse(rawData);
+      
+      // 2. Build the CSV rows
+      const rows = [];
+      const safeFix = (val) => parseFloat(val || 0).toFixed(2);
+
+      // Financials
+      rows.push(["Category", "Label/Name", "Value"]);
+      rows.push(["Financials", "Gross Revenue", `£${safeFix(metrics.total_sales)}`]);
+      rows.push(["Financials", "Avg. Order Value", `£${safeFix(metrics.avg_order_value)}`]);
+      rows.push([]);
+
+      // Top Products
+      rows.push(["Top 3 Ranking", "Product Name", "Qty Sold"]);
+      (metrics.top_products || []).forEach((item, index) => {
+        // item[0] is name, item[1] is qty
+        rows.push([`Rank #${index + 1}`, item[0], item[1]]);
+      });
+      rows.push([]);
+
+      // Sales by Channel
+      rows.push(["Sales by Channel", "Type", "Total"]);
+      Object.entries(metrics.sales_by_category || {}).forEach(([type, total]) => {
+        rows.push(["Channel", type || "General", `£${safeFix(total)}`]);
+      });
+      rows.push([]);
+
+      // Monthly Timeline
+      rows.push(["Monthly Revenue", "Month", "Total"]);
+      Object.entries(metrics.monthly_sales || {}).forEach(([month, total]) => {
+        rows.push(["Monthly", month, `£${safeFix(total)}`]);
+      });
+
+      // 3. Generate and Download
+      const csvContent = rows
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Analytics_Export_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  }
+});
+</script>
