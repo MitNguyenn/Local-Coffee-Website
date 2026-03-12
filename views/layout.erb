@@ -11,10 +11,11 @@
 </head>
 
 <body>
-  <nav class="navbar">
-    <div class="dropdown">
+
+
+<nav class="navbar">
+  <div class="dropdown">
     <div onclick="toggleDropdown()" class="menu-icon">☰</div>
-    
     <div id="myDropdown" class="dropdown-content">
       <a href="/">Home</a>
       <a href="/coffee-beans">Coffee Beans</a>
@@ -23,24 +24,51 @@
       <a href="/help">Help</a>
     </div>
   </div>
-    <div class = "dropdown">
-  <div onclick="toggleDropdownUser()" class="user-icon">
-    <img src="profile.png" width="50" height="50">
+
+  <div class="nav-right">
+
+<div class="dropdown">
+  <div onclick="toggleDropdownCart()" class="cart">
+    <img src="cart.png" alt="cart-icon" width="50" height="50">
+    <% if session[:basket] && session[:basket].any? %>
+      <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
+    <% end %>
   </div>
-  <div id="userDropdown" class="user-dropdown-content">
-    <% if !logged_in? %>
-      <a href="/log-in">Log in</a>
-    <% end %>
-    
-    <% if logged_in? %>
-      <a href="/account-settings">Account settings</a>
-      <a href="/loyalty-card">Loyalty Card</a>
-      <a href="/my-orders">My Orders</a>
-      <a href="/log-out">Log out</a>
-    <% end %>
+
+  <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
+    <div class="cart-header">Your Basket</div>
+      <div class="cart-items-list">
+        <% if session[:basket] && session[:basket].any? %>
+          <% session[:basket].each do |item_id| %>
+            <div class="cart-item">
+              <span>Item #<%= item_id %></span> </div>
+          <% end %>
+          <hr>
+          <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+        <% else %>
+          <p class="empty-msg">Your basket is empty!</p>
+        <% end %>
+      </div>
     </div>
+  </div>
+    <div class="dropdown">
+      <div onclick="toggleDropdownUser()" class="user-icon">
+        <img src="profile.png" width="50" height="50">
+      </div>
+      <div id="userDropdown" class="user-dropdown-content">
+        <% if !logged_in? %>
+          <a href="/log-in">Log in</a>
+        <% else %>
+          <a href="/account-settings">Account settings</a>
+          <a href="/loyalty-card">Loyalty Card</a>
+          <a href="/my-orders">My Orders</a>
+          <a href="/log-out">Log out</a>
+        <% end %>
+      </div>
     </div>
-  </nav>
+  </div>
+</nav>
+
 
   <main>
     <%= yield %>
@@ -56,29 +84,28 @@ function toggleDropdown() {
   document.getElementById("myDropdown").classList.toggle("show");
 }
 
+function toggleDropdownCart() {
+  document.getElementById("cartDropdown").classList.toggle("show");
+}
+
 function toggleDropdownUser() {
   document.getElementById("userDropdown").classList.toggle("show");
 }
 
-
 window.onclick = function(event) {
+  // Close Menu
   if (!event.target.closest('.menu-icon')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
+    closeDropdowns("dropdown-content");
   }
-
+  // Close User
   if (!event.target.closest('.user-icon')) {
-    var dropdowns = document.getElementsByClassName("user-dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
+    closeDropdowns("user-dropdown-content");
+  }
+  // Close Cart (Add this part)
+  if (!event.target.closest('.cart')) {
+    var dropdowns = document.getElementById("cartDropdown");
+    if (dropdowns && dropdowns.classList.contains('show')) {
+      dropdowns.classList.remove('show');
     }
   }
 }
