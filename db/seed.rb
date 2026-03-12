@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db/db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Accounts].each do |table| 
@@ -54,11 +54,11 @@ end
 
 # --- BEANS ---
 bean_list = [
-  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 350, 12.50, 20],
-  [2, "Andean Gold", "House Blend", "Medium", 1200, 24.99, 15],
-  [3, "Amazonian Night", "Santos", "Dark", 800, 18.00, 10],
-  [4, "Maya Sunrise", "Antigua", "Medium", 450, 14.25, 30],
-  [5, "Hanoi Fuel", "Robusta", "Dark", 600, 11.00, 50]
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
+  [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
+  [3, "Amazonian Night", "Santos", "Dark", 250, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 500, 14.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 500, 11.00, 50]
 ]
 
 bean_list.each do |id, name, type, roast, weight, price, stock|
@@ -76,14 +76,14 @@ end
 
 # --- Drinks ---
 drinks_list = [
-  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 3.00 },
-  { BeanID: 1, Beverage: "Cold Brew",     Size: "Large",   Price: 4.20 },
+  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 1.90 },
+  { BeanID: 1, Beverage: "Cold Brew",     Size: "Regular",   Price: 4.20 },
   { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
-  { BeanID: 2, Beverage: "Cappuccino",    Size: "Large",   Price: 3.90 },
-  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.20 },
-  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.40 },
-  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.80 },
-  { BeanID: 5, Beverage: "Cortado",       Size: "Small",   Price: 3.10 }
+  { BeanID: 2, Beverage: "Cappuccino",    Size: "Regular",   Price: 3.60 },
+  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.00 },
+  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.35 },
+  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.20 },
+  { BeanID: 5, Beverage: "Cortado",       Size: "Regular",   Price: 3.10 }
 ]
 
 puts "Seeding Drinks..."

@@ -749,6 +749,32 @@ html {
   text-align: right;
 }
 
+/* --- THE DOWNLOAD BUTTON --- */
+.m-download-btn {
+  display: block;
+  margin: 40px auto;
+  padding: 15px 40px;
+  background-color: #a67458; /* Matching your theme brown */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-family: "Lilita One", sans-serif;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(166, 116, 88, 0.3);
+}
+
+.m-download-btn:hover {
+  background-color: #4b2c20; /* Darker coffee brown */
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(75, 44, 32, 0.4);
+}
+
+.m-download-btn:active {
+  transform: scale(0.98);
+}
+
 .my-orders-container {
   max-width: 800px;
   margin: 2rem auto;
