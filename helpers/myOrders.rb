@@ -1,18 +1,18 @@
 require 'json'
 
 module MyOrders
-  def fetch_current_orders(user_id)
+  def fetch_current_orders(userID)
     orders = DB[:Orders]
-      .where(UserID: user_id, IsCompleted: false)
+      .where(UserID: userID, IsCompleted: false)
       .order(Sequel.desc(:CreatedAt))
       .all
 
     parse_contents(orders)
   end
 
-  def fetch_past_orders(user_id)
+  def fetch_past_orders(userID)
     orders = DB[:Orders]
-      .where(UserID: user_id, IsCompleted: true)
+      .where(UserID: userID, IsCompleted: true)
       .order(Sequel.desc(:CreatedAt))
       .all
 

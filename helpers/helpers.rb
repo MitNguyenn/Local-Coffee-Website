@@ -23,10 +23,10 @@ helpers do
   include MyOrders
   def current_user
 
-    return nil unless session[:user_id]
+    return nil unless session[:UserID]
     
 
-    @current_user ||= DB[:Accounts].where(UserID: session[:user_id]).first
+    @current_user ||= DB[:Accounts].where(UserID: session[:UserID]).first
   end
 
   def logged_in?

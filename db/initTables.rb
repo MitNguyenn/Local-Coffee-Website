@@ -20,7 +20,7 @@ DB.create_table? :Accounts do
   String :PhoneNumber, size: 11
   String :Postcode, size: 7
   String :Address
-  String :Account_type
+  String :AccountType
 end
 
 # Create Beans Table
@@ -66,9 +66,9 @@ end
 DB.create_table? :Tickets do
   primary_key :ticketID
   foreign_key :UserID, :Accounts
-  String :ticketType
-  String :ticketContent
-  FalseClass :ticketResolved, default: false
+  String :TicketType
+  String :TicketContent
+  FalseClass :TicketResolved, default: false
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
