@@ -263,11 +263,14 @@ post '/edit-account/:id' do
     FirstName: params[:FirstName],
     LastName: params[:LastName],
     email: params[:email],
-    password: resetPassword ? newPassword : nil,
     PhoneNumber: params[:PhoneNumber],
     Postcode: params[:Postcode],
     AccountType: params[:AccountType]
   )
 
+  DB[:Accounts].where(UserID: params[:id]).update(
+    hashedPassword: BCrypt::Password.create(newPassword).to_s
+  ) if resetPassword
+  
   redirect '/manage-accounts'
 end
