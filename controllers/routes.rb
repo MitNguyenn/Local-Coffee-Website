@@ -271,6 +271,14 @@ post '/edit-account/:id' do
   DB[:Accounts].where(UserID: params[:id]).update(
     hashedPassword: BCrypt::Password.create(newPassword).to_s
   ) if resetPassword
-  
+
+  redirect '/manage-accounts'
+end
+
+get '/manage-accounts-delete/:id' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  DB[:Accounts].where(UserID: params[:id]).delete
   redirect '/manage-accounts'
 end
