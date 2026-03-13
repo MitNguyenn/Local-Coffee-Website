@@ -120,6 +120,7 @@ post '/register' do
     password: password1,
     PhoneNumber: PhoneNumber,
     Postcode: postcode,
+    AccountType: 'customer'
   )
 
   session[:UserID] = user.UserID
