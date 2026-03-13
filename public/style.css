@@ -1106,7 +1106,7 @@ button:active {
 }
 
 /* Account Management main page */
-/* Unique Container: Wide layout for desktop screens */
+/* Container using your global flex/bg settings */
 .acc-view__main {
   width: 95%;
   max-width: 1600px;
@@ -1114,124 +1114,106 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 }
 
-/* Hero Title: Large and readable */
+/* Title using Lilita One and your primary coffee brown */
 .acc-view__title {
   font-family: "Lilita One", sans-serif;
   font-size: 3.5rem;
   color: #4b2c20;
-  margin-bottom: 30px;
-  letter-spacing: 1px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-/* Big Search Bar */
-.acc-view__search {
+/* Search Bar matching your input style */
+.acc-view__search, .acc-view__select {
   width: 60%;
-  padding: 18px 25px;
-  font-size: 1.2rem;
-  border: 3px solid #a67458;
-  border-radius: 50px;
-  background-color: #fdf5e6;
-  font-family: "Segoe UI", sans-serif;
-  margin-bottom: 40px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  outline: none;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  background-color: white;
+  font-family: inherit;
+  margin-bottom: 30px;
+  box-sizing: border-box;
 }
 
-/* The Big Menu Board Table */
+.acc-view__search:focus, .acc-view__select:focus {
+  outline: none;
+  border-color: #a67458;
+}
+
+/* The Table Board - uses your login-card style logic */
 .acc-view__board {
   width: 100%;
-  background: white;
-  border: 10px solid #4b2c20; /* Thicker wood frame */
-  border-radius: 30px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  padding: 20px;
 }
 
 .acc-view__table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto; /* Lets cells expand to fit content */
 }
 
-/* Large, spacious Headers */
+/* Table Headers using your Navbar link bold style */
 .acc-view__th {
   font-family: "Lilita One", sans-serif;
-  background-color: #a67458;
-  color: white;
-  padding: 25px 20px;
-  font-size: 1.3rem;
-  text-align: left;
-  border-bottom: 4px solid #4b2c20;
-}
-
-/* High-readability Data Cells */
-.acc-view__td {
-  padding: 25px 20px; /* Massive space for each cell */
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 1.1rem;
-  font-weight: 400; /* Ensuring it is not bold */
-  color: #4b2c20;
-  border-bottom: 1px solid #f0e6dc;
-  line-height: 1.5;
-}
-
-/* Row Styling */
-.acc-view__row:nth-child(even) { background-color: #fffaf5; }
-.acc-view__row:hover { background-color: #fcf2e8; }
-
-/* Role Badge */
-.acc-view__badge {
-  display: inline-block;
-  background: #4b2c20;
+  background-color: #4b2c20;
   color: #fdf5e6;
-  padding: 6px 14px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: bold;
+  padding: 20px;
+  text-align: left;
+  font-size: 1.2rem;
 }
-/* Glossy Coffee-Themed Button */
+
+/* Table Data - using your body text color and font */
+.acc-view__td {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #4b2c20;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.acc-view__row:hover {
+  background-color: rgba(166, 116, 88, 0.1);
+}
+
+/* The Button - Updated to match your .btn-skeuo class */
 .acc-view__btn {
   display: inline-block;
-  text-decoration: none;
-  font-family: "Lilita One", sans-serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  color: white;
-  
-  /* Espresso Gradient */
-  background: linear-gradient(to bottom, #a67458 0%, #7b5844 50%, #4b2c20 51%, #5d3a2a 100%);
-  
-  padding: 10px 20px;
-  border-radius: 50px;
+  background: linear-gradient(to bottom, #7b5844 0%, #4b2c20 100%);
   border: 1px solid #2a1810;
-  
-  /* Shadow for "floating" effect */
-  box-shadow: 
-    0 4px 6px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  
-  transition: all 0.2s ease;
-  cursor: pointer;
+  border-radius: 50px;
+  color: white !important;
+  padding: 8px 20px;
+  font-family: "Lilita One", sans-serif;
+  font-weight: bold;
+  text-decoration: none;
   text-align: center;
-  min-width: 60px;
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.1s;
 }
 
-/* Hover Effect: Glow and slight lift */
 .acc-view__btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 6px 12px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
   filter: brightness(1.1);
-  color: #fdf5e6;
 }
 
-/* Active Effect: Look "pressed" */
-.acc-view__btn:active {
-  transform: translateY(1px);
-  box-shadow: 
-    0 2px 3px rgba(0, 0, 0, 0.2),
-    inset 0 1px 3px rgba(0, 0, 0, 0.4);
+/* Badge for Role */
+.acc-view__badge {
+  background: #a67458;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
 }
