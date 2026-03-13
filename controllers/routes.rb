@@ -78,6 +78,7 @@ post '/register' do
   FirstName = params[:FirstName]
   LastName = params[:LastName]
   PhoneNumber = params[:PhoneNumber]
+  Address = params[:Address]
   postcode = params[:postcode]
 
   UserID = nil
@@ -120,9 +121,13 @@ post '/register' do
     #password_hash: BCrypt::Password.create(password).to_s,
     password: password1,
     PhoneNumber: PhoneNumber,
+    Address: Address,
     Postcode: postcode,
     AccountType: 'customer'
   )
+
+  user.Address = params[:Address] 
+  user.AccountType = 'customer'
 
   session[:UserID] = user.UserID
   redirect '/'
