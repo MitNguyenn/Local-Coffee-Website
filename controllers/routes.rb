@@ -235,3 +235,40 @@ get '/ticket/:id' do
   @ticket = DB[:Tickets].where(ticketID: params[:id]).first
   erb :ticket_resolve
 end
+
+get '/manage-accounts' do
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless userAccountLevel == 'administrator'
+
+  @accounts = DB[:Accounts].all
+
+  puts @accounts
+  erb :account_management
+end
+
+get '/edit-account/:id' do
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless userAccountLevel == 'administrator'
+
+  @account = DB[:Accounts].where(UserID: params[:id]).first
+  erb :edit_account
+end
+
+post '/edit-account/:id' do
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless userAccountLevel == 'administrator'
+
+  DB[:Accounts].where(UserID: params[:id]).update(
+    FirstName: params[:FirstName],
+    LastName: params[:LastName],
+    email: params[:email],
+    PhoneNumber: params[:PhoneNumber],
+    Postcode: params[:Postcode],
+    AccountType: params[:AccountType]
+  )
+
+  redirect '/manage-accounts'
+end
