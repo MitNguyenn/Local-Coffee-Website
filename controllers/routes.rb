@@ -237,13 +237,11 @@ get '/ticket/:id' do
 end
 
 get '/manage-accounts' do
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
   redirect '/log-in' unless session[:UserID]
+  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
   redirect '/' unless userAccountLevel == 'administrator'
 
   @accounts = DB[:Accounts].all
-
-  puts @accounts
   erb :account_management
 end
 

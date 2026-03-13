@@ -1,56 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Account Management</title>
-</head>
-<body>
-  <h1>Account Management</h1>
-  <input type="text" id="accountSearch" onkeyup="filterTable()" placeholder="Search by name, email, ID, or type...">
-  <table id="accountsTable">
-    <thead>
-      <tr>
-        <th>UserID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Phone Number</th>
-        <th>Postcode</th>
-        <th>Account Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @accounts.each do |account| %>
+<main class="acc-view__main">
+  <h1 class="acc-view__title">Account Management</h1>
+
+  <!-- Search Input -->
+  <input type="text" id="accountSearch" class="acc-view__search" 
+         onkeyup="filterTable()" placeholder="Search by name, email, or role...">
+
+  <!-- Table Board -->
+  <div class="acc-view__board">
+    <table id="accountsTable" class="acc-view__table">
+      <thead>
         <tr>
-          <!-- Using hash bracket notation to fix the "undefined method" error -->
-          <td><%= account[:UserID] %></td>
-          <td><%= account[:FirstName] %></td>
-          <td><%= account[:LastName] %></td>
-          <td><%= account[:email] %></td>
-          <td><%= account[:PhoneNumber] %></td>
-          <td><%= account[:Postcode] %></td>
-          <td><%= account[:AccountType] %></td>
+          <th class="acc-view__th">ID</th>
+          <th class="acc-view__th">Full Name</th>
+          <th class="acc-view__th">Email Address</th>
+          <th class="acc-view__th">Phone Number</th>
+          <th class="acc-view__th">Postcode</th>
+          <th class="acc-view__th">Account Type</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @accounts.each do |account| %>
+          <tr class="acc-view__row">
+            <td class="acc-view__td">#<%= account[:UserID] %></td>
+            <td class="acc-view__td"><%= account[:FirstName] %> <%= account[:LastName] %></td>
+            <td class="acc-view__td"><%= account[:email] %></td>
+            <td class="acc-view__td"><%= account[:PhoneNumber] %></td>
+            <td class="acc-view__td"><%= account[:Postcode] %></td>
+            <td class="acc-view__td">
+              <span class="acc-view__badge"><%= account[:AccountType] %></span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</main>
 
-  <script>
-    function filterTable() {
-      const input = document.getElementById("accountSearch");
-      const filter = input.value.toLowerCase();
-      const table = document.getElementById("accountsTable");
-      const tr = table.getElementsByTagName("tr");
+<script>
+  function filterTable() {
+    const filter = document.getElementById("accountSearch").value.toLowerCase();
+    const rows = document.querySelectorAll(".acc-view__row");
 
-
-      for (let i = 1; i < tr.length; i++) {
-        const rowText = tr[i].textContent.toLowerCase();
-        if (rowText.includes(filter)) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  </script>
-</body>
-</html>
+    rows.forEach(row => {
+      const isMatch = row.textContent.toLowerCase().includes(filter);
+      row.style.display = isMatch ? "" : "none";
+    });
+  }
+</script>
