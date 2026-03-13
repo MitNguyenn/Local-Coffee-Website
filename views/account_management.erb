@@ -16,6 +16,7 @@
           <th class="acc-view__th">Phone Number</th>
           <th class="acc-view__th">Postcode</th>
           <th class="acc-view__th">Account Type</th>
+          <th class="acc-view__th">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -28,6 +29,9 @@
             <td class="acc-view__td"><%= account[:Postcode] %></td>
             <td class="acc-view__td">
               <span class="acc-view__badge"><%= account[:AccountType] %></span>
+            </td>
+            <td class="acc-view__td">
+              <a href="/edit-account/<%= account[:UserID] %>" class="acc-view__btn">Edit Account</a>
             </td>
           </tr>
         <% end %>
