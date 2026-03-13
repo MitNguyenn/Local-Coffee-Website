@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Edit User #<%= @account[:UserID] %></title>
+  <title>Admin | Edit User</title>
 </head>
 <body>
 
@@ -13,6 +13,9 @@
       <h1 class="acc-view__title" style="font-size: 2rem;">Edit Account</h1>
       <p style="margin-top: -20px; color: #a67458;">Updating User ID: <strong>#<%= @account[:UserID] %></strong></p>
       <form method="POST">
+
+        <input type="reset">
+
         <h3 class="detail-header">Personal Details</h3>
 
         <div class="input-group">
@@ -23,6 +26,11 @@
         <div class="input-group">
           <label for="LastName">Last Name</label>
           <input type="text" name="LastName" value="<%= @account[:LastName] %>" class="account-input">
+        </div>
+
+        <div class="input-group">
+          <label for="Username">Reset Password</label>
+          <input type="checkbox" name="reset_password" id="reset_password" style="margin-right: 10px;">
         </div>
 
         <h3 class="detail-header">Permissions & Contact</h3>
@@ -62,13 +70,9 @@
 
         <div style="margin-top: 30px; display: flex; gap: 10px;">
           <input type="submit" value="Save Changes" class="acc-view__btn" style="flex: 2; padding: 15px;">
-          <a href="edit-account/<%= @account[:UserID] %>" class="acc-view__btn" style="flex: 1; padding: 15px; background: #64748b;">Cancel</a>
+          <a href="/manage-accounts" class="acc-view__btn" style="flex: 1; padding: 15px; background: #64748b;">Cancel</a>
         </div>
       </form>
-
-      <% if params[:success] %>
-        <p style="color: green; margin-top: 15px;">Account updated by Admin successfully!</p>
-      <% end %>
     </div>
   </main>
 

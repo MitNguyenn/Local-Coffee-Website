@@ -254,10 +254,16 @@ post '/edit-account/:id' do
   redirect '/log-in' unless session[:UserID]
   redirect '/' unless session[:AccountType] == 'administrator'
 
+  resetPassword = params[:reset_password] == "on"
+  if resetPassword
+    newPassword = "password123"
+  end
+
   DB[:Accounts].where(UserID: params[:id]).update(
     FirstName: params[:FirstName],
     LastName: params[:LastName],
     email: params[:email],
+    password: resetPassword ? newPassword : nil,
     PhoneNumber: params[:PhoneNumber],
     Postcode: params[:Postcode],
     AccountType: params[:AccountType]
