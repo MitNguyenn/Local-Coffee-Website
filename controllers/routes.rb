@@ -58,6 +58,7 @@ post '/log-in' do
   
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
     session[:UserID] = user[:UserID]
+    session[:AccountType] = user[:AccountType]
     puts "Login successful for email: #{@email}"
     redirect '/'
   else
@@ -210,17 +211,15 @@ end
 
 get '/metrics' do
   redirect '/log-in' unless session[:UserID]
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
-  redirect '/' unless userAccountLevel == 'manager'
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
   @metrics = analyze_sales_data
   puts @metrics
   erb :metrics_page
 end
 
 get '/user-tickets' do
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
   redirect '/log-in' unless session[:UserID]
-  redirect '/' unless userAccountLevel == 'manager' || userAccountLevel == 'administrator'
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
 
   @live_tickets = DB[:Tickets].where(TicketResolved: false).all
   @past_tickets = DB[:Tickets].where(TicketResolved: true).all
@@ -228,9 +227,8 @@ get '/user-tickets' do
 end
 
 get '/ticket/:id' do
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
   redirect '/log-in' unless session[:UserID]
-  redirect '/' unless userAccountLevel == 'manager' || userAccountLevel == 'administrator'
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
 
   @ticket = DB[:Tickets].where(ticketID: params[:id]).first
   erb :ticket_resolve
@@ -238,26 +236,23 @@ end
 
 get '/manage-accounts' do
   redirect '/log-in' unless session[:UserID]
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
-  redirect '/' unless userAccountLevel == 'administrator'
+  redirect '/' unless session[:AccountType] == 'administrator'
 
   @accounts = DB[:Accounts].all
   erb :account_management
 end
 
 get '/edit-account/:id' do
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
   redirect '/log-in' unless session[:UserID]
-  redirect '/' unless userAccountLevel == 'administrator'
+  redirect '/' unless session[:AccountType] == 'administrator'
 
   @account = DB[:Accounts].where(UserID: params[:id]).first
   erb :edit_account
 end
 
 post '/edit-account/:id' do
-  userAccountLevel = DB[:Accounts].where(UserID: session[:UserID]).get(:AccountType)
   redirect '/log-in' unless session[:UserID]
-  redirect '/' unless userAccountLevel == 'administrator'
+  redirect '/' unless session[:AccountType] == 'administrator'
 
   DB[:Accounts].where(UserID: params[:id]).update(
     FirstName: params[:FirstName],

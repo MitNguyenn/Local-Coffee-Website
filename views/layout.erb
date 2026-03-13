@@ -21,6 +21,12 @@
       <a href="/drinks">Drinks</a>
       <a href="/staff-portal">Staff Portal</a>
       <a href="/help">Help</a>
+      <% if logged_in? && (session[:AccountType] == 'manager' or session[:AccountType] == 'administrator') %>
+        <a href="/metrics">Metrics</a>
+      <% end %>
+      <% if logged_in? && session[:AccountType] == 'administrator' %>
+        <a href="/manage-accounts">Manage Accounts</a>
+      <% end %>
     </div>
   </div>
     <div class = "dropdown">
