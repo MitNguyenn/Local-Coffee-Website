@@ -11,4 +11,4 @@ Gemfile.lock
 
 .env
 
-.sqlite3
+db/db.sqlite3
