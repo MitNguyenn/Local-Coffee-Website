@@ -75,7 +75,6 @@
       </div>
     </nav>
 
-
     <main>
       <%= yield %>
     </main>
@@ -85,53 +84,46 @@
     </footer>
 
     <script>
-// Helper function to close all dropdowns
-function closeAllDropdowns() {
-  const dropdowns = [
-    document.getElementById("myDropdown"),
-    document.getElementById("cartDropdown"),
-    document.getElementById("userDropdown")
-  ];
-  
-  dropdowns.forEach(menu => {
-    if (menu) menu.classList.remove("show");
-  });
-}
+      function closeAllDropdowns() {
+        const dropdowns = [
+          document.getElementById("myDropdown"),
+          document.getElementById("cartDropdown"),
+          document.getElementById("userDropdown")
+        ];
+        
+        dropdowns.forEach(menu => {
+          if (menu) menu.classList.remove("show");
+        });
+      }
 
-function toggleDropdown(event) {
-  event.stopPropagation();
-  const menu = document.getElementById("myDropdown");
-  const isShowing = menu.classList.contains("show");
-  closeAllDropdowns(); // Close everything first
-  if (!isShowing) menu.classList.add("show"); // Only open if it wasn't already open
-}
+      function toggleDropdown(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("myDropdown");
+        const isShowing = menu.classList.contains("show");
+        closeAllDropdowns(); // Close everything first
+        if (!isShowing) menu.classList.add("show"); // Only open if it wasn't already open
+      }
 
-function toggleDropdownCart(event) {
-  event.stopPropagation();
-  const menu = document.getElementById("cartDropdown");
-  const isShowing = menu.classList.contains("show");
-  closeAllDropdowns();
-  if (!isShowing) menu.classList.add("show");
-}
+      function toggleDropdownCart(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("cartDropdown");
+        const isShowing = menu.classList.contains("show");
+        closeAllDropdowns();
+        if (!isShowing) menu.classList.add("show");
+      }
 
-function toggleDropdownUser(event) {
-  event.stopPropagation();
-  const menu = document.getElementById("userDropdown");
-  const isShowing = menu.classList.contains("show");
-  closeAllDropdowns();
-  if (!isShowing) menu.classList.add("show");
-}
+      function toggleDropdownUser(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("userDropdown");
+        const isShowing = menu.classList.contains("show");
+        closeAllDropdowns();
+        if (!isShowing) menu.classList.add("show");
+      }
 
-// Global click listener to close menus when clicking blank space
-window.onclick = function(event) {
-  closeAllDropdowns();
-}
-
-
-
-
-
-
+      // Global click listener to close menus when clicking blank space
+      window.onclick = function(event) {
+        closeAllDropdowns();
+      }
     </script>
   </body>
 </html>
