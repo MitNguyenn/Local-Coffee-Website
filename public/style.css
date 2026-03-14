@@ -599,25 +599,39 @@ html {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   margin: 20px 0;
-  padding: 20px;
+  padding: 25px;
+
   background: #fdf5e6;
-  border-radius: 15px;
-  border: 1px solid #4b2c20;
+  border-radius: 24px; 
+  border: 2px solid #4b2c20;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .stamp {
-  width: 35px;
+  width: 35px; 
   height: 35px;
   border-radius: 50%;
-  border: 2px solid #4b2c20;
-  background: white;
+  border: 2px dashed #4b2c20; 
+  background: transparent; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .stamp.filled {
-  background-color: #a67458;
-  background-image: radial-gradient(circle, #a67458 20%, #4b2c20 80%);
+  border: none;
+  background-color: transparent !important;
+
+  background-image: url("bean_stamp.png");
+  background-size: contain; 
+  background-repeat: no-repeat;
+  background-position: center;
+
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.4));
+  transform: rotate(-12deg) scale(1.5);
 }
 
 .page-title {
@@ -1128,7 +1142,8 @@ button:active {
 }
 
 /* Search Bar matching your input style */
-.acc-view__search, .acc-view__select {
+.acc-view__search,
+.acc-view__select {
   width: 60%;
   padding: 12px 25px;
   font-size: 1.1rem;
@@ -1140,7 +1155,8 @@ button:active {
   box-sizing: border-box;
 }
 
-.acc-view__search:focus, .acc-view__select:focus {
+.acc-view__search:focus,
+.acc-view__select:focus {
   outline: none;
   border-color: #a67458;
 }
@@ -1179,7 +1195,7 @@ button:active {
   font-size: 1.1rem;
   font-weight: 400;
   color: #4b2c20;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .acc-view__row:hover {
