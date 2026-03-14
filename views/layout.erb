@@ -12,8 +12,10 @@
 
   <body>
     <nav class="navbar">
+
       <div class="dropdown">
-        <div onclick="toggleDropdown()" class="menu-icon">☰</div>
+        <div onclick="toggleDropdown(event)" class="menu-icon">☰</div>
+        
         <div id="myDropdown" class="dropdown-content">
           <a href="/">Home</a>
           <a href="/coffee-beans">Coffee Beans</a>
@@ -24,8 +26,10 @@
       </div>
 
       <div class="nav-right">
+
+        <!-- Cart Button -->
         <div class="dropdown">
-          <div onclick="toggleDropdownCart()" class="cart">
+          <div onclick="toggleDropdownCart(event)" class="cart">
             <img src="cart.png" alt="cart-icon" width="50" height="50">
             <% if session[:basket] && session[:basket].any? %>
               <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
@@ -50,14 +54,17 @@
           </div>
         </div>
 
-        <div class="dropdown">
-          <div onclick="toggleDropdownUser()" class="user-icon">
-            <img src="profile.png" width="50" height="50">
+        <!-- Account Button -->
+        <div class = "dropdown">
+          <div onclick="toggleDropdownUser(event)" class="user-icon">
+            <img src="msn_profile.png" width="60" height="60">
           </div>
           <div id="userDropdown" class="user-dropdown-content">
             <% if !logged_in? %>
               <a href="/log-in">Log in</a>
-            <% else %>
+            <% end %>
+            
+            <% if logged_in? %>
               <a href="/account-settings">Account settings</a>
               <a href="/loyalty-card">Loyalty Card</a>
               <a href="/my-orders">My Orders</a>
@@ -78,47 +85,52 @@
     </footer>
 
     <script>
-      function toggleDropdown() {
-        document.getElementById("myDropdown").classList.toggle("show");
-      }
+// Helper function to close all dropdowns
+function closeAllDropdowns() {
+  const dropdowns = [
+    document.getElementById("myDropdown"),
+    document.getElementById("cartDropdown"),
+    document.getElementById("userDropdown")
+  ];
+  
+  dropdowns.forEach(menu => {
+    if (menu) menu.classList.remove("show");
+  });
+}
 
-      function toggleDropdownCart() {
-        document.getElementById("cartDropdown").classList.toggle("show");
-      }
+function toggleDropdown(event) {
+  event.stopPropagation();
+  const menu = document.getElementById("myDropdown");
+  const isShowing = menu.classList.contains("show");
+  closeAllDropdowns(); // Close everything first
+  if (!isShowing) menu.classList.add("show"); // Only open if it wasn't already open
+}
 
-      function toggleDropdownUser() {
-        document.getElementById("userDropdown").classList.toggle("show");
-      }
+function toggleDropdownCart(event) {
+  event.stopPropagation();
+  const menu = document.getElementById("cartDropdown");
+  const isShowing = menu.classList.contains("show");
+  closeAllDropdowns();
+  if (!isShowing) menu.classList.add("show");
+}
+
+function toggleDropdownUser(event) {
+  event.stopPropagation();
+  const menu = document.getElementById("userDropdown");
+  const isShowing = menu.classList.contains("show");
+  closeAllDropdowns();
+  if (!isShowing) menu.classList.add("show");
+}
+
+// Global click listener to close menus when clicking blank space
+window.onclick = function(event) {
+  closeAllDropdowns();
+}
 
 
-      window.onclick = function(event) {
-        // If user clicked outside the menu, close the menu
-        if (!event.target.closest('.menu-icon')) {
-          closeDropdowns("dropdown-content");
-        }
-
-        // Close Cart (Add this part)
-        if (!event.target.closest('.cart')) {
-          var dropdowns = document.getElementById("cartDropdown");
-          if (dropdowns && dropdowns.classList.contains('show')) {
-            dropdowns.classList.remove('show');
-          }
-        }
-        // If user clicked outside the user icon, close user dropdown
-        if (!event.target.closest('.user-icon')) {
-          closeDropdowns("user-dropdown-content");
-        }
-      }
 
 
-      function closeDropdowns(className) {
-        var dropdowns = document.getElementsByClassName(className);
-        for (var i = 0; i < dropdowns.length; i++) {
-          if (dropdowns[i].classList.contains('show')) {
-            dropdowns[i].classList.remove('show');
-          }
-        }
-      }
+
 
     </script>
   </body>
