@@ -1,9 +1,19 @@
 <div class="product-detail-container">
   <h1><%= @item.Name %></h1>
+  <% 
+    item_id = @item[:BeanID] 
+    
+    specific_image = "/#{item_id}.png"
+    image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_beans_example.png"
+  %>
+
+  <img src="<%= image_path %>" alt="<%= @item[:Name] %>">
+
   <p>Roast Level: <strong><%= @item.Roast %></strong></p>
   <p>Pack weight: <strong><%= @item.PackWeight %>g</strong></p>
   <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
   
   <button class="add-to-basket-button">Add to Basket</button>
+  <button class="buy-button">Buy Now</button>
   <a href="/coffee-beans">Back to Catalog</a>
 </div>

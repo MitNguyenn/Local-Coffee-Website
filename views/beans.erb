@@ -5,7 +5,13 @@
 <div class="catalog-grid" id="item-container">
   <% @beans.each do |bean| %>
     <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
-      <img src="/coffee_beans_example.png" alt="<%= bean[:name] %>">
+      <% 
+        specific_image = "/#{bean[:BeanID]}.png"
+        image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_beans_example.png"
+      %>
+
+      <img src="<%= image_path %>" alt="<%= bean[:name] %>">
+
       <h3><%= bean[:Name] %></h3>
       <p>£<%= sprintf('%.2f', bean[:Price]) %></p>
       <button class="add-to-basket-button">Add to basket</button>
