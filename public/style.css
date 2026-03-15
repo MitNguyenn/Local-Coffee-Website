@@ -475,9 +475,10 @@ input[type="password"]:focus {
   text-decoration: underline;
 }
 
-.footer {
+footer {
   margin-top: 50px;
   height: 120px;
+
   background-image:
     linear-gradient(
       to top,
@@ -485,6 +486,7 @@ input[type="password"]:focus {
       rgba(0, 0, 0, 0.4) 100%
     ),
     url("/wood.jpg");
+
   border-top: 4px solid #3d2b1f;
   display: flex;
   flex-direction: column;
@@ -730,6 +732,7 @@ html {
   padding: 15px;
   border-radius: 8px;
   text-align: center;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 }
 
 .product-card img {

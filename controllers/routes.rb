@@ -34,6 +34,13 @@ get '/product/' do
   erb @template
 end
 
+post '/add-to-basket' do
+  session[:basket] ||= []
+  item_id = params[:id]
+  session[:basket] << item_id
+  content_type :json
+  { count: session[:basket].length }.to_json
+
 get '/help' do
   erb :help
 end
@@ -110,7 +117,6 @@ post '/register' do
     @error = "Password must be at least 12 characters."
     return erb :register_account
   end
-
 
   # Create new user account
   user = Account.create(

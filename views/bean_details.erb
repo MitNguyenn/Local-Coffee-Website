@@ -1,8 +1,8 @@
 <div class="product-detail-container">
   <h1><%= @item.Name %></h1>
+
   <% 
     item_id = @item[:BeanID] 
-    
     specific_image = "/#{item_id}.png"
     image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_beans_example.png"
   %>
