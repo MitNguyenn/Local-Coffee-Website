@@ -1,93 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Badly Brewed Coffee</title>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="icon" type="image/x-icon" href="coffee.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Badly Brewed Coffee</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="coffee.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+  </head>
 
-<body>
-  <nav class="navbar">
-    <div class="dropdown">
-    <div onclick="toggleDropdown()" class="menu-icon">☰</div>
-    
-    <div id="myDropdown" class="dropdown-content">
-      <a href="/">Home</a>
-      <a href="/coffee-beans">Coffee Beans</a>
-      <a href="/drinks">Drinks</a>
-      <a href="/staff-portal">Staff Portal</a>
-      <a href="/help">Help</a>
-      <% if logged_in? && (session[:AccountType] == 'manager' or session[:AccountType] == 'administrator') %>
-        <a href="/metrics">Metrics</a>
-      <% end %>
-      <% if logged_in? && session[:AccountType] == 'administrator' %>
-        <a href="/manage-accounts">Manage Accounts</a>
-      <% end %>
-    </div>
-  </div>
-    <div class = "dropdown">
-  <div onclick="toggleDropdownUser()" class="user-icon">
-    <img src="msn_profile.png" width="60" height="60">
-  </div>
-  <div id="userDropdown" class="user-dropdown-content">
-    <% if !logged_in? %>
-      <a href="/log-in">Log in</a>
-    <% end %>
-    
-    <% if logged_in? %>
-      <a href="/account-settings">Account settings</a>
-      <a href="/loyalty-card">Loyalty Card</a>
-      <a href="/my-orders">My Orders</a>
-      <a href="/log-out">Log out</a>
-    <% end %>
-    </div>
-    </div>
-  </nav>
+  <body>
+    <nav class="navbar">
 
-  <main>
-    <%= yield %>
-  </main>
+      <div class="dropdown">
+        <div onclick="toggleDropdown(event)" class="menu-icon">☰</div>
+        
+        <div id="myDropdown" class="dropdown-content">
+          <a href="/">Home</a>
+          <a href="/coffee-beans">Coffee Beans</a>
+          <a href="/drinks">Drinks</a>
+          <a href="/staff-portal">Staff Portal</a>
+          <a href="/help">Help</a>
+        </div>
+      </div>
 
-  <footer class = "footer">
-    <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
-  </footer>
+      <div class="nav-right">
 
-  <script>
+        <!-- Cart Button -->
+        <div class="dropdown">
+          <div onclick="toggleDropdownCart(event)" class="cart">
+            <img src="cart.png" alt="cart-icon" width="50" height="50">
+            <% if session[:basket] && session[:basket].any? %>
+              <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
+            <% end %>
+          </div>
 
-function toggleDropdown() {
-  document.getElementById("myDropdown").classList.toggle("show");
-}
+          <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
+            <div class="cart-header">Your Basket</div>
+              <div class="cart-items-list">
+                <% if session[:basket] && session[:basket].any? %>
+                  <% session[:basket].each do |item_id| %>
+                    <div class="cart-item">
+                      <span>Item #<%= item_id %></span>
+                    </div>
+                  <% end %>
+                  <hr>
+                  <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+                <% else %>
+                  <p class="empty-msg">Your basket is empty!</p>
+                <% end %>
+            </div>
+          </div>
+        </div>
 
-function toggleDropdownUser() {
-  document.getElementById("userDropdown").classList.toggle("show");
-}
+        <!-- Account Button -->
+        <div class = "dropdown">
+          <div onclick="toggleDropdownUser(event)" class="user-icon">
+            <img src="msn_profile.png" width="60" height="60">
+          </div>
+          <div id="userDropdown" class="user-dropdown-content">
+            <% if !logged_in? %>
+              <a href="/log-in">Log in</a>
+            <% end %>
+            
+            <% if logged_in? %>
+              <a href="/account-settings">Account settings</a>
+              <a href="/loyalty-card">Loyalty Card</a>
+              <a href="/my-orders">My Orders</a>
+              <a href="/log-out">Log out</a>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
 
+    <main>
+      <%= yield %>
+    </main>
 
-window.onclick = function(event) {
-  if (!event.target.closest('.menu-icon')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
+    <footer>
+      <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
+    </footer>
+
+    <script>
+      function closeAllDropdowns() {
+        const dropdowns = [
+          document.getElementById("myDropdown"),
+          document.getElementById("cartDropdown"),
+          document.getElementById("userDropdown")
+        ];
+        
+        dropdowns.forEach(menu => {
+          if (menu) menu.classList.remove("show");
+        });
       }
-    }
-  }
 
-  if (!event.target.closest('.user-icon')) {
-    var dropdowns = document.getElementsByClassName("user-dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
+      function toggleDropdown(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("myDropdown");
+        const isShowing = menu.classList.contains("show");
+        closeAllDropdowns(); // Close everything first
+        if (!isShowing) menu.classList.add("show"); // Only open if it wasn't already open
       }
-    }
-  }
-}
-</script>
-</body>
+
+      function toggleDropdownCart(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("cartDropdown");
+        const isShowing = menu.classList.contains("show");
+        closeAllDropdowns();
+        if (!isShowing) menu.classList.add("show");
+      }
+
+      function toggleDropdownUser(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("userDropdown");
+        const isShowing = menu.classList.contains("show");
+        closeAllDropdowns();
+        if (!isShowing) menu.classList.add("show");
+      }
+
+      // Global click listener to close menus when clicking blank space
+      window.onclick = function(event) {
+        closeAllDropdowns();
+      }
+    </script>
+  </body>
 </html>
