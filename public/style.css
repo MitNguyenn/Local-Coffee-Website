@@ -604,17 +604,17 @@ html {
   padding: 25px;
 
   background: #fdf5e6;
-  border-radius: 24px; 
+  border-radius: 24px;
   border: 2px solid #4b2c20;
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .stamp {
-  width: 35px; 
+  width: 35px;
   height: 35px;
   border-radius: 50%;
-  border: 2px dashed #4b2c20; 
-  background: transparent; 
+  border: 2px dashed #4b2c20;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -626,7 +626,7 @@ html {
   background-color: transparent !important;
 
   background-image: url("bean_stamp.png");
-  background-size: contain; 
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
 
@@ -659,25 +659,6 @@ html {
   border-radius: 10px;
 }
 
-.add-to-basket-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #a67458;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.buy-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #a67458;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
 /* Metrics Page */
 
 /* Container Namespace */
@@ -1079,6 +1060,7 @@ html {
 }
 
 .login-btn,
+.add-to-basket-button,
 .btn,
 .buy-button,
 .submit-btn {
@@ -1090,7 +1072,7 @@ html {
       rgba(0, 0, 0, 0.2) 50%,
       rgba(0, 0, 0, 0.4) 100%
     ),
-    #4b2c20;
+    #6f4635;
 
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50px;
@@ -1109,6 +1091,10 @@ html {
 }
 
 .login-btn:hover,
+.add-to-basket-button:hover,
+.btn:hover,
+.buy-button:hover,
+.submit-btn:hover,
 .btn:hover {
   transform: scale(1.03) translateY(-2px);
   filter: brightness(1.15) saturate(1.2);
