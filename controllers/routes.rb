@@ -40,6 +40,7 @@ post '/add-to-basket' do
   session[:basket] << item_id
   content_type :json
   { count: session[:basket].length }.to_json
+end
 
 get '/help' do
   erb :help
