@@ -495,7 +495,7 @@ footer {
     url("/wood.jpg");
 
   background-position: center;
-  border-top: 4px solid #3d2b1f;
+  border-top: 2px solid black;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1152,6 +1152,7 @@ html {
 .login-btn,
 .add-to-basket-button,
 .btn,
+.view-menu-btn,
 .buy-button,
 .add-to-basket-button,
 .submit-btn {
@@ -1184,6 +1185,7 @@ html {
 .login-btn:hover,
 .add-to-basket-button:hover,
 .btn:hover,
+.view-menu-btn:hover,
 .buy-button:hover,
 .submit-btn:hover,
 .btn:hover {
@@ -1195,6 +1197,14 @@ html {
 button:active {
   transform: translateY(1px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-menu-btn {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+  padding: 18px 30px;
 }
 
 /* Account Management main page */
@@ -1315,7 +1325,7 @@ button:active {
 .promo-carousel {
   overflow: hidden;
   width: 100%;
-  background-image : url("metal.jpg");
+  background-image: url("metal.jpg");
   background-size: 100%;
   background-position: center;
 }
@@ -1340,7 +1350,69 @@ button:active {
 @keyframes scroll {
   from {
     transform: translateX(0);
-  } to {
+  }
+  to {
     transform: translateX(-50%);
   }
+}
+
+.split-pill-container {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  background: rgba(75, 44, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.pill-half {
+  padding: 20px 40px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 51%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+
+.pill-divider {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
+
+.pill-half:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  filter: brightness(1.2);
+}
+
+
+.pill-half:active {
+  transform: translateY(3px) scale(0.97); 
+  filter: brightness(0.8); 
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6); 
 }
