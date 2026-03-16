@@ -67,6 +67,21 @@ DB[:Accounts].insert(
   AccountType: "administrator"
 )
 
+taha_password = BCrypt::Password.create("Tahatest1234")
+
+DB[:Accounts].insert(
+  UserID: 23242526,
+  FirstName: "Taha",
+  LastName: "Hassanein",
+  StampCount: 5,
+  email: "taha@gmail.com",
+  hashedPassword: taha_password,
+  PhoneNumber: "07536476923",
+  Postcode: "S10 3AJ",
+  Address: "58 Endcliffe Vale Road",
+  AccountType: "administrator"
+)
+
 # --- BEANS ---
 bean_list = [
   [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
