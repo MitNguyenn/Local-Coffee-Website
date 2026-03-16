@@ -31,7 +31,7 @@ post '/log-in' do
 
   puts @password
 
-  user = DB[:accounts].where(email: @email).first
+  user = DB[:Accounts].where(email: @email).first
   
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
     session[:user_id] = user[:UserID]
@@ -116,11 +116,14 @@ end
 
 post '/update-account' do
   redirect '/log-in' unless session[:user_id]
+  
+  DateTime_of_birth = params[:Date_of_birth] ? DateTime.parse(params[:Date_of_birth]) : nil
 
   DB[:Accounts].where(UserID: session[:user_id]).update(
     First_Name:     params[:First_Name],
     Last_name:      params[:Last_name],
-    Postal_address: params[:Postal_address]
+    Postal_address: params[:Postal_address],
+    Date_of_birth:  DateTime_of_birth
   )
 
   redirect '/account-settings?success=1'

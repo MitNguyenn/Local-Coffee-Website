@@ -30,7 +30,7 @@
 
         <div class="input-wrapper">
         <label for="date">Date of Birth</label>
-          <input type="text" name = "date_of_birth" value="<%= @date_of_birth %>" class="account-input">
+          <input type="date" name = "Date_of_birth" value="<%= @user[:Date_of_birth] ? @user[:Date_of_birth].to_date : '' %>" class="account-input">
         </div>
 
         <h3 class="detail-header">Account Details</h3>
@@ -42,7 +42,7 @@
 
         <div class="input-wrapper">
         <label for="password">Password</label>
-          <input type="password" name = "hashedPassword" value="<%= @user[:hashedPassword] %>" class="account-input">
+          <input type="password" name = "password_placeholder" value="••••••••••••" class="account-input">
         </div>
 
         <div class="extra-links">

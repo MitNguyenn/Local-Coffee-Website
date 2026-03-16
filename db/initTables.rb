@@ -14,6 +14,7 @@ DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
   String :First_Name
   String :Last_name
+  Datetime   :Date_of_birth, null: true
   String :email, unique: true, null: false
   String :hashedPassword
   String :Phone_number, size: 11
