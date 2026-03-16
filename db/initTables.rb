@@ -3,7 +3,7 @@ require 'sqlite3'
 require 'json'
 
 # Connect to the database
-DB = Sequel.sqlite("db/db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # 1. Clear existing data (optional, prevents duplicates if you run it twice)
 DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
