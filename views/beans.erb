@@ -4,17 +4,22 @@
 
 <div class="catalog-grid" id="item-container">
   <% @beans.each do |bean| %>
-    <% if bean[:CurrentStock] > 0 %>
+    <% if bean.CurrentStock > 0 %>
       <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
-        <% 
-          specific_image = "/#{bean[:BeanID]}.png"
-          image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_beans_example.png"
+        <%
+          rel_path = "beans/#{bean.BeanID}.png"
+          
+          if File.exist?(File.join(Dir.pwd, "public", rel_path))
+            display_path = "/#{rel_path}"
+          else
+            display_path = "/beans/beans_img_not_found.png"
+          end
         %>
+        
+        <img src="<%= display_path %>" alt="<%= bean.Name %>" width="500" height="500">
 
-        <img src="<%= image_path %>" alt="<%= bean[:name] %>">
-
-        <h3><%= bean[:Name] %></h3>
-        <p>£<%= sprintf('%.2f', bean[:Price]) %></p>
+        <h3><%= bean.Name %></h3>
+        <p>£<%= sprintf('%.2f', bean.Price) %></p>
         <button class="add-to-basket-button">Add to basket</button>
         <button class="buy-button">Buy</button>
       </div>

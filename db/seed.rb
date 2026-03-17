@@ -77,14 +77,11 @@ end
 
 # --- Drinks ---
 drinks_list = [
-  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 1.90 },
-  { BeanID: 1, Beverage: "Cold Brew",     Size: "Regular", Price: 4.20 },
-  { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
-  { BeanID: 2, Beverage: "Cappuccino",    Size: "Regular", Price: 3.60 },
-  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.00 },
-  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.35 },
-  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.20 },
-  { BeanID: 5, Beverage: "Cortado",       Size: "Regular", Price: 3.10 }
+  [1, "Latte", 4.40, ""],
+  [2, "Americano", 3.80, ""], 
+  [3, "Cappuccino", 4.40, ""], 
+  [4, "Flat white", 4.35, ""],
+  [5, "Cortado", 3.70, ""]
 ]
 
 puts "Seeding Drinks..."

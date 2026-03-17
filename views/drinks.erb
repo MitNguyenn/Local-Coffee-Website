@@ -4,14 +4,19 @@
 
 <div class="catalog-grid" id="item-container">
   <% @drinks.each do |drink| %>
-    <%# We use the method names defined in your seed/table design %>
-    <div class="product-card" 
-         data-bean-id="<%= drink.BeanID %>" 
-         data-beverage="<%= drink.Beverage %>">
-      
-      <img src="/drink_example.png" alt="<%= drink.Beverage %>">
+    <div class="product-card" data-drink-id="<%= drink.DrinkID %>" data-beverage="<%= drink.Beverage %>">
+      <%
+        rel_path = "drinks/#{drink.DrinkID}.png"
+        
+        if File.exist?(File.join(Dir.pwd, "public", rel_path))
+          display_path = "/#{rel_path}"
+        else
+          display_path = "/drinks/drink_img_not_found.png"
+        end
+      %>
+    
+      <img src="<%= display_path %>" alt="<%= drink.Beverage %>">
       <h3><%= drink.Beverage %></h3>
-      <span class="size-tag"><%= drink.Size %></span>
       <p class="price">£<%= sprintf('%.2f', drink.Price) %></p>
       <button class="add-to-basket-button">Add to basket</button>
       <button class="buy-button">Buy</button>
@@ -39,10 +44,16 @@
     }
     const card = event.target.closest('.product-card');
     if (card) {
-      const beanId = card.dataset.beanId;
+      const drinkID = card.dataset.drinkId;
       const bevName = encodeURIComponent(card.dataset.beverage);
       
-      window.location.href = `/product/?type=drink&bean_id=${card.dataset.beanId}&name=${bevName}`;
+      // window.location.href = `/product/?type=drink&bean_id=${card.dataset.beanId}&name=${bevName}`;
+      // window.location.href = `/product/?type=drink&id=${drinkID}&name=${bevName}`;
+      if (drinkID) {
+        window.location.href = `/product/?type=drink&id=${drinkID}`;
+      } else {
+        console.error("Drink ID is missing from the HTML card!");
+      }
     }
   });
 </script>

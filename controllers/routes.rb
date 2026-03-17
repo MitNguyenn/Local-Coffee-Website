@@ -20,12 +20,13 @@ end
 # product page
 get '/product/' do
   @type = params[:type]
+  id = [params[:id]]
 
   if @type == 'bean'
-    @item = Bean[params[:id]]
+    @item = Bean[id]
     @template = :bean_details
   elsif @type == 'drink'
-    @item = Drink.where(BeanID: params[:bean_id], Beverage: params[:name]).first
+    @item = Drink[id]
     @template = :drink_details
   else 
     halt 404, "Product type not found."

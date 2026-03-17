@@ -1,6 +1,5 @@
 class Bean < Sequel::Model(:Beans)
   set_primary_key :BeanID
-  one_to_many :drinks
 
   def validate
     super

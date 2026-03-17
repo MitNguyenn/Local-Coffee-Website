@@ -25,28 +25,35 @@ end
 
 # Create Beans Table
 DB.create_table? :Beans do
-  primary_key :BeanID
+  Integer :BeanID
   String :Name
   String :Type 
   String :Roast 
   Integer :PackWeight
   Double :Price
   Integer :CurrentStock
+
+  primary_key [:BeanID]
 end
 
 # Create Drinks Table with Composite Key
 DB.create_table? :Drinks do
-  Integer :BeanID
+  Integer :DrinkID
   String :Beverage
-  String :Size
-  Decimal :Price, size: [10, 2]
+  Double :Price, size: [10, 2]
+  String :Description
   
-  # Define the Composite Primary Key
-  primary_key [:BeanID, :Beverage]
-  
-  # Link to the Beans table
-  foreign_key [:BeanID], :Beans
+  primary_key [:DrinkID]
 end
+
+# DB.create_table? :SizePrices do
+#   Integer :DrinkID
+#   String :Size
+#   Double :Price, size: [10, 2]
+#   primary_key [:DrinkID, :Size]
+
+#   foreign_key [:DrinkID], :Drinks
+# end
 
 # Table 3: Orders
 DB.create_table? :Orders do
