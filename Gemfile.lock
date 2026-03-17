@@ -125,6 +125,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activerecord
   bcrypt
   capybara
   dotenv
