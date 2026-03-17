@@ -53,6 +53,7 @@ end
 end
 
 # --- BEANS ---
+# bean = [ID, Name, Type, Roast, Wight, Price, Stock]
 bean_list = [
   [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
   [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],

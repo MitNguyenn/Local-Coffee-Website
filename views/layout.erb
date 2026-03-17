@@ -30,7 +30,7 @@
         <!-- Cart Button -->
         <div class="dropdown">
           <div onclick="toggleDropdownCart(event)" class="cart">
-            <img src="cart.png" alt="cart-icon" width="50" height="50">
+            <img src="/cart.png" alt="cart-icon" width="60" height="60">
             <% if session[:basket] && session[:basket].any? %>
               <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
             <% end %>
@@ -57,7 +57,7 @@
         <!-- Account Button -->
         <div class = "dropdown">
           <div onclick="toggleDropdownUser(event)" class="user-icon">
-            <img src="msn_profile.png" width="60" height="60">
+            <img src="/msn_profile.png" width="60" height="60">
           </div>
           <div id="userDropdown" class="user-dropdown-content">
             <% if !logged_in? %>
