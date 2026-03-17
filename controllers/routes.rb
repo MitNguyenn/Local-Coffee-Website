@@ -192,3 +192,29 @@ get '/metrics' do
   erb :metrics_page
 end
 
+post '/help' do
+  form_username = params[:form_username]
+  form_useremail = params[:form_useremail]
+  problem_type = params[:problem_type]
+  request_description = params[:form_request_description]
+  
+  userid = DB[:Accounts].where(email: form_useremail).get(:UserID)
+  #match useremail to ID?
+  if userid.nil?
+    @error = "Account not found!"
+    erb :help
+  end
+
+  if request_description.empty?
+    @error = "Blank description!"
+    erb :help
+  end
+
+  ticket = Ticket.create(
+  UserID: userid,
+  ticketType: problem_type,
+  ticketContent: request_description
+  )
+  redirect "/"
+end
+
