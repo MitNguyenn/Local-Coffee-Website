@@ -8,7 +8,7 @@
       <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
         <% 
           specific_image = "/#{bean[:BeanID]}.png"
-          image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_beans_example.png"
+          image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_pack.png"
         %>
 
         <img src="<%= image_path %>" alt="<%= bean[:name] %>">
