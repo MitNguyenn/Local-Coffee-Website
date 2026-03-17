@@ -63,7 +63,7 @@ post '/log-in' do
 
   puts @password
 
-  user = DB[:accounts].where(email: @email).first
+  user = DB[:Accounts].where(email: @email).first
   
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
     session[:UserID] = user[:UserID]
@@ -155,10 +155,14 @@ end
 post '/update-account' do
   redirect '/log-in' unless session[:UserID]
 
+  DateTime_of_birth = params[:Date_of_birth] ? DateTime.parse(params[:Date_of_birth]) : nil
+
   DB[:Accounts].where(UserID: session[:UserID]).update(
     FirstName:     params[:FirstName],
     LastName:      params[:LastName],
-    Postcode: params[:Postcode]
+    Postcode:       params[:Postcode],
+    Date_of_birth:  DateTime_of_birth
+
   )
 
   redirect '/account-settings?success=1'
@@ -228,6 +232,32 @@ get '/metrics' do
   @metrics = analyze_sales_data
   puts @metrics
   erb :metrics_page
+end
+
+post '/help' do
+  form_username = params[:form_username]
+  form_useremail = params[:form_useremail]
+  problem_type = params[:problem_type]
+  request_description = params[:form_request_description]
+  
+  userid = DB[:Accounts].where(email: form_useremail).get(:UserID)
+  #match useremail to ID?
+  if userid.nil?
+    @error = "Account not found!"
+    erb :help
+  end
+
+  if request_description.empty?
+    @error = "Blank description!"
+    erb :help
+  end
+
+  ticket = Ticket.create(
+  UserID: userid,
+  ticketType: problem_type,
+  ticketContent: request_description
+  )
+  redirect "/"
 end
 
 get '/user-tickets' do

@@ -17,6 +17,3 @@ require_relative 'controllers/routes'
 #   DatabaseHelper.init_account_table
 #   DatabaseHelper.init_bean_table
 # end
-# =======
-# require_relative 'controllers/routes'
-# >>>>>>> aa3f1ca66e212634a40c3342184e537d18e40b5c

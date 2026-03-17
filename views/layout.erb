@@ -8,10 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Datatype:wght@100..900&family=Doto:wght@100..900&family=Lilita+One&display=swap" rel="stylesheet">
   </head>
 
   <body>
     <nav class="navbar">
+      <div class="nav-left-group">
+  <div class="home-btn">
+    <a href="/"><img src="home.png" width="40" height="40"></a>
+  </div>
 
       <div class="dropdown">
         <div onclick="toggleDropdown(event)" class="menu-icon">☰</div>
@@ -24,6 +29,9 @@
           <a href="/help">Help</a>
         </div>
       </div>
+    </div>
+
+      
 
       <div class="nav-right">
 
@@ -97,12 +105,18 @@
       }
 
       function toggleDropdown(event) {
-        event.stopPropagation();
-        const menu = document.getElementById("myDropdown");
-        const isShowing = menu.classList.contains("show");
-        closeAllDropdowns(); // Close everything first
-        if (!isShowing) menu.classList.add("show"); // Only open if it wasn't already open
-      }
+  event.preventDefault(); 
+  event.stopPropagation(); 
+  
+  const menu = document.getElementById("myDropdown");
+  const isShowing = menu.classList.contains("show");
+  
+  closeAllDropdowns(); 
+  
+  if (!isShowing) {
+    menu.classList.add("show");
+  }
+}
 
       function toggleDropdownCart(event) {
         event.stopPropagation();

@@ -28,11 +28,26 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30px;
+  padding: 10px 20px;
   box-shadow:
     0 4px 15px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
   border-bottom: 2px solid #2a1810;
+}
+
+.nav-left-group {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.home-btn img {
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.home-btn:hover img {
+  transform: scale(1.1);
 }
 
 main {
@@ -47,10 +62,14 @@ main {
 }
 
 .menu-icon {
-  font-size: 28px;
+  font-size: 40px;
   color: #fdf5e6;
   cursor: pointer;
   user-select: none;
+}
+
+.home-btn {
+  display: flex;
 }
 
 /* This groups the cart and user icons together on the right */
@@ -84,7 +103,7 @@ main {
   border-radius: 50%;
   padding: 2px 6px;
   font-size: 12px;
-  font-family: 'Lilita One', sans-serif;
+  font-family: "Lilita One", sans-serif;
   border: 2px solid #a67458; /* Matches navbar bg */
 }
 /* Custom width for the cart list */
@@ -127,10 +146,9 @@ main {
 }
 /* Ensure the user dropdown aligns to the right edge */
 .user-dropdown-content {
-  right: 0; 
+  right: 0;
   left: auto;
 }
-
 
 .user-icon img {
   border-radius: 50%;
@@ -272,7 +290,7 @@ main {
 
 .hero {
   margin-top: 0;
-  height: 60vh;
+  min-height: calc(100vh - 160px);
   background:
     linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
     url("coffee_bg.avif");
@@ -433,6 +451,15 @@ input[type="password"] {
   box-sizing: border-box;
 }
 
+input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
 input[type="text"]:focus,
 input[type="password"]:focus {
   outline: none;
@@ -482,7 +509,6 @@ input[type="password"]:focus {
 }
 
 footer {
-  margin-top: 50px;
   height: 120px;
 
   background-image:
@@ -493,7 +519,8 @@ footer {
     ),
     url("/wood.jpg");
 
-  border-top: 4px solid #3d2b1f;
+  background-position: center;
+  border-top: 2px solid black;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -539,9 +566,8 @@ footer {
 }
 
 .description_box {
-  padding: 10px;
-  width: 400px;
-  height: 130px;
+  padding-top: 10px;
+  width: 20px;
 }
 
 .submit_button {
@@ -1039,6 +1065,14 @@ footer {
   cursor: not-allowed;
 }
 
+.problem_box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: skyblue;
+}
 /* Ticket Management Page */
 /* Container Layout */
 .my-orders-container {
@@ -1169,6 +1203,7 @@ footer {
 .login-btn,
 .add-to-basket-button,
 .btn,
+.view-menu-btn,
 .buy-button,
 .add-to-basket-button,
 .submit-btn {
@@ -1201,6 +1236,7 @@ footer {
 .login-btn:hover,
 .add-to-basket-button:hover,
 .btn:hover,
+.view-menu-btn:hover,
 .buy-button:hover,
 .submit-btn:hover,
 .btn:hover {
@@ -1212,6 +1248,14 @@ footer {
 button:active {
   transform: translateY(1px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-menu-btn {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+  padding: 18px 30px;
 }
 
 /* Account Management main page */
@@ -1327,4 +1371,474 @@ button:active {
   padding: 4px 12px;
   border-radius: 15px;
   font-size: 0.85rem;
+}
+
+.promo-carousel {
+  overflow: hidden;
+  width: 100%;
+  background-color: black;
+  background-size: 100%;
+  background-position: center;
+}
+
+.carousel-track {
+  display: flex;
+  width: max-content;
+  animation: scroll 20s linear infinite;
+}
+
+.carousel-item {
+  min-width: 250px;
+  margin: 5px;
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  font-family: "Doto", sans-serif;
+  font-variation-settings: "ROND" 100;
+  color: rgb(255, 225, 0);
+  text-align: center;
+  border-radius: 10px;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.split-pill-container {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  background: rgba(75, 44, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.pill-half {
+  padding: 20px 40px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 51%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.pill-divider {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
+.pill-half:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  filter: brightness(1.2);
+}
+
+.pill-half:active {
+  transform: translateY(3px) scale(0.97);
+  filter: brightness(0.8);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.problem_box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: black;
+}
+/* Ticket Management Page */
+/* Container Layout */
+.my-orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: inherit;
+}
+
+/* Tab Navigation */
+.my-orders-nav {
+  display: flex;
+  gap: 0; /* Flush buttons look more modern */
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.my-orders-nav-btn {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s ease;
+}
+
+.my-orders-nav-btn.active {
+  background: #a67458; /* Your Brand Brown */
+  color: #fff;
+}
+
+/* Visibility Toggle */
+.my-orders-section {
+  display: none;
+}
+.my-orders-section.active {
+  display: block;
+}
+
+/* Ticket Cards */
+.my-orders-card {
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s;
+}
+
+.ticket-border-open {
+  border-left: 5px solid #a67458;
+}
+
+.ticket-resolved-dim {
+  background-color: #f8fafc;
+  opacity: 0.9;
+}
+
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.my-orders-title {
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.ticket-content-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+.ticket-id-tag {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+
+/* Badges */
+.my-orders-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.status-open {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Ticket Resolve */
+.view-details-btn {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background-color: #a67458;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+  background-color: #4b2c20;
+}
+
+.login-btn,
+.add-to-basket-button,
+.btn,
+.view-menu-btn,
+.buy-button,
+.add-to-basket-button,
+.submit-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.1) 48%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    #6f4635;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  color: #ffffff !important;
+  font-weight: 800;
+  padding: 12px 24px;
+
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-btn:hover,
+.add-to-basket-button:hover,
+.btn:hover,
+.view-menu-btn:hover,
+.buy-button:hover,
+.submit-btn:hover,
+.btn:hover {
+  transform: scale(1.03) translateY(-2px);
+  filter: brightness(1.15) saturate(1.2);
+  box-shadow: 0 10px 25px rgba(75, 44, 32, 0.4);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-menu-btn {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+  padding: 18px 30px;
+}
+
+/* Account Management main page */
+/* Container using your global flex/bg settings */
+.acc-view__main {
+  width: 95%;
+  max-width: 1600px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Title using Lilita One and your primary coffee brown */
+.acc-view__title {
+  font-family: "Lilita One", sans-serif;
+  font-size: 3.5rem;
+  color: #4b2c20;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Search Bar matching your input style */
+.acc-view__search,
+.acc-view__select {
+  width: 60%;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  background-color: white;
+  font-family: inherit;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+.acc-view__search:focus,
+.acc-view__select:focus {
+  outline: none;
+  border-color: #a67458;
+}
+
+/* The Table Board - uses your login-card style logic */
+.acc-view__board {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.acc-view__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table Headers using your Navbar link bold style */
+.acc-view__th {
+  font-family: "Lilita One", sans-serif;
+  background-color: #4b2c20;
+  color: #fdf5e6;
+  padding: 20px;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+/* Table Data - using your body text color and font */
+.acc-view__td {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #4b2c20;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.acc-view__row:hover {
+  background-color: rgba(166, 116, 88, 0.1);
+}
+
+/* The Button - Updated to match your .btn-skeuo class */
+.acc-view__btn {
+  display: inline-block;
+  background: linear-gradient(to bottom, #7b5844 0%, #4b2c20 100%);
+  border: 1px solid #2a1810;
+  border-radius: 50px;
+  color: white !important;
+  padding: 8px 20px;
+  font-family: "Lilita One", sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.acc-view__btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Badge for Role */
+.acc-view__badge {
+  background: #a67458;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+}
+
+.split-pill-container {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  background: rgba(75, 44, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.pill-half {
+  padding: 20px 40px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 51%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.pill-divider {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
+.pill-half:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  filter: brightness(1.2);
+}
+
+.pill-half:active {
+  transform: translateY(3px) scale(0.97);
+  filter: brightness(0.8);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.problem_box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: black;
 }

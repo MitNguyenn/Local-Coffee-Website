@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.sqlite("db/db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Accounts].each do |table| 
@@ -51,6 +51,36 @@ end
     AccountType: "customer"
   )
 end
+
+finn_password = BCrypt::Password.create("testpassword?!")
+
+DB[:Accounts].insert(
+  UserID: 23242526,
+  FirstName: "Finn",
+  LastName: "Elliott",
+  StampCount: 3,
+  email: "finn@mail.com",
+  hashedPassword: finn_password,
+  PhoneNumber: "07395456262",
+  Postcode: "S10 3AJ",
+  Address: "58 Endcliffe Vale Road",
+  AccountType: "administrator"
+)
+
+taha_password = BCrypt::Password.create("Tahatest1234")
+
+DB[:Accounts].insert(
+  UserID: 38452738,
+  FirstName: "Taha",
+  LastName: "Hassanein",
+  StampCount: 5,
+  email: "taha@gmail.com",
+  hashedPassword: taha_password,
+  PhoneNumber: "07536476923",
+  Postcode: "S10 3AJ",
+  Address: "58 Endcliffe Vale Road",
+  AccountType: "administrator"
+)
 
 # --- BEANS ---
 # bean = [ID, Name, Type, Roast, Wight, Price, Stock]
