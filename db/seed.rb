@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.connect("sqlite://db.sqlite3")
+DB = Sequel.sqlite("db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Accounts].each do |table| 
@@ -33,11 +33,10 @@ staff_data.each do |first, last, email, role|
     PhoneNumber: "07#{rand(100000000..999999999)}",
     Postcode: "S1 1AA",
     Address: "1 Cafe Lane, Sheffield",
-    Account_type: role
+    AccountType: role
   )
 end
 
-# 15 Customers
 15.times do |i|
   DB[:Accounts].insert(
     UserID: 200000 + i,
@@ -49,29 +48,81 @@ end
     PhoneNumber: "07#{rand(100000000..999999999)}",
     Postcode: "S#{rand(1..10)} 2BB",
     Address: "#{rand(1..100)} Residence Rd, Sheffield",
-    Account_type: "customer"
+    AccountType: "customer"
   )
 end
 
-# --- 2. BEANS ---
+finn_password = BCrypt::Password.create("testpassword?!")
+
+DB[:Accounts].insert(
+  UserID: 23242526,
+  FirstName: "Finn",
+  LastName: "Elliott",
+  StampCount: 3,
+  email: "finn@mail.com",
+  hashedPassword: finn_password,
+  PhoneNumber: "07395456262",
+  Postcode: "S10 3AJ",
+  Address: "58 Endcliffe Vale Road",
+  AccountType: "administrator"
+)
+
+taha_password = BCrypt::Password.create("Tahatest1234")
+
+DB[:Accounts].insert(
+  UserID: 38452738,
+  FirstName: "Taha",
+  LastName: "Hassanein",
+  StampCount: 5,
+  email: "taha@gmail.com",
+  hashedPassword: taha_password,
+  PhoneNumber: "07536476923",
+  Postcode: "S10 3AJ",
+  Address: "58 Endcliffe Vale Road",
+  AccountType: "administrator"
+)
+
+# --- BEANS ---
 bean_list = [
-  ["Ethiopian", "Yirgacheffe", "Light", 350],
-  ["Colombian", "House Blend", "Medium", 1200],
-  ["Brazilian", "Santos", "Dark", 800],
-  ["Guatemalan", "Antigua", "Medium", 450],
-  ["Vietnamese", "Robusta", "Dark", 600]
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
+  [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
+  [3, "Amazonian Night", "Santos", "Dark", 250, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 500, 14.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 500, 11.00, 50]
 ]
 
-bean_list.each do |type, blend, roast, stock|
+bean_list.each do |id, name, type, roast, weight, price, stock|
   DB[:Beans].insert(
-    BeanType: type, 
-    BeanBlend: blend, 
-    BeanRoast: roast, 
-    Current_stock: stock
+    BeanID: id,
+    Name: name,
+    Type: type, 
+    Roast: roast, 
+    PackWeight: weight,
+    Price: price,
+    CurrentStock: stock
   )
 end
+# --- ---
 
-# --- 3. HELPERS ---
+# --- Drinks ---
+drinks_list = [
+  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 1.90 },
+  { BeanID: 1, Beverage: "Cold Brew",     Size: "Regular", Price: 4.20 },
+  { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
+  { BeanID: 2, Beverage: "Cappuccino",    Size: "Regular", Price: 3.60 },
+  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.00 },
+  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.35 },
+  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.20 },
+  { BeanID: 5, Beverage: "Cortado",       Size: "Regular", Price: 3.10 }
+]
+
+puts "Seeding Drinks..."
+drinks_list.each do |drink|
+  DB[:Drinks].insert(drink)
+end
+# --- ---
+
+# --- HELPERS ---
 MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
 bean_types = DB[:Beans].map(:BeanType)
 
@@ -94,7 +145,7 @@ def generate_json_contents(beans)
 end
 
 # --- 4. ORDERS ---
-customer_ids = DB[:Accounts].where(Account_type: "customer").map(:UserID)
+customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 40.times do |i|
   # First 5 orders are "Recent/Live", the rest are historical
@@ -125,9 +176,9 @@ complaint_samples = [
 10.times do
   DB[:Tickets].insert(
     UserID: customer_ids.sample,
-    ticketType: ["Complaint", "Technical", "Query"].sample,
-    ticketContent: complaint_samples.sample,
-    ticketResolved: [true, false].sample
+    TicketType: ["Complaint", "Technical", "Query"].sample,
+    TicketContent: complaint_samples.sample,
+    TicketResolved: [true, false].sample
   )
 end
 

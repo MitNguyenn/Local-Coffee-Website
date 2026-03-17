@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Edit User</title>
+</head>
+<body>
+
+  <main class="login-container">
+    <div class="login-card" style="max-width: 500px;">
+      
+      <h1 class="acc-view__title" style="font-size: 2rem;">Edit Account</h1>
+      <p style="margin-top: -20px; color: #a67458;">Updating User ID: <strong>#<%= @account[:UserID] %></strong></p>
+      <form method="POST">
+
+        <input type="reset">
+
+        <h3 class="detail-header">Personal Details</h3>
+
+        <div class="input-group">
+          <label for="FirstName">First Name</label>
+          <input type="text" name="FirstName" value="<%= @account[:FirstName] %>" class="account-input">
+        </div>
+
+        <div class="input-group">
+          <label for="LastName">Last Name</label>
+          <input type="text" name="LastName" value="<%= @account[:LastName] %>" class="account-input">
+        </div>
+
+        <div class="input-group">
+          <label for="Username">Reset Password</label>
+          <input type="checkbox" name="reset_password" id="reset_password" style="margin-right: 10px;">
+        </div>
+
+        <h3 class="detail-header">Permissions & Contact</h3>
+        
+        <!-- ROLE SELECTION -->
+      <div class="input-group">
+        <label for="AccountType">System Role</label>
+        <select name="AccountType" class="acc-view__search" style="width: 100%; border-radius: 8px; margin-bottom: 15px; appearance: auto; background-color: #fdf5e6;">
+          <option value="customer" <%= 'selected' if @account[:AccountType] == 'customer' %>>Customer</option>
+          <option value="barista" <%= 'selected' if @account[:AccountType] == 'barista' %>>Barista</option>
+          <option value="manager" <%= 'selected' if @account[:AccountType] == 'manager' %>>Manager</option>
+          <option value="administrator" <%= 'selected' if @account[:AccountType] == 'administrator' %>>Administrator</option>
+        </select>
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input type="text" name="email" value="<%= @account[:email] %>" class="account-input">
+        </div>
+
+        <div class="input-group">
+          <label for="PhoneNumber">Phone Number</label>
+          <input type="text" name="PhoneNumber" value="<%= @account[:PhoneNumber] %>" class="account-input">
+        </div>
+
+        <h3 class="detail-header">Location</h3>
+        
+        <div class="input-group">
+          <label for="Address">Full Address</label>
+          <input type="text" name="Address" value="<%= @account[:Address] %>" class="account-input">
+        </div>
+
+        <div class="input-group">
+          <label for="Postcode">Postcode</label>
+          <input type="text" name="Postcode" value="<%= @account[:Postcode] %>" class="account-input">
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px;">
+          <input type="submit" value="Save Changes" class="acc-view__btn" style="flex: 2; padding: 15px;">
+          <a href="/manage-accounts" class="acc-view__btn" style="flex: 1; padding: 15px; background: #64748b;">Cancel</a>
+        </div>
+      </form>
+      <!-- Delete Account Button -->
+      <div style="margin-top: 30px; display: flex; gap: 10px;">
+          <input type="submit" value="Save Changes" class="acc-view__btn" style="flex: 2; padding: 15px;">
+          <a href="/manage-accounts-delete/<%= @account[:UserID] %>" class="acc-view__btn" style="flex: 1; padding: 15px; background: #64748b;">Delete Account</a>
+        </div>
+    </div>
+  </main>
+
+</body>
+</html>

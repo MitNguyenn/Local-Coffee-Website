@@ -8,7 +8,38 @@ get '/' do
 end
 
 get '/coffee-beans' do
+  @beans = Bean.all
   erb :beans
+end
+
+get '/drinks' do
+  @drinks = Drink.all
+  erb :drinks
+end
+
+# product page
+get '/product/' do
+  @type = params[:type]
+
+  if @type == 'bean'
+    @item = Bean[params[:id]]
+    @template = :bean_details
+  elsif @type == 'drink'
+    @item = Drink.where(BeanID: params[:bean_id], Beverage: params[:name]).first
+    @template = :drink_details
+  else 
+    halt 404, "Product type not found."
+  end
+
+  erb @template
+end
+
+post '/add-to-basket' do
+  session[:basket] ||= []
+  item_id = params[:id]
+  session[:basket] << item_id
+  content_type :json
+  { count: session[:basket].length }.to_json
 end
 
 get '/help' do
@@ -31,10 +62,11 @@ post '/log-in' do
 
   puts @password
 
-  user = DB[:accounts].where(email: @email).first
+  user = DB[:Accounts].where(email: @email).first
   
   if user && BCrypt::Password.new(user[:hashedPassword]) == @password then
-    session[:user_id] = user[:UserID]
+    session[:UserID] = user[:UserID]
+    session[:AccountType] = user[:AccountType]
     puts "Login successful for email: #{@email}"
     redirect '/'
   else
@@ -54,6 +86,7 @@ post '/register' do
   FirstName = params[:FirstName]
   LastName = params[:LastName]
   PhoneNumber = params[:PhoneNumber]
+  Address = params[:Address]
   postcode = params[:postcode]
 
   UserID = nil
@@ -86,7 +119,6 @@ post '/register' do
     return erb :register_account
   end
 
-
   # Create new user account
   user = Account.create(
     UserID: UserID,
@@ -96,11 +128,15 @@ post '/register' do
     #password_hash: BCrypt::Password.create(password).to_s,
     password: password1,
     PhoneNumber: PhoneNumber,
+    Address: Address,
     Postcode: postcode,
-    :"Account_type" => "customer"
+    AccountType: 'customer'
   )
 
-  session[:user_id] = user.UserID
+  user.Address = params[:Address] 
+  user.AccountType = 'customer'
+
+  session[:UserID] = user.UserID
   redirect '/'
 rescue => e
   @error = "Registration failed: #{e.message}"
@@ -110,18 +146,22 @@ end
 get '/account-settings' do
   redirect '/log-in' unless logged_in?
 
-  @user = DB[:Accounts].where(UserID: session[:user_id]).first
+  @user = DB[:Accounts].where(UserID: session[:UserID]).first
 
   erb :account_settings
 end
 
 post '/update-account' do
-  redirect '/log-in' unless session[:user_id]
+  redirect '/log-in' unless session[:UserID]
 
-  DB[:Accounts].where(UserID: session[:user_id]).update(
+  DateTime_of_birth = params[:Date_of_birth] ? DateTime.parse(params[:Date_of_birth]) : nil
+
+  DB[:Accounts].where(UserID: session[:UserID]).update(
     FirstName:     params[:FirstName],
     LastName:      params[:LastName],
-    Postcode: params[:Postcode]
+    Postcode:       params[:Postcode],
+    Date_of_birth:  DateTime_of_birth
+
   )
 
   redirect '/account-settings?success=1'
@@ -143,9 +183,9 @@ post '/change-password' do
 end
 
 get '/loyalty-card' do
-  redirect '/log-in' unless session[:user_id]
+  redirect '/log-in' unless session[:UserID]
 
-  @user = DB[:Accounts].where(UserID: session[:user_id]).first
+  @user = DB[:Accounts].where(UserID: session[:UserID]).first
 
   if @user
     qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:UserID]}")
@@ -170,9 +210,9 @@ get '/my-orders' do
     redirect '/log-in'
   end
 
-  puts "Fetching orders for user ID: #{session[:user_id]}"
-  @current_orders = fetch_current_orders(session[:user_id])
-  @past_orders = fetch_past_orders(session[:user_id])
+  puts "Fetching orders for user ID: #{session[:UserID]}"
+  @current_orders = fetch_current_orders(session[:UserID])
+  @past_orders = fetch_past_orders(session[:UserID])
   erb :my_orders
 end
 
@@ -186,9 +226,75 @@ get '/forgot' do
 end
 
 get '/metrics' do
-  #NEED TO CHECK SESSION TO SEE IF ACCOUNT HAS CORRECT LEVEL
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
   @metrics = analyze_sales_data
   puts @metrics
   erb :metrics_page
 end
 
+get '/user-tickets' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
+
+  @live_tickets = DB[:Tickets].where(TicketResolved: false).all
+  @past_tickets = DB[:Tickets].where(TicketResolved: true).all
+  erb :ticket_management
+end
+
+get '/ticket/:id' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
+
+  @ticket = DB[:Tickets].where(ticketID: params[:id]).first
+  erb :ticket_resolve
+end
+
+get '/manage-accounts' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  @accounts = DB[:Accounts].all
+  erb :account_management
+end
+
+get '/edit-account/:id' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  @account = DB[:Accounts].where(UserID: params[:id]).first
+  erb :edit_account
+end
+
+post '/edit-account/:id' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  resetPassword = params[:reset_password] == "on"
+  if resetPassword
+    newPassword = "password123"
+  end
+
+  DB[:Accounts].where(UserID: params[:id]).update(
+    FirstName: params[:FirstName],
+    LastName: params[:LastName],
+    email: params[:email],
+    PhoneNumber: params[:PhoneNumber],
+    Postcode: params[:Postcode],
+    AccountType: params[:AccountType]
+  )
+
+  DB[:Accounts].where(UserID: params[:id]).update(
+    hashedPassword: BCrypt::Password.create(newPassword).to_s
+  ) if resetPassword
+
+  redirect '/manage-accounts'
+end
+
+get '/manage-accounts-delete/:id' do
+  redirect '/log-in' unless session[:UserID]
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  DB[:Accounts].where(UserID: params[:id]).delete
+  redirect '/manage-accounts'
+end
