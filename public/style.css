@@ -774,7 +774,7 @@ footer {
   display: flex;
   flex-direction: row;
   align-items: flex-start; /* Aligns items to the top of the row */
-  gap: 40px;               /* Space between image and text */
+  gap: 40px; /* Space between image and text */
   margin-top: 20px;
 }
 
@@ -783,7 +783,7 @@ footer {
   max-width: 50%;
   height: auto;
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .product-details {
@@ -1206,6 +1206,7 @@ footer {
 .view-menu-btn,
 .buy-button,
 .add-to-basket-button,
+.purchase-btn,
 .submit-btn {
   background:
     linear-gradient(
@@ -1236,6 +1237,7 @@ footer {
 .login-btn:hover,
 .add-to-basket-button:hover,
 .btn:hover,
+.purchase-btn:hover,
 .view-menu-btn:hover,
 .buy-button:hover,
 .submit-btn:hover,
@@ -1841,4 +1843,77 @@ button:active {
   padding: 9px 18px;
   border-radius: 6px;
   color: black;
+}
+
+.checkout-container {
+  font-family: Helvetica, sans-serif;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  min-height: 80vh;
+  padding: 40px;
+  gap: 40px;
+  background: #fdf5e6;
+}
+
+.checkout-form-section h2 {
+  color: #4b2c20;
+  margin-bottom: 20px;
+}
+.form-group {
+  margin-bottom: 30px;
+}
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid #4b2c20;
+}
+
+.summary-glass-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* This centers everything inside horizontally */
+  
+  /* Keep your existing glass styles */
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(15px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Ensure the summary lines still stretch to the edges */
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Important: prevents lines from shrinking to the center */
+  margin: 10px 0;
+}
+
+.total {
+  font-size: 1.4rem;
+  border-top: 1px solid #4b2c20;
+  padding-top: 15px;
+}
+
+.purchase-btn {
+  white-space: nowrap; 
+  margin-top: 100px;
+  margin-bottom: 15px;
+
+  padding: 20px 60px; 
+  font-size: 1.4rem; 
+  
+  min-width: 300px; 
+  
+  border-radius: 50px;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.purchase-btn:active {
+  transform: scale(0.95);
 }

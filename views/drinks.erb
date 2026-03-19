@@ -4,10 +4,9 @@
 
 <div class="catalog-grid" id="item-container">
   <% @drinks.each do |drink| %>
-    <div class="product-card" data-drink-id="<%= drink.DrinkID %>" data-beverage="<%= drink.Beverage %>">
+    <div class="product-card" data-drink-id="<%= drink.DrinkID %>">
       <%
         rel_path = "drinks/#{drink.DrinkID}.png"
-        
         if File.exist?(File.join(Dir.pwd, "public", rel_path))
           display_path = "/#{rel_path}"
         else
@@ -28,32 +27,44 @@
   const container = document.getElementById('item-container');
 
   container.addEventListener('click', (event) => {
-    if (event.target.classList.contains('add-to-basket-button')) {
-      if (event.target.textContent == "Add to basket") {
-        event.target.textContent = "Added! ✅";
-        
-        // do other stuff (actually add to the basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
-      } else {
-        event.target.textContent = "Removed!";
+    const target = event.target;
+    const card = target.closest('.product-card');
+    
+    if (!card) return;
 
-        // do other stuff (remove from basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
-      }
-     return; // Stop here so we don't redirect
+    const drinkId = card.dataset.drinkId;
+
+    if (target.classList.contains('add-to-basket-button')) {
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkId}&type=drink`
+      })
+      .then(response => response.json())
+      .then(data => {
+        const cartCount = document.getElementById('basket-count');
+        if (cartCount) cartCount.textContent = data.count;
+        
+        target.textContent = "Added! ✅";
+        setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
+      });
+      return;
     }
-    const card = event.target.closest('.product-card');
+
+    if (target.classList.contains('buy-button')) {
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkId}&type=drink`
+      })
+      .then(() => {
+        window.location.href = '/checkout';
+      });
+      return;
+    }
+
     if (card) {
-      const drinkID = card.dataset.drinkId;
-      const bevName = encodeURIComponent(card.dataset.beverage);
-      
-      // window.location.href = `/product/?type=drink&bean_id=${card.dataset.beanId}&name=${bevName}`;
-      // window.location.href = `/product/?type=drink&id=${drinkID}&name=${bevName}`;
-      if (drinkID) {
-        window.location.href = `/product/?type=drink&id=${drinkID}`;
-      } else {
-        console.error("Drink ID is missing from the HTML card!");
-      }
+      window.location.href = `/product/?type=drink&id=${drinkId}`;
     }
   });
 </script>
