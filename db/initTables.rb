@@ -6,7 +6,8 @@ require 'json'
 DB = Sequel.sqlite("#{__dir__}/db.sqlite3")
 
 # 1. Clear existing data (optional, prevents duplicates if you run it twice)
-DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
+# Drop in reverse dependency order to avoid foreign key constraint errors
+DB.drop_table?(:Drinks, :Tickets, :Orders, :Beans, :Accounts)
 
 # 2. Create tables (if they don't exist)
 # Table 1: Accounts
@@ -14,7 +15,7 @@ DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
   String :FirstName
   String :LastName
-  Datetime   :Date_of_birth, null: true
+  Datetime   :DateOfBirth, null: true
   Integer :StampCount, default: 0
   String :email, unique: true, null: false
   String :hashedPassword
