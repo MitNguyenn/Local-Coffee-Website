@@ -38,14 +38,11 @@ end
 post '/add-to-basket' do
   session[:basket] ||= []
   
-  # 1. Grab both the ID and the Type from the request
   item_id   = params[:id]
-  item_type = params[:type] # This should be 'bean' or 'drink'
+  item_type = params[:type] 
 
-  # 2. Save them as a small "Hash" (object)
   session[:basket] << { id: item_id, type: item_type }
 
-  # 3. Return the count to update your glossy cart bubble
   content_type :json
   { count: session[:basket].length }.to_json
 end

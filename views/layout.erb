@@ -42,21 +42,42 @@
           </div>
 
           <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
-            <div class="cart-header">Your Basket</div>
-              <div class="cart-items-list">
-                <% if session[:basket] && session[:basket].any? %>
-                  <% session[:basket].each do |item_id| %>
-                    <div class="cart-item">
-                      <span>Item #<%= item_id %></span>
-                    </div>
-                  <% end %>
-                  <hr>
-                  <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
-                <% else %>
-                  <p class="empty-msg">Your basket is empty!</p>
-                <% end %>
-            </div>
+  <div class="cart-header">Your Basket</div>
+  <div class="cart-items-list">
+    <% if session[:basket] && session[:basket].any? %>
+      <% 
+        basket_total = 0 
+        session[:basket].each do |item_data| 
+          item = (item_data[:type] == 'bean') ? Bean[item_data[:id]] : Drink[item_data[:id]]
+          if item
+            name = item_data[:type] == 'bean' ? item.Name : item.Beverage
+            basket_total += item.Price
+      %>
+        <div class="cart-item">
+          <img src="/<%= item_data[:type] %>s/<%= item_data[:id] %>.png" 
+               onerror="this.src='/beans/beans_img_not_found.png'" 
+               width="30" height="30">
+          
+          <div class="cart-item-info">
+            <span class="cart-item-name"><%= name %></span>
+            <span class="cart-item-price">£<%= sprintf('%.2f', item.Price) %></span>
           </div>
+        </div>
+      <%   end 
+        end %>
+      
+      <div class="cart-total-line">
+        <strong>Total:</strong>
+        <strong>£<%= sprintf('%.2f', basket_total) %></strong>
+      </div>
+      
+      <hr>
+      <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+    <% else %>
+      <p class="empty-msg">Your basket is empty!</p>
+    <% end %>
+  </div>
+</div>
         </div>
 
         <!-- Account Button -->
