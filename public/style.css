@@ -1360,7 +1360,7 @@ button:active {
 .carousel-track {
   display: flex;
   width: max-content;
-  animation: scroll 20s linear infinite;
+  animation: scroll 20s linear infinite
 }
 
 .carousel-item {
