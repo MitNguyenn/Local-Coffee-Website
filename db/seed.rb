@@ -5,7 +5,7 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.sqlite("db.sqlite3")
+DB = Sequel.sqlite("#{__dir__}/db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Accounts].each do |table| 

@@ -34,9 +34,8 @@ body {
 .nav-left-group {
   display: flex;
   align-items: center;
-  gap: 25px; 
+  gap: 25px;
 }
-
 
 .home-btn img {
   display: block;
@@ -66,7 +65,7 @@ main {
 }
 
 .home-btn {
-  display:flex;
+  display: flex;
 }
 
 /* This groups the cart and user icons together on the right */
@@ -1041,7 +1040,7 @@ html {
   cursor: not-allowed;
 }
 
-.problem_box{
+.problem_box {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -1367,9 +1366,12 @@ button:active {
   min-width: 250px;
   margin: 5px;
   padding: 5px;
-  font-size: 16px;
-  font-family: Arial, Helvetica, sans-serif;
-  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  font-family: "Doto", sans-serif;
+  font-variation-settings: "ROND" 100;
+  color: rgb(255, 225, 0);
   text-align: center;
   border-radius: 10px;
 }
@@ -1441,7 +1443,7 @@ button:active {
   box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
 }
 
-.problem_box{
+.problem_box {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -1807,7 +1809,7 @@ button:active {
   box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
 }
 
-.problem_box{
+.problem_box {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

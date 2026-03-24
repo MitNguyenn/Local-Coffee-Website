@@ -154,13 +154,13 @@ end
 post '/update-account' do
   redirect '/log-in' unless session[:UserID]
 
-  DateTime_of_birth = params[:Date_of_birth] ? DateTime.parse(params[:Date_of_birth]) : nil
+  DateTime_of_birth = params[:DateOfBirth] ? DateTime.parse(params[:DateOfBirth]) : nil
 
   DB[:Accounts].where(UserID: session[:UserID]).update(
     FirstName:     params[:FirstName],
     LastName:      params[:LastName],
     Postcode:       params[:Postcode],
-    Date_of_birth:  DateTime_of_birth
+    DateOfBirth:  DateTime_of_birth
 
   )
 
