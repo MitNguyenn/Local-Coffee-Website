@@ -1,49 +1,9 @@
 <div class="product-detail-container">
   <h1><%= @item.Beverage %></h1>
-  <div class="product-main-content">
-    <%
-      rel_path = "drinks/#{@item.DrinkID}.png"
-      
-      if File.exist?(File.join(Dir.pwd, "public", rel_path))
-        display_path = "/#{rel_path}"
-      else
-        display_path = "/drinks/drink_img_not_found.png"
-      end
-    %>
-    
-    <img src="<%= display_path %>" alt="<%= @item.Beverage %>" width="500" height="500">
-    <div class="product-details" id="product-details">
-      <p><%= @item.Description %></p>
-      <p>Price: <strong>£<%= sprintf('%.2f', @item.Price) %></strong></p>
-      
-      <button class="add-to-basket-button" data-id="<%= @item.DrinkID %>">Add to Basket</button>
-      <button class="buy-button">Buy Now</button>
-    </div> 
-  </div> 
+  <p>Size: <%= @item.Size %></p>
+  <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
+  
+  <button class="add-to-basket-button">Add to Basket</button>
+  <button class="buy-button">Buy Now</button>
   <a href="/drinks">Back to Catalog</a>
 </div>
-
-<script>
-  const container = document.getElementById('product-details');
-
-  container.addEventListener('click', (event) => {
-    if (event.target.classList.contains('add-to-basket-button')) {
-      const drinkID = card.dataset.drinkId;
-      if (event.target.textContent == "Add to basket") {
-        console.log("Debug: Added " + drinkID + " to basket.")
-        event.target.textContent = "Added! ✅";
-        
-        // do other stuff (actually add to the basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
-      } else {
-        console.log("Debug: Removed " + drinkID + " from basket.")
-        event.target.textContent = "Removed!";
-
-        // do other stuff (remove from basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
-      }
-     return; // Stop here so we don't redirect
-    }
-
-  });
-</script>
