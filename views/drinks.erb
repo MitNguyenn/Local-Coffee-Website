@@ -50,11 +50,17 @@
       });
       return;
     }
-    
+
     if (target.classList.contains('buy-button')) {
-      // Direct redirect is better for navigation [cite: 9, 25]
-      window.location.href = `/checkout?id=${productId}&type=${productType}`;
-    return;
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkId}&type=drink`
+      })
+      .then(() => {
+        window.location.href = '/checkout';
+      });
+      return;
     }
 
     if (card) {

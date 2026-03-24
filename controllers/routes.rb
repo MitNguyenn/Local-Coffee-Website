@@ -35,20 +35,6 @@ get '/product/' do
   erb @template
 end
 
-post '/remove-from-basket' do
-  item_id   = params[:id]
-  item_type = params[:type]
-
-  if session[:basket]
-    index = session[:basket].find_index { |item| item[:id] == item_id && item[:type] == item_type }
-    
-    session[:basket].delete_at(index) if index
-  end
-
-  content_type :json
-  { count: session[:basket].length }.to_json
-end
-
 post '/add-to-basket' do
   session[:basket] ||= []
   
@@ -388,34 +374,19 @@ end
 get '/checkout' do
   @subtotal = 0
   @basket_items = []
-  
-  # 1. Check for Instant Checkout parameters in the URL (?id=...&type=...)
-  instant_id = params[:id]
-  instant_type = params[:type]
 
-  if instant_id && instant_type
-    # Fetch the single item for Instant Checkout
-    item = (instant_type == 'bean') ? Bean[instant_id] : Drink[instant_id]
-    
-    if item
-      @basket_items << item
-      @subtotal = item[:Price]
-      @is_instant = true # Flag to tell the view/place-order this is a single item
-      @instant_id = instant_id
-      @instant_type = instant_type
-    end
-  elsif session[:basket]
-    # 2. Fallback to existing Basket Logic
+  if session[:basket]
     session[:basket].each do |item_data|
-      # Fix: Use both symbol and string keys as sessions often stringify keys
-      id = item_data[:id] || item_data["id"]
-      type = item_data[:type] || item_data["type"]
+      # item_data looks like { id: "1", type: "bean" }
+      id = item_data[:id]
+      type = item_data[:type]
 
+      # Find the item in the correct table
       item = (type == 'bean') ? Bean[id] : Drink[id]
 
       if item
         @basket_items << item
-        @subtotal += item[:Price]
+        @subtotal += item[:Price] # Ensure :Price matches your DB column name
       end
     end
   end
