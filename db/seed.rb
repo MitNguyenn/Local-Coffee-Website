@@ -5,10 +5,10 @@ require 'json'
 require 'date'
 
 # Connect to the database
-DB = Sequel.sqlite("#{__dir__}/db.sqlite3")
+DB = Sequel.sqlite("db/db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
-[:Tickets, :Orders, :Beans, :Accounts].each do |table| 
+[:Tickets, :Orders, :OrderItems, :Beans, :Drinks, :Accounts].each do |table| 
   DB[table].delete if DB.table_exists?(table)
 end
 
@@ -83,6 +83,7 @@ DB[:Accounts].insert(
 )
 
 # --- BEANS ---
+# bean = [ID, Name, Type, Roast, Wight, Price, Stock]
 bean_list = [
   [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
   [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
@@ -106,14 +107,11 @@ end
 
 # --- Drinks ---
 drinks_list = [
-  { BeanID: 1, Beverage: "Filter Coffee", Size: "Regular", Price: 1.90 },
-  { BeanID: 1, Beverage: "Cold Brew",     Size: "Regular", Price: 4.20 },
-  { BeanID: 2, Beverage: "Latte",         Size: "Regular", Price: 3.50 },
-  { BeanID: 2, Beverage: "Cappuccino",    Size: "Regular", Price: 3.60 },
-  { BeanID: 3, Beverage: "Americano",     Size: "Regular", Price: 3.00 },
-  { BeanID: 4, Beverage: "Flat White",    Size: "Regular", Price: 3.35 },
-  { BeanID: 5, Beverage: "Espresso",      Size: "Double",  Price: 2.20 },
-  { BeanID: 5, Beverage: "Cortado",       Size: "Regular", Price: 3.10 }
+  [1, "Latte", 4.40, ""],
+  [2, "Americano", 3.80, ""], 
+  [3, "Cappuccino", 4.40, ""], 
+  [4, "Flat white", 4.35, ""],
+  [5, "Cortado", 3.70, ""]
 ]
 
 puts "Seeding Drinks..."
@@ -123,46 +121,62 @@ end
 # --- ---
 
 # --- HELPERS ---
-MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
-bean_types = DB[:Beans].map(:BeanType)
+# MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
+# bean_types = DB[:Beans].map(:BeanType)
 
-def days_ago(n)
-  Time.now - (n * 86400) - rand(3600..7200)
-end
+# def days_ago(n)
+#   Time.now - (n * 86400) - rand(3600..7200)
+# end
 
-# Function to generate the JSON string for OrderContents
-def generate_json_contents(beans)
-  order_map = {}
-  # Add 1-3 random menu items
-  rand(1..3).times do
-    order_map[MENU_ITEMS.sample] = rand(1..2)
-  end
-  # 40% chance to include a specific bean variety
-  if rand < 0.4
-    order_map["#{beans.sample} Beans (250g)"] = 1
-  end
-  order_map.to_json
-end
+# # Function to generate the JSON string for OrderContents
+# def generate_json_contents(beans)
+#   order_map = {}
+#   # Add 1-3 random menu items
+#   rand(1..3).times do
+#     order_map[MENU_ITEMS.sample] = rand(1..2)
+#   end
+#   # 40% chance to include a specific bean variety
+#   if rand < 0.4
+#     order_map["#{beans.sample} Beans (250g)"] = 1
+#   end
+#   order_map.to_json
+# end
 
-# --- 4. ORDERS ---
+# # --- 4. ORDERS ---
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
-40.times do |i|
-  # First 5 orders are "Recent/Live", the rest are historical
-  is_past = i > 5 
+# 40.times do |i|
+#   # First 5 orders are "Recent/Live", the rest are historical
+#   is_past = i > 5 
   
-  DB[:Orders].insert(
-    UserID: customer_ids.sample,
-    OrderContents: generate_json_contents(bean_types),
-    OrderType: ["In-Person", "Delivery"].sample,
-    PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
-    totalCost: rand(3.50..22.00).round(2),
-    CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
-    Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
-    IsDelivered: is_past,
-    IsCompleted: is_past
-  )
-end
+#   DB[:Orders].insert(
+#     UserID: customer_ids.sample,
+#     OrderContents: generate_json_contents(bean_types),
+#     OrderType: ["In-Person", "Delivery"].sample,
+#     PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
+#     totalCost: rand(3.50..22.00).round(2),
+#     CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
+#     Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
+#     IsDelivered: is_past,
+#     IsCompleted: is_past
+#   )
+# end
+
+DB[:Orders].insert(
+  OrderID: 1234,
+  UserID: 38452738,
+  OrderType: "Collection",
+  PaymentMethod: "Cash",
+  TotalCost: 13.20
+)
+
+# 3 lattes to pickup from the store
+DB[:OrderItems].insert(
+  OrderID: 1234,
+  ItemType: "Drink",
+  ItemID: 1,
+  Quantity: 3
+)
 
 # --- 5. TICKETS ---
 complaint_samples = [

@@ -1,19 +1,74 @@
 <div class="product-detail-container">
   <h1><%= @item.Name %></h1>
 
-  <% 
-    item_id = @item[:BeanID] 
-    specific_image = "/#{item_id}.png"
-    image_path = File.exist?("public#{specific_image}") ? specific_image : "/coffee_beans_example.png"
-  %>
-
-  <img src="<%= image_path %>" alt="<%= @item[:Name] %>">
-
-  <p>Roast Level: <strong><%= @item.Roast %></strong></p>
-  <p>Pack weight: <strong><%= @item.PackWeight %>g</strong></p>
-  <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
+  <div class="product-main-content"> 
+    <%
+      rel_path = "beans/#{@item.BeanID}.png"
+      
+      if File.exist?(File.join(Dir.pwd, "public", rel_path))
+        display_path = "/#{rel_path}"
+      else
+        display_path = "/beans/beans_img_not_found.png"
+      end
+    %>
+    
+    <img src="<%= display_path %>" alt="<%= @item.Name %>" width="500" height="500">
+    <div class="product-details" id="product-details" 
+     data-bean-id="<%= @item.BeanID %>" 
+     data-type="bean">
   
-  <button class="add-to-basket-button">Add to Basket</button>
-  <button class="buy-button">Buy Now</button>
-  <a href="/coffee-beans">Back to Catalog</a>
+    <p>Origin: <strong><%= @item.Type %></strong></p>
+    <p>Roast Level: <strong><%= @item.Roast %></strong></p>
+    <p>Pack weight: <strong><%= @item.PackWeight %>g</strong></p>
+    <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
+    
+    <button class="add-to-basket-button">Add to basket</button>
+    <button class="buy-button">Buy Now</button>
+  </div>
+
+  </div> <a href="/coffee-beans" class="back-link">Back to Catalog</a>
 </div>
+
+<script>
+  const container = document.getElementById('product-details');
+
+  container.addEventListener('click', (event) => {
+    const target = event.target;
+    
+    // Pull ID and Type directly from the container we just updated
+    const productId = container.dataset.beanId;
+    const productType = container.dataset.type;
+
+    // Handle Add/Remove Toggle
+    if (target.classList.contains('add-to-basket-button')) {
+      const isAdding = target.textContent === "Add to basket";
+      const route = isAdding ? '/add-to-basket' : '/remove-from-basket';
+      
+      fetch(route, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${productId}&type=${productType}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        const cartCount = document.getElementById('basket-count');
+        if (cartCount) cartCount.textContent = data.count;
+        
+        if (isAdding) {
+          target.textContent = "Added! ✅";
+          setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
+        } else {
+          target.textContent = "Removed";
+          setTimeout(() => { target.textContent = "Add to basket"; }, 1000);
+        }
+      });
+      return; 
+    }
+
+    if (target.classList.contains('buy-button')) {
+    // Redirect directly to checkout with query parameters
+    window.location.href = `/checkout?id=${productId || beanId}&type=bean`;
+}
+
+  });
+</script>

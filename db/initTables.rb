@@ -2,20 +2,15 @@ require 'sequel'
 require 'sqlite3'
 require 'json'
 
-# Connect to the database
-DB = Sequel.sqlite("#{__dir__}/db.sqlite3")
+DB = Sequel.sqlite("db/db.sqlite3")
 
-# 1. Clear existing data (optional, prevents duplicates if you run it twice)
-# Drop in reverse dependency order to avoid foreign key constraint errors
-DB.drop_table?(:Drinks, :Tickets, :Orders, :Beans, :Accounts)
+DB.drop_table?(:Tickets, :Orders, :OrderItems, :Beans, :Drinks, :Accounts)
 
-# 2. Create tables (if they don't exist)
-# Table 1: Accounts
 DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
   String :FirstName
   String :LastName
-  Datetime   :DateOfBirth, null: true
+  Datetime :Date_of_birth, null: true
   Integer :StampCount, default: 0
   String :email, unique: true, null: false
   String :hashedPassword
@@ -25,46 +20,57 @@ DB.create_table? :Accounts do
   String :AccountType, default: 'customer'
 end
 
-# Create Beans Table
 DB.create_table? :Beans do
-  primary_key :BeanID
+  Integer :BeanID
   String :Name
   String :Type 
   String :Roast 
   Integer :PackWeight
   Double :Price
   Integer :CurrentStock
+
+  primary_key [:BeanID]
 end
 
-# Create Drinks Table with Composite Key
 DB.create_table? :Drinks do
-  Integer :BeanID
+  Integer :DrinkID
   String :Beverage
-  String :Size
-  Decimal :Price, size: [10, 2]
+  Double :Price, size: [10, 2]
+  String :Description
   
-  # Define the Composite Primary Key
-  primary_key [:BeanID, :Beverage]
-  
-  # Link to the Beans table
-  foreign_key [:BeanID], :Beans
+  primary_key [:DrinkID]
 end
 
-# Table 3: Orders
+# DB.create_table? :SizePrices do
+#   Integer :DrinkID
+#   String :Size
+#   Double :Price, size: [10, 2]
+#   primary_key [:DrinkID, :Size]
+
+#   foreign_key [:DrinkID], :Drinks
+# end
+
 DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
-  String :OrderContents    # We will store a JSON string here
-  String :OrderType       # 'In-Person' or 'Delivery'
+  String :OrderType
   String :PaymentMethod
-  Float :totalCost
+  Double :TotalCost, size: [10, 2]
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
-  String :Location, default: 'In-Store'
-  TrueClass :IsDelivered, default: false
+  String :Destination, default: 'In-Store'
   TrueClass :IsCompleted, default: false
 end
 
-# Table 4: Tickets
+DB.create_table? :OrderItems do
+  foreign_key :OrderID, :Orders
+  String :ItemType
+  Integer :ItemID 
+
+  Integer :Quantity
+
+  primary_key [:OrderID, :ItemType, :ItemID]
+end
+
 DB.create_table? :Tickets do
   primary_key :ticketID
   foreign_key :UserID, :Accounts
