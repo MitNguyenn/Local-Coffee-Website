@@ -6,7 +6,22 @@ your `CREATE TABLE` SQL statements) should be written into the initially blank
 statements into a file called `data.sql`, and these will be executed to populate
 tables with data.
 
-You can then use this to create the two SQLite3 database files that you will
+To create a test database run the following scripts from the project's root directory.
+If you installed gems on your machine (binaries are in /bin directory or equivalent on Windows) just run:
+<br>
+`$ ruby db/initTables.rb`
+<br>
+`$ ruby db/seed.rb`
+
+Otherwise, you probably have to use bundle:
+<br>
+`$ bundle install db/initTables.rb`
+<br>
+`$ bundle install db/seed.rb`
+
+These commands will create a file db/db.sqlite3 and fill it with data provided in db/seed.rb file.
+
+<!-- You can then use this to create the two SQLite3 database files that you will
 need, `db.sqlite3` and `db_test.sqlite3` (although the latter, test database
 will be blank and will not have the data in `data.sql` added).
 
@@ -32,4 +47,4 @@ If the relevant database file does not exist, none is loaded, although this will
 cause an error if your app uses a model and is therefore expecting it to exist.
 
 All activity is logged to `db.log` or `db_test.log` depending on what mode your
-app is being run in.
+app is being run in. -->
