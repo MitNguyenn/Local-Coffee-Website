@@ -8,7 +8,7 @@ require 'date'
 DB = Sequel.sqlite("db/db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
-[:Tickets, :Orders, :Beans, :Accounts].each do |table| 
+[:Tickets, :Orders, :Beans, :Drinks, :Accounts].each do |table| 
   DB[table].delete if DB.table_exists?(table)
 end
 
@@ -116,13 +116,18 @@ drinks_list = [
 
 puts "Seeding Drinks..."
 drinks_list.each do |drink|
-  DB[:Drinks].insert(drink)
+  DB[:Drinks].insert(
+    DrinkID: drink[0],
+    Beverage: drink[1],
+    Price: drink[2],
+    Description: drink[3]
+  )
 end
 # --- ---
 
 # --- HELPERS ---
 MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
-bean_types = DB[:Beans].map(:BeanType)
+bean_types = DB[:Beans].map(:Type)
 
 def days_ago(n)
   Time.now - (n * 86400) - rand(3600..7200)
