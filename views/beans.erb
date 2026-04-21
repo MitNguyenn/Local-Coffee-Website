@@ -39,6 +39,7 @@
     const beanId = card.dataset.beanId;
 
     if (target.classList.contains('add-to-basket-button')) {
+<<<<<<< HEAD
       if (target.textContent == "Add to basket") {
         fetch('/add-to-basket', {
           method: 'POST',
@@ -68,12 +69,39 @@
           setTimeout(() => { target.textContent = "Add to basket"; }, 1000);
         });
       }
+=======
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${beanId}&type=bean`
+      })
+      .then(response => response.json())
+      .then(data => {
+        const cartCount = document.getElementById('basket-count');
+        if (cartCount) cartCount.textContent = data.count;
+        
+        target.textContent = "Added! ✅";
+        setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
+      });
+>>>>>>> master
       return; 
     }
 
     if (target.classList.contains('buy-button')) {
+<<<<<<< HEAD
         // Redirect directly to checkout with query parameters
         window.location.href = `/checkout?id=${productId || beanId}&type=bean`;
+=======
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${beanId}&type=bean`
+      })
+      .then(() => {
+        window.location.href = '/checkout';
+      });
+      return; 
+>>>>>>> master
     }
 
     if (card) {

@@ -2,9 +2,11 @@ require 'sequel'
 require 'sqlite3'
 require 'json'
 
+# Connect to the database
 DB = Sequel.sqlite("db/db.sqlite3")
 
-DB.drop_table?(:Tickets, :Orders, :OrderItems, :Beans, :Drinks, :Accounts)
+# 1. Clear existing data (optional, prevents duplicates if you run it twice)
+DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
 
 DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
@@ -50,6 +52,7 @@ end
 #   foreign_key [:DrinkID], :Drinks
 # end
 
+# Table 3: Orders
 DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
