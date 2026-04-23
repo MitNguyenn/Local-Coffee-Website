@@ -1,0 +1,23 @@
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Stock</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @beans.each do |bean| %>
+      <tr>
+        <td><%= bean.Name %></td>
+        <td>
+          <form method="post" action="/stock-management">
+            <input type="hidden" name="id" value="<%= bean.BeanID %>">
+            <input type="hidden" name="type" value="bean">
+            <input type="number" name="stock" value="<%= bean.CurrentStock %>" min="0">
+            <button type="submit">Update</button>
+          </form>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

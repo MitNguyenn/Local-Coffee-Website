@@ -408,7 +408,7 @@ get '/stock-management' do
   redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
 
   @beans = Bean.all
-  @drinks = Drink.all
+
   erb :stock_management
 end
 
@@ -419,12 +419,8 @@ post '/stock-management' do
   item_id = params[:id]
   item_type = params[:type]
   new_stock = params[:stock].to_i
-
-  if item_type == 'bean'
+  
     Bean[item_id].update(Stock: new_stock)
-  elsif item_type == 'drink'
-    Drink[item_id].update(Stock: new_stock)
-  end
 
   redirect '/stock-management'
 end
