@@ -45,6 +45,7 @@ post '/add-to-basket' do
 
   content_type :json
   { count: session[:basket].length }.to_json
+  redirect '/coffee-beans'
 end
 
 get '/help' do
@@ -190,6 +191,7 @@ end
 get '/loyalty-card' do
   redirect '/log-in' unless session[:UserID]
 
+  @user = Account[session[:UserID]]
   @user = DB[:Accounts].where(UserID: session[:UserID]).first
 
   if @user
@@ -336,7 +338,6 @@ get '/view-basket' do
   
   if session[:basket]
     session[:basket].each do |item_data|
-      # Assuming you updated add-to-basket to store {id: 1, type: 'bean'}
       item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
       if item
         @basket_items << item
@@ -349,6 +350,8 @@ end
 
 post '/place-order' do
   redirect '/log-in' unless logged_in?
+
+
   
   subtotal = calculate_basket_total(session[:basket])
   shipping = 3.50
@@ -362,6 +365,28 @@ post '/place-order' do
     PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash/In-Person',
     IsCompleted: false
   )
+
+  new_stamps = 0
+  session[:basket].each do |item|
+    if item[:type] == 'bean'
+      new_stamps += 3 
+    else
+      new_stamps += 1 
+    end
+  end
+
+  current_stamps = DB[:Accounts].where(UserID: session[:UserID]).get(:StampCount) || 0
+
+
+updated_count = current_stamps + new_stamps
+
+
+if updated_count >= 10
+  updated_count = updated_count % 10 
+end
+
+
+DB[:Accounts].where(UserID: session[:UserID]).update(StampCount: updated_count)
 
   if params[:payment_timing] == 'online'
     redirect "/external-payment-gateway?order_id=#{order.OrderID}"
@@ -377,13 +402,28 @@ get '/checkout' do
   erb :checkout
 end
 
-def calculate_basket_total(basket)
+def calculate_basket_total(basket, user)
   return 0.0 if basket.nil? || basket.empty?
-  basket.sum do |item_data|
+  
+  total = 0.0
+  drinks = []
+
+  basket.each do |item_data|
     item = (item_data[:type] == 'bean') ? Bean[item_data[:id]] : Drink[item_data[:id]]
-    item ? item[:Price].to_f : 0.0
+    if item
+      price = item[:Price].to_f
+      total += price
+      drinks << price if item_data[:type] == 'drink'
+    end
   end
-end 
+
+  if user && user[:StampCount] >= 10 && !drinks.empty?
+    discount = [drinks.min, 5.0].min 
+    total -= discount
+  end
+
+  total
+end
 
 get '/order-success' do
   @order = Order.where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
@@ -397,15 +437,23 @@ get '/external-payment-gateway' do
 end
 
 get '/payment-callback' do
-  order = Order[params[:order_id]]
+  order = DB[:Orders].where(OrderID: params[:order_id]).first
   
-  if params[:status] == 'success'
-    order.update(IsCompleted: true)
+  if params[:status] == 'success' && order
+    DB[:Orders].where(OrderID: params[:order_id]).update(IsCompleted: true)
+    
+    basket = JSON.parse(order[:OrderContents])
+    new_stamps = 0
+    basket.each do |item|
+      new_stamps += (item['type'] == 'bean' ? 3 : 1) 
+    end
+
+    current_stamps = DB[:Accounts].where(UserID: session[:UserID]).get(:StampCount) || 0
+    final_count = (current_stamps + new_stamps) % 10
+
+    DB[:Accounts].where(UserID: session[:UserID]).update(StampCount: final_count)
+    
     session[:basket] = [] 
     redirect '/order-success'
-  else
-    @subtotal = calculate_basket_total(session[:basket])
-    @error = "Payment Cancelled"
-    erb :checkout
   end
 end
