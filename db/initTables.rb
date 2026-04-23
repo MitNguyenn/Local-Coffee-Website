@@ -81,4 +81,13 @@ DB.create_table? :Tickets do
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
+DB.create_table? :Audits do
+  primary_key :AuditID
+  foreign_key :orderID, :Orders
+  String :BeforeStatus,
+  String :AfterStatus,
+  Text :ChangeReason,
+  DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+end
+
 puts "Database tables initialized successfully!"

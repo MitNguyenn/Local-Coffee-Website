@@ -447,7 +447,6 @@ post '/order-management' do
   redirect '/' unless session[:AccountType] == 'administrator' || session[:AccountType] == 'barista'
 
   orderID = params[:id]
-
-
+  
   redirect '/order-management'
 end
