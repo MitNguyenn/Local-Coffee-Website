@@ -416,11 +416,11 @@ post '/stock-management' do
   redirect '/log-in' unless logged_in?
   redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
 
-  item_id = params[:id]
-  item_type = params[:type]
+  beanID = params[:id] # This gets the value from your <input name="id">
   new_stock = params[:stock].to_i
-  
-    Bean[item_id].update(Stock: new_stock)
+
+  # Use the variable beanID (no colon) to find the record
+  Bean[beanID].update(CurrentStock: new_stock)
 
   redirect '/stock-management'
 end
