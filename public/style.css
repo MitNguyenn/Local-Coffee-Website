@@ -72,7 +72,6 @@ main {
   display: flex;
 }
 
-
 .nav-actions {
   display: flex;
   align-items: center;
@@ -82,16 +81,14 @@ main {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 20px; 
+  gap: 20px;
 }
-
 
 .cart {
   position: relative;
   display: flex;
   align-items: center;
 }
-
 
 .cart-count {
   position: absolute;
@@ -103,7 +100,7 @@ main {
   padding: 2px 6px;
   font-size: 12px;
   font-family: "Lilita One", sans-serif;
-  border: 2px solid #a67458; 
+  border: 2px solid #a67458;
 }
 
 .cart-dropdown-width {
@@ -1860,7 +1857,7 @@ button:active {
 .summary-glass-card {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   padding: 30px;
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(15px);
@@ -1871,7 +1868,7 @@ button:active {
 .summary-line {
   display: flex;
   justify-content: space-between;
-  width: 100%; 
+  width: 100%;
   margin: 10px 0;
 }
 
@@ -1882,15 +1879,15 @@ button:active {
 }
 
 .purchase-btn {
-  white-space: nowrap; 
+  white-space: nowrap;
   margin-top: 100px;
   margin-bottom: 15px;
 
-  padding: 20px 60px; 
-  font-size: 1.4rem; 
-  
-  min-width: 300px; 
-  
+  padding: 20px 60px;
+  font-size: 1.4rem;
+
+  min-width: 300px;
+
   border-radius: 50px;
   color: white;
   font-weight: 800;
@@ -1917,7 +1914,7 @@ button:active {
 
 .cart-item img {
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   object-fit: cover;
 }
 
@@ -1947,14 +1944,14 @@ button:active {
 }
 
 #cartDropdown {
-  color: white; 
+  color: white;
 }
 
 .cart-header {
-  color: #fdf5e6; 
+  color: #fdf5e6;
   font-size: 1.2rem;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .cart-item-name {
@@ -1963,11 +1960,25 @@ button:active {
 }
 
 .cart-item-price {
-  color: rgba(255, 255, 255, 0.8) !important; 
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .cart-total-line {
   color: white;
-  border-top: 1px solid rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding-top: 10px;
+}
+
+.centered-layout {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  grid-template-columns: none !important;
+}
+
+.success-card {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
 }

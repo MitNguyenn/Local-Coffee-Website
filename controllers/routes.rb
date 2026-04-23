@@ -350,25 +350,34 @@ end
 post '/place-order' do
   redirect '/log-in' unless logged_in?
   
-  total = calculate_basket_total(session[:basket]) 
-  
-  order = Order.create(
-    UserID: session[:UserID],
-    OrderDate: Time.now,
-    TotalAmount: total,
-    Status: 'Processing'
-  )
-  
-  session[:basket].each do |item_data|
-    OrderItem.create(
-      OrderID: order.OrderID,
-      ProductID: item_data[:id],
-      ProductType: item_data[:type]
+  subtotal = calculate_basket_total(session[:basket])
+  shipping = 3.50
+  total_to_charge = subtotal + shipping
+
+  payment_successful = [true, true, true, false].sample 
+
+  payment_method = params[:payment_timing] == 'online' ? 'Card' : 'Cash/In-Person'
+  is_paid = params[:payment_timing] == 'online' # If online, it's "Paid", else "Owed"
+
+
+  if payment_successful
+    order = Order.create(
+      UserID: session[:UserID],
+      OrderContents: session[:basket].to_json, 
+      OrderType: 'Delivery',
+      totalCost: total_to_charge,
+      PaymentMethod: payment_method,
+      IsCompleted: true 
     )
+    
+
+    session[:basket] = []
+    redirect '/order-success'
+  else
+    @subtotal = calculate_basket_total(session[:basket])
+    @error = "Payment failed. Please try again."
+    erb :checkout 
   end
-  
-  session[:basket] = []
-  redirect '/order-success'
 end
 
 get '/checkout' do
@@ -402,3 +411,11 @@ def calculate_basket_total(basket)
     item ? item[:Price] : 0
   end
 end 
+
+get '/order-success' do
+  @order = Order.where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
+  
+  @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
+  
+  erb :order_success
+end
