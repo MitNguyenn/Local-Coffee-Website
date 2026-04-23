@@ -17,22 +17,14 @@
     </div>
 
     <div class="stamps-section">
-      <h3>Stamps</h3>
-      <div class="stamps-grid">
-        <!-- to fill a stamp you replace stamp with stamp filled -->
-        <div class="stamp filled"></div>
-        <div class="stamp filled"></div>
-        <div class="stamp filled"></div>
-        <div class="stamp"></div>
-        <div class="stamp"></div>
-        <div class="stamp"></div>
-        <div class="stamp"></div>
-        <div class="stamp"></div>
-        <div class="stamp"></div>
-        <div class="stamp"></div>
-      </div>
-      <p>After 10, the next coffee is on us!</p>
-    </div>
+  <h3>Stamps</h3>
+  <div class="stamps-grid">
+    <% 10.times do |i| %>
+      <div class="stamp <%= 'filled' if @user[:StampCount] > i %>"></div>
+    <% end %>
+  </div>
+  <p><%= 10 - @user[:StampCount] %> more until your free coffee!</p>
+</div>
 
     <div class="extra-links">
       <a href="/">Back to Home</a>
