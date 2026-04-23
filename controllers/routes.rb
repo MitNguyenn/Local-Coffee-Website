@@ -350,58 +350,65 @@ end
 post '/place-order' do
   redirect '/log-in' unless logged_in?
   
-  total = calculate_basket_total(session[:basket]) 
-  
+  subtotal = calculate_basket_total(session[:basket])
+  shipping = 3.50
+  total_to_charge = subtotal + shipping
+
   order = Order.create(
     UserID: session[:UserID],
-    OrderDate: Time.now,
-    TotalAmount: total,
-    Status: 'Processing'
+    OrderContents: session[:basket].to_json,
+    OrderType: 'Delivery',
+    totalCost: total_to_charge,
+    PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash/In-Person',
+    IsCompleted: false
   )
-  
-  session[:basket].each do |item_data|
-    OrderItem.create(
-      OrderID: order.OrderID,
-      ProductID: item_data[:id],
-      ProductType: item_data[:type]
-    )
+
+  if params[:payment_timing] == 'online'
+    redirect "/external-payment-gateway?order_id=#{order.OrderID}"
+  else
+    session[:basket] = []
+    redirect '/order-success'
   end
-  
-  session[:basket] = []
-  redirect '/order-success'
 end
 
 get '/checkout' do
-  @subtotal = 0
-  @basket_items = []
-
-  if session[:basket]
-    session[:basket].each do |item_data|
-      # item_data looks like { id: "1", type: "bean" }
-      id = item_data[:id]
-      type = item_data[:type]
-
-      # Find the item in the correct table
-      item = (type == 'bean') ? Bean[id] : Drink[id]
-
-      if item
-        @basket_items << item
-        @subtotal += item[:Price] # Ensure :Price matches your DB column name
-      end
-    end
-  end
-  
+  @subtotal = calculate_basket_total(session[:basket])
   @user = Account[session[:UserID]] if logged_in?
   erb :checkout
 end
 
 def calculate_basket_total(basket)
-  return 0 if basket.nil?
+  return 0.0 if basket.nil? || basket.empty?
   basket.sum do |item_data|
-    item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
-    item ? item[:Price] : 0
+    item = (item_data[:type] == 'bean') ? Bean[item_data[:id]] : Drink[item_data[:id]]
+    item ? item[:Price].to_f : 0.0
   end
 end 
+
+get '/order-success' do
+  @order = Order.where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
+  @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
+  erb :order_success
+end
+
+get '/external-payment-gateway' do
+  @order_id = params[:order_id]
+  erb :mock_gateway, layout: false 
+end
+
+get '/payment-callback' do
+  order = Order[params[:order_id]]
+  
+  if params[:status] == 'success'
+    order.update(IsCompleted: true)
+    session[:basket] = [] 
+    redirect '/order-success'
+  else
+    @subtotal = calculate_basket_total(session[:basket])
+    @error = "Payment Cancelled"
+    erb :checkout
+  end
+end
 
 get '/stock-management' do
   redirect '/log-in' unless logged_in?

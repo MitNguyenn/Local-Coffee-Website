@@ -1,0 +1,20 @@
+<div class="checkout-container centered-layout">
+  <div class="summary-glass-card success-card" style="text-align: center; padding: 40px;">
+    <div class="success-icon" style="font-size: 50px; color: #5a31f4; margin-bottom: 20px;">✓</div>
+    
+    <h2>Thank you for your order!</h2>
+    <p>Your beans are being prepared for delivery.</p>
+    
+    <div class="mock-service-box" style="background: #f4f4f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px dashed #5a31f4;">
+      <h4 style="margin-top: 0;">Payment Feedback (Mock Service)</h4>
+      <p><strong>System Status:</strong> <%= @order.IsCompleted ? "PAID" : "OWED (In-Person)" %></p>
+      <p><strong>Order ID:</strong> #<%= @order.OrderID %></p>
+      <p><strong>External Ref:</strong> BBC-MOCK-PAY-77</p>
+      <p><strong>Transaction Token:</strong> <%= @mock_token %></p>
+    </div>
+
+    <a href="/coffee-beans" class="purchase-btn" style="text-decoration: none; display: inline-block;">
+      Continue Shopping
+    </a>
+  </div>
+</div>
