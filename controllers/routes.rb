@@ -402,3 +402,29 @@ def calculate_basket_total(basket)
     item ? item[:Price] : 0
   end
 end 
+
+get '/stock-management' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
+
+  @beans = Bean.all
+  @drinks = Drink.all
+  erb :stock_management
+end
+
+post '/stock-management' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
+
+  item_id = params[:id]
+  item_type = params[:type]
+  new_stock = params[:stock].to_i
+
+  if item_type == 'bean'
+    Bean[item_id].update(Stock: new_stock)
+  elsif item_type == 'drink'
+    Drink[item_id].update(Stock: new_stock)
+  end
+
+  redirect '/stock-management'
+end
