@@ -431,3 +431,23 @@ post '/stock-management' do
 
   redirect '/stock-management'
 end
+
+get '/order-management' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'administrator' || session[:AccountType] == 'barista'
+
+  @pending_orders = Order.where(IsCompleted: false).all #for baristas
+  @completed_orders = Order.where(IsCompleted: true).all #for admins
+
+  erb :order_management
+end
+
+post '/order-management' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'administrator' || session[:AccountType] == 'barista'
+
+  orderID = params[:id]
+
+
+  redirect '/order-management'
+end
