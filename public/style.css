@@ -1971,3 +1971,89 @@ button:active {
   border-top: 1px solid rgba(255,255,255,0.2);
   padding-top: 10px;
 }
+
+/* Stock Management Table - Brand Themed */
+.stock-mgt-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  font-family: "Lilita one", sans-serif; /* Matched brand font */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.stock-mgt-header {
+  background-color: #a67458; /* Brand Brown */
+}
+
+.stock-mgt-th {
+  padding: 1rem;
+  text-align: left;
+  color: #ffffff; /* White text on brown header */
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+.stock-mgt-row {
+  background-color: #fff;
+  transition: background 0.2s;
+}
+
+.stock-mgt-row:hover {
+  background-color: #f8fafc; /* Subtle hover effect from ticket cards */
+}
+
+.stock-mgt-cell {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid #edf2f7;
+  color: #2d3748;
+  vertical-align: middle;
+}
+
+.stock-mgt-row:last-child .stock-mgt-cell {
+  border-bottom: none;
+}
+
+/* Form Elements */
+.stock-mgt-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stock-mgt-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: inherit;
+  color: #4a5568;
+}
+
+.stock-mgt-btn {
+  background-color: #a67458;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-family: "Lilita one", sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.stock-mgt-btn:hover {
+  background-color: #4b2c20; /* Darker brown from your hover state */
+}
+
+.stock-mgt-name {
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+.stock-mgt-quantity {
+  font-weight: 600;
+  color: #4a5568;
+}

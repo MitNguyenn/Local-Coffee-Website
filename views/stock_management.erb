@@ -1,20 +1,20 @@
-<table>
+<table class="stock-mgt-table">
   <thead>
-    <tr>
-      <th>Item</th>
-      <th>Stock</th>
+    <tr class="stock-mgt-header">
+      <th class="stock-mgt-th">Item</th>
+      <th class="stock-mgt-th">Stock Management</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="stock-mgt-body">
     <% @beans.each do |bean| %>
-      <tr>
-        <td><%= bean.Name %></td>
-        <td>
-          <form method="post" action="/stock-management">
+      <tr class="stock-mgt-row">
+        <td class="stock-mgt-cell stock-mgt-name"><%= bean.Name %></td>
+        <td class="stock-mgt-cell">
+          <form class="stock-mgt-form" method="post" action="/stock-management">
             <input type="hidden" name="id" value="<%= bean.BeanID %>">
             <input type="hidden" name="type" value="bean">
-            <input type="number" name="stock" value="<%= bean.CurrentStock %>" min="0">
-            <button type="submit">Update</button>
+            <input class="stock-mgt-input" type="number" name="stock" value="<%= bean.CurrentStock %>" min="0">
+            <button class="stock-mgt-btn" type="submit">Update</button>
           </form>
         </td>
       </tr>
