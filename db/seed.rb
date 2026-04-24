@@ -85,11 +85,11 @@ DB[:Accounts].insert(
 # --- BEANS ---
 # bean = [ID, Name, Type, Roast, Wight, Price, Stock]
 bean_list = [
-  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 1000, 19.50, 20],
   [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
-  [3, "Amazonian Night", "Santos", "Dark", 250, 18.00, 10],
-  [4, "Maya Sunrise", "Antigua", "Medium", 500, 14.25, 30],
-  [5, "Hanoi Fuel", "Robusta", "Dark", 500, 11.00, 50]
+  [3, "Amazonian Night", "Santos", "Dark", 1000, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 1000, 17.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 1000, 23.20, 50]
 ]
 
 bean_list.each do |id, name, type, roast, weight, price, stock|
