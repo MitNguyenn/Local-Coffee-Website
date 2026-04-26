@@ -350,55 +350,35 @@ end
 
 post '/place-order' do
   redirect '/log-in' unless logged_in?
-
-
   
-  subtotal = calculate_basket_total(session[:basket])
-  shipping = 3.50
-  total_to_charge = subtotal + shipping
+  user_record = Account[session[:UserID]]
+  subtotal = calculate_basket_total(session[:basket], user_record)
+  total_to_charge = subtotal + 3.50
 
-  order = Order.create(
+  order_id = DB[:Orders].insert(
     UserID: session[:UserID],
     OrderContents: session[:basket].to_json,
     OrderType: 'Delivery',
     totalCost: total_to_charge,
     PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash/In-Person',
-    IsCompleted: false
+    IsCompleted: params[:payment_timing] == 'online' ? false : true
   )
 
-  new_stamps = 0
-  session[:basket].each do |item|
-    if item[:type] == 'bean'
-      new_stamps += 3 
-    else
-      new_stamps += 1 
-    end
-  end
-
-  current_stamps = DB[:Accounts].where(UserID: session[:UserID]).get(:StampCount) || 0
-
-
-updated_count = current_stamps + new_stamps
-
-
-if updated_count >= 10
-  updated_count = updated_count % 10 
-end
-
-
-DB[:Accounts].where(UserID: session[:UserID]).update(StampCount: updated_count)
-
   if params[:payment_timing] == 'online'
-    redirect "/external-payment-gateway?order_id=#{order.OrderID}"
+    redirect "/external-payment-gateway?order_id=#{order_id}"
   else
+    finalize_stamps(session[:UserID], session[:basket])
     session[:basket] = []
     redirect '/order-success'
   end
 end
 
+
 get '/checkout' do
-  @subtotal = calculate_basket_total(session[:basket])
-  @user = Account[session[:UserID]] if logged_in?
+  @user = logged_in? ? Account[session[:UserID]] : nil
+  
+  @subtotal = calculate_basket_total(session[:basket], @user)
+  
   erb :checkout
 end
 
@@ -443,19 +423,22 @@ get '/payment-callback' do
     DB[:Orders].where(OrderID: params[:order_id]).update(IsCompleted: true)
     
     basket = JSON.parse(order[:OrderContents])
-    new_stamps = 0
-    basket.each do |item|
-      new_stamps += (item['type'] == 'bean' ? 3 : 1) 
-    end
-
-    current_stamps = DB[:Accounts].where(UserID: session[:UserID]).get(:StampCount) || 0
-    final_count = (current_stamps + new_stamps) % 10
-
-    DB[:Accounts].where(UserID: session[:UserID]).update(StampCount: final_count)
+    finalize_stamps(session[:UserID], basket)
     
     session[:basket] = [] 
     redirect '/order-success'
   end
+end
+
+def finalize_stamps(user_id, basket)
+  has_beans = basket.any? { |item| item['type'] == 'bean' || item[:type] == 'bean' }
+  
+  stamps_to_add = has_beans ? 3 : 1
+
+  current_stamps = DB[:Accounts].where(UserID: user_id).get(:StampCount) || 0
+  final_count = (current_stamps + stamps_to_add) % 10
+
+  DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
 end
 
 get '/stock-management' do
@@ -471,10 +454,9 @@ post '/stock-management' do
   redirect '/log-in' unless logged_in?
   redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
 
-  beanID = params[:id] # This gets the value from your <input name="id">
+  beanID = params[:id]
   new_stock = params[:stock].to_i
 
-  # Use the variable beanID (no colon) to find the record
   Bean[beanID].update(CurrentStock: new_stock)
 
   redirect '/stock-management'
