@@ -2155,3 +2155,106 @@ button:active {
 .audit-submit-btn:hover {
     background-color: #4b2c20;
 }
+
+.barista-page-body {
+    padding: 40px 20px;
+    background-color: #fdf5e6;
+    min-height: 100vh;
+}
+
+.barista-title {
+    font-family: "Lilita One", sans-serif;
+    color: #4b2c20;
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.barista-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.barista-order-card {
+    background: white;
+    border-radius: 15px;
+    border-left: 8px solid #a67458; /* Accented edge */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: transform 0.2s;
+}
+
+.barista-order-card:hover {
+    transform: translateY(-5px);
+}
+
+.barista-card-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px dashed #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.barista-order-id {
+    font-family: "Lilita One", sans-serif;
+    font-size: 1.2rem;
+    color: #4b2c20;
+}
+
+.barista-qty {
+    font-weight: bold;
+    color: #a67458;
+    margin-right: 10px;
+}
+
+.barista-contents {
+    flex: 1;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.barista-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.barista-type {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.barista-type.delivery { background: #ffebee; color: #c62828; }
+.barista-type.in-person { background: #e8f5e9; color: #2e7d32; }
+
+.barista-complete-btn {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: "Lilita One", sans-serif;
+    cursor: pointer;
+}
+
+.barista-complete-btn:hover {
+    background-color: #1b5e20;
+}
+
+.barista-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #888;
+    padding: 50px;
+}

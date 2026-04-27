@@ -472,7 +472,12 @@ get '/order-management/barista' do
   redirect '/log-in' unless logged_in?
   redirect '/' unless session[:AccountType] == 'barista'
 
-  @pending_orders = Order.where(IsCompleted: false).all #for baristas
+  # Only show orders that are NOT completed, sorted by oldest first
+  @pending_orders = DB[:Orders]
+    .where(IsCompleted: false)
+    .order(:CreatedAt)
+    .all
+
   erb :order_correction_barista
 end
 
@@ -480,15 +485,10 @@ post '/order-management/barista' do
   redirect '/log-in' unless logged_in?
   redirect '/' unless session[:AccountType] == 'barista'
 
-  orderID = params[:id]
-  order = Order[orderID]
-  order.update(IsCompleted: true, IsDelivered: true)
+  order_id = params[:order_id]
 
-  DB[:Audits].insert(
-    orderID: orderID,
-    BeforeStatus: "Pending",
-    AfterStatus: "Completed/Delivered",
-    ChangeReason: "Barista marked as completed/delivered"
-  )
+  # Mark order as completed
+  DB[:Orders].where(OrderID: order_id).update(IsCompleted: true)
+
   redirect '/order-management/barista'
 end
