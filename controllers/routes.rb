@@ -461,3 +461,64 @@ post '/stock-management' do
 
   redirect '/stock-management'
 end
+
+get '/order-management/administrator' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  @completed_orders = DB[:Orders].where(IsCompleted: true)
+
+  erb :order_correction_administrator
+end
+
+post '/order-management/administrator' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'administrator'
+
+  # Use :order_id (matches name="order_id" in your HTML)
+  target_id = params[:order_id] 
+  new_payment_status = params[:payment_status]
+  reason_note = params[:reason_note]
+
+  # Fetch the previous status before the update
+  previous_payment_status = DB[:Orders].where(OrderID: target_id).get(:payment_status)
+
+  # Perform the update
+  DB[:Orders].where(OrderID: target_id).update(payment_status: new_payment_status)
+
+  # Insert into Audits
+  DB[:Audits].insert(
+    orderID: target_id,
+    BeforeStatus: previous_payment_status,
+    AfterStatus: new_payment_status,
+    ChangeReason: reason_note
+  )
+  
+  redirect '/order-management/administrator'
+end
+
+
+get '/order-management/barista' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'barista'
+
+  # Only show orders that are NOT completed, sorted by oldest first
+  @pending_orders = DB[:Orders]
+    .where(IsCompleted: false)
+    .order(:CreatedAt)
+    .all
+
+  erb :order_correction_barista
+end
+
+post '/order-management/barista' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'barista'
+
+  order_id = params[:order_id]
+
+  # Mark order as completed
+  DB[:Orders].where(OrderID: order_id).update(IsCompleted: true)
+
+  redirect '/order-management/barista'
+end
