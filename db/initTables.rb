@@ -14,7 +14,7 @@ DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
   String :FirstName
   String :LastName
-  Datetime :Date_of_birth, null: true
+  DateTime :Date_of_birth, null: true
   Integer :StampCount, default: 0
   String :email, unique: true, null: false
   String :hashedPassword
@@ -22,7 +22,7 @@ DB.create_table? :Accounts do
   String :Postcode, size: 7
   String :Address
   String :AccountType, default: 'customer'
-  Datetime :Created_At, default: Sequel::CURRENT_TIMESTAMP
+  DateTime :Created_At, default: Sequel::CURRENT_TIMESTAMP
 end
 
 # Create Beans Table
