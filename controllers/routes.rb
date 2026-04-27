@@ -445,20 +445,28 @@ post '/order-management/administrator' do
   redirect '/log-in' unless logged_in?
   redirect '/' unless session[:AccountType] == 'administrator'
 
-  OrderID = params[:OrderID]
-  payment_status = params[:payment_status]
+  # Use :order_id (matches name="order_id" in your HTML)
+  target_id = params[:order_id] 
+  new_payment_status = params[:payment_status]
   reason_note = params[:reason_note]
 
-  DB[:Orders].where(OrderID: OrderID).update(payment_status: payment_status)
+  # Fetch the previous status before the update
+  previous_payment_status = DB[:Orders].where(OrderID: target_id).get(:payment_status)
 
-  Audits.insert(
-    orderID: OrderID,
-    BeforeStatus: order.payment_status,
-    AfterStatus: payment_status,
+  # Perform the update
+  DB[:Orders].where(OrderID: target_id).update(payment_status: new_payment_status)
+
+  # Insert into Audits
+  DB[:Audits].insert(
+    orderID: target_id,
+    BeforeStatus: previous_payment_status,
+    AfterStatus: new_payment_status,
     ChangeReason: reason_note
   )
-  redirect '/order-management'
+  
+  redirect '/order-management/administrator'
 end
+
 
 get '/order-management/barista' do
   redirect '/log-in' unless logged_in?
@@ -476,7 +484,7 @@ post '/order-management/barista' do
   order = Order[orderID]
   order.update(IsCompleted: true, IsDelivered: true)
 
-  Audits.insert(
+  DB[:Audits].insert(
     orderID: orderID,
     BeforeStatus: "Pending",
     AfterStatus: "Completed/Delivered",
