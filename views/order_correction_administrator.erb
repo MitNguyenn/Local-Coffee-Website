@@ -1,34 +1,42 @@
-<table>
-    <tr>
-        <th>Order ID</th>
-        <th>Order Details</th>
-        <th>Payment Status</th>
-        <th>Reason Note</th>
-        <th>Action</th>
-    </tr>
-    <% @completed_orders.each do |order| %>
-    <tr>
-        <!-- Each row is a separate form -->
-        <form action="/order-management/administrator" method="POST">
-            <!-- Hidden field to tell the server which order to update -->
-            <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
-            
-            <td><%= order[:OrderID] %></td>
-            <td><%= order[:OrderContents] %></td>
-            <td>
-                <select name="payment_status">
-                    <option value="Pending" <%= "selected" if order[:payment_status] == "Pending" %>>Pending</option>
-                    <option value="Paid" <%= "selected" if order[:payment_status] == "Paid" %>>Paid</option>
-                    <option value="Unpaid" <%= "selected" if order[:payment_status] == "Unpaid" %>>Unpaid</option>
-                </select>
-            </td>
-            <td>
-                <input type="text" name="reason_note" placeholder="Required..." required>
-            </td>
-            <td>
-                <input type="submit" value="Update">
-            </td>
-        </form>
-    </tr>
-    <% end %>
-</table>
+<div class="audit-container">
+    <h1 class="audit-title">Order Audit Management</h1>
+    
+    <div class="audit-table-wrapper">
+        <table class="audit-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Details</th>
+                    <th>Payment Status</th>
+                    <th>Reason Note</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @completed_orders.each do |order| %>
+                <tr>
+                    <form action="/order-management/administrator" method="POST">
+                        <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
+                        
+                        <td><strong>#<%= order[:OrderID] %></strong></td>
+                        <td class="audit-order-details"><%= order[:OrderContents] %></td>
+                        <td>
+                            <select name="payment_status" class="audit-select">
+                                <option value="Pending" <%= "selected" if order[:payment_status] == "Pending" %>>Pending</option>
+                                <option value="Paid" <%= "selected" if order[:payment_status] == "Paid" %>>Paid</option>
+                                <option value="Unpaid" <%= "selected" if order[:payment_status] == "Unpaid" %>>Unpaid</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name="reason_note" class="audit-input-reason" placeholder="Explain change..." required>
+                        </td>
+                        <td>
+                            <button type="submit" class="audit-submit-btn">Update</button>
+                        </td>
+                    </form>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>

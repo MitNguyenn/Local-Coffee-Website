@@ -2068,3 +2068,109 @@ button:active {
   width: 100%;
   margin: 0 auto;
 }
+
+/* Unique Styles for Order Management / Audit Page */
+
+.audit-container {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 95%;
+}
+
+.audit-title {
+    font-size: 2.5rem;
+    color: #4b2c20;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Glassmorphism Table Wrapper */
+.audit-table-wrapper {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Rounds the table corners */
+}
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.audit-table th {
+    background-color: #4b2c20;
+    color: #fdf5e6;
+    padding: 18px;
+    text-align: left;
+    font-family: "Lilita One", sans-serif;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+.audit-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(75, 44, 32, 0.1);
+    color: #2a1810;
+    vertical-align: middle;
+}
+
+.audit-table tr:hover {
+    background-color: rgba(166, 116, 88, 0.1);
+}
+
+/* Form Elements inside Table */
+.audit-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background: white;
+    font-family: inherit;
+    color: #4b2c20;
+    cursor: pointer;
+}
+
+.audit-input-reason {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: border 0.3s;
+}
+
+.audit-input-reason:focus {
+    outline: none;
+    border-color: #a67458;
+}
+
+/* Update Button */
+.audit-submit-btn {
+    background-color: #a67458;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-family: "Lilita One", sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.audit-submit-btn:hover {
+    background-color: #4b2c20;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.audit-order-details {
+    font-size: 0.85rem;
+    max-width: 250px;
+    line-height: 1.4;
+    color: #6d4c41;
+}
