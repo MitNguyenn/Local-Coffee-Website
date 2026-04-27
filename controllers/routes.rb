@@ -432,21 +432,56 @@ post '/stock-management' do
   redirect '/stock-management'
 end
 
-get '/order-management' do
+get '/order-management/administrator' do
   redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'administrator' || session[:AccountType] == 'barista'
+  redirect '/' unless session[:AccountType] == 'administrator'
 
-  @pending_orders = Order.where(IsCompleted: false).all #for baristas
-  @completed_orders = Order.where(IsCompleted: true).all #for admins
+  @completed_orders = DB[:Orders].where(IsCompleted: true)
 
-  erb :order_management
+  erb :order_correction_administrator
 end
 
-post '/order-management' do
+post '/order-management/administrator' do
   redirect '/log-in' unless logged_in?
   redirect '/' unless session[:AccountType] == 'administrator' || session[:AccountType] == 'barista'
 
   orderID = params[:id]
-  
+  payment_status = params[:payment_status]
+  reason_note = params[:reason_note]
+
+  order = Order[orderID]
+  order.update(payment_status: payment_status)
+
+  Audits.insert(
+    orderID: orderID,
+    BeforeStatus: order.payment_status,
+    AfterStatus: payment_status,
+    ChangeReason: reason_note
+  )
   redirect '/order-management'
+end
+
+get '/order-management/barista' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'barista'
+
+  @pending_orders = Order.where(IsCompleted: false).all #for baristas
+  erb :order_correction_barista
+end
+
+post '/order-management/barista' do
+  redirect '/log-in' unless logged_in?
+  redirect '/' unless session[:AccountType] == 'barista'
+
+  orderID = params[:id]
+  order = Order[orderID]
+  order.update(IsCompleted: true, IsDelivered: true)
+
+  Audits.insert(
+    orderID: orderID,
+    BeforeStatus: "Pending",
+    AfterStatus: "Completed/Delivered",
+    ChangeReason: "Barista marked as completed/delivered"
+  )
+  redirect '/order-management/barista'
 end

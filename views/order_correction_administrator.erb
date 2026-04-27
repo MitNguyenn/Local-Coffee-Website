@@ -1,0 +1,34 @@
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>Order Details</th>
+        <th>Payment Status</th>
+        <th>Reason Note</th>
+        <th>Action</th>
+    </tr>
+    <% @completed_orders.each do |order| %>
+    <tr>
+        <!-- Each row is a separate form -->
+        <form action="/order-management/administrator" method="POST">
+            <!-- Hidden field to tell the server which order to update -->
+            <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
+            
+            <td><%= order[:OrderID] %></td>
+            <td><%= order[:OrderContents] %></td>
+            <td>
+                <select name="payment_status">
+                    <option value="Pending" <%= "selected" if order[:payment_status] == "Pending" %>>Pending</option>
+                    <option value="Paid" <%= "selected" if order[:payment_status] == "Paid" %>>Paid</option>
+                    <option value="Unpaid" <%= "selected" if order[:payment_status] == "Unpaid" %>>Unpaid</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" name="reason_note" placeholder="Required..." required>
+            </td>
+            <td>
+                <input type="submit" value="Update">
+            </td>
+        </form>
+    </tr>
+    <% end %>
+</table>

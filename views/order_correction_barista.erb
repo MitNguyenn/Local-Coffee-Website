@@ -1,0 +1,24 @@
+#A real-time dashboard for staff to view unprocessed online orders and mark them as "Completed" or "Collected"
+#Baristas can only see unprocessed orders
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>Order Details</th>
+        <th>Action</th>
+    </tr>
+    <% @pending_orders.each do |order| %>
+    <tr>
+        <!-- Each row is a separate form -->
+        <form action="/order-management/barista" method="POST">
+            <!-- Hidden field to tell the server which order to update -->
+            <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
+            
+            <td><%= order[:OrderID] %></td>
+            <td><%= order[:OrderContents] %></td>
+            <td>
+                <input type="submit" value="Mark as Completed">
+            </td>
+        </form>
+    </tr>
+    <% end %>
+</table>

@@ -151,19 +151,30 @@ end
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 40.times do |i|
-  # First 5 orders are "Recent/Live", the rest are historical
+  # First 5 orders are "Recent/Live" (Incomplete/Unpaid), the rest are historical
   is_past = i > 5 
   
+  order_type = ["In-Person", "Delivery"].sample
+  
+  # Logic for payment status based on whether it's a past order or new
+  if is_past
+    pay_status = "Paid"
+  else
+    # Current orders might be unpaid or "Pay in store" for in-person orders
+    pay_status = (order_type == "In-Person") ? ["Unpaid", "Pay in store"].sample : "Unpaid"
+  end
+
   DB[:Orders].insert(
     UserID: customer_ids.sample,
     OrderContents: generate_json_contents(bean_types),
-    OrderType: ["In-Person", "Delivery"].sample,
+    OrderType: order_type,
     PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
     totalCost: rand(3.50..22.00).round(2),
     CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
-    Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
+    Location: order_type == "Delivery" ? "Delivery" : "Table #{rand(1..8)}",
     IsDelivered: is_past,
-    IsCompleted: is_past
+    IsCompleted: is_past,
+    payment_status: pay_status # Added this line
   )
 end
 

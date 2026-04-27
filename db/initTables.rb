@@ -69,6 +69,7 @@ DB.create_table? :Orders do
   String :Location, default: 'In-Store'
   TrueClass :IsDelivered, default: false
   TrueClass :IsCompleted, default: false
+  String :payment_status, default: 'Pending'
 end
 
 # Table 4: Tickets
@@ -81,6 +82,7 @@ DB.create_table? :Tickets do
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
+# Table 5: Audits
 DB.create_table? :Audits do
   primary_key :AuditID
   foreign_key :orderID, :Orders
