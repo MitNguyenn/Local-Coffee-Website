@@ -2069,13 +2069,21 @@ button:active {
   margin: 0 auto;
 }
 
-/* Unique Styles for Order Management / Audit Page */
+/* Unique Styles for Order Management/administrator page*/
+
+/* 1. Center the whole container on the screen */
+.audit-page-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    min-height: calc(100vh - 180px); /* Adjusts for navbar height */
+}
 
 .audit-container {
-    padding: 40px 20px;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1100px;
     margin: 0 auto;
-    width: 95%;
 }
 
 .audit-title {
@@ -2083,94 +2091,67 @@ button:active {
     color: #4b2c20;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    font-family: "Lilita One", sans-serif;
 }
 
-/* Glassmorphism Table Wrapper */
+/* 2. The White Box (Card) */
 .audit-table-wrapper {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    background: #ffffff; /* Solid White */
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Rounds the table corners */
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); /* Stronger shadow for depth */
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    padding: 10px; /* Space between table and box edge */
 }
 
 .audit-table {
     width: 100%;
     border-collapse: collapse;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
 }
 
 .audit-table th {
     background-color: #4b2c20;
     color: #fdf5e6;
-    padding: 18px;
+    padding: 15px;
     text-align: left;
     font-family: "Lilita One", sans-serif;
-    font-weight: normal;
-    letter-spacing: 1px;
+    font-size: 0.9rem;
 }
 
 .audit-table td {
     padding: 15px;
-    border-bottom: 1px solid rgba(75, 44, 32, 0.1);
-    color: #2a1810;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    font-family: sans-serif;
     vertical-align: middle;
 }
 
-.audit-table tr:hover {
-    background-color: rgba(166, 116, 88, 0.1);
-}
-
-/* Form Elements inside Table */
-.audit-select {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 2px solid #ddd;
-    background: white;
-    font-family: inherit;
-    color: #4b2c20;
-    cursor: pointer;
+/* 3. Input & Select Styling */
+.audit-select, .audit-input-reason {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.85rem;
 }
 
 .audit-input-reason {
     width: 100%;
-    padding: 8px 12px;
-    border: 2px solid #eee;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: border 0.3s;
+    box-sizing: border-box;
 }
 
-.audit-input-reason:focus {
-    outline: none;
-    border-color: #a67458;
-}
-
-/* Update Button */
+/* 4. Action Button */
 .audit-submit-btn {
     background-color: #a67458;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 12px;
+    padding: 8px 16px;
+    border-radius: 8px;
     font-family: "Lilita One", sans-serif;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    font-size: 0.9rem;
+    transition: background 0.2s;
 }
 
 .audit-submit-btn:hover {
     background-color: #4b2c20;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.audit-order-details {
-    font-size: 0.85rem;
-    max-width: 250px;
-    line-height: 1.4;
-    color: #6d4c41;
 }
