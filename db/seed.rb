@@ -196,4 +196,16 @@ complaint_samples = [
   )
 end
 
-puts "Seed complete: 4 tables populated (Accounts, Beans, Orders, Tickets)."
+# --- 6. AUDITS ---
+
+10.times do
+  order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]
+  DB[:Audits].insert(
+    orderID: order_id,
+    BeforeStatus: ["Pending", "Paid", "Unpaid"].sample,
+    AfterStatus: ["Pending", "Paid", "Unpaid"].sample,
+    ChangeReason: ["Customer requested change", "Payment issue", "Admin correction"].sample
+  )
+end
+
+puts "Seed complete: 6 tables populated (Accounts, Beans, Drinks, Orders, Tickets, Audits)."

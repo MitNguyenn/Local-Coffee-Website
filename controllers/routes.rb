@@ -443,17 +443,16 @@ end
 
 post '/order-management/administrator' do
   redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'administrator' || session[:AccountType] == 'barista'
+  redirect '/' unless session[:AccountType] == 'administrator'
 
-  orderID = params[:id]
+  OrderID = params[:OrderID]
   payment_status = params[:payment_status]
   reason_note = params[:reason_note]
 
-  order = Order[orderID]
-  order.update(payment_status: payment_status)
+  DB[:Orders].where(OrderID: OrderID).update(payment_status: payment_status)
 
   Audits.insert(
-    orderID: orderID,
+    orderID: OrderID,
     BeforeStatus: order.payment_status,
     AfterStatus: payment_status,
     ChangeReason: reason_note
