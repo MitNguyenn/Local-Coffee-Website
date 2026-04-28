@@ -788,7 +788,17 @@ footer {
 .product-details {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-properties{
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+}
+
+.product-size{
+  align-self: flex-end;
 }
 
 /* Metrics Page */
@@ -864,39 +874,15 @@ footer {
   margin: 0;
 }
 
-/* Ranking Component */
-.m-dash-ranking {
-  margin-top: 1rem;
+.m-dash-card__subtitle {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0.25rem 0 0 0;
 }
 
-.m-dash-ranking__row {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #edf2f7;
-}
-
-.m-dash-ranking__index {
-  font-weight: 700;
-  color: #d4a373; /* Coffee Gold */
-  width: 2.5rem;
-}
-
-.m-dash-ranking__name {
-  flex: 1;
-  font-weight: 500;
-}
-
-.m-dash-ranking__qty {
-  font-size: 0.8rem;
-  background: #f1f5f9;
-  padding: 0.1rem 0.5rem;
-  border-radius: 4px;
-}
-
-.m-dash-ranking__empty {
-  color: #a0aec0;
-  font-style: italic;
+/* Signup Change Component */
+.m-dash-signup-change {
+  margin-top: 0.5rem;
 }
 
 /* Table Styling */
@@ -929,6 +915,21 @@ footer {
   text-align: right;
 }
 
+.positive-change {
+  color: #38a169;
+  font-weight: 600;
+}
+
+.negative-change {
+  color: #e53e3e;
+  font-weight: 600;
+}
+
+.m-dash-panel__subtitle {
+  font-size: 0.875rem;
+  color: #718096;
+  margin-top: -0.5rem;
+}
 /* --- THE DOWNLOAD BUTTON --- */
 .m-download-btn {
   display: block;

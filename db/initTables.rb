@@ -22,6 +22,7 @@ DB.create_table? :Accounts do
   String :Postcode, size: 7
   String :Address
   String :AccountType, default: 'customer'
+  Datetime :Created_At, default: Sequel::CURRENT_TIMESTAMP
 end
 
 # Create Beans Table
@@ -35,7 +36,7 @@ DB.create_table? :Beans do
   Integer :CurrentStock
 
   primary_key [:BeanID]
-end
+end 
 
 # Create Drinks Table with Composite Key
 DB.create_table? :Drinks do

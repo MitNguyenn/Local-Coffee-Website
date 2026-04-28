@@ -43,6 +43,31 @@ module AnalyzeData
       .order(:month)
       .to_hash(:month, :total)
 
+    # 5. Account Metrics
+    metrics[:total_accounts] = DB[:Accounts].count
+
+    # Monthly sign-ups
+    monthly_signups = DB[:Accounts]
+      .select(
+        Sequel.function(:strftime, '%Y-%m', :Created_At).as(:month),
+        Sequel.function(:count, :UserID).as(:count)
+      )
+      .group(:month)
+      .order(:month)
+      .to_hash(:month, :count)
+
+    # Calculate monthly change in sign-ups
+    metrics[:monthly_signups_change] = {}
+    previous_count = 0
+    monthly_signups.each do |month, count|
+      change = count - previous_count
+      metrics[:monthly_signups_change][month] = {
+        signups: count,
+        change: change
+      }
+      previous_count = count
+    end
+
     metrics
   end
 end
