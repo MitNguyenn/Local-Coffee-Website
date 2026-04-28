@@ -2268,3 +2268,34 @@ button:active {
     color: #888;
     padding: 50px;
 }
+
+/* Staff Portal */
+.sp-page-box {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+
+}
+
+.sp-page-title {
+  font-family: "Lilita One", sans-serif;
+  color: #4b2c20;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sp-page-hyperlink {
+  color: #a67458;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sp-page-hyperlink:hover {
+  color: #4b2c20;
+}

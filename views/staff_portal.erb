@@ -1,10 +1,32 @@
 <% if session[:AccountType] == 'barista' %>
-  <h1>Barista Portal</h1>
-  <p>Welcome, Barista!</p>
+  <div class = "sp-page-box">
+    <a href="/order-management/barista" class="sp-page-hyperlink">View Orders</a>
+  </div>
 <% elsif session[:AccountType] == 'manager' %>
-  <h1>Manager Portal</h1>
-  <p>Welcome, Manager!</p>
+  <div class = "sp-page-box">
+    <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/stock-management" class="sp-page-hyperlink">Manage Stock</a>
+  </div>
+
 <% elsif session[:AccountType] == 'administrator' %>
-  <h1>Admin Portal</h1>
-  <p>Welcome, Admin!</p>
+  <div class = "sp-page-box">
+    <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/manage-accounts" class="sp-page-hyperlink">Manage Accounts</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/stock-management" class="sp-page-hyperlink">Manage Stock</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/order-management/administrator" class="sp-page-hyperlink">Manage Orders</a>
+  </div>
 <% end %>
