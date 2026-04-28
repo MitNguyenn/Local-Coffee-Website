@@ -1,14 +1,16 @@
 class BaseController < Sinatra::Base
+  helpers AppHelpers
   enable :sessions
-  set :session_secret, "your_secure_random_string_here"
+  set :session_secret, ENV['SESSION_SECRET'] 
 
   # 2. Required Gems
   require 'bcrypt'
-  require 'require_all' # Ensure this gem is installed
-
+  require 'require_all' # 
 
   require_relative '../db/db'
 
-  require_all File.join(File.dirname(__FILE__), '..', 'helpers')
+  set :root, File.expand_path("..", __dir__)
+  set :views, proc { File.join(root, "views") }
+  set :public_folder, proc { File.join(root, "public") }
 
 end

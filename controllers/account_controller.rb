@@ -2,6 +2,7 @@ require_relative 'base_controller'
 require 'rqrcode'
 
 class AccountController < BaseController
+  helpers AppHelpers
   before do
     redirect '/log-in' unless session[:UserID]
   end

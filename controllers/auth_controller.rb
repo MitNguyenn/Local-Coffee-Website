@@ -1,6 +1,7 @@
 require_relative 'base_controller'
 
 class AuthController < BaseController
+  helpers AppHelpers
   get '/log-in' do
     @email = ""
     @password = ""

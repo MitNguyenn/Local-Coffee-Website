@@ -1,6 +1,7 @@
 require_relative 'base_controller'
 
 class AdminController < BaseController
+  helpers AppHelpers
   before do
     redirect '/log-in' unless session[:UserID]
     unless ['manager', 'administrator'].include?(session[:AccountType])
