@@ -25,6 +25,8 @@ class CoffeeApp < Sinatra::Base
   use ProductController
   use AccountController
   use AdminController
+  use BaristaController
+  use ManagerController
 
   # 4. Main Routes
   get '/' do
