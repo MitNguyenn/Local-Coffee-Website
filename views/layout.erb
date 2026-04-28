@@ -43,40 +43,47 @@
 
           <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
   <div class="cart-header">Your Basket</div>
-  <div class="cart-items-list">
-    <% if session[:basket] && session[:basket].any? %>
+ <div class="cart-items-list">
+  <% if session[:basket] && session[:basket].any? %>
+    <% basket_total = 0.0 %>
+    
+    <% session[:basket].each do |item_data| %>
       <% 
-        basket_total = 0 
-        session[:basket].each do |item_data| 
-          item = (item_data[:type] == 'bean') ? Bean[item_data[:id]] : Drink[item_data[:id]]
-          if item
-            name = item_data[:type] == 'bean' ? item.Name : item.Beverage
-            basket_total += item.Price
+        # Logic to find the right table and ID column
+        table = (item_data[:type] == 'bean') ? :Beans : :Drinks
+        id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
+        
+        item = DB[table].where(id_col => item_data[:id]).first
       %>
+      
+      <% if item %>
+        <% basket_total += item[:Price].to_f %>
         <div class="cart-item">
           <img src="/<%= item_data[:type] %>s/<%= item_data[:id] %>.png" 
                onerror="this.src='/beans/beans_img_not_found.png'" 
                width="30" height="30">
           
           <div class="cart-item-info">
-            <span class="cart-item-name"><%= name %></span>
-            <span class="cart-item-price">£<%= sprintf('%.2f', item.Price) %></span>
+            <span class="cart-item-name">
+              <%= item[:Name] || item[:Beverage] %>
+            </span>
+            <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price]) %></span>
           </div>
         </div>
-      <%   end 
-        end %>
-      
-      <div class="cart-total-line">
-        <strong>Total:</strong>
-        <strong>£<%= sprintf('%.2f', basket_total) %></strong>
-      </div>
-      
-      <hr>
-      <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
-    <% else %>
-      <p class="empty-msg">Your basket is empty!</p>
+      <% end %>
     <% end %>
-  </div>
+
+    <div class="cart-total-line">
+      <strong>Total:</strong>
+      <strong>£<%= sprintf('%.2f', basket_total) %></strong>
+    </div>
+    
+    <hr>
+    <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+  <% else %>
+    <p class="empty-msg">Your basket is empty!</p>
+  <% end %>
+</div>
 </div>
         </div>
 
@@ -152,10 +159,37 @@
         if (!isShowing) menu.classList.add("show");
       }
 
-      // Global click listener to close menus when clicking blank space
       window.onclick = function(event) {
         closeAllDropdowns();
       }
+
+function updateBasketUI(newCount) {
+  let countSpan = document.getElementById("basket-count");
+  if (!countSpan) {
+    const cartDiv = document.querySelector(".cart");
+    countSpan = document.createElement("span");
+    countSpan.id = "basket-count";
+    countSpan.className = "cart-count";
+    cartDiv.appendChild(countSpan);
+  }
+  countSpan.innerText = newCount;
+}
+
+document.querySelectorAll('form[action="/add-to-basket"]').forEach(form => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const response = await fetch('/add-to-basket', {
+      method: 'POST',
+      body: new URLSearchParams(formData)
+    });
+    
+    if (response.ok) {
+       // Refresh just the count for now
+       location.reload(); // Simplest way to refresh the dropdown content too
+    }
+  });
+});
     </script>
   </body>
 </html>

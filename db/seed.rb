@@ -85,11 +85,11 @@ DB[:Accounts].insert(
 # --- BEANS ---
 # bean = [ID, Name, Type, Roast, Wight, Price, Stock]
 bean_list = [
-  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 1000, 19.50, 20],
   [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
-  [3, "Amazonian Night", "Santos", "Dark", 250, 18.00, 10],
-  [4, "Maya Sunrise", "Antigua", "Medium", 500, 14.25, 30],
-  [5, "Hanoi Fuel", "Robusta", "Dark", 500, 11.00, 50]
+  [3, "Amazonian Night", "Santos", "Dark", 1000, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 1000, 17.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 1000, 23.20, 50]
 ]
 
 bean_list.each do |id, name, type, roast, weight, price, stock|
@@ -151,19 +151,30 @@ end
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 40.times do |i|
-  # First 5 orders are "Recent/Live", the rest are historical
+  # First 5 orders are "Recent/Live" (Incomplete/Unpaid), the rest are historical
   is_past = i > 5 
   
+  order_type = ["In-Person", "Delivery"].sample
+  
+  # Logic for payment status based on whether it's a past order or new
+  if is_past
+    pay_status = "Paid"
+  else
+    # Current orders might be unpaid or "Pay in store" for in-person orders
+    pay_status = (order_type == "In-Person") ? ["Unpaid", "Pay in store"].sample : "Unpaid"
+  end
+
   DB[:Orders].insert(
     UserID: customer_ids.sample,
     OrderContents: generate_json_contents(bean_types),
-    OrderType: ["In-Person", "Delivery"].sample,
+    OrderType: order_type,
     PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
     totalCost: rand(3.50..22.00).round(2),
     CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
-    Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
+    Location: order_type == "Delivery" ? "Delivery" : "Table #{rand(1..8)}",
     IsDelivered: is_past,
-    IsCompleted: is_past
+    IsCompleted: is_past,
+    payment_status: pay_status # Added this line
   )
 end
 
@@ -185,4 +196,16 @@ complaint_samples = [
   )
 end
 
-puts "Seed complete: 4 tables populated (Accounts, Beans, Orders, Tickets)."
+# --- 6. AUDITS ---
+
+10.times do
+  order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]
+  DB[:Audits].insert(
+    orderID: order_id,
+    BeforeStatus: ["Pending", "Paid", "Unpaid"].sample,
+    AfterStatus: ["Pending", "Paid", "Unpaid"].sample,
+    ChangeReason: ["Customer requested change", "Payment issue", "Admin correction"].sample
+  )
+end
+
+puts "Seed complete: 6 tables populated (Accounts, Beans, Drinks, Orders, Tickets, Audits)."
