@@ -1,8 +1,10 @@
 <% if session[:AccountType] == 'barista' %>
+<h1 class = "sp-page-title">Barista Portal</h1>
   <div class = "sp-page-box">
     <a href="/order-management/barista" class="sp-page-hyperlink">View Orders</a>
   </div>
 <% elsif session[:AccountType] == 'manager' %>
+<h1 class = "sp-page-title">Manager Portal</h1>
   <div class = "sp-page-box">
     <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
   </div>
@@ -14,6 +16,7 @@
   </div>
 
 <% elsif session[:AccountType] == 'administrator' %>
+<h1 class = "sp-page-title">Administrator Portal</h1>
   <div class = "sp-page-box">
     <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
   </div>

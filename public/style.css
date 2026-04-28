@@ -2270,8 +2270,16 @@ button:active {
 }
 
 /* Staff Portal */
+.sp-page-title {
+  font-family: "Lilita One", sans-serif;
+  color: #4b2c20;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
 .sp-page-box {
-  max-width: 1200px;
+  max-width: 400px;
   margin: 40px auto;
   padding: 20px;
   background: rgba(255, 255, 255, 0.9);
@@ -2279,7 +2287,7 @@ button:active {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-
+  text-align: center;
 }
 
 .sp-page-title {
