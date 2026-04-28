@@ -2,12 +2,7 @@ require_relative 'base_controller'
 
 class AdminController < BaseController
   helpers AppHelpers
-  before do
-    redirect '/log-in' unless session[:UserID]
-    unless session[:AccountType] == 'administrator'
-      redirect '/' 
-    end
-  end
+
 
   get '/staff-portal' do
     erb :staff_portal
