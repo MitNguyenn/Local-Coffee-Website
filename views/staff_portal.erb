@@ -1,0 +1,10 @@
+<% if session[:AccountType] == 'barista' %>
+  <h1>Barista Portal</h1>
+  <p>Welcome, Barista!</p>
+<% elsif session[:AccountType] == 'manager' %>
+  <h1>Manager Portal</h1>
+  <p>Welcome, Manager!</p>
+<% elsif session[:AccountType] == 'administrator' %>
+  <h1>Admin Portal</h1>
+  <p>Welcome, Admin!</p>
+<% end %>
