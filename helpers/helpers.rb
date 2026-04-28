@@ -7,17 +7,13 @@ require_relative "../helpers/myOrders"
 
 
 # Register helpers with Sinatra
-helpers do
-  # This is so that we get to use the "h" method in views
+module AppHelpers
   include ERB::Util
 
-  # This is so that we include useful validation methods
   include Validation
 
-  # This is so that we can use database helper methods
   include AnalyzeData
 
-  # ... Add your own helper modules here ...
 
   include PasswordCheck
   include MyOrders

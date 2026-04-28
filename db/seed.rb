@@ -8,7 +8,7 @@ require 'date'
 DB = Sequel.sqlite("db/db.sqlite3")
 
 # Clear existing data in correct order to respect foreign keys
-[:Tickets, :Orders, :OrderItems, :Beans, :Drinks, :Accounts].each do |table| 
+[:Tickets, :Orders, :Beans, :Drinks, :Accounts].each do |table| 
   DB[table].delete if DB.table_exists?(table)
 end
 
@@ -85,11 +85,11 @@ DB[:Accounts].insert(
 # --- BEANS ---
 # bean = [ID, Name, Type, Roast, Wight, Price, Stock]
 bean_list = [
-  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 250, 12.50, 20],
+  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 1000, 19.50, 20],
   [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
-  [3, "Amazonian Night", "Santos", "Dark", 250, 18.00, 10],
-  [4, "Maya Sunrise", "Antigua", "Medium", 500, 14.25, 30],
-  [5, "Hanoi Fuel", "Robusta", "Dark", 500, 11.00, 50]
+  [3, "Amazonian Night", "Santos", "Dark", 1000, 18.00, 10],
+  [4, "Maya Sunrise", "Antigua", "Medium", 1000, 17.25, 30],
+  [5, "Hanoi Fuel", "Robusta", "Dark", 1000, 23.20, 50]
 ]
 
 bean_list.each do |id, name, type, roast, weight, price, stock|
@@ -116,13 +116,18 @@ drinks_list = [
 
 puts "Seeding Drinks..."
 drinks_list.each do |drink|
-  DB[:Drinks].insert(drink)
+  DB[:Drinks].insert(
+    DrinkID: drink[0],
+    Beverage: drink[1],
+    Price: drink[2],
+    Description: drink[3]
+  )
 end
 # --- ---
 
 # --- HELPERS ---
-# MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
-# bean_types = DB[:Beans].map(:BeanType)
+MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
+bean_types = DB[:Beans].map(:Type)
 
 # def days_ago(n)
 #   Time.now - (n * 86400) - rand(3600..7200)
@@ -196,4 +201,16 @@ complaint_samples = [
   )
 end
 
-puts "Seed complete: 4 tables populated (Accounts, Beans, Orders, Tickets)."
+# --- 6. AUDITS ---
+
+10.times do
+  order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]
+  DB[:Audits].insert(
+    orderID: order_id,
+    BeforeStatus: ["Pending", "Paid", "Unpaid"].sample,
+    AfterStatus: ["Pending", "Paid", "Unpaid"].sample,
+    ChangeReason: ["Customer requested change", "Payment issue", "Admin correction"].sample
+  )
+end
+
+puts "Seed complete: 6 tables populated (Accounts, Beans, Drinks, Orders, Tickets, Audits)."

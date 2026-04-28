@@ -31,6 +31,26 @@
         <% end %>
       </div>
     </div>
+
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__label">Total Account Holders</h3>
+      <p class="m-dash-card__value"><%= @metrics[:total_accounts] %></p>
+    </div>
+
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__label">Monthly Sign-up Change</h3>
+      <div class="m-dash-signup-change">
+        <% if @metrics[:monthly_signups_change].any? %>
+          <% latest_month = @metrics[:monthly_signups_change].keys.last %>
+          <% latest_data = @metrics[:monthly_signups_change][latest_month] %>
+          <p class="m-dash-card__value"><%= latest_data[:change] >= 0 ? '+' : '' %><%= latest_data[:change] %></p>
+          <p class="m-dash-card__subtitle"><%= latest_month %>: <%= latest_data[:signups] %> total</p>
+        <% else %>
+          <p class="m-dash-card__value">N/A</p>
+          <p class="m-dash-card__subtitle">No data available</p>
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <!-- Detail Split View -->
@@ -66,6 +86,31 @@
         </tbody>
       </table>
     </section>
+
+    <section class="m-dash-panel">
+      <h2 class="m-dash-panel__title">Monthly Account Sign-ups</h2>
+      <h3 class="m-dash-panel__subtitle">Total Sign-ups: <%= @metrics[:total_accounts] %></h3>
+      <table class="m-dash-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Sign-ups</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @metrics[:monthly_signups_change].each do |month, data| %>
+            <tr>
+              <td><%= month %></td>
+              <td><%= data[:signups] %></td>
+              <td class="<%= data[:change] >= 0 ? 'positive-change' : 'negative-change' %>">
+                <%= data[:change] >= 0 ? '+' : '' %><%= data[:change] %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
   </div>
 </div>
 
@@ -91,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
       rows.push(["Category", "Label/Name", "Value"]);
       rows.push(["Financials", "Gross Revenue", `£${safeFix(metrics.total_sales)}`]);
       rows.push(["Financials", "Avg. Order Value", `£${safeFix(metrics.avg_order_value)}`]);
+      rows.push(["Financials", "Total Account Holders", metrics.total_accounts]);
       rows.push([]);
 
       // Top Products
@@ -112,6 +158,13 @@ document.addEventListener('DOMContentLoaded', function() {
       rows.push(["Monthly Revenue", "Month", "Total"]);
       Object.entries(metrics.monthly_sales || {}).forEach(([month, total]) => {
         rows.push(["Monthly", month, `£${safeFix(total)}`]);
+      });
+      rows.push([]);
+
+      // Monthly Account Sign-ups
+      rows.push(["Monthly Account Sign-ups", "Month", "Sign-ups", "Change"]);
+      Object.entries(metrics.monthly_signups_change || {}).forEach(([month, data]) => {
+        rows.push(["Sign-ups", month, data.signups, data.change]);
       });
 
       // 3. Generate and Download

@@ -84,6 +84,7 @@ get '/register' do
   erb :register_account
 end
 
+#Refactor <15 lines
 post '/register' do
   email = params[:email]
   password1 = params[:password1]
@@ -230,6 +231,14 @@ get '/forgot' do
   erb :forgot_password
 end
 
+post 'forgot-password' do
+  # =begin
+  # =end
+  forgot_email = params[:email]
+
+  code = rand(000000..999999)
+end
+
 get '/metrics' do
   redirect '/log-in' unless session[:UserID]
   redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
@@ -238,6 +247,7 @@ get '/metrics' do
   erb :metrics_page
 end
 
+#Refactor <15 lines
 post '/help' do
   form_username = params[:form_username]
   form_useremail = params[:form_useremail]
@@ -329,6 +339,7 @@ get '/manage-accounts-delete/:id' do
   DB[:Accounts].where(UserID: params[:id]).delete
   redirect '/manage-accounts'
 end
+
 
 get '/view-basket' do
   @basket_items = []

@@ -12,7 +12,7 @@ DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
   String :FirstName
   String :LastName
-  Datetime :Date_of_birth, null: true
+  DateTime :Date_of_birth, null: true
   Integer :StampCount, default: 0
   String :email, unique: true, null: false
   String :hashedPassword
@@ -20,6 +20,7 @@ DB.create_table? :Accounts do
   String :Postcode, size: 7
   String :Address
   String :AccountType, default: 'customer'
+  Datetime :Created_At, default: Sequel::CURRENT_TIMESTAMP
 end
 
 DB.create_table? :Beans do
@@ -32,7 +33,7 @@ DB.create_table? :Beans do
   Integer :CurrentStock
 
   primary_key [:BeanID]
-end
+end 
 
 DB.create_table? :Drinks do
   Integer :DrinkID
@@ -62,6 +63,7 @@ DB.create_table? :Orders do
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
   String :Destination, default: 'In-Store'
   TrueClass :IsCompleted, default: false
+  String :payment_status, default: 'Pending'
 end
 
 DB.create_table? :OrderItems do
@@ -80,6 +82,16 @@ DB.create_table? :Tickets do
   String :TicketType
   String :TicketContent
   FalseClass :TicketResolved, default: false
+  DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+end
+
+# Table 5: Audits
+DB.create_table? :Audits do
+  primary_key :AuditID
+  foreign_key :orderID, :Orders
+  String :BeforeStatus
+  String :AfterStatus
+  Text :ChangeReason
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
