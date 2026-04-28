@@ -14,8 +14,25 @@
     <img src="<%= display_path %>" alt="<%= @item.Beverage %>" width="500" height="500">
     <div class="product-details" id="product-details">
       <p><%= @item.Description %></p>
-      <p>Price: <strong>£<%= sprintf('%.2f', @item.Price) %></strong></p>
-      
+      <div class = "product-properties">
+        <div class="product-price">
+          <p>Price: <strong>£<%= sprintf('%.2f', @item.Price) %></strong></p>
+        </div><br>
+
+        <label for="milk-type">Milk Type: </label>
+        <select name="milk-type">
+          <option value="whole">Whole</option>
+          <option value="oat">Oat</option>
+          <option value="soy">Soy</option>
+        </select><br><br>
+
+        <label for="size">Size</label>
+        <select name="size">
+          <option value="regular">Regular</option>
+          <option value="large">Large &#40;&#43;&#163; 1.00&#41;</option>
+        </select><br><br>
+
+      </div>
       <button class="add-to-basket-button" data-id="<%= @item.DrinkID %>">Add to Basket</button>
       <button class="buy-button">Buy Now</button>
     </div> 
@@ -28,12 +45,15 @@
 
   container.addEventListener('click', (event) => {
     if (event.target.classList.contains('add-to-basket-button')) {
-      const drinkID = card.dataset.drinkId;
-      if (event.target.textContent == "Add to basket") {
+      const drinkID = event.target.dataset.drinkId;
+      const size = document.querySelector('select[name="size"]').value;
+      
+      if (event.target.textContent == "Add to Basket") {
         console.log("Debug: Added " + drinkID + " to basket.")
         event.target.textContent = "Added! ✅";
-        
+
         // do other stuff (actually add to the basket, update database, ...)
+          
         setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
       } else {
         console.log("Debug: Removed " + drinkID + " from basket.")

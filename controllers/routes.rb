@@ -45,7 +45,6 @@ post '/add-to-basket' do
 
   content_type :json
   { count: session[:basket].length }.to_json
-  redirect '/coffee-beans'
 end
 
 get '/help' do
@@ -85,6 +84,7 @@ get '/register' do
   erb :register_account
 end
 
+#Refactor <15 lines
 post '/register' do
   email = params[:email]
   password1 = params[:password1]
@@ -191,7 +191,6 @@ end
 get '/loyalty-card' do
   redirect '/log-in' unless session[:UserID]
 
-  @user = Account[session[:UserID]]
   @user = DB[:Accounts].where(UserID: session[:UserID]).first
 
   if @user
@@ -232,6 +231,14 @@ get '/forgot' do
   erb :forgot_password
 end
 
+post 'forgot-password' do
+  # =begin
+  # =end
+  forgot_email = params[:email]
+
+  code = rand(000000..999999)
+end
+
 get '/metrics' do
   redirect '/log-in' unless session[:UserID]
   redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
@@ -240,6 +247,7 @@ get '/metrics' do
   erb :metrics_page
 end
 
+#Refactor <15 lines
 post '/help' do
   form_username = params[:form_username]
   form_useremail = params[:form_useremail]
@@ -332,12 +340,14 @@ get '/manage-accounts-delete/:id' do
   redirect '/manage-accounts'
 end
 
+
 get '/view-basket' do
   @basket_items = []
   @total = 0
   
   if session[:basket]
     session[:basket].each do |item_data|
+      # Assuming you updated add-to-basket to store {id: 1, type: 'bean'}
       item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
       if item
         @basket_items << item
@@ -351,174 +361,55 @@ end
 post '/place-order' do
   redirect '/log-in' unless logged_in?
   
-  user_record = Account[session[:UserID]]
-  subtotal = calculate_basket_total(session[:basket], user_record)
-  total_to_charge = subtotal + 3.50
-
-  order_id = DB[:Orders].insert(
+  total = calculate_basket_total(session[:basket]) 
+  
+  order = Order.create(
     UserID: session[:UserID],
-    OrderContents: session[:basket].to_json,
-    OrderType: 'Delivery',
-    totalCost: total_to_charge,
-    PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash/In-Person',
-    IsCompleted: params[:payment_timing] == 'online' ? false : true
+    OrderDate: Time.now,
+    TotalAmount: total,
+    Status: 'Processing'
   )
-
-  if params[:payment_timing] == 'online'
-    redirect "/external-payment-gateway?order_id=#{order_id}"
-  else
-    finalize_stamps(session[:UserID], session[:basket])
-    session[:basket] = []
-    redirect '/order-success'
+  
+  session[:basket].each do |item_data|
+    OrderItem.create(
+      OrderID: order.OrderID,
+      ProductID: item_data[:id],
+      ProductType: item_data[:type]
+    )
   end
+  
+  session[:basket] = []
+  redirect '/order-success'
 end
 
-
 get '/checkout' do
-  @user = logged_in? ? Account[session[:UserID]] : nil
+  @subtotal = 0
+  @basket_items = []
+
+  if session[:basket]
+    session[:basket].each do |item_data|
+      # item_data looks like { id: "1", type: "bean" }
+      id = item_data[:id]
+      type = item_data[:type]
+
+      # Find the item in the correct table
+      item = (type == 'bean') ? Bean[id] : Drink[id]
+
+      if item
+        @basket_items << item
+        @subtotal += item[:Price] # Ensure :Price matches your DB column name
+      end
+    end
+  end
   
-  @subtotal = calculate_basket_total(session[:basket], @user)
-  
+  @user = Account[session[:UserID]] if logged_in?
   erb :checkout
 end
 
-def calculate_basket_total(basket, user)
-  return 0.0 if basket.nil? || basket.empty?
-  
-  total = 0.0
-  drinks = []
-
-  basket.each do |item_data|
-    item = (item_data[:type] == 'bean') ? Bean[item_data[:id]] : Drink[item_data[:id]]
-    if item
-      price = item[:Price].to_f
-      total += price
-      drinks << price if item_data[:type] == 'drink'
-    end
+def calculate_basket_total(basket)
+  return 0 if basket.nil?
+  basket.sum do |item_data|
+    item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
+    item ? item[:Price] : 0
   end
-
-  if user && user[:StampCount] >= 10 && !drinks.empty?
-    discount = [drinks.min, 5.0].min 
-    total -= discount
-  end
-
-  total
-end
-
-get '/order-success' do
-  @order = Order.where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
-  @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
-  erb :order_success
-end
-
-get '/external-payment-gateway' do
-  @order_id = params[:order_id]
-  erb :mock_gateway, layout: false 
-end
-
-get '/payment-callback' do
-  order = DB[:Orders].where(OrderID: params[:order_id]).first
-  
-  if params[:status] == 'success' && order
-    DB[:Orders].where(OrderID: params[:order_id]).update(IsCompleted: true)
-    
-    basket = JSON.parse(order[:OrderContents])
-    finalize_stamps(session[:UserID], basket)
-    
-    session[:basket] = [] 
-    redirect '/order-success'
-  end
-end
-
-def finalize_stamps(user_id, basket)
-  has_beans = basket.any? { |item| item['type'] == 'bean' || item[:type] == 'bean' }
-  
-  stamps_to_add = has_beans ? 3 : 1
-
-  current_stamps = DB[:Accounts].where(UserID: user_id).get(:StampCount) || 0
-  final_count = (current_stamps + stamps_to_add) % 10
-
-  DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
-end
-
-get '/stock-management' do
-  redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
-
-  @beans = Bean.all
-
-  erb :stock_management
-end
-
-post '/stock-management' do
-  redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'manager' || session[:AccountType] == 'barista'
-
-  beanID = params[:id]
-  new_stock = params[:stock].to_i
-
-  Bean[beanID].update(CurrentStock: new_stock)
-
-  redirect '/stock-management'
-end
-
-get '/order-management/administrator' do
-  redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'administrator'
-
-  @completed_orders = DB[:Orders].where(IsCompleted: true)
-
-  erb :order_correction_administrator
-end
-
-post '/order-management/administrator' do
-  redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'administrator'
-
-  # Use :order_id (matches name="order_id" in your HTML)
-  target_id = params[:order_id] 
-  new_payment_status = params[:payment_status]
-  reason_note = params[:reason_note]
-
-  # Fetch the previous status before the update
-  previous_payment_status = DB[:Orders].where(OrderID: target_id).get(:payment_status)
-
-  # Perform the update
-  DB[:Orders].where(OrderID: target_id).update(payment_status: new_payment_status)
-
-  # Insert into Audits
-  DB[:Audits].insert(
-    orderID: target_id,
-    BeforeStatus: previous_payment_status,
-    AfterStatus: new_payment_status,
-    ChangeReason: reason_note
-  )
-  
-  redirect '/order-management/administrator'
-end
-
-
-get '/order-management/barista' do
-  redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'barista'
-
-  # Only show orders that are NOT completed, sorted by oldest first
-  @pending_orders = DB[:Orders]
-    .where(IsCompleted: false)
-    .order(:CreatedAt)
-    .all
-
-  erb :order_correction_barista
-end
-
-post '/order-management/barista' do
-  redirect '/log-in' unless logged_in?
-  redirect '/' unless session[:AccountType] == 'barista'
-
-  order_id = params[:order_id]
-
-  # Mark order as completed
-  DB[:Orders].where(OrderID: order_id).update(IsCompleted: true)
-
-  redirect '/order-management/barista'
-end
+end 

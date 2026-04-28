@@ -785,7 +785,17 @@ footer {
 .product-details {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-properties{
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+}
+
+.product-size{
+  align-self: flex-end;
 }
 
 /* Metrics Page */
@@ -1373,7 +1383,7 @@ button:active {
 .carousel-track {
   display: flex;
   width: max-content;
-  animation: scroll 20s linear infinite;
+  animation: scroll 20s linear infinite
 }
 
 .carousel-item {
