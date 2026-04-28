@@ -4,20 +4,15 @@ class AdminController < BaseController
   helpers AppHelpers
   before do
     redirect '/log-in' unless session[:UserID]
-    unless ['manager', 'administrator'].include?(session[:AccountType])
+    unless session[:AccountType] == 'administrator'
       redirect '/' 
     end
   end
 
   get '/staff-portal' do
-    erb :staffportal
+    erb :staff_portal
   end
-
-  get '/metrics' do
-    @metrics = analyze_sales_data
-    erb :metrics_page
-  end
-
+  
   get '/user-tickets' do
     @live_tickets = DB[:Tickets].where(TicketResolved: false).all
     @past_tickets = DB[:Tickets].where(TicketResolved: true).all
