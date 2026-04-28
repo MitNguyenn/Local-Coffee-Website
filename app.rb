@@ -10,10 +10,32 @@ require_all "controllers"
 require_relative "helpers/helpers"
 require_all "models"
 
-require_relative 'controllers/routes'
 
-# Initialize database tables on startup
-# configure do
-#   DatabaseHelper.init_account_table
-#   DatabaseHelper.init_bean_table
-# end
+
+#Base Routes
+class CoffeeApp < Sinatra::Base
+  use AuthController
+  use ProductController
+  use AccountController
+  use AdminController
+
+  get '/' do
+    erb :home
+  end
+
+  get '/help' do
+    erb :help
+  end
+
+  post '/help' do
+    userid = DB[:Accounts].where(email: params[:form_useremail]).get(:UserID)
+    if userid.nil? || params[:form_request_description].empty?
+      @error = "Missing info!"
+      return erb :help
+    end
+    Ticket.create(UserID: userid, ticketType: params[:problem_type], ticketContent: params[:form_request_description])
+    redirect "/"
+  end
+
+  run! if app_file == $0
+end
