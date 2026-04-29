@@ -2,6 +2,15 @@ require_relative 'base_controller'
 
 class ProductController < BaseController
   helpers AppHelpers
+
+  def finalize_stamps(user_id, basket)
+    has_beans = basket.any? { |item| item['type'] == 'bean' || item[:type] == 'bean' }
+    stamps_to_add = has_beans ? 3 : 1
+    current_stamps = DB[:Accounts].where(UserID: user_id).get(:StampCount) || 0
+    final_count = (current_stamps + stamps_to_add) % 10
+    DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
+  end
+
   get '/coffee-beans' do
     @beans = Bean.all
     erb :beans
@@ -12,88 +21,104 @@ class ProductController < BaseController
     erb :drinks
   end
 
-  get '/product/' do
-    @type = params[:type]
-    id = [params[:id]]
-
-    if @type == 'bean'
-      @item = Bean[id]
-      @template = :bean_details
-    elsif @type == 'drink'
-      @item = Drink[id]
-      @template = :drink_details
-    else 
-      halt 404, "Product type not found."
-    end
-    erb @template
-  end
-
   get '/view-basket' do
     @basket_items = []
     @total = 0
     if session[:basket]
       session[:basket].each do |item_data|
-        item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
+        table = (item_data[:type] == 'bean') ? :Beans : :Drinks
+        id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
+        item = DB[table].where(id_col => item_data[:id]).first
         if item
           @basket_items << item
-          @total += item[:Price] 
+          @total += item[:Price].to_f
         end
       end
     end
     erb :view_basket
   end
 
-  post '/place-order' do
-  redirect '/log-in' unless logged_in?
-  
-  total = calculate_basket_total(session[:basket]) 
-  
-  order = Order.create(
-    UserID: session[:UserID],
-    OrderDate: Time.now,
-    TotalAmount: total,
-    Status: 'Processing'
-  )
-  
-  session[:basket].each do |item_data|
-    OrderItem.create(
-      OrderID: order.OrderID,
-      ProductID: item_data[:id],
-      ProductType: item_data[:type]
-    )
+  get '/checkout' do
+    redirect '/log-in' unless logged_in?
+    @user = DB[:Accounts].where(UserID: session[:UserID]).first
+    @subtotal = calculate_basket_total(session[:basket], @user)
+    erb :checkout
   end
-  
-  session[:basket] = []
-  redirect '/order-success'
-end
+
+  post '/place-order' do
+    redirect '/log-in' unless logged_in?
+    user_record = DB[:Accounts].where(UserID: session[:UserID]).first
+    subtotal = calculate_basket_total(session[:basket], user_record)
+    total_to_charge = subtotal + 3.50
+
+    order_id = DB[:Orders].insert(
+      UserID: session[:UserID],
+      OrderContents: session[:basket].to_json,
+      OrderType: 'Delivery',
+      PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
+      totalCost: total_to_charge,
+      IsCompleted: params[:payment_timing] == 'online' ? false : true,
+      payment_status: params[:payment_timing] == 'online' ? 'Pending' : 'Paid'
+    )
+
+    if params[:payment_timing] == 'online'
+      redirect "/external-payment-gateway?order_id=#{order_id}"
+    else
+      finalize_stamps(session[:UserID], session[:basket])
+      session[:basket] = []
+      redirect '/order-success'
+    end
+  end
+
+  get '/external-payment-gateway' do
+    @order_id = params[:order_id]
+    erb :mock_gateway, layout: false 
+  end
+
+  get '/payment-callback' do
+    order = DB[:Orders].where(OrderID: params[:order_id]).first
+    if params[:status] == 'success' && order
+      DB[:Orders].where(OrderID: params[:order_id]).update(IsCompleted: true, payment_status: 'Paid')
+      basket = JSON.parse(order[:OrderContents])
+      finalize_stamps(session[:UserID], basket)
+      session[:basket] = [] 
+      redirect '/order-success'
+    else
+      @error = "Payment Cancelled"
+      redirect '/checkout'
+    end
+  end
 
   post '/add-to-basket' do
     session[:basket] ||= []
     session[:basket] << { id: params[:id], type: params[:type] }
-    redirect '/coffee-beans'
+    redirect back
   end
 
-  get '/checkout' do
-  @subtotal = 0
-  @basket_items = []
+  get '/order-success' do
+    @order = DB[:Orders].where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
+    @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
+    erb :order_success
+  end
+end
 
-  if session[:basket]
-    session[:basket].each do |item_data|
-      # item_data looks like { id: "1", type: "bean" }
-      id = item_data[:id]
-      type = item_data[:type]
-
-      # Find the item in the correct table
-      item = (type == 'bean') ? Bean[id] : Drink[id]
-
-      if item
-        @basket_items << item
-        @subtotal += item[:Price] # Ensure :Price matches your DB column name
-      end
+def calculate_basket_total(basket, user)
+  return 0.0 if basket.nil? || basket.empty?
+  total = 0.0
+  drink_prices = []
+  basket.each do |item_data|
+    table = (item_data[:type] == 'bean') ? :Beans : :Drinks
+    id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
+    item = DB[table].where(id_col => item_data[:id]).first
+    if item
+      price = item[:Price].to_f
+      total += price
+      drink_prices << price if item_data[:type] == 'drink'
     end
   end
-  
-  @user = Account[session[:UserID]] if logged_in?
-  erb :checkout
-end
+  if user && user[:StampCount] >= 9 && !drink_prices.empty?
+    discount = [drink_prices.min, 5.0].min 
+    total -= discount
+  end
+  total
 end

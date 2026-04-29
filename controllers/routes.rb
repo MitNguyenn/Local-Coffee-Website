@@ -358,29 +358,28 @@ get '/view-basket' do
   erb :view_basket
 end
 
-post '/place-order' do
-  redirect '/log-in' unless logged_in?
+# post '/place-order' do
+#   redirect '/log-in' unless logged_in?
   
-  total = calculate_basket_total(session[:basket]) 
+#   total = calculate_basket_total(session[:basket]) 
   
-  order = Order.create(
-    UserID: session[:UserID],
-    OrderDate: Time.now,
-    TotalAmount: total,
-    Status: 'Processing'
-  )
+#   order = Order.create(
+#     UserID: session[:UserID],
+#     TotalAmount: total,
+#     Status: 'Processing'
+#   )
   
-  session[:basket].each do |item_data|
-    OrderItem.create(
-      OrderID: order.OrderID,
-      ProductID: item_data[:id],
-      ProductType: item_data[:type]
-    )
-  end
+#   session[:basket].each do |item_data|
+#     OrderItem.create(
+#       OrderID: order.OrderID,
+#       ProductID: item_data[:id],
+#       ProductType: item_data[:type]
+#     )
+#   end
   
-  session[:basket] = []
-  redirect '/order-success'
-end
+#   session[:basket] = []
+#   redirect '/order-success'
+# end
 
 get '/checkout' do
   @subtotal = 0
@@ -406,10 +405,10 @@ get '/checkout' do
   erb :checkout
 end
 
-def calculate_basket_total(basket)
-  return 0 if basket.nil?
-  basket.sum do |item_data|
-    item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
-    item ? item[:Price] : 0
-  end
-end 
+# def calculate_basket_total(basket)
+#   return 0 if basket.nil?
+#   basket.sum do |item_data|
+#     item = item_data[:type] == 'bean' ? Bean[item_data[:id]] : Drink[item_data[:id]]
+#     item ? item[:Price] : 0
+#   end
+# end 
