@@ -4,7 +4,7 @@ require 'rqrcode'
 class AccountController < BaseController
   helpers AppHelpers
   before do
-    redirect '/log-in' unless session[:UserID]
+    redirect '/' unless session[:UserID]
   end
 
   get '/account-settings' do

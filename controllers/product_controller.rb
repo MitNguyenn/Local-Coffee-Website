@@ -2,6 +2,7 @@ require_relative 'base_controller'
 
 class ProductController < BaseController
   helpers AppHelpers
+
   get '/coffee-beans' do
     @beans = Bean.all
     erb :beans
