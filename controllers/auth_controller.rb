@@ -17,6 +17,21 @@ class AuthController < BaseController
     if user && BCrypt::Password.new(user[:hashedPassword]) == @password
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
+
+      attempt_flag_account(session[:UserID])
+      attempt_suspend_account(session[:UserID])
+
+      if user[:Suspended]
+        session.clear
+        @error = "Your account has been suspended. Please contact support."
+        return erb :login_screen
+      end
+      if user[:Flagged]
+        session.clear
+        @error = "Your account has been flagged for inactivity. Please contact support."
+        return erb :login_screen
+      end
+      
       redirect '/'
     else
       @error = "Invalid email or password"
