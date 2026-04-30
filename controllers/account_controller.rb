@@ -9,6 +9,7 @@ class AccountController < BaseController
 
   get '/account-settings' do
     @user = DB[:Accounts].where(UserID: session[:UserID]).first
+    @account_flagged = @user[:Flagged]
     erb :account_settings
   end
 

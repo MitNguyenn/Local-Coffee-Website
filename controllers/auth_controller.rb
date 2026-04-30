@@ -26,12 +26,7 @@ class AuthController < BaseController
         @error = "Your account has been suspended. Please contact support."
         return erb :login_screen
       end
-      if user[:Flagged]
-        session.clear
-        @error = "Your account has been flagged for inactivity. Please contact support."
-        return erb :login_screen
-      end
-      
+
       redirect '/'
     else
       @error = "Invalid email or password"
