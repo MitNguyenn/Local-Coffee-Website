@@ -5,16 +5,19 @@ class AdminController < BaseController
 
 
   get '/staff-portal' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     erb :staff_portal
   end
   
   get '/user-tickets' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     @live_tickets = DB[:Tickets].where(TicketResolved: false).all
     @past_tickets = DB[:Tickets].where(TicketResolved: true).all
     erb :ticket_management
   end
 
   get '/manage-accounts' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     @accounts = DB[:Accounts].all
     erb :account_management
   end

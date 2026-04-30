@@ -13,11 +13,13 @@ class ProductController < BaseController
 
 
   get '/coffee-beans' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     @beans = Bean.all
     erb :beans
   end
 
   get '/drinks' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     @drinks = Drink.all
     erb :drinks
   end

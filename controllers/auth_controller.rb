@@ -22,6 +22,7 @@ class AuthController < BaseController
       @error = "Invalid email or password"
       erb :login_screen
     end
+    update_Recet_Login(session[:user_id]) if session[:user_id]
   end
 
   get '/register' do
@@ -71,6 +72,7 @@ class AuthController < BaseController
     )
 
     session[:UserID] = user.UserID
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     redirect '/'
   rescue => e
     @error = "Registration failed: #{e.message}"
