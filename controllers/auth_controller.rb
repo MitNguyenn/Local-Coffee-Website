@@ -17,11 +17,22 @@ class AuthController < BaseController
     if user && BCrypt::Password.new(user[:hashedPassword]) == @password
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
+
+      attempt_flag_account(session[:UserID])
+      attempt_suspend_account(session[:UserID])
+
+      if user[:Suspended]
+        session.clear
+        @error = "Your account has been suspended. Please contact support."
+        return erb :login_screen
+      end
+
       redirect '/'
     else
       @error = "Invalid email or password"
       erb :login_screen
     end
+    update_Recet_Login(session[:user_id]) if session[:user_id]
   end
 
   get '/register' do
@@ -71,6 +82,7 @@ class AuthController < BaseController
     )
 
     session[:UserID] = user.UserID
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     redirect '/'
   rescue => e
     @error = "Registration failed: #{e.message}"

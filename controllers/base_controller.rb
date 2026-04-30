@@ -14,6 +14,8 @@ class BaseController < Sinatra::Base
   set :public_folder, proc { File.join(root, "public") }
 
   get '/' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
+    
     erb :home
   end
 

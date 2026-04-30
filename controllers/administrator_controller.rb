@@ -5,16 +5,19 @@ class AdminController < BaseController
   redirect '/' if !logged_in? || session[:account_type] != 'administrator'
 
   get '/staff-portal' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     erb :staff_portal
   end
   
   get '/user-tickets' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     @live_tickets = DB[:Tickets].where(TicketResolved: false).all
     @past_tickets = DB[:Tickets].where(TicketResolved: true).all
     erb :ticket_management
   end
 
   get '/manage-accounts' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
     @accounts = DB[:Accounts].all
     erb :account_management
   end
@@ -41,5 +44,16 @@ class AdminController < BaseController
       )
     end
     redirect '/manage-accounts'
+  end
+
+  get '/flagged-accounts' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
+    @flagged_accounts = DB[:Accounts].where(Flagged: true).all
+    erb :flagged_accounts
+  end
+
+  get '/suspend-account/:id' do
+    DB[:Accounts].where(UserID: params[:id]).update(Suspended: true)
+    redirect '/flagged-accounts'
   end
 end

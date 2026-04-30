@@ -22,7 +22,10 @@ DB.create_table? :Accounts do
   String :Postcode, size: 7
   String :Address
   String :AccountType, default: 'customer'
-  Datetime :Created_At, default: Sequel::CURRENT_TIMESTAMP
+  DateTime :Created_At, default: Sequel::CURRENT_TIMESTAMP
+  DateTime :Recent_Login, default: Sequel::CURRENT_TIMESTAMP
+  TrueClass :Flagged, default: false
+  TrueClass :Suspended, default: false
 end
 
 # Create Beans Table

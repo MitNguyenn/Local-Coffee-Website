@@ -14,7 +14,9 @@
     <div class="login-card">
       
       <h2>Hi, <%= @user[:FirstName]%> </h2>
-
+      <% if @account_flagged %>
+        <p style="color: red;">Your account has been flagged for inactivity.</p>
+      <% end %>
       <h3 class="detail-header">Personal Details</h3>
 
       <form method="POST" action="/update-account">
