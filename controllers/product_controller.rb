@@ -11,6 +11,7 @@ class ProductController < BaseController
     DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
   end
 
+
   get '/coffee-beans' do
     @beans = Bean.all
     erb :beans
