@@ -24,6 +24,8 @@ DB.create_table? :Accounts do
   String :AccountType, default: 'customer'
   DateTime :Created_At, default: Sequel::CURRENT_TIMESTAMP
   DateTime :Recent_Login, default: Sequel::CURRENT_TIMESTAMP
+  TrueClass :Flagged, default: false
+  TrueClass :Suspended, default: false
 end
 
 # Create Beans Table

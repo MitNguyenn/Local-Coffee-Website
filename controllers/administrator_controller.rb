@@ -45,4 +45,15 @@ class AdminController < BaseController
     end
     redirect '/manage-accounts'
   end
+
+  get '/flagged-accounts' do
+    update_Recet_Login(session[:user_id]) if session[:user_id]
+    @flagged_accounts = DB[:Accounts].where(Flagged: true).all
+    erb :flagged_accounts
+  end
+
+  get '/suspend-account/:id' do
+    DB[:Accounts].where(UserID: params[:id]).update(Suspended: true)
+    redirect '/flagged-accounts'
+  end
 end
