@@ -67,4 +67,23 @@ class AdminController < BaseController
     @metrics = analyze_sales_data
     erb :metrics_page
   end
+
+  get '/order-management/administrator' do 
+    @completed_orders = DB[:Orders].all
+    erb :order_correction_administrator
+  end
+  
+  get '/stock-management' do
+    @beans = Bean.all
+    erb :stock_management
+  end
+
+  get '/user-tickets' do
+    erb :ticket_management
+  end
+
+  get '/flagged-accounts' do
+    erb :flagged_accounts
+  end
+
 end

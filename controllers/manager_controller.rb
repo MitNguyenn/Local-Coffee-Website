@@ -2,14 +2,10 @@ require_relative 'base_controller'
 
 class ManagerController < BaseController
   before do
-    authorized_roles = ['manager', 'administrator']
-    
-    current_role = session[:AccountType].to_s.downcase
-  
-    unless session[:UserID] && authorized_roles.include?(current_role)
-      redirect '/'
-    end
+  if !session[:UserID] || !['manager', 'administrator'].include?(session[:AccountType].to_s.downcase)
+    redirect '/'
   end
+end
 
   get '/staff-portal' do
     update_Recet_Login(session[:UserID]) if session[:UserID]
