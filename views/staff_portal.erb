@@ -3,6 +3,9 @@
   <div class = "sp-page-box">
     <a href="/order-management/barista" class="sp-page-hyperlink">View Orders</a>
   </div>
+  <div class = "sp-page-box">
+    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
+  </div>
 <% elsif session[:AccountType] == 'manager' %>
 <h1 class = "sp-page-title">Manager Portal</h1>
   <div class = "sp-page-box">
@@ -34,5 +37,8 @@
   </div>
   <div class = "sp-page-box">
     <a href="/flagged-accounts" class="sp-page-hyperlink">Flagged Accounts</a>
+  </div>
+  <div class = "sp-page-box">
+    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
   </div>
 <% end %>
