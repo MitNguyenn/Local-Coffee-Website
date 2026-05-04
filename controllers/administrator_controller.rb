@@ -2,7 +2,12 @@ require_relative 'base_controller'
 
 class AdminController < BaseController
   helpers AppHelpers
-  redirect '/' if !logged_in? || session[:account_type] != 'administrator'
+
+  before do
+    unless session[:UserID] && session[:account_type] == 'administrator'
+      redirect '/'
+    end
+  end
 
   get '/staff-portal' do
     update_Recet_Login(session[:user_id]) if session[:user_id]

@@ -1,7 +1,11 @@
 require_relative 'base_controller'
 
 class BaristaController < BaseController
-  redirect '/' if !logged_in? || session[:account_type] != 'barista'
+  before do
+    unless session[:UserID] && session[:account_type] == 'barista'
+      redirect '/'
+    end
+  end
 
   get '/staff-portal' do
     update_Recet_Login(session[:user_id]) if session[:user_id]
