@@ -13,8 +13,16 @@ class BaseController < Sinatra::Base
   set :views, proc { File.join(root, "views") }
   set :public_folder, proc { File.join(root, "public") }
 
+  before do
+    if session[:UserID] && !session[:UserID]
+      session[:UserID] = session[:UserID]
+    elsif session[:UserID] && !session[:UserID]
+      session[:UserID] = session[:UserID]
+    end
+  end
+
   get '/' do
-    update_Recet_Login(session[:user_id]) if session[:user_id]
+    update_Recet_Login(session[:UserID]) if session[:UserID]
     
     erb :home
   end
