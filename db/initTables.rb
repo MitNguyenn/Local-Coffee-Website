@@ -25,6 +25,7 @@ DB.create_table? :Accounts do
   DateTime :Created_At, default: Sequel::CURRENT_TIMESTAMP
   DateTime :Recent_Login, default: Sequel::CURRENT_TIMESTAMP
   TrueClass :Flagged, default: false
+  DateTime :Flagged_At, default: nil
   TrueClass :Suspended, default: false
 end
 
