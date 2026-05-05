@@ -38,8 +38,6 @@ DB.create_table? :Beans do
   Integer :PackWeight
   Double :Price
   Integer :CurrentStock
-
-  primary_key [:BeanID]
 end 
 
 # Create Drinks Table with Composite Key
@@ -48,8 +46,7 @@ DB.create_table? :Drinks do
   String :Beverage
   Double :Price, size: [10, 2]
   String :Description
-  
-  primary_key [:DrinkID]
+
 end
 
 # DB.create_table? :SizePrices do
