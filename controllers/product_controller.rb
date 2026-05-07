@@ -4,7 +4,6 @@ class ProductController < BaseController
   helpers AppHelpers
 
   def finalize_stamps(user_id, basket)
-    p "DEBUG: Basket Content: #{basket}"
     stamps_to_add = 0
     basket.each do |item_data|
       if item_data['type'] == 'bean'

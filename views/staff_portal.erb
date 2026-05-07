@@ -41,4 +41,11 @@
   <div class = "sp-page-box">
     <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
   </div>
+
+  <a href="/generate-label/<%= order[:OrderID] %>" class="btn">Print Postage Label</a>
+
+<form action="/generate-return/<%= order[:OrderID] %>" method="post">
+  <input type="text" name="external_tracking_id" placeholder="Enter External ID">
+  <button type="submit">Email Return Label</button>
+</form>
 <% end %>
