@@ -159,7 +159,7 @@
         if (!isShowing) menu.classList.add("show");
       }
 
-      window.onclick = function(event) {
+      window.addEventListener('click', function(event) {
         closeAllDropdowns();
       }
 

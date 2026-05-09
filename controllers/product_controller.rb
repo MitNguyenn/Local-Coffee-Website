@@ -38,6 +38,13 @@ class ProductController < BaseController
     erb :drinks
   end
 
+  get '/drink-details/:id' do
+    @item = Drink.where(DrinkID: params[:id]).first
+
+    redirect '/' unless @item
+    erb :drink_details
+  end
+
   get '/view-basket' do
     @basket_items = []
     @total = 0
@@ -109,7 +116,9 @@ class ProductController < BaseController
   post '/add-to-basket' do
     session[:basket] ||= []
     session[:basket] << { id: params[:id], type: params[:type] }
-    redirect back
+    content_type :json
+    { count: session[:basket].length }.to_json
+    # redirect back
   end
 
   get '/order-success' do
