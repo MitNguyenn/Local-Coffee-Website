@@ -8,7 +8,7 @@
       padding: 20px;
       font-family: Arial, sans-serif;
     }
-    .barcode-space {
+    .qr-code-space {
       margin-top: 30px;
       text-align: center;
       border: 1px dashed #ccc;
@@ -30,8 +30,8 @@
       <%= @account[:Postcode] %>
     </div>
     
-    <div class="barcode-space">
-      <p>QR CODE GOES HERE</p>
+    <div class="qr-code-space">
+      <%=@qrcode_svg%>
       </div>
 
     <div style="margin-top: 20px;">
