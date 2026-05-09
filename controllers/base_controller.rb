@@ -3,9 +3,8 @@ class BaseController < Sinatra::Base
   enable :sessions
   set :session_secret, ENV['SESSION_SECRET'] 
 
-  # 2. Required Gems
   require 'bcrypt'
-  require 'require_all' # 
+  require 'require_all' 
 
   require_relative '../db/db'
 
@@ -32,16 +31,13 @@ class BaseController < Sinatra::Base
   end
 
   post '/help' do
-    # Find the user by email
     userid = DB[:Accounts].where(email: params[:form_useremail]).get(:UserID)
     
-    # Validation
     if userid.nil? || params[:form_request_description].to_s.strip.empty?
       @error = "Missing info! Please check the email and description."
       return erb :help
     end
 
-    # Create the ticket using your Model logic
     begin
       Ticket.create(
         UserID: userid, 
