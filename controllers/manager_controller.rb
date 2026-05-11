@@ -8,12 +8,12 @@ class ManagerController < BaseController
 end
 
   get '/staff-portal' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     erb :staff_portal
   end
 
   get '/metrics' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     @metrics = analyze_sales_data
     erb :metrics_page
   end

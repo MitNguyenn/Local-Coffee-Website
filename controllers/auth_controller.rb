@@ -30,7 +30,7 @@ class AuthController < BaseController
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
       
-      update_Recet_Login(session[:UserID]) if session[:UserID]
+      update_recent_login(session[:UserID]) if session[:UserID]
 
       redirect '/'
 
@@ -87,7 +87,7 @@ class AuthController < BaseController
     )
 
     session[:UserID] = user.UserID
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     redirect '/'
   rescue => e
     @error = "Registration failed: #{e.message}"
