@@ -14,10 +14,7 @@ gem 'dotenv'
 gem 'capybara'
 gem 'simplecov'
 gem 'sinatra-activerecord'
-<<<<<<< HEAD
 gem 'capybara'
 gem 'rspec'
-=======
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
->>>>>>> origin
