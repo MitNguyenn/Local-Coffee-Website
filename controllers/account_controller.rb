@@ -21,7 +21,7 @@ class AccountController < BaseController
       Postcode: params[:Postcode],
       Date_of_birth: dob
     )
-    redirect '/account-settings?success=1'
+    redirect '/'
   end
 
   get '/loyalty-card' do

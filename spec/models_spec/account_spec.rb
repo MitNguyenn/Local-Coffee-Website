@@ -1,4 +1,4 @@
-RSpec.describe Account do
+RSpec.describe Account, type: :model do
   let(:account) { Account.new(email: "testemail123@gmail.com", AccountType: "Admin") }  
   
   describe "validations" do

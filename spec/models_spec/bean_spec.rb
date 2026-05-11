@@ -1,4 +1,4 @@
-RSpec.describe Bean do 
+RSpec.describe Bean, type: :model do 
   let(:bean) { Bean.new }
 
   describe 'validations' do

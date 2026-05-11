@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe "Order" do
+RSpec.describe "Order", type: :model do
   describe ".create_order" do
     it "creates an order with the given attributes" do
       # Use the UserID seeded in spec_functions.rb

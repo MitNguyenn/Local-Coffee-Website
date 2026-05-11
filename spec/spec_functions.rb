@@ -75,8 +75,76 @@ end
 def seed_data
   # Use cost: 4 for speed in tests
   pass = BCrypt::Password.create('SecretPassword123', cost: 4)
-  
-  DB[:Accounts].insert(UserID: 10000001, first_name: 'John', email: 'john@example.com', hashed_password: pass)
-  DB[:Beans].insert(BeanID: 1, Name: 'Ethiopian', Price: 8.50, CurrentStock: 50)
-  DB[:Drinks].insert(DrinkID: 1, Beverage: 'Flat White', Price: 3.50)
+
+  # 1. Accounts
+  DB[:Accounts].insert(
+    UserID: 10000001,
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    hashed_password: pass,
+    PhoneNumber: '07123456789',
+    Postcode: 'SW1A1AA',
+    Address: '10 Ruby Lane',
+    AccountType: 'customer'
+  )
+
+  DB[:Accounts].insert(
+    UserID: 99999999,
+    first_name: 'Admin',
+    last_name: 'User',
+    email: 'admin@coffee.com',
+    hashed_password: pass,
+    AccountType: 'admin'
+  )
+
+  # 2. Beans
+  DB[:Beans].insert(
+    BeanID: 1,
+    Name: 'Ethiopian Yirgacheffe',
+    Type: 'Arabica',
+    Roast: 'Light',
+    PackWeight: 250,
+    Price: 8.50,
+    CurrentStock: 50
+  )
+
+  # 3. Drinks
+  DB[:Drinks].insert(
+    DrinkID: 1,
+    Beverage: 'Flat White',
+    Price: 3.50,
+    Description: 'Smooth double shot'
+  )
+
+  # 4. Orders (Capturing ID for Audits)
+  order_items = [{ item: "Flat White", qty: 2, price: 7.00 }].to_json
+  order_id = DB[:Orders].insert(
+    UserID: 10000001,
+    OrderContents: order_items,
+    OrderType: 'In-Store',
+    totalCost: 7.00,
+    payment_status: 'Paid',
+    IsCompleted: true,
+    CreatedAt: Time.now - 86400 # 1 day ago
+  )
+
+  # 5. Tickets
+  DB[:Tickets].insert(
+    UserID: 10000001,
+    TicketType: 'Support',
+    TicketContent: 'Loyalty points not showing',
+    TicketResolved: false,
+    CreatedAt: Time.now
+  )
+
+  # 6. Audits
+  DB[:Audits].insert(
+    orderID: order_id,
+    BeforeStatus: 'Pending',
+    AfterStatus: 'Paid',
+    ChangeReason: 'Customer paid via Card',
+    CreatedAt: Time.now
+  )
 end
+

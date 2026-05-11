@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe AccountRecency do
+RSpec.describe AccountRecency, type: :helper do
   include described_class
 
   # We use the UserID 10000001 seeded in spec_functions.rb

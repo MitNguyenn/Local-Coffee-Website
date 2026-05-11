@@ -1,3 +1,3 @@
-RSpec.describe Drink do
+RSpec.describe Drink, type: :model do
   puts "idk man"
 end
