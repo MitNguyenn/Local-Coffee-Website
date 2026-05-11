@@ -4,18 +4,15 @@ require 'bcrypt'
 require 'json'
 require 'date'
 
-# Connect to the database
 DB = Sequel.sqlite("db/db.sqlite3")
 
-# Clear existing data in correct order to respect foreign keys
 [:Tickets, :Orders, :Beans, :Drinks, :Accounts].each do |table| 
   DB[table].delete if DB.table_exists?(table)
 end
 
 password_hash = BCrypt::Password.create("password123")
 
-# --- 1. ACCOUNTS ---
-# Staff Roles: administrator, barista, manager
+
 staff_data = [
   ["John", "Admin", "admin@cafe.com", "administrator"],
   ["Alice", "Barista", "alice@cafe.com", "barista"],
@@ -82,8 +79,7 @@ DB[:Accounts].insert(
   AccountType: "administrator"
 )
 
-# --- BEANS ---
-# bean = [ID, Name, Type, Roast, Wight, Price, Stock]
+
 bean_list = [
   [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 1000, 19.50, 20],
   [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
@@ -103,9 +99,7 @@ bean_list.each do |id, name, type, roast, weight, price, stock|
     CurrentStock: stock
   )
 end
-# --- ---
 
-# --- Drinks ---
 drinks_list = [
   [1, "Latte", 4.40, ""],
   [2, "Americano", 3.80, ""], 
@@ -123,9 +117,7 @@ drinks_list.each do |drink|
     Description: drink[3]
   )
 end
-# --- ---
 
-# --- HELPERS ---
 MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
 bean_types = DB[:Beans].map(:Type)
 
@@ -133,34 +125,28 @@ def days_ago(n)
   Time.now - (n * 86400) - rand(3600..7200)
 end
 
-# Function to generate the JSON string for OrderContents
+
 def generate_json_contents(beans)
   order_map = {}
-  # Add 1-3 random menu items
   rand(1..3).times do
     order_map[MENU_ITEMS.sample] = rand(1..2)
   end
-  # 40% chance to include a specific bean variety
   if rand < 0.4
     order_map["#{beans.sample} Beans (250g)"] = 1
   end
   order_map.to_json
 end
 
-# --- 4. ORDERS ---
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 40.times do |i|
-  # First 5 orders are "Recent/Live" (Incomplete/Unpaid), the rest are historical
   is_past = i > 5 
   
   order_type = ["In-Person", "Delivery"].sample
   
-  # Logic for payment status based on whether it's a past order or new
   if is_past
     pay_status = "Paid"
   else
-    # Current orders might be unpaid or "Pay in store" for in-person orders
     pay_status = (order_type == "In-Person") ? ["Unpaid", "Pay in store"].sample : "Unpaid"
   end
 
@@ -174,11 +160,10 @@ customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
     Location: order_type == "Delivery" ? "Delivery" : "Table #{rand(1..8)}",
     IsDelivered: is_past,
     IsCompleted: is_past,
-    payment_status: pay_status # Added this line
+    payment_status: pay_status 
   )
 end
 
-# --- 5. TICKETS ---
 complaint_samples = [
   "My coffee was cold.",
   "The delivery driver couldn't find my flat.",
@@ -196,7 +181,6 @@ complaint_samples = [
   )
 end
 
-# --- 6. AUDITS ---
 
 10.times do
   order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]

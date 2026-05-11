@@ -2,14 +2,10 @@ require 'sequel'
 require 'sqlite3'
 require 'json'
 
-# Connect to the database
 DB = Sequel.sqlite("db/db.sqlite3")
 
-# 1. Clear existing data (optional, prevents duplicates if you run it twice)
 DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
 
-# 2. Create tables (if they don't exist)
-# Table 1: Accounts
 DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
   String :FirstName
@@ -29,7 +25,6 @@ DB.create_table? :Accounts do
   TrueClass :Suspended, default: false
 end
 
-# Create Beans Table
 DB.create_table? :Beans do
   Integer :BeanID
   String :Name
@@ -38,18 +33,14 @@ DB.create_table? :Beans do
   Integer :PackWeight
   Double :Price
   Integer :CurrentStock
-
-  primary_key [:BeanID]
 end 
 
-# Create Drinks Table with Composite Key
 DB.create_table? :Drinks do
   Integer :DrinkID
   String :Beverage
   Double :Price, size: [10, 2]
   String :Description
-  
-  primary_key [:DrinkID]
+
 end
 
 # DB.create_table? :SizePrices do
@@ -61,7 +52,6 @@ end
 #   foreign_key [:DrinkID], :Drinks
 # end
 
-# Table 3: Orders
 DB.create_table? :Orders do
   primary_key :OrderID
   foreign_key :UserID, :Accounts
@@ -76,7 +66,6 @@ DB.create_table? :Orders do
   String :payment_status, default: 'Pending'
 end
 
-# Table 4: Tickets
 DB.create_table? :Tickets do
   primary_key :ticketID
   foreign_key :UserID, :Accounts
@@ -86,7 +75,6 @@ DB.create_table? :Tickets do
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
-# Table 5: Audits
 DB.create_table? :Audits do
   primary_key :AuditID
   foreign_key :orderID, :Orders
@@ -96,4 +84,4 @@ DB.create_table? :Audits do
   DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
-puts "Database tables initialized successfully!"
+puts "Database tables initialized successfully"

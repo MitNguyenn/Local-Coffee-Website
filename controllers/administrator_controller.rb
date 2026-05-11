@@ -1,4 +1,8 @@
 require_relative 'base_controller'
+require 'wicked_pdf'
+WickedPdf.config = {
+  exe_path: Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
+}
 
 class AdminController < BaseController
   helpers AppHelpers
@@ -98,5 +102,34 @@ class AdminController < BaseController
   DB[:Accounts].where(UserID: target_user_id).update(StampCount: new_count)
 
   redirect '/manage-loyalty-cards'
+end
+
+get '/generate-label/:id' do
+  @order = DB[:Orders].where(OrderID: params[:id]).first
+  @account = DB[:Accounts].where(UserID: @order[:UserID]).first
+  
+  @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
+  @courier = "Royal Mail"
+  
+  qrcode = RQRCode::QRCode.new("https://www.royalmail.com/track-details/#{@tracking_id}")
+  @qrcode_svg = qrcode.as_svg(color: "000", module_size: 6, standalone: true, viewbox: true)
+  
+  html = erb :shipping_label, layout: false
+  pdf = ::WickedPdf.new.pdf_from_string(html)
+  
+  content_type 'application/pdf'
+  attachment "Label_#{@order[:OrderID]}.pdf"
+  pdf
+end
+
+post '/generate-return/:id' do
+  @order = DB[:Orders].where(OrderID: params[:id]).first
+  @account = DB[:Accounts].where(UserID: @order[:UserID]).first
+  @external_id = params[:external_tracking_id]
+
+  html = erb :return_label_template, layout: false
+  pdf = ::WickedPdf.new.pdf_from_string(html)
+  
+  redirect back
 end
 end

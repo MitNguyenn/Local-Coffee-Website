@@ -1,12 +1,10 @@
-# ../ means "go up one folder" (out of controllers, into project)
-# then we go into the helpers folder
+
 require_relative "../helpers/validation"
 require_relative "../helpers/passwordCheck"
 require_relative "../helpers/analyzeData"
 require_relative "../helpers/myOrders"
 
 
-# Register helpers with Sinatra
 module AppHelpers
   include ERB::Util
 

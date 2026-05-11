@@ -4,13 +4,20 @@ class ProductController < BaseController
   helpers AppHelpers
 
   def finalize_stamps(user_id, basket)
-    has_beans = basket.any? { |item| item['type'] == 'bean' || item[:type] == 'bean' }
-    stamps_to_add = has_beans ? 3 : 1
+    stamps_to_add = 0
+    basket.each do |item_data|
+      if item_data['type'] == 'bean'
+        stamps_to_add += 3
+      elsif item_data['type'] == 'drink'
+        stamps_to_add += 1
+      end
+    end
+
     current_stamps = DB[:Accounts].where(UserID: user_id).get(:StampCount) || 0
     final_count = (current_stamps + stamps_to_add) % 10
+
     DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
   end
-
 
   get '/coffee-beans' do
     update_Recet_Login(session[:UserID]) if session[:UserID]
