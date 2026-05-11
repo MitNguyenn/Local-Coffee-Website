@@ -167,4 +167,17 @@ def seed_data
     ChangeReason: 'Customer paid via Card',
     CreatedAt: Time.now
   )
+
+  DB[:Accounts].insert(
+    email: 'test@bbc.com',
+    hashed_password: BCrypt::Password.create('password123'),
+    first_name: 'Test'
+  )
+  
+  DB[:Accounts].insert(
+    email: 'suspended@bbc.com',
+    hashed_password: BCrypt::Password.create('suspended123'),
+    first_name: 'Sussy',
+    Suspended: true
+  )
 end

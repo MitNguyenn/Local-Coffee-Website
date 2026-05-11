@@ -1,8 +1,6 @@
 RSpec.describe 'Authentification process', type: :feature do
   before(:each) do
     spec_before
-    DB[:Accounts].insert(email: 'test@bbc.com', hashed_password: BCrypt::Password.create('password123'), first_name: 'Test')
-    DB[:Accounts].insert(email: 'suspended@bbc.com', hashed_password: BCrypt::Password.create('suspended123'), first_name: 'Sussy', Suspended: true)
   end
 
   describe 'Logging In' do
@@ -34,6 +32,14 @@ RSpec.describe 'Authentification process', type: :feature do
 
       expect(page).to have_content('Your account has been suspended. Please contact support.')
       expect(current_path).to eq('/log-in')
+    end
+  end
+
+  describe 'Logging out' do
+    it 'allows the user to log out' do
+      visit '/log-out'
+
+      expect(page).to have_content('Log in')
     end
   end
 end

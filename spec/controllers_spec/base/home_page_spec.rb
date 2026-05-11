@@ -14,6 +14,11 @@ RSpec.describe 'Home page', type: :feature do
             expect(page).to have_content('Our Hot Drinks')
         end
 
-        it 'allows user to access '
+        it 'allows user to access staff portal' do
+            visit '/'
+            click_link 'Staff Portal'
+            expect(current_path).to eq('/staff-portal')
+            expect(page).to have_content('Portal')
+        end
     end
 end
