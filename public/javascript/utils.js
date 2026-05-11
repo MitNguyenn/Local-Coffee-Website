@@ -1,4 +1,3 @@
-console.log("utils.js loaded");
 
 function eventHandlerBeanPage() {
 	const container = document.getElementById('item-container');
@@ -39,7 +38,7 @@ function eventHandlerDrinkPage() {
     const drinkId = card.dataset.drinkId;
 
     if (target.classList.contains('add-to-basket-button')) {
-		addDrinkToBasket(drinkId)
+		window.location.href = `/drink-details/${drinkId}`;
     	return;
     }
 
