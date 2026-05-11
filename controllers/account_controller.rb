@@ -16,8 +16,8 @@ class AccountController < BaseController
   post '/update-account' do
     dob = params[:Date_of_birth] ? DateTime.parse(params[:Date_of_birth]) : nil
     DB[:Accounts].where(UserID: session[:UserID]).update(
-      FirstName: params[:FirstName],
-      LastName: params[:LastName],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
       Postcode: params[:Postcode],
       Date_of_birth: dob
     )

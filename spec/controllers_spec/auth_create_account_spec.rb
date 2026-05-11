@@ -7,8 +7,8 @@ RSpec.describe 'Registration Process', type: :feature do
   it 'allows a new user to register successfully' do
     visit '/register'
     
-    fill_in 'FirstName', with: 'John'
-    fill_in 'LastName', with: 'Doe'
+    fill_in 'first_name', with: 'John'
+    fill_in 'last_name', with: 'Doe'
     fill_in 'email', with: 'john@example.com'
     fill_in 'PhoneNumber', with: '07123456789' # Valid UK number
     fill_in 'Address', with: '123 Ruby Lane'
@@ -24,8 +24,8 @@ RSpec.describe 'Registration Process', type: :feature do
     #check db
     user = Account.first(email: 'john@example.com')
     expect(user).not_to be_nil
-    expect(user.FirstName).to eq('John')
-    expect(user.LastName).to eq('Doe')
+    expect(user.first_name).to eq('John')
+    expect(user.last_name).to eq('Doe')
     expect(user.PhoneNumber).to eq('07123456789')
     expect(user.Address).to eq('123 Ruby Lane')
     expect(user.Postcode).to eq('SW1A 1AA')
@@ -36,8 +36,8 @@ RSpec.describe 'Registration Process', type: :feature do
   it 'shows an error when passwords do not match' do
     visit '/register'
     
-    fill_in 'FirstName', with: 'John'
-    fill_in 'LastName', with: 'Doe'
+    fill_in 'first_name', with: 'John'
+    fill_in 'last_name', with: 'Doe'
     fill_in 'email', with: 'john@example.com'
     fill_in 'PhoneNumber', with: '07123456789' # Valid UK number
     fill_in 'Address', with: '123 Ruby Lane'
@@ -54,8 +54,8 @@ RSpec.describe 'Registration Process', type: :feature do
   it 'shows an error for invalid email format' do
     visit '/register'
     
-    fill_in 'FirstName', with: 'John'
-    fill_in 'LastName', with: 'Doe'
+    fill_in 'first_name', with: 'John'
+    fill_in 'last_name', with: 'Doe'
     fill_in 'email', with: 'wrongemailformat' # Invalid email
     fill_in 'PhoneNumber', with: '07123456789' # Valid UK number
     fill_in 'Address', with: '123 Ruby Lane'
@@ -72,8 +72,8 @@ RSpec.describe 'Registration Process', type: :feature do
   it 'shows an error for invalid UK phone number' do
     visit '/register'
 
-    fill_in 'FirstName', with: 'John'
-    fill_in 'LastName', with: 'Doe'
+    fill_in 'first_name', with: 'John'
+    fill_in 'last_name', with: 'Doe'
     fill_in 'email', with: 'john@example.com'
     fill_in 'PhoneNumber', with: '12345' # Invalid UK number
     fill_in 'Address', with: '123 Ruby Lane'
@@ -90,8 +90,8 @@ RSpec.describe 'Registration Process', type: :feature do
   it 'shows an error for short passwords' do
     visit '/register'
 
-    fill_in 'FirstName', with: 'John'
-    fill_in 'LastName', with: 'Doe'
+    fill_in 'first_name', with: 'John'
+    fill_in 'last_name', with: 'Doe'
     fill_in 'email', with: 'jhon@example.com'
     fill_in 'PhoneNumber', with: '07123456789' # Valid UK number
     fill_in 'Address', with: '123 Ruby Lane'

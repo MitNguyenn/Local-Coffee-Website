@@ -76,8 +76,8 @@ class AuthController < BaseController
 
     user = Account.create(
       UserID: UserID,
-      FirstName: params[:FirstName],
-      LastName: params[:LastName],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
       email: email,
       password: password1,
       PhoneNumber: params[:PhoneNumber],

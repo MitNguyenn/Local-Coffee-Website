@@ -40,8 +40,8 @@ class AdminController < BaseController
     resetPassword = params[:reset_password] == "on"
     
     DB[:Accounts].where(UserID: params[:id]).update(
-      FirstName: params[:FirstName],
-      LastName: params[:LastName],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
       email: params[:email],
       PhoneNumber: params[:PhoneNumber],
       Postcode: params[:Postcode],

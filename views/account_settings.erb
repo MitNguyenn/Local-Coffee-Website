@@ -13,7 +13,7 @@
   <main class="login-container">
     <div class="login-card">
       
-      <h2>Hi, <%= @user[:FirstName]%> </h2>
+      <h2>Hi, <%= @user[:first_name]%> </h2>
       <% if @account_flagged %>
         <p style="color: red;">Your account has been flagged for inactivity.</p>
       <% end %>
@@ -21,13 +21,13 @@
 
       <form method="POST" action="/update-account">
         <div class="input-wrapper">
-        <label for="firstname">First Name</label>
-          <input type="text" name = "FirstName" value="<%= @user[:FirstName] %>" class="account-input">
+        <label for="first_name">First Name</label>
+          <input type="text" name = "first_name" value="<%= @user[:first_name] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
-        <label for="lastname">Last Name</label>
-          <input type="text" name = "LastName" value="<%= @user[:LastName] %>" class="account-input">
+        <label for="last_name">Last Name</label>
+          <input type="text" name = "last_name" value="<%= @user[:last_name] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">

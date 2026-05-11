@@ -8,8 +8,8 @@ DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
 
 DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
-  String :FirstName
-  String :LastName
+  String :first_name
+  String :last_name
   DateTime :Date_of_birth, null: true
   Integer :StampCount, default: 0
   String :email, unique: true, null: false

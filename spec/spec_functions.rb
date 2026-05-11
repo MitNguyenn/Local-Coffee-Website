@@ -18,8 +18,8 @@ end
 def create_tables
   DB.create_table? :Accounts do
     Integer :UserID, primary_key: true
-    String :FirstName
-    String :LastName
+    String :first_name
+    String :last_name
     DateTime :Date_of_birth
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
@@ -90,8 +90,8 @@ def seed_data
   
   DB[:Accounts].insert(
     UserID: 10000001,
-    FirstName: 'John',
-    LastName: 'Doe',
+    first_name: 'John',
+    last_name: 'Doe',
     email: 'john@example.com',
     hashedPassword: password,
     PhoneNumber: '07123456789',

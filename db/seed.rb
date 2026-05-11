@@ -22,8 +22,8 @@ staff_data = [
 staff_data.each do |first, last, email, role|
   DB[:Accounts].insert(
     UserID: rand(100000..199999),
-    FirstName: first,
-    LastName: last,
+    first_name: first,
+    last_name: last,
     StampCount: 0,
     email: email,
     hashedPassword: password_hash,
@@ -37,8 +37,8 @@ end
 15.times do |i|
   DB[:Accounts].insert(
     UserID: 200000 + i,
-    FirstName: ["Liam", "Emma", "Noah", "Olivia", "James"].sample,
-    LastName: ["Smith", "Jones", "Brown", "Taylor"].sample,
+    first_name: ["Liam", "Emma", "Noah", "Olivia", "James"].sample,
+    last_name: ["Smith", "Jones", "Brown", "Taylor"].sample,
     StampCount: rand(0..9),
     email: "customer#{i}@example.com",
     hashedPassword: password_hash,
@@ -53,8 +53,8 @@ finn_password = BCrypt::Password.create("testpassword?!")
 
 DB[:Accounts].insert(
   UserID: 23242526,
-  FirstName: "Finn",
-  LastName: "Elliott",
+  first_name: "Finn",
+  last_name: "Elliott",
   StampCount: 3,
   email: "finn@mail.com",
   hashedPassword: finn_password,
@@ -68,8 +68,8 @@ taha_password = BCrypt::Password.create("Tahatest1234")
 
 DB[:Accounts].insert(
   UserID: 38452738,
-  FirstName: "Taha",
-  LastName: "Hassanein",
+  first_name: "Taha",
+  last_name: "Hassanein",
   StampCount: 5,
   email: "taha@gmail.com",
   hashedPassword: taha_password,
