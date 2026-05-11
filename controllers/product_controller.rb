@@ -60,6 +60,7 @@ class ProductController < BaseController
     @user = DB[:Accounts].where(UserID: session[:UserID]).first
     @subtotal = calculate_basket_total(session[:basket], @user)
     erb :checkout
+    # puts "subtotal: #{@subtotal}"
   end
 
   post '/place-order' do
@@ -108,7 +109,7 @@ class ProductController < BaseController
 
   post '/add-to-basket' do
     session[:basket] ||= []
-    session[:basket] << { id: params[:id], type: params[:type] }
+    session[:basket] << { id: params[:id], type: params[:type], size: params[:size] }
     content_type :json
     { count: session[:basket].length }.to_json
     # redirect back
@@ -126,13 +127,19 @@ def calculate_basket_total(basket, user)
   total = 0.0
   drink_prices = []
   basket.each do |item_data|
+    puts "item_data keys: #{item_data.keys.inspect}"
+    puts "size value: #{item_data[:size].inspect} / #{item_data['size'].inspect}"
+    puts "type value: #{item_data[:type].inspect} / #{item_data['type'].inspect}"
     table = (item_data[:type] == 'bean') ? :Beans : :Drinks
     id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
     item = DB[table].where(id_col => item_data[:id]).first
     if item
       price = item[:Price].to_f
+      puts "price before: #{price}"
+      puts "condition: #{item_data[:type] == 'drink' && item_data[:size] == 'large'}"
+      price += 1 if item_data[:type] == 'drink' && item_data[:size] == 'large'
+      puts "price after: #{price}"
       total += price
-      drink_prices << price if item_data[:type] == 'drink'
     end
   end
   if user && user[:StampCount] >= 9 && !drink_prices.empty?

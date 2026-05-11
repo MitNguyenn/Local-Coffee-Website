@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" type="image/x-icon" href="coffee.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src = "/javascript/utils.js"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Datatype:wght@100..900&family=Doto:wght@100..900&family=Lilita+One&display=swap" rel="stylesheet">
@@ -56,7 +57,10 @@
       %>
       
       <% if item %>
-        <% basket_total += item[:Price].to_f %>
+        <% 
+        size_drink = 0
+        size_drink = 1 if item_data[:size] == 'large'
+        basket_total += item[:Price].to_f + size_drink%>
         <div class="cart-item">
           <img src="/<%= item_data[:type] %>s/<%= item_data[:id] %>.png" 
                onerror="this.src='/beans/beans_img_not_found.png'" 
@@ -66,7 +70,7 @@
             <span class="cart-item-name">
               <%= item[:Name] || item[:Beverage] %>
             </span>
-            <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price]) %></span>
+            <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price].to_f + size_drink) %></span>
           </div>
         </div>
       <% end %>

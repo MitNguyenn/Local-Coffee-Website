@@ -1,3 +1,5 @@
+console.log("utils.js loaded");
+
 function eventHandlerBeanPage() {
 	const container = document.getElementById('item-container');
 
@@ -47,7 +49,7 @@ function eventHandlerDrinkPage() {
     }
 
     if (card) {
-    	window.location.href = `/product/?type=drink&id=${drinkId}`;
+    	window.location.href = `/drink-details/${drinkId}`;
     }
   });
 }
@@ -63,11 +65,11 @@ function buyBeanNow(beanId) {
   });
 }
 
-function buyDrinkNow(drinkId) {
+function buyDrinkNow(drinkId, size = 'regular') {
   fetch('/add-to-basket', {
 	method: 'POST',
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-	body: `id=${drinkId}&type=drink`
+	body: `id=${drinkId}&type=drink&size=${size}`
   })
   .then(() => {
 	window.location.href = '/checkout';
@@ -90,11 +92,11 @@ function addBeanToBasket(beanId) {
   });
 }
 
-function addDrinkToBasket(drinkId) {
+function addDrinkToBasket(drinkId, size = 'regular') {
   fetch('/add-to-basket', {
 	method: 'POST',
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-	body: `id=${drinkId}&type=drink`
+	body: `id=${drinkId}&type=drink&size=${size}`
   })
   .then(response => response.json())
   .then(data => {

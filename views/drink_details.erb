@@ -48,22 +48,21 @@
 
   container.addEventListener('click', (event) => {
     if (event.target.classList.contains('add-to-basket-button')) {
-      const drinkID = event.target.dataset.drinkId;
+      const drinkID = event.target.dataset.id;
       const size = document.querySelector('select[name="size"]').value;
       
-      if (event.target.textContent == "Add to Basket") {
-        console.log("Debug: Added " + drinkID + " to basket.")
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkID}&type=drink&size=${size}`
+      })
+      .then(response => response.json())
+      .then(data => {
         event.target.textContent = "Added! ✅";
-          
-        setTimeout(() => { event.target.textContent = "Add to basket"; }, 1000);
-      } else {
-        console.log("Debug: Removed " + drinkID + " from basket.")
-        event.target.textContent = "Added! ✅";
-
-        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
-      }
-     return; // Stop here so we don't redirect
-    }
+        setTimeout(() => { event.target.textContent = "Add to Basket"; }, 1000);
+      });
+      return;
+}
 
     if (event.target.classList.contains('buy-button')) {
       const drinkId = document.querySelector('.add-to-basket-button').dataset.id;
