@@ -10,6 +10,7 @@ DB.tables.each do | table |
   DB[table].delete if DB.table_exists?(table)
 end
 
+puts "Seeding Accounts table..."
 password_hash = BCrypt::Password.create("password123")
 
 staff_data = [
@@ -77,6 +78,7 @@ DB[:Accounts].insert(
   Address: "58 Endcliffe Vale Road",
   AccountType: "administrator"
 )
+puts "Done"
 
 puts "Seeding beans..."
 bean_list = [
@@ -86,7 +88,7 @@ bean_list = [
 ]
 
 bean_list.each do |id, name, price, stock|
-  puts "inserting: " + name + " " + price + " " + stock
+  puts "inserting: #{name} #{price} #{stock}"
   DB[:Beans].insert(
     BeanID: id,
     Name: name,
@@ -96,11 +98,25 @@ bean_list.each do |id, name, price, stock|
 end
 puts "Done"
 
+puts "Seeding beans pack prices..."
+beans_pack_weight_price_markup_multipliers = [
+  [ 250, 1.0], # 100% of the original price
+  [ 500, 1.7], # 170% and so on...
+  [ 1000, 3.3]
+]
+beans_pack_weight_price_markup_multipliers.each do | weight, markup_multiplier |
+  DB[:BeansPackWeightPriceMarkupMultipliers].insert(
+    Weight: weight,
+    MarkupMultiplier: markup_multiplier
+  )
+end
+puts "Done"
+
 puts "Seeding roasts..."
 bean_roasts = [ "Light", "Medium", "Dark"]
 
 bean_roasts.each do | roast |
-  puts "inserting: " + roast
+  puts "inserting: #{roast}"
   DB[:BeanRoasts].insert(
     Roast: roast
   )
@@ -111,7 +127,7 @@ puts "Seeding bean origin..."
 bean_origins = ["Arabic", "Brazilian", "Ethiopian"]
 
 bean_origins.each do | origin |
-  puts "inserting: " + origin
+  puts "inserting: #{origin}"
   DB[:BeanOrigins].insert(
     Origin: origin
   )
@@ -128,7 +144,7 @@ drinks = [
 ]
 
 drinks.each do |id, bev, price, description|
-  puts "inserting: " + bev + " " + price + " " + description
+  puts "inserting: #{bev} #{price} #{description}"
   DB[:Drinks].insert(
     DrinkID: id,
     Beverage: bev,
@@ -138,35 +154,99 @@ drinks.each do |id, bev, price, description|
 end
 puts "Done"
 
-puts "Seeding drink-size price markups..."
-drink_size_price_markups = [
+puts "Seeding drink-size price markup mutlipliers..."
+drink_size_price_markup_mutlipliers = [
   ["Regular", 1.0],
   ["Large",   1.2]
 ]
 
-drink_size_price_markups.each do | size, markup | 
-  puts "inserting: " + size + " " + markup
-  DB[:DrinkSizePriceMarkups].insert(
+drink_size_price_markup_mutlipliers.each do | size, markup_multiplier | 
+  puts "inserting: #{size} #{markup_multiplier}"
+  DB[:DrinkSizePriceMarkupMultipliers].insert(
     Size: size,
-    Markup, markup
+    MarkupMultiplier: markup_multiplier
   )
 end
 puts "Done"
 
-puts "Seeding milk..."
+puts "Seeding milkTypes table..."
 milk = [
   ["Whole", 0.2],
   ["Oat",   0.3],
-  ["Soy"    0.1]
+  ["Soy",   0.1]
 ]
 
 milk.each do | type, price |
-  puts "inserting: " + type + " " + price
+  puts "inserting: #{type} #{price}"
   DB[:MilkTypes].insert(
     Type: type, 
     Price: price
   )
 end
+puts "Done"
+
+puts "Seeding orders and orderItems tables..."
+order_id_1 = DB[:Orders].insert(
+  UserID: 23242526,
+  OrderType: "In-Person",
+  PaymentMethod: "Card",
+  CreatedAt: Time.now,
+  Destination: "Table 4",
+  IsCompleted: true,
+  payment_status: 'Paid',
+  TotalCost: 9.28 # (5.28 Large Latte + 4.00 for 250g Casablanca)
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_1,
+  ProductID: 1, # Latte
+  ProductType: "drink",
+  Quantity: 1,
+  PriceAtPurchase: 5.40,
+  Milk: "Oat",
+  Size: "Large"
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_1,
+  ProductID: 2, # Casablanca Beans
+  ProductType: "bean",
+  Quantity: 1,
+  PriceAtPurchase: 4.00,
+  Milk: nil,
+  Size: "250g"
+)
+
+order_id_2 = DB[:Orders].insert(
+  UserID: 38452738,
+  OrderType: "Delivery",
+  PaymentMethod: "Apple Pay",
+  CreatedAt: Time.now,
+  Destination: "58 Endcliffe Vale Road",
+  IsCompleted: false,
+  payment_status: 'Pending',
+  TotalCost: 7.80 # (3.80 Americano + 4.00 Casablanca)
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_2,
+  ProductID: 2, # Americano
+  ProductType: "drink",
+  Quantity: 1,
+  PriceAtPurchase: 3.80,
+  Milk: "none",
+  Size: "Regular"
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_2,
+  ProductID: 2, # Casablanca Beans
+  ProductType: "bean",
+  Quantity: 1,
+  PriceAtPurchase: 4.00,
+  Milk: nil,
+  Size: "250g"
+)
 puts "Done"
 
 complaint_samples = [
@@ -177,6 +257,9 @@ complaint_samples = [
   "Payment failed but money left my account."
 ]
 
+customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
+
+puts "Seeding tickets table..."
 10.times do
   DB[:Tickets].insert(
     UserID: customer_ids.sample,
@@ -185,7 +268,7 @@ complaint_samples = [
     TicketResolved: [true, false].sample
   )
 end
-
+puts "Done"
 
 10.times do
   order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]
@@ -197,11 +280,11 @@ end
   )
 end
 
-puts DB.tables.count + " tables populated:"
+puts "#{DB.tables.count} tables populated:"
 DB.tables.each do | table | 
   printf(" %s ", table)
 end
-printf("\n")
+puts "\n"
 
 # def days_ago(n)
 #   Time.now - (n * 86400) - rand(3600..7200)
@@ -222,7 +305,6 @@ printf("\n")
 # end
 
 # # --- 4. ORDERS ---
-# customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 # 40.times do |i|
 #   # First 5 orders are "Recent/Live", the rest are historical

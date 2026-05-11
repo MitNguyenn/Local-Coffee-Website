@@ -19,6 +19,23 @@ class ProductController < BaseController
     DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
   end
 
+  # product page
+  get '/product/' do
+    @type = params[:type]
+
+    if @type == 'bean'
+      @item = Bean[params[:id]]
+      @template = :bean_details
+    elsif @type == 'drink'
+      @item = Drink.where(BeanID: params[:bean_id], Beverage: params[:name]).first
+      @template = :drink_details
+    else 
+      halt 404, "Product type not found."
+    end
+
+    erb @template
+  end
+
   get '/coffee-beans' do
     update_Recet_Login(session[:UserID]) if session[:UserID]
     @beans = Bean.all

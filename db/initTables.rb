@@ -4,7 +4,9 @@ require 'json'
 
 DB = Sequel.sqlite("db/db.sqlite3")
 
-DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
+DB.tables.each do | table | 
+  DB.drop_table?(table)
+end
 
 DB.create_table? :Accounts do
   Integer   :UserID, primary_key: true
@@ -32,12 +34,17 @@ DB.create_table? :Beans do
   Integer :CurrentStock
 end
 
+DB.create_table? :BeansPackWeightPriceMarkupMultipliers do
+  Integer :Weight, primary_key: true
+  Double  :MarkupMultiplier
+end
+
 DB.create_table? :BeanOrigins do
   String :Origin, primary_key: true
 end
 
 DB.create_table? :BeanRoasts do
-  String: Roast, primary_key: true 
+  String :Roast, primary_key: true 
 end
 
 DB.create_table? :Drinks do
@@ -47,9 +54,9 @@ DB.create_table? :Drinks do
   String  :Description
 end
 
-DB.create_table? :DrinkSizePriceMarkups do
+DB.create_table? :DrinkSizePriceMarkupMultipliers do
   String :Size, primary_key: true
-  Double :Markup
+  Double :MarkupMultiplier
 end
 
 DB.create_table? :MilkTypes do
