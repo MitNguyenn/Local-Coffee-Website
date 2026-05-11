@@ -1,4 +1,4 @@
-RSpec.describe Validation type: :helper do
+RSpec.describe Validation, type: :helper do
   include described_class
 
   describe "#str_email_address?" do

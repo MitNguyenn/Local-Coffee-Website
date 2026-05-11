@@ -1,4 +1,4 @@
-RSpec.describe MyOrders type: :helper do
+RSpec.describe MyOrders, type: :helper do
   include described_class
 
   let(:user_id) { 10000001 }

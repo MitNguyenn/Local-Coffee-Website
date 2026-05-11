@@ -1,4 +1,4 @@
-RSpec.describe Ticket type: :model do
+RSpec.describe Ticket, type: :model do
   describe "#validate" do
     it "is valid with valid attributes" do
       ticket = Ticket.new(TicketContent: "Issue with order", TicketResolved: false)

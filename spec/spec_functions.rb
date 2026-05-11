@@ -82,7 +82,7 @@ def seed_data
     first_name: 'John',
     last_name: 'Doe',
     email: 'john@example.com',
-    hashedPassword: pass,
+    hashed_password: pass,
     PhoneNumber: '07123456789',
     Postcode: 'SW1A1AA',
     Address: '10 Ruby Lane',
@@ -94,7 +94,7 @@ def seed_data
     first_name: 'Admin',
     last_name: 'User',
     email: 'admin@coffee.com',
-    hashedPassword: pass,
+    hashed_password: pass,
     AccountType: 'admin'
   )
 

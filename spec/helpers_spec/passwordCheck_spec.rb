@@ -1,4 +1,4 @@
-RSpec.describe PasswordCheck type: :helper do
+RSpec.describe PasswordCheck, type: :helper do
   include described_class
 
   describe "#hash_password" do
