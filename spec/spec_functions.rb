@@ -1,16 +1,16 @@
 require 'bcrypt'
 require 'json'
-DB = Sequel.connect("sqlite://db/db.sqlite3")
 
 def spec_before
-  #Wipe every table in the database
+  DB.run("PRAGMA foreign_keys = OFF")
+
   DB.tables.each do |table|
-    # Skip internal sqlite metadata tables
     next if table == :sqlite_sequence
     DB[table].delete
   end
 
-  #reset tables
+  DB.run("PRAGMA foreign_keys = ON")
+
   create_tables
   seed_data
 end
@@ -20,7 +20,7 @@ def create_tables
     Integer :UserID, primary_key: true
     String :FirstName
     String :LastName
-    DateTime :Date_of_birth, null: true
+    DateTime :Date_of_birth
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
     String :hashedPassword
@@ -31,12 +31,12 @@ def create_tables
     DateTime :Created_At, default: Sequel::CURRENT_TIMESTAMP
     DateTime :Recent_Login, default: Sequel::CURRENT_TIMESTAMP
     TrueClass :Flagged, default: false
-    DateTime :Flagged_At, default: nil
+    DateTime :Flagged_At
     TrueClass :Suspended, default: false
   end
 
   DB.create_table? :Beans do
-    Integer :BeanID
+    Integer :BeanID, primary_key: true
     String :Name
     String :Type 
     String :Roast 
@@ -46,7 +46,7 @@ def create_tables
   end 
 
   DB.create_table? :Drinks do
-    Integer :DrinkID
+    Integer :DrinkID, primary_key: true
     String :Beverage
     Double :Price, size: [10, 2]
     String :Description
@@ -55,8 +55,8 @@ def create_tables
   DB.create_table? :Orders do
     primary_key :OrderID
     foreign_key :UserID, :Accounts
-    String :OrderContents    # We will store a JSON string here
-    String :OrderType       # 'In-Person' or 'Delivery'
+    String :OrderContents
+    String :OrderType
     String :PaymentMethod
     Float :totalCost
     DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
@@ -83,12 +83,9 @@ def create_tables
     Text :ChangeReason
     DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
   end
-
 end
 
 def seed_data
-  # 1. Seed Accounts
-  # Use a fixed ID for the test user so you can reference it in Orders/Tickets
   password = BCrypt::Password.create('SecretPassword123')
   
   DB[:Accounts].insert(
@@ -103,46 +100,10 @@ def seed_data
     AccountType: 'customer'
   )
 
-  # 2. Seed Beans
-  DB[:Beans].insert(
-    BeanID: 1,
-    Name: 'Ethiopian Yirgacheffe',
-    Type: 'Arabica',
-    Roast: 'Light',
-    PackWeight: 250,
-    Price: 8.50,
-    CurrentStock: 50
-  )
+  DB[:Beans].insert(BeanID: 1, Name: 'Ethiopian Yirgacheffe', Type: 'Arabica', Roast: 'Light', PackWeight: 250, Price: 8.50, CurrentStock: 50)
+  DB[:Drinks].insert(DrinkID: 1, Beverage: 'Flat White', Price: 3.50, Description: 'Smooth double shot')
 
-  # 3. Seed Drinks
-  DB[:Drinks].insert(
-    DrinkID: 1,
-    Beverage: 'Flat White',
-    Price: 3.50,
-    Description: 'Smooth double shot with microfoam'
-  )
-
-  # 4. Seed Orders
-  # Note: OrderContents is stored as a JSON string
   order_items = [{ item: "Flat White", qty: 2, price: 7.00 }].to_json
-  
-  DB[:Orders].insert(
-    UserID: 10000001,
-    OrderContents: order_items,
-    OrderType: 'In-Person',
-    PaymentMethod: 'Card',
-    totalCost: 7.00,
-    Location: 'In-Store',
-    payment_status: 'Paid'
-  )
-
-  # 5. Seed Tickets
-  DB[:Tickets].insert(
-    UserID: 10000001,
-    TicketType: 'Support',
-    TicketContent: 'Need help with my loyalty stamps.',
-    TicketResolved: false
-  )
-  
-  puts "Database seeded with test data!"
+  DB[:Orders].insert(UserID: 10000001, OrderContents: order_items, OrderType: 'In-Person', totalCost: 7.00, payment_status: 'Paid')
+  DB[:Tickets].insert(UserID: 10000001, TicketType: 'Support', TicketContent: 'Loyalty help', TicketResolved: false)
 end
