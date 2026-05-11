@@ -7,24 +7,17 @@ class ProductController < BaseController
     stamps_to_add = 0
     basket.each do |item_data|
       if item_data['type'] == 'bean'
-        puts "bean found"
         stamps_to_add += 3
       elsif item_data['type'] == 'drink'
-        puts "drink found"
         stamps_to_add += 1
       end
     end
 
     current_stamps = DB[:Accounts].where(UserID: user_id).get(:StampCount) || 0
     final_count = (current_stamps + stamps_to_add) % 10
-    puts current_stamps
-    puts stamps_to_add
-    puts final_count 
 
     DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
   end
-
-
 
   get '/coffee-beans' do
     update_Recet_Login(session[:UserID]) if session[:UserID]
