@@ -9,11 +9,9 @@ RSpec.describe 'Authentification process', type: :feature do
         visit '/log-in'
         puts current_url
         puts page.status_code
-        save_and_open_page
     end
     it 'allows the user to log in' do
       visit '/log-in'
-      save_and_open_page
       fill_in 'email', with: 'test@bbc.com'
       fill_in 'password', with: 'password123'
       click_button 'Log In'                        
