@@ -25,7 +25,7 @@ require_relative "../app"
 
 #Configure Capybara and RSpec
 require "capybara/rspec"
-Capybara.app = Sinatra::Application
+Capybara.app = CoffeeApp
 
 RSpec.configure do |config|
   config.include Capybara::DSL
