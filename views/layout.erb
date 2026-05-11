@@ -49,7 +49,6 @@
     
     <% session[:basket].each do |item_data| %>
       <% 
-        # Logic to find the right table and ID column
         table = (item_data[:type] == 'bean') ? :Beans : :Drinks
         id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
         
