@@ -11,6 +11,7 @@
                         <th>Payment Status</th>
                         <th>Reason for Change</th>
                         <th>Action</th>
+                        <th>Shipping</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +36,9 @@
                                 <button type="submit" class="audit-submit-btn">Update</button>
                             </td>
                         </form>
+                        <td>
+                            <a href="/generate-label/<%= order[:OrderID] %>" class="audit-submit-btn" style="background-color: #444; text-decoration: none; display: inline-block; text-align: center;">Print Label</a>
+                        </td>
                     </tr>
                     <% end %>
                 </tbody>

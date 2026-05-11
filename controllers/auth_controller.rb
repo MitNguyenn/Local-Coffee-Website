@@ -2,6 +2,7 @@ require_relative 'base_controller'
 
 class AuthController < BaseController
   helpers AppHelpers
+  
   get '/log-in' do
     @email = ""
     @password = ""
@@ -16,7 +17,23 @@ class AuthController < BaseController
     if user && BCrypt::Password.new(user[:hashedPassword]) == @password
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
+
+      attempt_flag_account(session[:UserID])
+      attempt_suspend_account(session[:UserID])
+
+      if user[:Suspended]
+        session.clear
+        @error = "Your account has been suspended. Please contact support."
+        return erb :login_screen
+      end
+
+      session[:UserID] = user[:UserID]
+      session[:AccountType] = user[:AccountType]
+      
+      update_Recet_Login(session[:UserID]) if session[:UserID]
+
       redirect '/'
+
     else
       @error = "Invalid email or password"
       erb :login_screen
@@ -70,6 +87,7 @@ class AuthController < BaseController
     )
 
     session[:UserID] = user.UserID
+    update_Recet_Login(session[:UserID]) if session[:UserID]
     redirect '/'
   rescue => e
     @error = "Registration failed: #{e.message}"

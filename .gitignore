@@ -12,3 +12,4 @@ Gemfile.lock
 .env
 
 db/db.sqlite3
+tempCodeRunnerFile.rb

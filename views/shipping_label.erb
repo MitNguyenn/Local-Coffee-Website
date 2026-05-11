@@ -1,0 +1,43 @@
+<html>
+<head>
+  <style>
+    .label-container {
+      width: 4in;
+      height: 6in;
+      border: 2px solid black;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .qr-code-space {
+      margin-top: 30px;
+      text-align: center;
+      border: 1px dashed #ccc;
+      height: 100px;
+    }
+    .address-section {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="label-container">
+    <h2><%= @courier %> Tracked</h2>
+    <hr>
+    <div class="address-section">
+      <strong>Deliver To:</strong><br>
+      <%= @account[:FirstName] %> <%= @account[:LastName] %><br>
+      <%= @account[:Address] %><br>
+      <%= @account[:Postcode] %>
+    </div>
+    
+    <div class="qr-code-space">
+      <%=@qrcode_svg%>
+      </div>
+
+    <div style="margin-top: 20px;">
+      <strong>Tracking ID:</strong> <%= @tracking_id %><br>
+      <strong>Order Ref:</strong> <%= @order[:OrderID] %>
+    </div>
+  </div>
+</body>
+</html>

@@ -4,18 +4,14 @@ require 'bcrypt'
 require 'json'
 require 'date'
 
-# Connect to the database
 DB = Sequel.sqlite("db/db.sqlite3")
 
-# Clear existing data in correct order to respect foreign keys
-[:Tickets, :Orders, :Beans, :Drinks, :Accounts].each do |table| 
+DB.tables.each do | table |
   DB[table].delete if DB.table_exists?(table)
 end
 
 password_hash = BCrypt::Password.create("password123")
 
-# --- 1. ACCOUNTS ---
-# Staff Roles: administrator, barista, manager
 staff_data = [
   ["John", "Admin", "admin@cafe.com", "administrator"],
   ["Alice", "Barista", "alice@cafe.com", "barista"],
@@ -82,52 +78,130 @@ DB[:Accounts].insert(
   AccountType: "administrator"
 )
 
-# --- BEANS ---
-# bean = [ID, Name, Type, Roast, Wight, Price, Stock]
+puts "Seeding beans..."
 bean_list = [
-  [1, "Ethiopian Breeze", "Yirgacheffe", "Light", 1000, 19.50, 20],
-  [2, "Arabic Beans", "Mocha", "Medium", 1000, 24.99, 15],
-  [3, "Amazonian Night", "Santos", "Dark", 1000, 18.00, 10],
-  [4, "Maya Sunrise", "Antigua", "Medium", 1000, 17.25, 30],
-  [5, "Hanoi Fuel", "Robusta", "Dark", 1000, 23.20, 50]
+  [2, "Casablanca",   8.20, 15],
+  [3, "Nether Edge",  6.35, 10],
+  [4, "Damascus",     4.75, 30],
 ]
 
-bean_list.each do |id, name, type, roast, weight, price, stock|
+bean_list.each do |id, name, price, stock|
+  puts "inserting: " + name + " " + price + " " + stock
   DB[:Beans].insert(
     BeanID: id,
     Name: name,
-    Type: type, 
-    Roast: roast, 
-    PackWeight: weight,
     Price: price,
     CurrentStock: stock
   )
 end
-# --- ---
+puts "Done"
 
-# --- Drinks ---
-drinks_list = [
-  [1, "Latte", 4.40, ""],
-  [2, "Americano", 3.80, ""], 
-  [3, "Cappuccino", 4.40, ""], 
-  [4, "Flat white", 4.35, ""],
-  [5, "Cortado", 3.70, ""]
-]
+puts "Seeding roasts..."
+bean_roasts = [ "Light", "Medium", "Dark"]
 
-puts "Seeding Drinks..."
-drinks_list.each do |drink|
-  DB[:Drinks].insert(
-    DrinkID: drink[0],
-    Beverage: drink[1],
-    Price: drink[2],
-    Description: drink[3]
+bean_roasts.each do | roast |
+  puts "inserting: " + roast
+  DB[:BeanRoasts].insert(
+    Roast: roast
   )
 end
-# --- ---
+puts "Done"
 
-# --- HELPERS ---
-MENU_ITEMS = ["Flat White", "Latte", "Cappuccino", "Americano", "Croissant", "Muffin", "Lemon Cake"]
-bean_types = DB[:Beans].map(:Type)
+puts "Seeding bean origin..."
+bean_origins = ["Arabic", "Brazilian", "Ethiopian"]
+
+bean_origins.each do | origin |
+  puts "inserting: " + origin
+  DB[:BeanOrigins].insert(
+    Origin: origin
+  )
+end
+puts "Done"
+
+puts "Seeding drinks..."
+drinks = [
+  [1, "Latte", 4.40, "Smooth espresso with steamed milk"],
+  [2, "Americano", 3.8, "A rich, double-shot of espresso diluted with hot water for a smooth, bold finish."], 
+  [3, "Cappuccino", 4.4, "Equal parts espresso, steamed milk, and a thick layer of silky foam, topped with a dusting of cocoa."], 
+  [4, "Flat white", 4.35, "Velvety micro-foam poured over a double-shot of ristretto for a creamy yet coffee-forward experience."],
+  [5, "Cortado", 3.7, "A perfectly balanced 1:1 ratio of espresso and warm milk to reduce acidity without the volume of a latte."]
+]
+
+drinks.each do |id, bev, price, description|
+  puts "inserting: " + bev + " " + price + " " + description
+  DB[:Drinks].insert(
+    DrinkID: id,
+    Beverage: bev,
+    Price: price,
+    Description: description
+  )
+end
+puts "Done"
+
+puts "Seeding drink-size price markups..."
+drink_size_price_markups = [
+  ["Regular", 1.0],
+  ["Large",   1.2]
+]
+
+drink_size_price_markups.each do | size, markup | 
+  puts "inserting: " + size + " " + markup
+  DB[:DrinkSizePriceMarkups].insert(
+    Size: size,
+    Markup, markup
+  )
+end
+puts "Done"
+
+puts "Seeding milk..."
+milk = [
+  ["Whole", 0.2],
+  ["Oat",   0.3],
+  ["Soy"    0.1]
+]
+
+milk.each do | type, price |
+  puts "inserting: " + type + " " + price
+  DB[:MilkTypes].insert(
+    Type: type, 
+    Price: price
+  )
+end
+puts "Done"
+
+complaint_samples = [
+  "My coffee was cold.",
+  "The delivery driver couldn't find my flat.",
+  "I haven't received my loyalty stamps for my last visit.",
+  "The bag of beans I bought had a hole in it.",
+  "Payment failed but money left my account."
+]
+
+10.times do
+  DB[:Tickets].insert(
+    UserID: customer_ids.sample,
+    TicketType: ["Complaint", "Technical", "Query"].sample,
+    TicketContent: complaint_samples.sample,
+    TicketResolved: [true, false].sample
+  )
+end
+
+
+10.times do
+  order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]
+  DB[:Audits].insert(
+    orderID: order_id,
+    BeforeStatus: ["Pending", "Paid", "Unpaid"].sample,
+    AfterStatus: ["Pending", "Paid", "Unpaid"].sample,
+    ChangeReason: ["Customer requested change", "Payment issue", "Admin correction"].sample
+  )
+end
+
+puts DB.tables.count + " tables populated:"
+DB.tables.each do | table | 
+  printf(" %s ", table)
+end
+printf("\n")
 
 # def days_ago(n)
 #   Time.now - (n * 86400) - rand(3600..7200)
@@ -148,7 +222,7 @@ bean_types = DB[:Beans].map(:Type)
 # end
 
 # # --- 4. ORDERS ---
-customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
+# customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 # 40.times do |i|
 #   # First 5 orders are "Recent/Live", the rest are historical
@@ -166,51 +240,3 @@ customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 #     IsCompleted: is_past
 #   )
 # end
-
-DB[:Orders].insert(
-  OrderID: 1234,
-  UserID: 38452738,
-  OrderType: "Collection",
-  PaymentMethod: "Cash",
-  TotalCost: 13.20
-)
-
-# 3 lattes to pickup from the store
-DB[:OrderItems].insert(
-  OrderID: 1234,
-  ItemType: "Drink",
-  ItemID: 1,
-  Quantity: 3
-)
-
-# --- 5. TICKETS ---
-complaint_samples = [
-  "My coffee was cold.",
-  "The delivery driver couldn't find my flat.",
-  "I haven't received my loyalty stamps for my last visit.",
-  "The bag of beans I bought had a hole in it.",
-  "Payment failed but money left my account."
-]
-
-10.times do
-  DB[:Tickets].insert(
-    UserID: customer_ids.sample,
-    TicketType: ["Complaint", "Technical", "Query"].sample,
-    TicketContent: complaint_samples.sample,
-    TicketResolved: [true, false].sample
-  )
-end
-
-# --- 6. AUDITS ---
-
-10.times do
-  order_id = DB[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first[:OrderID]
-  DB[:Audits].insert(
-    orderID: order_id,
-    BeforeStatus: ["Pending", "Paid", "Unpaid"].sample,
-    AfterStatus: ["Pending", "Paid", "Unpaid"].sample,
-    ChangeReason: ["Customer requested change", "Payment issue", "Admin correction"].sample
-  )
-end
-
-puts "Seed complete: 6 tables populated (Accounts, Beans, Drinks, Orders, Tickets, Audits)."
