@@ -13,11 +13,11 @@ RSpec.describe "Admin Management", type: :feature do
   describe "Account Management Table" do
     it "displays all seeded accounts with correct IDs" do
       visit "/manage-accounts"
-        expect(page).to have_content("#10000001")
-        expect(page).to have_content("John Doe")
-        expect(page).to have_content("customer")
-      end
+      expect(page).to have_content("#10000001")
+      expect(page).to have_content("John Doe")
+      expect(page).to have_content("customer")
     end
+  end
 
     it "has a functional search input field" do
       visit "/manage-accounts"
