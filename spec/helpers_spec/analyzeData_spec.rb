@@ -1,6 +1,6 @@
 require_relative "../spec_helper"
 
-RSpec.describe "AnalyzeData" do
+RSpec.describe "AnalyzeData" type: :helper do
   include AnalyzeData
 
   describe "#analyze_sales_data" do

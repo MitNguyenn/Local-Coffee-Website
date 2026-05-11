@@ -3,10 +3,12 @@ class Ticket < Sequel::Model(:Tickets)
 
   def validate
     super
-    errors.add(:ticketContent, "cannot be blank") if !ticketContent || ticketContent.empty?
+    # Use the capitalized name from your schema
+    errors.add(:TicketContent, "cannot be blank") if !TicketContent || TicketContent.strip.empty?
   end
 
   def resolved?
-    self.ticketResolved == true
+    # Use the capitalized name from your schema
+    self.TicketResolved == true
   end
 end
