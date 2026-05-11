@@ -21,6 +21,8 @@ class AuthController < BaseController
       attempt_flag_account(session[:UserID])
       attempt_suspend_account(session[:UserID])
 
+      user = DB[:Accounts].where(UserID: user[:UserID]).first
+
       if user[:Suspended]
         session.clear
         @error = "Your account has been suspended. Please contact support."
