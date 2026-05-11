@@ -16,4 +16,4 @@ tempCodeRunnerFile.rb
 
 spec/_coverage/
 coverage/
-.html
+*.html

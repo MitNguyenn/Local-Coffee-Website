@@ -21,7 +21,6 @@ def create_tables
     Integer :UserID, primary_key: true
     String :first_name
     String :last_name
-    DateTime :Date_of_birth
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
     String :hashed_password, null: false
@@ -76,7 +75,38 @@ def seed_data
   # Use cost: 4 for speed in tests
   pass = BCrypt::Password.create('SecretPassword123', cost: 4)
 
-  # 1. Accounts
+  # 1. Accounts at all levels
+  # Administrator
+  DB[:Accounts].insert(
+    UserID: 99999999,
+    first_name: 'Admin',
+    last_name: 'User',
+    email: 'admin@coffee.com',
+    hashed_password: pass,
+    AccountType: 'administrator'
+  )
+
+  # Manager
+  DB[:Accounts].insert(
+    UserID: 88888888,
+    first_name: 'Manager',
+    last_name: 'User',
+    email: 'manager@coffee.com',
+    hashed_password: pass,
+    AccountType: 'manager'
+  )
+
+  # Barista
+  DB[:Accounts].insert(
+    UserID: 77777777,
+    first_name: 'Barista',
+    last_name: 'User',
+    email: 'barista@coffee.com',
+    hashed_password: pass,
+    AccountType: 'barista'
+  )
+
+  # Customer
   DB[:Accounts].insert(
     UserID: 10000001,
     first_name: 'John',
@@ -87,15 +117,6 @@ def seed_data
     Postcode: 'SW1A1AA',
     Address: '10 Ruby Lane',
     AccountType: 'customer'
-  )
-
-  DB[:Accounts].insert(
-    UserID: 99999999,
-    first_name: 'Admin',
-    last_name: 'User',
-    email: 'admin@coffee.com',
-    hashed_password: pass,
-    AccountType: 'admin'
   )
 
   # 2. Beans
@@ -117,7 +138,7 @@ def seed_data
     Description: 'Smooth double shot'
   )
 
-  # 4. Orders (Capturing ID for Audits)
+  # 4. Orders
   order_items = [{ item: "Flat White", qty: 2, price: 7.00 }].to_json
   order_id = DB[:Orders].insert(
     UserID: 10000001,
@@ -126,7 +147,7 @@ def seed_data
     totalCost: 7.00,
     payment_status: 'Paid',
     IsCompleted: true,
-    CreatedAt: Time.now - 86400 # 1 day ago
+    CreatedAt: Time.now - 86400
   )
 
   # 5. Tickets
@@ -147,4 +168,3 @@ def seed_data
     CreatedAt: Time.now
   )
 end
-
