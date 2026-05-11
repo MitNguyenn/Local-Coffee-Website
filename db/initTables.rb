@@ -8,12 +8,11 @@ DB.drop_table?(:Tickets, :Orders, :Beans, :Accounts)
 
 DB.create_table? :Accounts do
   Integer :UserID, primary_key: true
-  String :FirstName
-  String :LastName
-  DateTime :Date_of_birth, null: true
+  String :first_name
+  String :last_name
   Integer :StampCount, default: 0
   String :email, unique: true, null: false
-  String :hashedPassword
+  String :hashed_password
   String :PhoneNumber, size: 11
   String :Postcode, size: 7
   String :Address

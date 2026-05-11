@@ -12,6 +12,10 @@
 
     <main class="login-container">
   <div class="login-card">
+  <% if @error %>
+      <p class="error-message"><%=@error%></p>
+    <% end %> 
+    
     <h2>Welcome Back</h2>
     <form method="POST" action="/log-in">
       <div class="input-group">
@@ -25,7 +29,9 @@
       </div>
 
       <button type="submit" class="login-btn">Log In</button>
+      
     </form>
+
 
     <div class="extra-links">
       <a href="/forgot">Forgot password?</a>

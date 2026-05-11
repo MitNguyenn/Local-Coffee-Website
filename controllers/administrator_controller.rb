@@ -14,19 +14,19 @@ class AdminController < BaseController
   end
 
   get '/staff-portal' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     erb :staff_portal
   end
   
   get '/user-tickets' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     @live_tickets = DB[:Tickets].where(TicketResolved: false).all
     @past_tickets = DB[:Tickets].where(TicketResolved: true).all
     erb :ticket_management
   end
 
   get '/manage-accounts' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     @accounts = DB[:Accounts].all
     erb :account_management
   end
@@ -40,8 +40,8 @@ class AdminController < BaseController
     resetPassword = params[:reset_password] == "on"
     
     DB[:Accounts].where(UserID: params[:id]).update(
-      FirstName: params[:FirstName],
-      LastName: params[:LastName],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
       email: params[:email],
       PhoneNumber: params[:PhoneNumber],
       Postcode: params[:Postcode],
@@ -49,14 +49,14 @@ class AdminController < BaseController
     )
     if resetPassword
       DB[:Accounts].where(UserID: params[:id]).update(
-        hashedPassword: BCrypt::Password.create("password123").to_s
+        hashed_password: BCrypt::Password.create("password123").to_s
       )
     end
     redirect '/manage-accounts'
   end
 
   get '/flagged-accounts' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     @flagged_accounts = DB[:Accounts].where(Flagged: true).all
     erb :flagged_accounts
   end
@@ -67,7 +67,7 @@ class AdminController < BaseController
   end
 
   get '/metrics' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     @metrics = analyze_sales_data
     erb :metrics_page
   end

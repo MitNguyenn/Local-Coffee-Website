@@ -23,7 +23,7 @@
         <% @accounts.each do |account| %>
           <tr class="acc-view__row">
             <td class="acc-view__td">#<%= account[:UserID] %></td>
-            <td class="acc-view__td"><%= account[:FirstName] %> <%= account[:LastName] %></td>
+            <td class="acc-view__td"><%= account[:first_name] %> <%= account[:last_name] %></td>
             <td class="acc-view__td"><%= account[:email] %></td>
             <td class="acc-view__td"><%= account[:PhoneNumber] %></td>
             <td class="acc-view__td"><%= account[:Postcode] %></td>
