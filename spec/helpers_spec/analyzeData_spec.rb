@@ -3,12 +3,6 @@ require_relative "../spec_helper"
 RSpec.describe "AnalyzeData" do
   include AnalyzeData
 
-  # IMPORTANT: Clear the database before each test to ensure fresh results
-  before do
-    DB[:Orders].delete
-    DB[:Accounts].delete
-  end
-
   describe "#analyze_sales_data" do
     it "returns a hash of sales metrics" do
       user_id = 101

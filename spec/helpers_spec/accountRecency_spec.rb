@@ -1,68 +1,52 @@
 require 'spec_helper'
 
 RSpec.describe AccountRecency do
-  # Helper to clean the DB before each test to prevent ID collisions
-  before do
-    DB[:Accounts].delete
-  end
+  include described_class
+
+  # We use the UserID 10000001 seeded in spec_functions.rb
+  let(:user_id) { 10000001 }
 
   describe "#check_account_recency" do
     it "flags accounts that haven't logged in for 30 days" do
-      # Setup dummy account with all required database fields
-      DB[:Accounts].insert(
-        UserID: 1,
-        email: 'user1@example.com',
-        first_name: 'Test',
-        last_name: 'User',
-        hashed_password: 'password123456', # Meets 12 char requirement
+      # Modify seeded user to be old
+      DB[:Accounts].where(UserID: user_id).update(
         Recent_Login: Time.now - (31 * 24 * 60 * 60),
-        Flagged: false,
-        Flagged_At: nil,
-        Suspended: false
+        Flagged: false
       )
 
-      attempt_flag_account(1)
+      attempt_flag_account(user_id)
 
-      account = DB[:Accounts].where(UserID: 1).first
+      account = DB[:Accounts].where(UserID: user_id).first
       expect(account[:Flagged]).to eq(true)
       expect(account[:Flagged_At]).not_to be_nil
     end
 
     it "suspends accounts that have been flagged for more than 5 days" do
-      # Account A: Flagged 6 days ago (Should be suspended)
-      DB[:Accounts].insert(
-        UserID: 2,
-        email: 'user2@example.com',
-        first_name: 'Old',
-        last_name: 'Flag',
-        password: 'password123456',
-        Recent_Login: Time.now - (31 * 24 * 60 * 60),
+      # Update seeded user to look like they've been flagged for 6 days
+      DB[:Accounts].where(UserID: user_id).update(
         Flagged: true,
         Flagged_At: Time.now - (6 * 24 * 60 * 60),
         Suspended: false
       )
 
-      # Account B: Flagged 4 days ago (Should NOT be suspended)
-      DB[:Accounts].insert(
-        UserID: 3,
-        email: 'user3@example.com',
-        first_name: 'New',
-        last_name: 'Flag',
-        password: 'password123456',
-        Recent_Login: Time.now - (31 * 24 * 60 * 60),
+      attempt_suspend_account(user_id)
+
+      account = DB[:Accounts].where(UserID: user_id).first
+      expect(account[:Suspended]).to eq(true)
+    end
+
+    it "does not suspend accounts flagged for only 4 days" do
+      # Update seeded user to look like they've been flagged for only 4 days
+      DB[:Accounts].where(UserID: user_id).update(
         Flagged: true,
         Flagged_At: Time.now - (4 * 24 * 60 * 60),
         Suspended: false
       )
 
-      attempt_suspend_account(2)
-      attempt_suspend_account(3)
+      attempt_suspend_account(user_id)
 
-      account2 = DB[:Accounts].where(UserID: 2).first
-      expect(account2[:Suspended]).to eq(true)
-
-      account3 = DB[:Accounts].where(UserID: 3).first
-      expect(account3[:Suspended]).to eq(false)
+      account = DB[:Accounts].where(UserID: user_id).first
+      expect(account[:Suspended]).to eq(false)
     end
   end
 end

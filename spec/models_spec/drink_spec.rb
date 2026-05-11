@@ -1,3 +1,3 @@
-RSpec.describe Drink, do
-  
+RSpec.describe Drink do
+  puts "idk man"
 end
