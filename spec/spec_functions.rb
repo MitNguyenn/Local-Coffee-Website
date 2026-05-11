@@ -21,7 +21,6 @@ def create_tables
     Integer :UserID, primary_key: true
     String :first_name
     String :last_name
-    DateTime :Date_of_birth
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
     String :hashed_password, null: false

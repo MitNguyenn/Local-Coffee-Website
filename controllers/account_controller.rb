@@ -14,12 +14,10 @@ class AccountController < BaseController
   end
 
   post '/update-account' do
-    dob = params[:Date_of_birth] ? DateTime.parse(params[:Date_of_birth]) : nil
     DB[:Accounts].where(UserID: session[:UserID]).update(
       first_name: params[:first_name],
       last_name: params[:last_name],
       Postcode: params[:Postcode],
-      Date_of_birth: dob
     )
     redirect '/'
   end
