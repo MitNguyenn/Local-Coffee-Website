@@ -1,6 +1,6 @@
 require 'bcrypt'
 require 'json'
-DB = Sequel.connect("sqlite://db/db.sqlite")
+DB = Sequel.connect("sqlite://db/db.sqlite3")
 
 def spec_before
   #Wipe every table in the database

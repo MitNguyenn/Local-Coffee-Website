@@ -11,6 +11,14 @@ end
 require 'sequel'
 DB = Sequel.connect("sqlite://db/db.sqlite3") 
 
+#load helpers
+
+require_relative "../helpers/validation"
+require_relative "../helpers/passwordCheck"
+require_relative "../helpers/analyzeData"
+require_relative "../helpers/myOrders"
+require_relative "../helpers/accountRecency"
+
 #Now load the App (which loads the models)
 ENV["APP_ENV"] = "test"
 require_relative "../app"

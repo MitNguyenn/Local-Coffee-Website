@@ -2,8 +2,6 @@ require 'spec_helper'
 require 'bcrypt'
 require 'sequel'
 
-DB = Sequel.connect("sqlite://db.sqlite")
-
 RSpec.describe 'Registration Process', type: :feature do
   
   it 'allows a new user to register successfully' do
