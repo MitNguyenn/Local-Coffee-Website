@@ -2,28 +2,29 @@ require 'bcrypt'
 require 'json'
 
 def spec_before
+  # 1. Force clean slate by dropping everything
   DB.run("PRAGMA foreign_keys = OFF")
-
-  DB.tables.each do |table|
-    next if table == :sqlite_sequence
-    DB[table].delete
+  [:Audits, :Tickets, :Orders, :Drinks, :Beans, :Accounts].each do |table|
+    DB.drop_table?(table)
   end
-
   DB.run("PRAGMA foreign_keys = ON")
 
+  # 2. Re-create the schema
   create_tables
+  
+  # 3. Insert global seeds
   seed_data
 end
 
 def create_tables
-  DB.create_table? :Accounts do
+  DB.create_table :Accounts do
     Integer :UserID, primary_key: true
     String :first_name
     String :last_name
     DateTime :Date_of_birth
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
-    String :hashedPassword
+    String :hashedPassword, null: false
     String :PhoneNumber, size: 11
     String :Postcode, size: 7
     String :Address
@@ -35,75 +36,47 @@ def create_tables
     TrueClass :Suspended, default: false
   end
 
-  DB.create_table? :Beans do
+  DB.create_table :Beans do
     Integer :BeanID, primary_key: true
-    String :Name
-    String :Type 
-    String :Roast 
-    Integer :PackWeight
-    Double :Price
-    Integer :CurrentStock
+    String :Name; String :Type; String :Roast; Integer :PackWeight
+    Double :Price; Integer :CurrentStock
   end 
 
-  DB.create_table? :Drinks do
+  DB.create_table :Drinks do
     Integer :DrinkID, primary_key: true
-    String :Beverage
-    Double :Price, size: [10, 2]
-    String :Description
+    String :Beverage; Double :Price; String :Description
   end
 
-  DB.create_table? :Orders do
+  DB.create_table :Orders do
     primary_key :OrderID
-    foreign_key :UserID, :Accounts
-    String :OrderContents
-    String :OrderType
-    String :PaymentMethod
-    Float :totalCost
-    DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
-    String :Location, default: 'In-Store'
-    TrueClass :IsDelivered, default: false
-    TrueClass :IsCompleted, default: false
-    String :payment_status, default: 'Pending'
+    foreign_key :UserID, :Accounts, on_delete: :cascade
+    String :OrderContents; String :OrderType; String :PaymentMethod
+    Float :totalCost; DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+    String :Location, default: 'In-Store'; TrueClass :IsDelivered, default: false
+    TrueClass :IsCompleted, default: false; String :payment_status, default: 'Pending'
   end
 
-  DB.create_table? :Tickets do
+  DB.create_table :Tickets do
     primary_key :ticketID
-    foreign_key :UserID, :Accounts
-    String :TicketType
-    String :TicketContent
+    foreign_key :UserID, :Accounts, on_delete: :cascade
+    String :TicketType; String :TicketContent
     FalseClass :TicketResolved, default: false
     DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
   end
 
-  DB.create_table? :Audits do
+  DB.create_table :Audits do
     primary_key :AuditID
-    foreign_key :orderID, :Orders
-    String :BeforeStatus
-    String :AfterStatus
-    Text :ChangeReason
+    foreign_key :orderID, :Orders, on_delete: :cascade
+    String :BeforeStatus; String :AfterStatus; Text :ChangeReason
     DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
   end
 end
 
 def seed_data
-  password = BCrypt::Password.create('SecretPassword123')
+  # Use cost: 4 for speed in tests
+  pass = BCrypt::Password.create('SecretPassword123', cost: 4)
   
-  DB[:Accounts].insert(
-    UserID: 10000001,
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john@example.com',
-    hashedPassword: password,
-    PhoneNumber: '07123456789',
-    Postcode: 'SW1A1AA',
-    Address: '10 Ruby Lane',
-    AccountType: 'customer'
-  )
-
-  DB[:Beans].insert(BeanID: 1, Name: 'Ethiopian Yirgacheffe', Type: 'Arabica', Roast: 'Light', PackWeight: 250, Price: 8.50, CurrentStock: 50)
-  DB[:Drinks].insert(DrinkID: 1, Beverage: 'Flat White', Price: 3.50, Description: 'Smooth double shot')
-
-  order_items = [{ item: "Flat White", qty: 2, price: 7.00 }].to_json
-  DB[:Orders].insert(UserID: 10000001, OrderContents: order_items, OrderType: 'In-Person', totalCost: 7.00, payment_status: 'Paid')
-  DB[:Tickets].insert(UserID: 10000001, TicketType: 'Support', TicketContent: 'Loyalty help', TicketResolved: false)
+  DB[:Accounts].insert(UserID: 10000001, first_name: 'John', email: 'john@example.com', hashedPassword: pass)
+  DB[:Beans].insert(BeanID: 1, Name: 'Ethiopian', Price: 8.50, CurrentStock: 50)
+  DB[:Drinks].insert(DrinkID: 1, Beverage: 'Flat White', Price: 3.50)
 end
