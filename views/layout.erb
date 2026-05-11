@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Badly Brewed Coffee</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="icon" type="image/x-icon" href="coffee.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Datatype:wght@100..900&family=Doto:wght@100..900&family=Lilita+One&display=swap" rel="stylesheet">
-  </head>
 
-  <body>
-    <nav class="navbar">
-      <div class="nav-left-group">
-  <div class="home-btn">
-    <a href="/"><img src="/home.png" width="40" height="40"></a>
-  </div>
+<head>
+  <meta charset="UTF-8">
+  <title>Badly Brewed Coffee</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/x-icon" href="coffee.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Datatype:wght@100..900&family=Doto:wght@100..900&family=Lilita+One&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-left-group">
+      <div class="home-btn">
+        <a href="/"><img src="/home.png" width="40" height="40"></a>
+      </div>
 
       <div class="dropdown">
         <div onclick="toggleDropdown(event)" class="menu-icon">☰</div>
-        
+
         <div id="myDropdown" class="dropdown-content">
           <a href="/">Home</a>
           <a href="/coffee-beans">Coffee Beans</a>
@@ -30,166 +33,274 @@
         </div>
       </div>
     </div>
-      <div class="nav-right">
+    <div class="nav-right">
 
-        <!-- Cart Button -->
-        <div class="dropdown">
-          <div onclick="toggleDropdownCart(event)" class="cart">
-            <img src="/cart.png" alt="cart-icon" width="60" height="60">
-            <% if session[:basket] && session[:basket].any? %>
-              <span class="cart-count" id="basket-count"><%= session[:basket].length %></span>
-            <% end %>
-          </div>
-
-          <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
-  <div class="cart-header">Your Basket</div>
- <div class="cart-items-list">
-  <% if session[:basket] && session[:basket].any? %>
-    <% basket_total = 0.0 %>
-    
-    <% session[:basket].each do |item_data| %>
-      <% 
-        # Logic to find the right table and ID column
-        table = (item_data[:type] == 'bean') ? :Beans : :Drinks
-        id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
-        
-        item = DB[table].where(id_col => item_data[:id]).first
-      %>
-      
-      <% if item %>
-        <% basket_total += item[:Price].to_f %>
-        <div class="cart-item">
-          <img src="/<%= item_data[:type] %>s/<%= item_data[:id] %>.png" 
-               onerror="this.src='/beans/beans_img_not_found.png'" 
-               width="30" height="30">
-          
-          <div class="cart-item-info">
-            <span class="cart-item-name">
-              <%= item[:Name] || item[:Beverage] %>
+      <!-- Cart Button -->
+      <div class="dropdown">
+        <div onclick="toggleDropdownCart(event)" class="cart">
+          <img src="/cart.png" alt="cart-icon" width="60" height="60">
+          <% if session[:basket] && session[:basket].any? %>
+            <span class="cart-count" id="basket-count">
+              <%= session[:basket].length %>
             </span>
-            <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price]) %></span>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-
-    <div class="cart-total-line">
-      <strong>Total:</strong>
-      <strong>£<%= sprintf('%.2f', basket_total) %></strong>
-    </div>
-    
-    <hr>
-    <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
-  <% else %>
-    <p class="empty-msg">Your basket is empty!</p>
-  <% end %>
-</div>
-</div>
-        </div>
-
-        <!-- Account Button -->
-        <div class = "dropdown">
-          <div onclick="toggleDropdownUser(event)" class="user-icon">
-            <img src="/msn_profile.png" width="60" height="60">
-          </div>
-          <div id="userDropdown" class="user-dropdown-content">
-            <% if !logged_in? %>
-              <a href="/log-in">Log in</a>
             <% end %>
-            
-            <% if logged_in? %>
-              <a href="/account-settings">Account settings</a>
-              <a href="/loyalty-card">Loyalty Card</a>
-              <a href="/my-orders">My Orders</a>
-              <a href="/log-out">Log out</a>
+        </div>
+
+        <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
+          <div class="cart-header">Your Basket</div>
+          <div class="cart-items-list">
+            <% if session[:basket] && session[:basket].any? %>
+              <% basket_total=0.0 %>
+              <% session[:basket].each do |item_data| %>
+                <% # Logic to find the right table and ID column table=(item_data[:type]=='bean' ) ? :Beans : :Drinks
+                  id_col=(item_data[:type]=='bean' ) ? :BeanID : :DrinkID item=DB[table].where(id_col=>
+                  item_data[:id]).first %>
+
+                <% if item %>
+                  <% basket_total +=item[:Price].to_f %>
+                  <div class="cart-item">
+                    <img src="/<%= item_data[:type] %>s/<%= item_data[:id] %>.png"
+                      onerror="this.src='/beans/beans_img_not_found.png'" width="30" height="30">
+
+                    <div class="cart-item-info">
+                      <span class="cart-item-name">
+                        <%= item[:Name] || item[:Beverage] %>
+                      </span>
+                      <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price]) %></span>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+
+              <div class="cart-total-line">
+                <strong>Total:</strong>
+                <strong>£<%= sprintf('%.2f', basket_total) %></strong>
+              </div>
+              <hr>
+              <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+            <% else %>
+              <p class="empty-msg">Your basket is empty!</p>
             <% end %>
           </div>
         </div>
       </div>
-    </nav>
 
-    <main>
-      <%= yield %>
-    </main>
+      <!-- Account Button -->
+      <div class="dropdown">
+        <div onclick="toggleDropdownUser(event)" class="user-icon">
+          <img src="/msn_profile.png" width="60" height="60">
+        </div>
+        <div id="userDropdown" class="user-dropdown-content">
+          <% if !logged_in? %>
+            <a href="/log-in">Log in</a>
+          <% end %>
 
-    <footer>
-      <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
-    </footer>
+          <% if logged_in? %>
+            <a href="/account-settings">Account settings</a>
+            <a href="/loyalty-card">Loyalty Card</a>
+            <a href="/my-orders">My Orders</a>
+            <a href="/log-out">Log out</a>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-    <script>
-      function closeAllDropdowns() {
-        const dropdowns = [
-          document.getElementById("myDropdown"),
-          document.getElementById("cartDropdown"),
-          document.getElementById("userDropdown")
-        ];
-        
-        dropdowns.forEach(menu => {
-          if (menu) menu.classList.remove("show");
-        });
-      }
+  <main>
+    <%= yield %>
+  </main>
 
-      function toggleDropdown(event) {
-  event.preventDefault(); 
-  event.stopPropagation(); 
-  
-  const menu = document.getElementById("myDropdown");
-  const isShowing = menu.classList.contains("show");
-  
-  closeAllDropdowns(); 
-  
-  if (!isShowing) {
-    menu.classList.add("show");
-  }
-}
+  <footer>
+    <p>&copy; 2026 Badly Brewed Coffee - Team 35</p>
+  </footer>
 
-      function toggleDropdownCart(event) {
-        event.stopPropagation();
-        const menu = document.getElementById("cartDropdown");
-        const isShowing = menu.classList.contains("show");
-        closeAllDropdowns();
-        if (!isShowing) menu.classList.add("show");
-      }
+  <script>
+    function closeAllDropdowns() {
+      const dropdowns = [
+        document.getElementById("myDropdown"),
+        document.getElementById("cartDropdown"),
+        document.getElementById("userDropdown")
+      ];
 
-      function toggleDropdownUser(event) {
-        event.stopPropagation();
-        const menu = document.getElementById("userDropdown");
-        const isShowing = menu.classList.contains("show");
-        closeAllDropdowns();
-        if (!isShowing) menu.classList.add("show");
-      }
-
-      window.onclick = function(event) {
-        closeAllDropdowns();
-      }
-
-function updateBasketUI(newCount) {
-  let countSpan = document.getElementById("basket-count");
-  if (!countSpan) {
-    const cartDiv = document.querySelector(".cart");
-    countSpan = document.createElement("span");
-    countSpan.id = "basket-count";
-    countSpan.className = "cart-count";
-    cartDiv.appendChild(countSpan);
-  }
-  countSpan.innerText = newCount;
-}
-
-document.querySelectorAll('form[action="/add-to-basket"]').forEach(form => {
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const response = await fetch('/add-to-basket', {
-      method: 'POST',
-      body: new URLSearchParams(formData)
-    });
-    
-    if (response.ok) {
-       // Refresh just the count for now
-       location.reload(); // Simplest way to refresh the dropdown content too
+      dropdowns.forEach(menu => {
+        if (menu) menu.classList.remove("show");
+      });
     }
-  });
-});
-    </script>
-  </body>
+
+    function toggleDropdown(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const menu = document.getElementById("myDropdown");
+      const isShowing = menu.classList.contains("show");
+
+      closeAllDropdowns();
+
+      if (!isShowing) {
+        menu.classList.add("show");
+      }
+    }
+
+    function toggleDropdownCart(event) {
+      event.stopPropagation();
+      const menu = document.getElementById("cartDropdown");
+      const isShowing = menu.classList.contains("show");
+      closeAllDropdowns();
+      if (!isShowing) menu.classList.add("show");
+    }
+
+    function toggleDropdownUser(event) {
+      event.stopPropagation();
+      const menu = document.getElementById("userDropdown");
+      const isShowing = menu.classList.contains("show");
+      closeAllDropdowns();
+      if (!isShowing) menu.classList.add("show");
+    }
+
+    window.onclick = function (event) {
+      closeAllDropdowns();
+    }
+
+    function updateBasketUI(newCount) {
+      let countSpan = document.getElementById("basket-count");
+      if (!countSpan) {
+        const cartDiv = document.querySelector(".cart");
+        countSpan = document.createElement("span");
+        countSpan.id = "basket-count";
+        countSpan.className = "cart-count";
+        cartDiv.appendChild(countSpan);
+      }
+      countSpan.innerText = newCount;
+    }
+
+    document.querySelectorAll('form[action="/add-to-basket"]').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch('/add-to-basket', {
+          method: 'POST',
+          body: new URLSearchParams(formData)
+        });
+
+        if (response.ok) {
+          // Refresh just the count for now
+          location.reload(); // Simplest way to refresh the dropdown content too
+        }
+      });
+    });
+
+    function eventHandlerBeanPage() {
+        const container = document.getElementById('item-container');
+
+        container.addEventListener('click', (event) => {
+            const target = event.target;
+            const card = target.closest('.product-card');
+
+            if (!card) return; 
+
+            const beanId = card.dataset.beanId;
+
+            if (target.classList.contains('add-to-basket-button')) {
+                addBeanToBasket(beanId);
+                return;
+            }
+
+            if (target.classList.contains('buy-button')) {
+                buyBeanNow(beanId());
+                return;
+            }
+
+            if (card) {
+              window.location.href = `/product/?type=bean&id=${beanId}`;
+            }
+        });
+    }
+
+    function eventHandlerDrinkPage() {
+      const container = document.getElementById('item-container');
+
+      container.addEventListener('click', (event) => {
+        const target = event.target;
+        const card = target.closest('.product-card');
+        
+        if (!card) return;
+
+        const drinkId = card.dataset.drinkId;
+
+        if (target.classList.contains('add-to-basket-button')) {
+            addDrinkToBasket(drinkId)
+            return;
+        }
+
+        if (target.classList.contains('buy-button')) {
+            buyDrinkNow(drinkId);
+            return;
+        }
+
+        if (card) {
+            window.location.href = `/product/?type=drink&id=${drinkId}`;
+        }
+      });
+    }
+
+    function buyBeanNow(beanId) {
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${beanId}&type=bean`
+      })
+      .then(() => {
+        window.location.href = '/checkout';
+      });
+    }
+
+    function buyDrinkNow(drinkId) {
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkId}&type=drink`
+      })
+      .then(() => {
+        window.location.href = '/checkout';
+      });
+    }
+
+    function addBeanToBasket(beanId) {
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${beanId}&type=bean`
+      })
+      .then(response => response.json())
+      .then(data => {
+        const cartCount = document.getElementById('basket-count');
+        if (cartCount) cartCount.textContent = data.count;
+        
+        target.textContent = "Added! ✅";
+        setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
+      });
+    }
+
+    function addDrinkToBasket(drinkId) {
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkId}&type=drink`
+      })
+      .then(response => response.json())
+      .then(data => {
+        const cartCount = document.getElementById('basket-count');
+        if (cartCount) cartCount.textContent = data.count;
+        
+        target.textContent = "Added! ✅";
+        setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
+      });
+    }
+
+    window.eventHandlerBeanPage = eventHandlerBeanPage;
+    window.eventHandlerDrinkPage = eventHandlerDrinkPage;
+
+  </script>
+</body>
+
 </html>
