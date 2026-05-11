@@ -21,7 +21,7 @@ class BaseController < Sinatra::Base
   end
 
   get '/' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     
     erb :home
   end
