@@ -1,0 +1,8 @@
+- Model specs: type: `:model`
+- Controller specs: type: `:controller`
+- Request specs: type: `:request`
+- Feature specs: type: `:feature`
+- View specs: type: `:view`
+- Helper specs: type: `:helper`
+- Mailer specs: type: `:mailer`
+- Routing specs: type: `:routing`
