@@ -22,10 +22,14 @@ require_relative "../helpers/accountRecency"
 #Now load the App (which loads the models)
 ENV["APP_ENV"] = "test"
 require_relative "../app"
-
 #Configure Capybara and RSpec
+
 require "capybara/rspec"
 Capybara.app = CoffeeApp
+
+Capybara.configure do |config|
+  config.ignore_hidden_elements = false # Forces Capybara to see everything
+end
 
 RSpec.configure do |config|
   config.include Capybara::DSL
