@@ -14,7 +14,7 @@ RSpec.describe AccountRecency do
         email: 'user1@example.com',
         first_name: 'Test',
         last_name: 'User',
-        password: 'password123456', # Meets 12 char requirement
+        hashed_password: 'password123456', # Meets 12 char requirement
         Recent_Login: Time.now - (31 * 24 * 60 * 60),
         Flagged: false,
         Flagged_At: nil,

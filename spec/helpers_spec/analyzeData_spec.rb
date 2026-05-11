@@ -15,7 +15,7 @@ RSpec.describe "AnalyzeData" do
       DB[:Accounts].insert(
         UserID: user_id, 
         email: 'test@data.com', 
-        hashedPassword: '...', 
+        hashed_password: '...', 
         Created_At: Time.now
       )
       

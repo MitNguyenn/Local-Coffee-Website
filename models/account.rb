@@ -14,6 +14,6 @@ class Account < Sequel::Model(:Accounts)
 
   # Hashes the password before it hits the .sqlite3 file
   def password=(raw_password)
-    self.hashedPassword = BCrypt::Password.create(raw_password)
+    self.hashed_password = BCrypt::Password.create(raw_password)
   end
 end

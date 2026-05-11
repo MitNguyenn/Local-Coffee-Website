@@ -49,7 +49,7 @@ class AdminController < BaseController
     )
     if resetPassword
       DB[:Accounts].where(UserID: params[:id]).update(
-        hashedPassword: BCrypt::Password.create("password123").to_s
+        hashed_password: BCrypt::Password.create("password123").to_s
       )
     end
     redirect '/manage-accounts'

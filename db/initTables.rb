@@ -13,7 +13,7 @@ DB.create_table? :Accounts do
   DateTime :Date_of_birth, null: true
   Integer :StampCount, default: 0
   String :email, unique: true, null: false
-  String :hashedPassword
+  String :hashed_password
   String :PhoneNumber, size: 11
   String :Postcode, size: 7
   String :Address

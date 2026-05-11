@@ -1,7 +1,7 @@
 RSpec.describe 'Authentification process', type: :feature do
   before(:each) do
     spec_before
-    DB[:Accounts].insert(email: 'test@bbc.com', hashedPassword: BCrypt::Password.create('password123'), first_name: 'Test')
+    DB[:Accounts].insert(email: 'test@bbc.com', hashed_password: BCrypt::Password.create('password123'), first_name: 'Test')
   end
 
   describe 'Logging In' do

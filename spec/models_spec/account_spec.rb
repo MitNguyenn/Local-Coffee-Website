@@ -23,8 +23,8 @@ RSpec.describe Account do
     it "hashes the password before saving" do
       raw_password = "mysecretpassword"
       account.password = raw_password
-      expect(account.hashedPassword).not_to eq(raw_password)
-      expect(BCrypt::Password.new(account.hashedPassword)).to eq(raw_password)
+      expect(account.hashed_password).not_to eq(raw_password)
+      expect(BCrypt::Password.new(account.hashed_password)).to eq(raw_password)
     end
   end
 end

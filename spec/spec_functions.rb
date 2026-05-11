@@ -24,7 +24,7 @@ def create_tables
     DateTime :Date_of_birth
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
-    String :hashedPassword, null: false
+    String :hashed_password, null: false
     String :PhoneNumber, size: 11
     String :Postcode, size: 7
     String :Address
@@ -76,7 +76,7 @@ def seed_data
   # Use cost: 4 for speed in tests
   pass = BCrypt::Password.create('SecretPassword123', cost: 4)
   
-  DB[:Accounts].insert(UserID: 10000001, first_name: 'John', email: 'john@example.com', hashedPassword: pass)
+  DB[:Accounts].insert(UserID: 10000001, first_name: 'John', email: 'john@example.com', hashed_password: pass)
   DB[:Beans].insert(BeanID: 1, Name: 'Ethiopian', Price: 8.50, CurrentStock: 50)
   DB[:Drinks].insert(DrinkID: 1, Beverage: 'Flat White', Price: 3.50)
 end
