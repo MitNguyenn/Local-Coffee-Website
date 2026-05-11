@@ -13,10 +13,10 @@ class AdminController < BaseController
     end
   end
 
-  get '/staff-portal' do
-    update_recent_login(session[:UserID]) if session[:UserID]
-    erb :staff_portal
-  end
+  # get '/staff-portal' do
+  #   update_recent_login(session[:UserID]) if session[:UserID]
+  #   erb :staff_portal
+  # end
   
   get '/user-tickets' do
     update_recent_login(session[:UserID]) if session[:UserID]

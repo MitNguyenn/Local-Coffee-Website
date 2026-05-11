@@ -16,6 +16,13 @@ def spec_before
   seed_data
 end
 
+def log_in_as(email, password)
+  visit '/log-in'
+  fill_in 'email', with: email
+  fill_in 'password', with: password
+  click_button 'Log In'
+end
+
 def create_tables
   DB.create_table :Accounts do
     Integer :UserID, primary_key: true
@@ -94,7 +101,25 @@ def seed_data
     last_name: 'User',
     email: 'admin@coffee.com',
     hashed_password: pass,
-    AccountType: 'admin'
+    AccountType: 'administrator'
+  )
+
+  DB[:Accounts].insert(
+    UserID: 12345678,
+    first_name: 'Barista',
+    last_name: 'Example',
+    email: 'barista@coffee.com',
+    hashed_password: pass,
+    AccountType: 'barista'
+  )
+
+  DB[:Accounts].insert(
+    UserID: 23456789,
+    first_name: 'Manager',
+    last_name: 'Example',
+    email: 'manager@coffee.com',
+    hashed_password: pass,
+    AccountType: 'manager'
   )
 
   # 2. Beans
