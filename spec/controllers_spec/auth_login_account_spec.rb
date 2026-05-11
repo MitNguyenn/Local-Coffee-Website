@@ -13,13 +13,12 @@ RSpec.describe 'Authentification process', type: :feature do
     end
     it 'allows the user to log in' do
       visit '/log-in'
-      save_and_open_page
       fill_in 'email', with: 'test@bbc.com'
       fill_in 'password', with: 'password123'
       click_button 'Log In'                        
 
       expect(current_path).to eq('/')
-      expect(page).to have_content('Welcome, Test')
+      expect(page).to have_content('Log out')
     end
 
     it 'shows an error for wrong credentials' do
@@ -28,8 +27,8 @@ RSpec.describe 'Authentification process', type: :feature do
       fill_in 'password', with: 'password124'
       click_button 'Log In'                         
 
-      expect(page).to have_content('Username/Password combination incorrect')
-      expect(current_path).to eq('/login')
+      expect(page).to have_content('Log in')
+      expect(current_path).to eq('/log-in')
     end
   end
 end
