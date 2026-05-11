@@ -50,11 +50,12 @@
     if (event.target.classList.contains('add-to-basket-button')) {
       const drinkID = event.target.dataset.id;
       const size = document.querySelector('select[name="size"]').value;
+      const milk_type = document.querySelector('select[name="milk-type"]').value;
       
       fetch('/add-to-basket', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${drinkID}&type=drink&size=${size}`
+        body: `id=${drinkID}&type=drink&size=${size}&milk_type=${milk_type}`
       })
       .then(response => response.json())
       .then(data => {
@@ -67,10 +68,11 @@
     if (event.target.classList.contains('buy-button')) {
       const drinkId = document.querySelector('.add-to-basket-button').dataset.id;
       const size = document.querySelector('select[name="size"]').value;
+      const milk_type = document.querySelector('select[name="milk-type"]').value;
       fetch('/add-to-basket', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${drinkId}&type=drink&size=${size}`
+        body: `id=${drinkId}&type=drink&size=${size}&milk_type=${milk_type}`
       })
       .then(() => {
         window.location.href = '/checkout';

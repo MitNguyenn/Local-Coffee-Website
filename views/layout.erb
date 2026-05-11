@@ -57,6 +57,8 @@
       %>
       
       <% if item %>
+        <% puts "item: #{item.inspect}" %>
+        
         <% 
         size_drink = 0
         size_drink = 1 if item_data[:size] == 'large'
@@ -69,6 +71,11 @@
           <div class="cart-item-info">
             <span class="cart-item-name">
               <%= item[:Name] || item[:Beverage] %>
+              <% if item_data[:type] == 'drink' %>
+                <% size = item_data[:size] %>
+                <% milk_type = item_data[:milk_type] %>
+                <br><small><%= size&.capitalize %>, <%= milk_type&.capitalize %></small>
+              <% end %>
             </span>
             <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price].to_f + size_drink) %></span>
           </div>
