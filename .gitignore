@@ -13,3 +13,5 @@ Gemfile.lock
 
 db/db.sqlite3
 tempCodeRunnerFile.rb
+
+spec/_coverage/
