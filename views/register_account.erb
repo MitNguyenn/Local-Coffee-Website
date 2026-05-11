@@ -28,12 +28,13 @@ const Validation = {
   str_max_length: (str, maxLen) => {
     return str && str.length <= maxLen;
   },
-
-  const str_uk_telephone = (str) => {
+  
+  str_uk_telephone: (str) => { // Use a colon, remove 'const'
     if (!str) return false;
     const cleanStr = str.replace(/\s+/g, '').replace(/-/g, '');
     return cleanStr.startsWith('0') &&  cleanStr.length >= 10 && cleanStr.length <= 11;
-  };
+  }
+
 
 };
 
