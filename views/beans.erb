@@ -7,7 +7,7 @@
     <% if bean.CurrentStock > 0 %>
       <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
         <%
-          rel_path = "beans/#{bean.BeanID}.jpg"
+          rel_path = "beans/#{bean.BeanID}.png"
           if File.exist?(File.join(Dir.pwd, "public", rel_path))
             display_path = "/#{rel_path}"
           else

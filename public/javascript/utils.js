@@ -21,7 +21,8 @@ function eventHandlerBeanPage() {
 		}
 
 		if (card) {
-		  window.location.href = `/product/?type=bean&id=${beanId}`;
+		//   window.location.href = `/bean_details/?type=bean&id=${beanId}`;
+		  window.location.href = `/coffee-beans`;
 		}
 	});
 }
