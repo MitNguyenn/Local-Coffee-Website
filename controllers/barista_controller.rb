@@ -7,9 +7,15 @@ class BaristaController < BaseController
     end
   end
 
-  get '/staff-portal' do
-    update_recent_login(session[:UserID]) if session[:UserID]
+  get "/staff-portal" do
+    redirect '/' unless session[:AccountType] == 'barista'
     erb :staff_portal
+  end
+
+  get '/manage-loyalty-cards' do
+    redirect '/' unless session[:AccountType] == 'barista'
+    @accounts = DB[:Accounts].where(AccountType: 'customer').all
+    erb :manage_loyalty_cards
   end
 
   get '/manage-loyalty-cards' do
