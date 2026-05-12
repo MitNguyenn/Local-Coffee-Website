@@ -4,7 +4,7 @@ RSpec.describe "Admin Management", type: :feature do
 
   before do
     # Global Login for Admin
-    log_in_as('admin@coffee.com', 'SecretPassword123')
+    log_in_as('admin@coffee.com', '_p_')
   end
 
   describe "Account Management Table" do

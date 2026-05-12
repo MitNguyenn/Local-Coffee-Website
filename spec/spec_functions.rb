@@ -80,7 +80,7 @@ end
 
 def seed_data
   # Use cost: 4 for speed in tests
-  pass = BCrypt::Password.create('SecretPassword123', cost: 4)
+  pass = BCrypt::Password.create('_p_', cost: 4)
 
   # 1. Accounts
   DB[:Accounts].insert(

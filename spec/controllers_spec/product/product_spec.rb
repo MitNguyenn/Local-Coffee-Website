@@ -33,7 +33,7 @@ RSpec.describe "User access product pages", type: :feature do
   context "when checking out" do
     before do
       # Log in John Doe
-      log_in_as('john@example.com', 'SecretPassword123')
+      log_in_as('john@example.com', '_p_')
       
       # Add an item to basket
       visit '/drinks'
@@ -72,7 +72,7 @@ RSpec.describe "User access product pages", type: :feature do
     it "updates order status on successful payment callback" do
       # Log in
 
-      log_in_as('john@example.com', 'SecretPassword123')
+      log_in_as('john@example.com', '_p_')
 
       # Manually create a pending order to test the callback
       order_id = DB[:Orders].insert(
