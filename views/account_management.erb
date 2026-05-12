@@ -31,7 +31,7 @@
               <span class="acc-view__badge"><%= account[:AccountType] %></span>
             </td>
             <td class="acc-view__td">
-              <a href="/edit-account/<%= account[:UserID] %>" class="acc-view__btn">Edit Account</a>
+              <a href="/edit-account/<%= account[:UserID] %>" id="editaccount-<%=account[:UserID]%>">Edit Account</a>
             </td>
           </tr>
         <% end %>
