@@ -31,6 +31,13 @@ class ProductController < BaseController
     erb :drinks
   end
 
+  get '/drink-details/:id' do
+    @item = Drink.where(DrinkID: params[:id]).first
+
+    redirect '/' unless @item
+    erb :drink_details
+  end
+
   get '/view-basket' do
     @basket_items = []
     @total = 0
@@ -101,8 +108,10 @@ class ProductController < BaseController
 
   post '/add-to-basket' do
     session[:basket] ||= []
-    session[:basket] << { id: params[:id], type: params[:type] }
-    redirect back
+    session[:basket] << { id: params[:id], type: params[:type], size: params[:size], milk_type: params[:milk_type] }
+    content_type :json
+    { count: session[:basket].length }.to_json
+    # redirect back
   end
 
   get '/order-success' do
@@ -123,7 +132,6 @@ def calculate_basket_total(basket, user)
     if item
       price = item[:Price].to_f
       total += price
-      drink_prices << price if item_data[:type] == 'drink'
     end
   end
   if user && user[:StampCount] >= 9 && !drink_prices.empty?

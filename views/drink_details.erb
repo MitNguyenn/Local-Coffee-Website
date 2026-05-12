@@ -42,28 +42,47 @@
 
 <script>
   const container = document.getElementById('product-details');
+  const sizeSelect = document.querySelector('select[name="size"]');
+  const priceEl = document.querySelector('.product-price p');
+  const basePrice = <%= @item.Price %>;
 
   container.addEventListener('click', (event) => {
     if (event.target.classList.contains('add-to-basket-button')) {
-      const drinkID = event.target.dataset.drinkId;
+      const drinkID = event.target.dataset.id;
       const size = document.querySelector('select[name="size"]').value;
+      const milk_type = document.querySelector('select[name="milk-type"]').value;
       
-      if (event.target.textContent == "Add to Basket") {
-        console.log("Debug: Added " + drinkID + " to basket.")
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkID}&type=drink&size=${size}&milk_type=${milk_type}`
+      })
+      .then(response => response.json())
+      .then(data => {
         event.target.textContent = "Added! ✅";
+        setTimeout(() => { event.target.textContent = "Add to Basket"; }, 1000);
+      });
+      return;
+}
 
-        // do other stuff (actually add to the basket, update database, ...)
-          
-        setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
-      } else {
-        console.log("Debug: Removed " + drinkID + " from basket.")
-        event.target.textContent = "Removed!";
-
-        // do other stuff (remove from basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
-      }
-     return; // Stop here so we don't redirect
-    }
-
+    if (event.target.classList.contains('buy-button')) {
+      const drinkId = document.querySelector('.add-to-basket-button').dataset.id;
+      const size = document.querySelector('select[name="size"]').value;
+      const milk_type = document.querySelector('select[name="milk-type"]').value;
+      fetch('/add-to-basket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${drinkId}&type=drink&size=${size}&milk_type=${milk_type}`
+      })
+      .then(() => {
+        window.location.href = '/checkout';
+      });
+      return;
+    } 
+  });
+  sizeSelect.addEventListener('change', () => {
+    const extra = sizeSelect.value === 'large' ? 1.00 : 0.00;
+    const total = basePrice + extra;
+    priceEl.innerHTML = `Price: <strong>£${total.toFixed(2)}</strong>`;
   });
 </script>
