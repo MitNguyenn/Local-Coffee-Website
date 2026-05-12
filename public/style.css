@@ -54,6 +54,13 @@ main {
   flex: 1;
 }
 
+select {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
 .navbar a {
   color: white;
   text-decoration: none;
@@ -86,26 +93,22 @@ main {
 
 .cart {
   position: relative;
-  display: flex;
-  align-items: center;
+  display: inline-block;
 }
 
-.cart-count {
+.cart-dot {
   position: absolute;
-  top: 0;
-  right: -5px;
-  background-color: #ff4d4d;
-  color: white;
+  top: 5px; 
+  right: 5px;
+  
+  width: 12px;
+  height: 12px;
+  
+  background-color: #ff4757; 
   border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 12px;
-  font-family: "Lilita One", sans-serif;
-  border: 2px solid #a67458;
-}
-
-.cart-dropdown-width {
-  min-width: 220px;
-  padding: 10px 0;
+  border: 2px solid #fff; 
+  
+  display: block;
 }
 
 .cart-header {
@@ -113,13 +116,6 @@ main {
   font-size: 1.1rem;
   border-bottom: 1px solid #eee;
   color: #a67458;
-}
-
-.cart-item {
-  padding: 8px 15px;
-  font-family: sans-serif;
-  font-size: 0.9rem;
-  border-bottom: 1px solid #f9f9f9;
 }
 
 .empty-msg {
@@ -765,7 +761,6 @@ footer {
   border-radius: 10px;
 }
 
-/* This creates the side-by-side layout */
 .product-main-content {
   display: flex;
   flex-direction: row;
@@ -774,7 +769,6 @@ footer {
   margin-top: 20px;
 }
 
-/* Ensure the image doesn't overwhelm the text */
 .product-main-content img {
   max-width: 50%;
   height: auto;
@@ -786,12 +780,6 @@ footer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.product-properties {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .product-size {
@@ -1907,76 +1895,6 @@ button:active {
 
 .purchase-btn:active {
   transform: scale(0.95);
-}
-
-.cart-dropdown-width {
-  min-width: 280px;
-  padding: 15px;
-}
-
-.cart-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.cart-item img {
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
-}
-
-.cart-item-info {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.cart-item-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #4b2c20;
-}
-
-.cart-item-price {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.cart-total-line {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 15px;
-  color: #4b2c20;
-  font-size: 1rem;
-}
-
-#cartDropdown {
-  color: white;
-}
-
-.cart-header {
-  color: #fdf5e6;
-  font-size: 1.2rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.cart-item-name {
-  color: white !important;
-  font-weight: 700;
-}
-
-.cart-item-price {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.cart-total-line {
-  color: white;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  padding-top: 10px;
 }
 
 /* Stock Management Table - Brand Themed */

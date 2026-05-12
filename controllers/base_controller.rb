@@ -30,6 +30,10 @@ class BaseController < Sinatra::Base
     erb :help
   end
 
+  get '/basket' do 
+    erb :basket
+  end
+
   post '/help' do
     userid = DB[:Accounts].where(email: params[:form_useremail]).get(:UserID)
     

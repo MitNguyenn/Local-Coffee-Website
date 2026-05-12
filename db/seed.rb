@@ -82,31 +82,30 @@ puts "Done"
 
 puts "Seeding beans..."
 bean_list = [
-  [2, "Casablanca",   8.20, 15],
-  [3, "Nether Edge",  6.35, 10],
-  [4, "Damascus",     4.75, 30],
+  ["Ethiopian",   25.0, 8.20],
+  ["Brazillian",  17.0, 6.35],
+  ["Arabic",      13.0, 4.75]
 ]
 
-bean_list.each do |id, name, price, stock|
-  puts "inserting: #{name} #{price} #{stock}"
+bean_list.each do |origin, mass, price |
+  puts "inserting: #{origin} #{mass} #{price}"
   DB[:Beans].insert(
-    BeanID: id,
-    Name: name,
-    Price: price,
-    CurrentStock: stock
+    Origin: origin,
+    StockMass: mass,
+    PricePer250g: price
   )
 end
 puts "Done"
 
 puts "Seeding beans pack prices..."
 beans_pack_weight_price_markup_multipliers = [
-  [ 250, 1.0], # 100% of the original price
-  [ 500, 1.7], # 170% and so on...
-  [ 1000, 3.3]
+  [ 250.0,  1.0 ], # 100% of the original price
+  [ 500.0,  1.7 ], # 170% and so on...
+  [ 1000.0, 3.3 ]
 ]
 beans_pack_weight_price_markup_multipliers.each do | weight, markup_multiplier |
   DB[:BeansPackWeightPriceMarkupMultipliers].insert(
-    Weight: weight,
+    PackWeight: weight,
     MarkupMultiplier: markup_multiplier
   )
 end
@@ -117,38 +116,27 @@ bean_roasts = [ "Light", "Medium", "Dark"]
 
 bean_roasts.each do | roast |
   puts "inserting: #{roast}"
-  DB[:BeanRoasts].insert(
-    Roast: roast
-  )
-end
-puts "Done"
-
-puts "Seeding bean origin..."
-bean_origins = ["Arabic", "Brazilian", "Ethiopian"]
-
-bean_origins.each do | origin |
-  puts "inserting: #{origin}"
-  DB[:BeanOrigins].insert(
-    Origin: origin
+  DB[:BeanRoastLevels].insert(
+    RoastLevel: roast
   )
 end
 puts "Done"
 
 puts "Seeding drinks..."
 drinks = [
-  [1, "Latte", 4.40, "Smooth espresso with steamed milk"],
-  [2, "Americano", 3.8, "A rich, double-shot of espresso diluted with hot water for a smooth, bold finish."], 
-  [3, "Cappuccino", 4.4, "Equal parts espresso, steamed milk, and a thick layer of silky foam, topped with a dusting of cocoa."], 
-  [4, "Flat white", 4.35, "Velvety micro-foam poured over a double-shot of ristretto for a creamy yet coffee-forward experience."],
-  [5, "Cortado", 3.7, "A perfectly balanced 1:1 ratio of espresso and warm milk to reduce acidity without the volume of a latte."]
+  ["Latte",      4.40, true,   "Smooth espresso with steamed milk"],
+  ["Americano",  3.8,  false,  "A rich, double-shot of espresso diluted with hot water for a smooth, bold finish."], 
+  ["Cappuccino", 4.4,  true,   "Equal parts espresso, steamed milk, and a thick layer of silky foam, topped with a dusting of cocoa."], 
+  ["Flat white", 4.35, true,   "Velvety micro-foam poured over a double-shot of ristretto for a creamy yet coffee-forward experience."],
+  ["Cortado",    3.7,  true,   "A perfectly balanced 1:1 ratio of espresso and warm milk to reduce acidity without the volume of a latte."]
 ]
 
-drinks.each do |id, bev, price, description|
+drinks.each do | bev, price, contains_milk, description|
   puts "inserting: #{bev} #{price} #{description}"
   DB[:Drinks].insert(
-    DrinkID: id,
     Beverage: bev,
-    Price: price,
+    ContainsMilk: contains_milk,
+    RegularPrice: price,
     Description: description
   )
 end
@@ -163,89 +151,71 @@ drink_size_price_markup_mutlipliers = [
 drink_size_price_markup_mutlipliers.each do | size, markup_multiplier | 
   puts "inserting: #{size} #{markup_multiplier}"
   DB[:DrinkSizePriceMarkupMultipliers].insert(
-    Size: size,
+    DrinkSize: size,
     MarkupMultiplier: markup_multiplier
   )
 end
 puts "Done"
 
 puts "Seeding milkTypes table..."
-milk = [
-  ["Whole", 0.2],
-  ["Oat",   0.3],
-  ["Soy",   0.1]
+milk_types = [
+  ["Whole", 0.1], # 10p if drink does NOT contain the milk by default
+  ["Oat",   0.3], # 30p
+  ["Soy",   0.2]  # 20p
 ]
 
-milk.each do | type, price |
+milk_types.each do | type, price |
   puts "inserting: #{type} #{price}"
   DB[:MilkTypes].insert(
-    Type: type, 
+    MilkType: type, 
     Price: price
   )
 end
 puts "Done"
 
 puts "Seeding orders and orderItems tables..."
+puts "Finn is buying large Latte with oat milk and lightly roasted 250g Arabic beans pack"
+
+puts "Updating beans stock mass"
+grams_beans_bought = 250.0
+kg_bought = grams_beans_bought / 1000.0
+current_mass = DB[:Beans].where(Origin: "Arabic").get(:StockMass)
+
+puts "Current stock mass = #{current_mass}"
+DB[:Beans].where(Origin: "Arabic").update(
+  StockMass: Sequel[:StockMass] - kg_bought
+)
+puts "Finn bought #{kg_bought}kg of Arabic beans"
+current_mass = DB[:Beans].where(Origin: "Arabic").get(:StockMass)
+puts "Current stock mass = #{current_mass}"
+
 order_id_1 = DB[:Orders].insert(
   UserID: 23242526,
   OrderType: "In-Person",
   PaymentMethod: "Card",
   CreatedAt: Time.now,
-  Destination: "Table 4",
+  Destination: "In-Store",
   IsCompleted: true,
   payment_status: 'Paid',
-  TotalCost: 9.28 # (5.28 Large Latte + 4.00 for 250g Casablanca)
+  TotalCost: 10.33 # Large Latte with Oat milk + Light roasted 250g Arabic beans pack = 5.58 + 4.75 = 10.33
 )
 
 DB[:OrderItems].insert(
   OrderID: order_id_1,
-  ProductID: 1, # Latte
+  ItemID: "Latte", # Latte
   ProductType: "drink",
   Quantity: 1,
-  PriceAtPurchase: 5.40,
   Milk: "Oat",
   Size: "Large"
 )
 
 DB[:OrderItems].insert(
   OrderID: order_id_1,
-  ProductID: 2, # Casablanca Beans
+  ItemID: "Arabic",
   ProductType: "bean",
   Quantity: 1,
-  PriceAtPurchase: 4.00,
-  Milk: nil,
-  Size: "250g"
-)
-
-order_id_2 = DB[:Orders].insert(
-  UserID: 38452738,
-  OrderType: "Delivery",
-  PaymentMethod: "Apple Pay",
-  CreatedAt: Time.now,
-  Destination: "58 Endcliffe Vale Road",
-  IsCompleted: false,
-  payment_status: 'Pending',
-  TotalCost: 7.80 # (3.80 Americano + 4.00 Casablanca)
-)
-
-DB[:OrderItems].insert(
-  OrderID: order_id_2,
-  ProductID: 2, # Americano
-  ProductType: "drink",
-  Quantity: 1,
-  PriceAtPurchase: 3.80,
-  Milk: "none",
-  Size: "Regular"
-)
-
-DB[:OrderItems].insert(
-  OrderID: order_id_2,
-  ProductID: 2, # Casablanca Beans
-  ProductType: "bean",
-  Quantity: 1,
-  PriceAtPurchase: 4.00,
-  Milk: nil,
-  Size: "250g"
+  PackWeight: 250,
+  RoastLevel: "Light"
 )
 puts "Done"
 

@@ -1,3 +1,3 @@
 class Drink < Sequel::Model(:Drinks)
-  set_primary_key :DrinkID
+  set_primary_key :Beverage
 end

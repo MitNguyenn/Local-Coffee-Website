@@ -28,39 +28,34 @@ DB.create_table? :Accounts do
 end
 
 DB.create_table? :Beans do
-  Integer :BeanID, primary_key: true
-  String  :Name
-  Double  :Price # base price (price for 250g pack)
-  Integer :CurrentStock
+  String  :Origin, primary_key: true
+  Double :StockMass # mass in kilograms
+  Double  :PricePer250g # base price (price for 250g pack)
 end
 
 DB.create_table? :BeansPackWeightPriceMarkupMultipliers do
-  Integer :Weight, primary_key: true
-  Double  :MarkupMultiplier
+  Double :PackWeight, primary_key: true
+  Double :MarkupMultiplier
 end
 
-DB.create_table? :BeanOrigins do
-  String :Origin, primary_key: true
-end
-
-DB.create_table? :BeanRoasts do
-  String :Roast, primary_key: true 
+DB.create_table? :BeanRoastLevels do
+  String :RoastLevel, primary_key: true 
 end
 
 DB.create_table? :Drinks do
-  Integer :DrinkID, primary_key: true
-  String  :Beverage
-  Double  :Price, size: [10, 2]
-  String  :Description
+  String    :Beverage, primary_key: true
+  TrueClass :ContainsMilk
+  Double    :RegularPrice, size: [10, 2]
+  String    :Description
 end
 
 DB.create_table? :DrinkSizePriceMarkupMultipliers do
-  String :Size, primary_key: true
+  String :DrinkSize, primary_key: true
   Double :MarkupMultiplier
 end
 
 DB.create_table? :MilkTypes do
-  String :Type, primary_key: true
+  String :MilkType, primary_key: true
   Double :Price, size: [10, 2]
 end
 
@@ -77,17 +72,21 @@ DB.create_table? :Orders do
 end
 
 DB.create_table? :OrderItems do
-  primary_key :OrderItemID
   foreign_key :OrderID, :Orders, on_delete: :cascade
-  
-  Integer :ProductID  # could be drinkID or beanID
-  String  :ProductType # "drink" or "bean"
+  String :ItemID # "Latte" or "Ethiopian"
+
+  String :ProductType
   
   Integer :Quantity, default: 1
-  Float   :PriceAtPurchase # in case prices change later
   
+  Double :PackWeight, default: nil
+  String :RoastLevel, default: nil
+
   String  :Milk, default: nil   # Null if item == beans
-  String  :Size, default: nil   # 'regular'/'large' if item == drinks else weight item == beans
+  String  :Size, default: nil
+
+
+  primary_key [:OrderID, :ItemID]
 end
 
 DB.create_table? :Tickets do
@@ -109,3 +108,25 @@ DB.create_table? :Audits do
 end
 
 puts "Database tables initialized successfully"
+
+# Denormalized version of beans data
+# DB.create_table? :Beans do
+#   String  :Origin, primary_key: true
+#   Integer :Weight
+#   String  :Roast
+#   Double  :Price, size: [10, 2] # base price
+# end
+
+# # if the price of Ethiopian 250g pack changes, other packs will also change in price
+# DB.create_table? :BeansPackWeightPriceMarkupMultipliers do
+#   Integer :Weight, primary_key: true
+#   Double  :MarkupMultiplier
+# end
+
+# DB.create_table? :BeansPackStock do
+#   foreign_key :Origin, :Beans, on_delete: :cascade
+#   foreign_key :PackWeight, :BeanPackWeights, on_delete: :cascade
+#   Integer :Stock
+
+#   primary_key [:Origin, :PackWeight]
+# end

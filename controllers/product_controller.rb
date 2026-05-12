@@ -24,10 +24,14 @@ class ProductController < BaseController
     @type = params[:type]
 
     if @type == 'bean'
-      @item = Bean[params[:id]]
+      @item = Bean[params[:origin]]
+      @bean_packs = DB[:BeansPackWeightPriceMarkupMultipliers].all
+      @bean_roast_levels = DB[:BeanRoastLevels].all
       @template = :bean_details
     elsif @type == 'drink'
-      @item = Drink.where(BeanID: params[:bean_id], Beverage: params[:name]).first
+      @item = Drink[params[:beverage]]
+      @drink_sizes = DB[:DrinkSizePriceMarkupMultipliers].all
+      @milk_types = DB[:MilkTypes].all
       @template = :drink_details
     else 
       halt 404, "Product type not found."
@@ -51,20 +55,7 @@ class ProductController < BaseController
   # REWRITE THIS!
   # ===============================================================
   get '/view-basket' do
-    @basket_items = []
-    @total = 0
-    if session[:basket]
-      session[:basket].each do |item_data|
-        table = (item_data[:type] == 'bean') ? :Beans : :Drinks
-        id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
-        item = DB[table].where(id_col => item_data[:id]).first
-        if item
-          @basket_items << item
-          @total += item[:Price].to_f
-        end
-      end
-    end
-    erb :view_basket
+    erb :basket
   end
 
   get '/checkout' do
@@ -122,20 +113,25 @@ class ProductController < BaseController
   # REWRITE THIS
   # ===============================================================
   post '/add-to-basket' do
-    # Initialize as a Hash if it doesn't exist
-    session[:basket] ||= {}
+    session[:basket] ||= { }
 
     item_id = params[:id]
     item_type = params[:type]
-    
-    # Create a unique key (e.g., "bean_5" or "drink_12")
-    item_key = "#{item_type}_#{item_id}"
+    item_key = ""
+
+    if item_type == 'bean' 
+      weight = params[:weight]
+      roast = params[:roast]
+      item_key = "#{item_id}_#{weight}_#{roast}"
+    elsif item_type == 'drink'
+      size = params[:size]
+      milk = params[:milk]
+      item_key = "#{item_id}_#{size}_#{milk}"
+    end
 
     if session[:basket][item_key]
-      # Increment quantity if already in basket
       session[:basket][item_key][:quantity] += 1
     else
-      # Add new entry with initial quantity of 1
       session[:basket][item_key] = { 
         id: item_id, 
         type: item_type, 
@@ -143,19 +139,8 @@ class ProductController < BaseController
       }
     end
 
-    # If using AJAX (Fetch), return JSON. If standard form, redirect.
-    if request.xhr?
-      content_type :json
-      { count: session[:basket].values.sum { |i| i[:quantity] } }.to_json
-    else
-      redirect back
-    end
+    redirect back
   end
-  # post '/add-to-basket' do
-  #   session[:basket] ||= []
-  #   session[:basket] << { id: params[:id], type: params[:type] }
-  #   redirect back
-  # end
 
   # ===============================================================
   get '/order-success' do

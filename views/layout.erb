@@ -35,54 +35,13 @@
     </div>
     <div class="nav-right">
 
-      <!-- Cart Button -->
-      <div class="dropdown">
-        <div onclick="toggleDropdownCart(event)" class="cart">
-          <img src="/cart.png" alt="cart-icon" width="60" height="60">
-          <% if session[:basket] && session[:basket].any? %>
-            <span class="cart-count" id="basket-count">
-              <%= session[:basket].length %>
-            </span>
-            <% end %>
-        </div>
-
-        <div id="cartDropdown" class="user-dropdown-content cart-dropdown-width">
-          <div class="cart-header">Your Basket</div>
-          <div class="cart-items-list">
-            <% if session[:basket] && session[:basket].any? %>
-              <% basket_total=0.0 %>
-              <% session[:basket].each do |item_data| %>
-                <% # Logic to find the right table and ID column table=(item_data[:type]=='bean' ) ? :Beans : :Drinks
-                  id_col=(item_data[:type]=='bean' ) ? :BeanID : :DrinkID item=DB[table].where(id_col=>
-                  item_data[:id]).first %>
-
-                <% if item %>
-                  <% basket_total +=item[:Price].to_f %>
-                  <div class="cart-item">
-                    <img src="/<%= item_data[:type] %>s/<%= item_data[:id] %>.png"
-                      onerror="this.src='/beans/beans_img_not_found.png'" width="30" height="30">
-
-                    <div class="cart-item-info">
-                      <span class="cart-item-name">
-                        <%= item[:Name] || item[:Beverage] %>
-                      </span>
-                      <span class="cart-item-price">£<%= sprintf('%.2f', item[:Price]) %></span>
-                    </div>
-                  </div>
-                <% end %>
-              <% end %>
-
-              <div class="cart-total-line">
-                <strong>Total:</strong>
-                <strong>£<%= sprintf('%.2f', basket_total) %></strong>
-              </div>
-              <hr>
-              <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
-            <% else %>
-              <p class="empty-msg">Your basket is empty!</p>
-            <% end %>
-          </div>
-        </div>
+      <!-- Basket Button -->
+      <div onclick="toggleDropdownCart(event)" class="cart">
+        <img src="/cart.png" alt="cart-icon" width="50" height="50">
+        
+        <% if session[:basket] && session[:basket].any? %>
+          <span class="cart-dot" id="basket-indicator"></span>
+        <% end %>
       </div>
 
       <!-- Account Button -->
@@ -118,7 +77,6 @@
     function closeAllDropdowns() {
       const dropdowns = [
         document.getElementById("myDropdown"),
-        document.getElementById("cartDropdown"),
         document.getElementById("userDropdown")
       ];
 
@@ -143,10 +101,7 @@
 
     function toggleDropdownCart(event) {
       event.stopPropagation();
-      const menu = document.getElementById("cartDropdown");
-      const isShowing = menu.classList.contains("show");
-      closeAllDropdowns();
-      if (!isShowing) menu.classList.add("show");
+      window.location.href = `/basket`;
     }
 
     function toggleDropdownUser(event) {
@@ -172,133 +127,6 @@
       }
       countSpan.innerText = newCount;
     }
-
-    document.querySelectorAll('form[action="/add-to-basket"]').forEach(form => {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const response = await fetch('/add-to-basket', {
-          method: 'POST',
-          body: new URLSearchParams(formData)
-        });
-
-        if (response.ok) {
-          // Refresh just the count for now
-          location.reload(); // Simplest way to refresh the dropdown content too
-        }
-      });
-    });
-
-    function eventHandlerBeanPage() {
-        const container = document.getElementById('item-container');
-
-        container.addEventListener('click', (event) => {
-            const target = event.target;
-            const card = target.closest('.product-card');
-
-            if (!card) return; 
-
-            const beanId = card.dataset.beanId;
-
-            if (target.classList.contains('add-to-basket-button')) {
-                addBeanToBasket(beanId);
-                return;
-            }
-
-            if (target.classList.contains('buy-button')) {
-                buyBeanNow(beanId());
-                return;
-            }
-
-            if (card) {
-              window.location.href = `/product/?type=bean&id=${beanId}`;
-            }
-        });
-    }
-
-    function eventHandlerDrinkPage() {
-      const container = document.getElementById('item-container');
-
-      container.addEventListener('click', (event) => {
-        const target = event.target;
-        const card = target.closest('.product-card');
-        
-        if (!card) return;
-
-        const drinkId = card.dataset.drinkId;
-
-        if (target.classList.contains('add-to-basket-button')) {
-            addDrinkToBasket(drinkId)
-            return;
-        }
-
-        if (target.classList.contains('buy-button')) {
-            buyDrinkNow(drinkId);
-            return;
-        }
-
-        if (card) {
-            window.location.href = `/product/?type=drink&id=${drinkId}`;
-        }
-      });
-    }
-
-    function buyBeanNow(beanId) {
-      fetch('/add-to-basket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${beanId}&type=bean`
-      })
-      .then(() => {
-        window.location.href = '/checkout';
-      });
-    }
-
-    function buyDrinkNow(drinkId) {
-      fetch('/add-to-basket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${drinkId}&type=drink`
-      })
-      .then(() => {
-        window.location.href = '/checkout';
-      });
-    }
-
-    function addBeanToBasket(beanId) {
-      fetch('/add-to-basket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${beanId}&type=bean`
-      })
-      .then(response => response.json())
-      .then(data => {
-        const cartCount = document.getElementById('basket-count');
-        if (cartCount) cartCount.textContent = data.count;
-        
-        target.textContent = "Added! ✅";
-        setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
-      });
-    }
-
-    function addDrinkToBasket(drinkId) {
-      fetch('/add-to-basket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${drinkId}&type=drink`
-      })
-      .then(response => response.json())
-      .then(data => {
-        const cartCount = document.getElementById('basket-count');
-        if (cartCount) cartCount.textContent = data.count;
-        
-        target.textContent = "Added! ✅";
-        setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
-      });
-    }
-
-    window.eventHandlerBeanPage = eventHandlerBeanPage;
-    window.eventHandlerDrinkPage = eventHandlerDrinkPage;
 
   </script>
 </body>
