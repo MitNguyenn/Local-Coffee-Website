@@ -1,9 +1,9 @@
 <div class="product-detail-container">
-  <h1><%= @item.Name %></h1>
+  <h1><%= @item.Origin %></h1>
 
   <div class="product-main-content"> 
     <%
-      rel_path = "beans/#{@item.BeanID}.png"
+      rel_path = "beans/#{@item.Origin}.png"
       
       if File.exist?(File.join(Dir.pwd, "public", rel_path))
         display_path = "/#{rel_path}"
@@ -11,38 +11,44 @@
         display_path = "/beans/beans_img_not_found.png"
       end
     %>
-    
-    <img src="<%= display_path %>" alt="<%= @item.Name %>" width="500" height="500">
-    <div class="product-details" id="product-details">
-      <p>Origin: <strong><%= @item.Type %></strong></p>
-      <p>Roast Level: <strong><%= @item.Roast %></strong></p>
-      <p>Pack weight: <strong><%= @item.PackWeight %>g</strong></p>
-      <p>Price: £<%= sprintf('%.2f', @item.Price) %></p>
-      
+    <img src="<%= display_path %>" alt="<%= @item.Origin %>" width="500" height="500">
+
+    <div class="product-details">
+      <span id="base-price" data-price="<%= @item.PricePer250g %>" style="display:none;"></span>
+      <label for="pack-weight">Select Size:</label>
+      <select name="pack-weight" id="pack-weight-select">
+        <% @bean_packs.each do |pack| %>
+          <option value="<%= pack[:Weight] %>" data-multiplier="<%= pack[:MarkupMultiplier] %>">
+            <%= pack[:PackWeight] %>g
+          </option>
+        <% end %>
+      </select>
+
+      <label for="roast-levels"><b>Roast levels:</b></label>
+      <select name="roast-levels" id="roast-levels">
+        <% @bean_roast_levels.each do | roast | %>
+          <option value="<%= roast[:RoastLevel] %>"><%= roast[:RoastLevel] %></option>
+        <% end %>
+      </select>
+
+      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.PricePer250g) %></h2>
       <button class="add-to-basket-button">Add to Basket</button>
       <button class="buy-button">Buy Now</button>
     </div>
-  </div> <a href="/coffee-beans" class="back-link">Back to Catalog</a>
-</div>
+  </div>
+</div> <a href="/coffee-beans" class="back-link">Back to Catalog</a>
 
 <script>
-  const container = document.getElementById('product-details');
+  const weightSelect = document.getElementById('pack-weight-select');
+  const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
+  const displayPrice = document.getElementById('display-price');
 
-  container.addEventListener('click', (event) => {
-    if (event.target.classList.contains('add-to-basket-button')) {
-      if (event.target.textContent == "Add to basket") {
-        event.target.textContent = "Added! ✅";
-        
-        // do other stuff (actually add to the basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Remove from basket"; }, 1000);
-      } else {
-        event.target.textContent = "Removed!";
+  weightSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const multiplier = parseFloat(selectedOption.dataset.multiplier);
 
-        // do other stuff (remove from basket, update database, ...)
-        setTimeout(() => { event.target.textContent = "Add to basket";}, 1000);
-      }
-     return; // Stop here so we don't redirect
-    }
+    const newPrice = basePriceValue * multiplier;
 
+    displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
   });
 </script>

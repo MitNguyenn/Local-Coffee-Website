@@ -4,9 +4,9 @@
 
 <div class="catalog-grid" id="item-container">
   <% @drinks.each do |drink| %>
-    <div class="product-card" data-drink-id="<%= drink.DrinkID %>">
+    <div class="product-card" data-beverage="<%= drink.Beverage %>">
       <%
-        rel_path = "drinks/#{drink.DrinkID}.png"
+        rel_path = "drinks/#{drink.Beverage}.png"
         if File.exist?(File.join(Dir.pwd, "public", rel_path))
           display_path = "/#{rel_path}"
         else
@@ -16,17 +16,24 @@
     
       <img src="<%= display_path %>" alt="<%= drink.Beverage %>">
       <h3><%= drink.Beverage %></h3>
-      <p class="price">£<%= sprintf('%.2f', drink.Price) %></p>
-      <button class="add-to-basket-button">Add to basket</button>
-      <button class="buy-button">Buy</button>
+      <p class="price">£<%= sprintf('%.2f', drink.RegularPrice) %> (Regular size)</p>
     </div>
   <% end %>
 </div>
 
 <script>
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', eventHandlerDrinkPage);
-  } else {
-    eventHandlerDrinkPage();
-  }
+  const container = document.getElementById('item-container');
+
+  container.addEventListener('click', (event) => {
+    const target = event.target;
+    const card = target.closest('.product-card');
+    
+    if (!card) return;
+
+    const beverage = card.dataset.beverage;
+
+    if (card) {
+      window.location.href = `/product/?type=drink&beverage=${beverage}`;
+    }
+  });
 </script>

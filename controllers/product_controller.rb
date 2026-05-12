@@ -19,40 +19,41 @@ class ProductController < BaseController
     DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
   end
 
+  # product page
+  get '/product/' do
+    @type = params[:type]
+
+    if @type == 'bean'
+      @item = Bean[params[:origin]]
+      @bean_packs = DB[:BeansPackWeightPriceMarkupMultipliers].all
+      @bean_roast_levels = DB[:BeanRoastLevels].all
+      @template = :bean_details
+    elsif @type == 'drink'
+      @item = Drink[params[:beverage]]
+      @drink_sizes = DB[:DrinkSizePriceMarkupMultipliers].all
+      @milk_types = DB[:MilkTypes].all
+      @template = :drink_details
+    else 
+      halt 404, "Product type not found."
+    end
+
+    erb @template
+  end
+
   get '/coffee-beans' do
-    update_recent_login(session[:UserID]) if session[:UserID]
+    update_Recet_Login(session[:UserID]) if session[:UserID]
     @beans = Bean.all
     erb :beans
   end
 
   get '/drinks' do
-    update_recent_login(session[:UserID]) if session[:UserID]
+    update_Recet_Login(session[:UserID]) if session[:UserID]
     @drinks = Drink.all
     erb :drinks
   end
 
-  get '/drink-details/:id' do
-    @item = Drink.where(DrinkID: params[:id]).first
-
-    redirect '/' unless @item
-    erb :drink_details
-  end
-
   get '/view-basket' do
-    @basket_items = []
-    @total = 0
-    if session[:basket]
-      session[:basket].each do |item_data|
-        table = (item_data[:type] == 'bean') ? :Beans : :Drinks
-        id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
-        item = DB[table].where(id_col => item_data[:id]).first
-        if item
-          @basket_items << item
-          @total += item[:Price].to_f
-        end
-      end
-    end
-    erb :view_basket
+    erb :basket
   end
 
   get '/checkout' do
@@ -86,6 +87,7 @@ class ProductController < BaseController
       redirect '/order-success'
     end
   end
+# ===============================================================
 
   get '/external-payment-gateway' do
     @order_id = params[:order_id]
@@ -106,14 +108,39 @@ class ProductController < BaseController
     end
   end
 
+  # REWRITE THIS
+  # ===============================================================
   post '/add-to-basket' do
-    session[:basket] ||= []
-    session[:basket] << { id: params[:id], type: params[:type], size: params[:size], milk_type: params[:milk_type] }
-    content_type :json
-    { count: session[:basket].length }.to_json
-    # redirect back
+    session[:basket] ||= { }
+
+    item_id = params[:id]
+    item_type = params[:type]
+    item_key = ""
+
+    if item_type == 'bean' 
+      weight = params[:weight]
+      roast = params[:roast]
+      item_key = "#{item_id}_#{weight}_#{roast}"
+    elsif item_type == 'drink'
+      size = params[:size]
+      milk = params[:milk]
+      item_key = "#{item_id}_#{size}_#{milk}"
+    end
+
+    if session[:basket][item_key]
+      session[:basket][item_key][:quantity] += 1
+    else
+      session[:basket][item_key] = { 
+        id: item_id, 
+        type: item_type, 
+        quantity: 1 
+      }
+    end
+
+    redirect back
   end
 
+  # ===============================================================
   get '/order-success' do
     @order = DB[:Orders].where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
     @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
@@ -132,6 +159,7 @@ def calculate_basket_total(basket, user)
     if item
       price = item[:Price].to_f
       total += price
+      drink_prices << price if item_data[:type] == 'drink'
     end
   end
   if user && user[:StampCount] >= 9 && !drink_prices.empty?
