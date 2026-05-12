@@ -91,9 +91,6 @@ class AuthController < BaseController
     session[:UserID] = user.UserID
     update_recent_login(session[:UserID]) if session[:UserID]
     redirect '/'
-  rescue => e
-    @error = "Registration failed: #{e.message}"
-    erb :register_account
   end
 
   get '/log-out' do
