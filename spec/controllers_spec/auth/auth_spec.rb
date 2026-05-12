@@ -14,4 +14,7 @@ RSpec.describe "User Vists generic auth pages" do
       visit "/forgot"
 
       expect(current_path).to eq("/forgot")
+      expect(page).to have_content("Forgot Password")
     end
+  end
+end
