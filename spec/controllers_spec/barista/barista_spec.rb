@@ -8,7 +8,7 @@ RSpec.describe "Barista access unique pages", type: :feature do
     end
 
     it "redirects a plain customer to the home page" do
-      log_in_as('john@example.com', 'SecretPassword123')
+      log_in_as('john@example.com', '_p_')
       visit "/staff-portal"
       expect(current_path).to eq("/")
     end
@@ -22,7 +22,7 @@ RSpec.describe "Barista access unique pages", type: :feature do
   # 2. Test Barista Actions
   context "as a logged-in barista" do
     before(:each) do
-      log_in_as('barista@coffee.com', 'SecretPassword123')
+      log_in_as('barista@coffee.com', '_p_')
     end
 
     it "can visit the staff portal and sees barista-specific links" do
@@ -98,7 +98,7 @@ RSpec.describe "Barista access unique pages", type: :feature do
   # 3. Role boundary tests
   context "as a logged-in customer" do
     before(:each) do
-      log_in_as('john@example.com', 'SecretPassword123')
+      log_in_as('john@example.com', '_p_')
     end
 
     it "cannot access manage-loyalty-cards" do
