@@ -17,7 +17,6 @@ RSpec.describe "Admin Management", type: :feature do
       expect(page).to have_content("John Doe")
       expect(page).to have_content("customer")
     end
-  end
 
     it "has a functional search input field" do
       visit "/manage-accounts"

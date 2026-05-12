@@ -56,7 +56,7 @@ RSpec.describe "User access product pages", type: :feature do
 
     it "places an order using cash and updates stamp count" do
       visit '/checkout'
-      choose 'Pay on Delivery' # Assuming radio/label for cash
+       'Pay on Delivery' # Assuming radio/label for cash
       click_button 'Place Order'
 
       expect(page).to have_current_path('/order-success')
