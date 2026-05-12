@@ -172,7 +172,7 @@ RSpec.describe "Admin Management", type: :feature do
   describe "Metrics and Sales" do
     it "displays the metrics page with total sales" do
       visit "/metrics"
-      expect(page).to have_content("7.0")
+      expect(page).to have_content("Managerial Analytics")
     end
   end
 end

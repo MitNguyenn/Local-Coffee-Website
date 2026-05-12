@@ -1,4 +1,5 @@
 require_relative 'base_controller'
+require 'wicked_pdf'
 
 class BaristaController < BaseController
   before do
@@ -17,11 +18,6 @@ class BaristaController < BaseController
     erb :manage_loyalty_cards
   end
 
-  get '/manage-loyalty-cards' do
-    @accounts = DB[:Accounts].all
-    erb :manage_loyalty_cards
-  end 
-
   post '/update-stamps' do
 
     target_user_id = params[:user_id]
@@ -31,20 +27,31 @@ class BaristaController < BaseController
     redirect '/manage-loyalty-cards'
   end
 
-  get '/generate-label/:id' do
+  get "/print-order-label" do
+    # Changed from @current_orders to @orders to match typical view naming
+    @orders = DB[:Orders].where(IsCompleted: false).all 
+    erb :print_label
+  end
+
+get '/generate-label/:id' do
   @order = DB[:Orders].where(OrderID: params[:id]).first
-  @account = DB[:Accounts].where(UserID: @order[:UserID]).first
   
+  # Redirect if order doesn't exist to avoid a crash
+  return redirect back unless @order
+  
+  @account = DB[:Accounts].where(UserID: @order[:UserID]).first
   @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
   @courier = "Royal Mail"
-  
-  @qrcode = RQRCode::QRCode.new("https://www.royalmail.com/track-details/#{@tracking_id}")
+  @qrcode = RQRCode::QRCode.new("https://royalmail.com{@tracking_id}")
   
   html = erb :shipping_label, layout: false
+  
+  # Generate the PDF
   pdf = WickedPdf.new.pdf_from_string(html)
   
   content_type 'application/pdf'
   attachment "Label_#{@order[:OrderID]}.pdf"
+  
   pdf
 end
 

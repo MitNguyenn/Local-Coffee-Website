@@ -183,4 +183,29 @@ def seed_data
     first_name: 'Sussy',
     Suspended: true
   )
+
+    # --- NEW: Uncompleted Orders for Barista Printing ---
+  
+  # Pending Order 1 (In-Store)
+  DB[:Orders].insert(
+    UserID: 10000001,
+    OrderContents: [{ item: "Latte", qty: 1, price: 3.50 }].to_json,
+    OrderType: 'In-Store',
+    totalCost: 3.50,
+    payment_status: 'Paid',
+    IsCompleted: false, # This makes it show up in 'print-order-label'
+    CreatedAt: Time.now
+  )
+
+  # Pending Order 2 (Online/Delivery)
+  DB[:Orders].insert(
+    UserID: 10000001,
+    OrderContents: [{ item: "Ethiopian Yirgacheffe", qty: 1, price: 8.50 }].to_json,
+    OrderType: 'Delivery',
+    totalCost: 8.50,
+    payment_status: 'Paid',
+    IsCompleted: false,
+    Location: 'Online',
+    CreatedAt: Time.now
+  )
 end
