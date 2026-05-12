@@ -27,9 +27,11 @@ RSpec.describe 'Home page', type: :feature do
     expect(page).to have_content('Request Description')
   end
 
+  
+
   describe 'Staff portal access' do
     context 'when logged in as an admin' do
-      before(:each) { log_in_as('admin@coffee.com', 'SecretPassword123') }
+      before(:each) { log_in_as('admin@coffee.com', '_p_') }
 
       it 'shows the administrator portal' do
         visit '/'
@@ -40,7 +42,7 @@ RSpec.describe 'Home page', type: :feature do
     end
 
     context 'when logged in as a barista' do
-      before(:each) { log_in_as('barista@coffee.com', 'SecretPassword123') }
+      before(:each) { log_in_as('barista@coffee.com', '_p_') }
 
       it 'shows the barista portal' do
         visit '/'
@@ -51,7 +53,7 @@ RSpec.describe 'Home page', type: :feature do
     end
 
     context 'when logged in as a manager' do
-      before(:each) { log_in_as('manager@coffee.com', 'SecretPassword123') }
+      before(:each) { log_in_as('manager@coffee.com', '_p_') }
 
       it 'shows the manager portal' do
         visit '/'

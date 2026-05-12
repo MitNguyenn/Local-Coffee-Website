@@ -10,14 +10,14 @@ RSpec.describe "Account Management", type: :feature do
 
   context "when logged in" do
     before (:each) do
-      log_in_as('john@example.com', 'SecretPassword123')
+      log_in_as('john@example.com', '_p_')
     end
     
     # before do
     #   # Perform a standard login using your seeded John Doe
     #   visit '/log-in'
     #   fill_in 'email', with: 'john@example.com'
-    #   fill_in 'password', with: 'SecretPassword123'
+    #   fill_in 'password', with: '_p_'
     #   click_button 'Log In'
     # end
 
