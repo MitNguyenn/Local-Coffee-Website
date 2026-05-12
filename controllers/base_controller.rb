@@ -31,8 +31,8 @@ class BaseController < Sinatra::Base
     begin
       Ticket.create(
         UserID: userid, 
-        ticketType: params[:problem_type], 
-        ticketContent: params[:form_request_description]
+        TicketType: params[:problem_type], 
+        TicketContent: params[:form_request_description]
       )
       redirect "/"
     rescue => e
