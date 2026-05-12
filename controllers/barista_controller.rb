@@ -2,7 +2,7 @@ require_relative 'base_controller'
 
 class BaristaController < BaseController
   before do
-    unless session[:UserID] && session[:AccountType] == 'barista'
+    unless session[:UserID] && ['barista', 'manager', 'administrator'].include?(session[:AccountType])
       redirect '/'
     end
   end
