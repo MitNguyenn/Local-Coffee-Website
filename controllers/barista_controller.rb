@@ -2,14 +2,19 @@ require_relative 'base_controller'
 
 class BaristaController < BaseController
   before do
-    unless session[:UserID] && session[:AccountType] == 'barista'
+    unless session[:UserID] && ['barista', 'manager', 'administrator'].include?(session[:AccountType])
       redirect '/'
     end
   end
 
-  get '/staff-portal' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+  get "/staff-portal" do
     erb :staff_portal
+  end
+
+  get '/manage-loyalty-cards' do
+    redirect '/' unless session[:AccountType] == 'barista'
+    @accounts = DB[:Accounts].where(AccountType: 'customer').all
+    erb :manage_loyalty_cards
   end
 
   get '/manage-loyalty-cards' do

@@ -1,3 +1,4 @@
+
 function eventHandlerBeanPage() {
 	const container = document.getElementById('item-container');
 
@@ -20,7 +21,8 @@ function eventHandlerBeanPage() {
 		}
 
 		if (card) {
-		  window.location.href = `/product/?type=bean&id=${beanId}`;
+		//   window.location.href = `/bean_details/?type=bean&id=${beanId}`;
+		  window.location.href = `/coffee-beans`;
 		}
 	});
 }
@@ -37,7 +39,7 @@ function eventHandlerDrinkPage() {
     const drinkId = card.dataset.drinkId;
 
     if (target.classList.contains('add-to-basket-button')) {
-		addDrinkToBasket(drinkId)
+		window.location.href = `/drink-details/${drinkId}`;
     	return;
     }
 
@@ -47,7 +49,7 @@ function eventHandlerDrinkPage() {
     }
 
     if (card) {
-    	window.location.href = `/product/?type=drink&id=${drinkId}`;
+    	window.location.href = `/drink-details/${drinkId}`;
     }
   });
 }
@@ -63,11 +65,11 @@ function buyBeanNow(beanId) {
   });
 }
 
-function buyDrinkNow(drinkId) {
+function buyDrinkNow(drinkId, size = 'regular', milk_type = 'whole') {
   fetch('/add-to-basket', {
 	method: 'POST',
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-	body: `id=${drinkId}&type=drink`
+	body: `id=${drinkId}&type=drink&size=${size}&milk_type=${milk_type}`
   })
   .then(() => {
 	window.location.href = '/checkout';
@@ -90,11 +92,11 @@ function addBeanToBasket(beanId) {
   });
 }
 
-function addDrinkToBasket(drinkId) {
+function addDrinkToBasket(drinkId, size = 'regular', milk_type = 'whole') {
   fetch('/add-to-basket', {
 	method: 'POST',
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-	body: `id=${drinkId}&type=drink`
+	body: `id=${drinkId}&type=drink&size=${size}&milk_type=${milk_type}`
   })
   .then(response => response.json())
   .then(data => {

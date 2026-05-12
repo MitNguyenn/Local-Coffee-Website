@@ -21,6 +21,8 @@ class AuthController < BaseController
       attempt_flag_account(session[:UserID])
       attempt_suspend_account(session[:UserID])
 
+      user = DB[:Accounts].where(UserID: user[:UserID]).first
+
       if user[:Suspended]
         session.clear
         @error = "Your account has been suspended. Please contact support."
@@ -30,7 +32,7 @@ class AuthController < BaseController
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
       
-      update_Recet_Login(session[:UserID]) if session[:UserID]
+      update_recent_login(session[:UserID]) if session[:UserID]
 
       redirect '/'
 
@@ -76,8 +78,8 @@ class AuthController < BaseController
 
     user = Account.create(
       UserID: UserID,
-      FirstName: params[:FirstName],
-      LastName: params[:LastName],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
       email: email,
       password: password1,
       PhoneNumber: params[:PhoneNumber],
@@ -87,7 +89,7 @@ class AuthController < BaseController
     )
 
     session[:UserID] = user.UserID
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     redirect '/'
   rescue => e
     @error = "Registration failed: #{e.message}"

@@ -20,9 +20,9 @@ class CoffeeApp < Sinatra::Base
   use AuthController
   use ProductController
   use AccountController
-  use AdminController
   use BaristaController
   use ManagerController
-
+  use AdminController
+  
   run! if app_file == $0
 end

@@ -1,7 +1,5 @@
 class BaseController < Sinatra::Base
   helpers AppHelpers
-  enable :sessions
-  set :session_secret, ENV['SESSION_SECRET'] 
 
   require 'bcrypt'
   require 'require_all' 
@@ -12,16 +10,8 @@ class BaseController < Sinatra::Base
   set :views, proc { File.join(root, "views") }
   set :public_folder, proc { File.join(root, "public") }
 
-  before do
-    if session[:UserID] && !session[:UserID]
-      session[:UserID] = session[:UserID]
-    elsif session[:UserID] && !session[:UserID]
-      session[:UserID] = session[:UserID]
-    end
-  end
-
   get '/' do
-    update_Recet_Login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:UserID]) if session[:UserID]
     
     erb :home
   end
@@ -45,8 +35,8 @@ class BaseController < Sinatra::Base
     begin
       Ticket.create(
         UserID: userid, 
-        ticketType: params[:problem_type], 
-        ticketContent: params[:form_request_description]
+        TicketType: params[:problem_type], 
+        TicketContent: params[:form_request_description]
       )
       redirect "/"
     rescue => e
@@ -54,4 +44,6 @@ class BaseController < Sinatra::Base
       erb :help
     end
   end
+
+  
 end

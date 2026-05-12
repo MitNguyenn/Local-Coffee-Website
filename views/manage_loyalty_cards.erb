@@ -1,70 +1,28 @@
 <main class="acc-view__main">
   <h1 class="acc-view__title">Manage Loyalty Cards</h1>
-
-  <input
-    type="text"
-    id="accountSearch"
-    class="acc-view__search"
-    onkeyup="filterTable()"
-    placeholder="Search by name, email, or role..."
-  />
-
   <div class="acc-view__board">
     <table id="accountsTable" class="acc-view__table">
       <thead>
         <tr>
-          <th class="acc-view__th">ID</th>
-          <th class="acc-view__th">Full Name</th>
-          <th class="acc-view__th">Email Address</th>
-          <th class="acc-view__th">Phone Number</th>
-          <th class="acc-view__th">Stamp Count</th>
+          <th>ID</th><th>Email</th><th>Stamps</th>
         </tr>
       </thead>
       <tbody>
         <% @accounts.each do |account| %>
         <tr class="acc-view__row">
-          <td class="acc-view__td"><%= account[:UserID] %></td>
-          <td class="acc-view__td">
-            <%= account[:FirstName] %> <%= account[:LastName] %>
+          <td><%= account[:UserID] %></td>
+          <td><%= account[:email] %></td>
+          <td>
+            <!-- Unique ID added here for easier testing -->
+            <form id="form-user-<%= account[:UserID] %>" action="/update-stamps" method="POST">
+              <input type="hidden" name="user_id" value="<%= account[:UserID] %>">
+              <input type="number" name="stamp_count" value="<%= account[:StampCount] %>" min="0" max="10">
+              <button type="submit" class="acc-view__update-btn">Save</button>
+            </form>
           </td>
-          <td class="acc-view__td"><%= account[:email] %></td>
-          <td class="acc-view__td"><%= account[:PhoneNumber] %></td>
-          <td class="acc-view__td">
-  <form action="/update-stamps" method="POST" style="display: flex; align-items: center; gap: 5px;">
-    <input type="hidden" name="user_id" value="<%= account[:UserID] %>">
-    
-    <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-    
-    <input 
-      type="number" 
-      name="stamp_count" 
-      value="<%= account[:StampCount] %>" 
-      min="0" 
-      max="10" 
-      style="width: 50px; text-align: center;"
-    >
-    
-    <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
-    
-    <button type="submit" class="acc-view__update-btn">Save</button>
-  </form>
-</td>
-          
         </tr>
         <% end %>
       </tbody>
     </table>
   </div>
 </main>
-
-<script>
-  function filterTable() {
-    const filter = document.getElementById("accountSearch").value.toLowerCase();
-    const rows = document.querySelectorAll(".acc-view__row");
-
-    rows.forEach((row) => {
-      const isMatch = row.textContent.toLowerCase().includes(filter);
-      row.style.display = isMatch ? "" : "none";
-    });
-  }
-</script>
