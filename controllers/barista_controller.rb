@@ -2,14 +2,22 @@ require_relative 'base_controller'
 
 class BaristaController < BaseController
   before do
-    unless session[:UserID] && ['barista', 'manager', 'administrator'].include?(session[:AccountType])
+    unless session[:UserID]
+      redirect '/log-in'
+    end
+
+    if session[:AccountType] == 'customer'
+      redirect '/'
+    end
+
+    unless ['barista', 'manager', 'administrator'].include?(session[:AccountType])
       redirect '/'
     end
   end
 
-  get "/staff-portal" do
-    erb :staff_portal
-  end
+  get '/staff-portal' do
+  erb :staff_portal
+end
 
   get '/manage-loyalty-cards' do
     redirect '/' unless session[:AccountType] == 'barista'
