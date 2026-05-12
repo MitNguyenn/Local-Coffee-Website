@@ -1,17 +1,20 @@
 RSpec.describe "User access product pages", type: :feature do
+  before(:each) do
+    spec_before
+  end
   let(:user_id) { 10000001 }
   
   describe "Browsing Products" do
     it "displays the coffee beans page with seeded data" do
       visit '/coffee-beans'
       expect(page).to have_content('Ethiopian Yirgacheffe')
-      expect(page).to have_content('8.5')
+      expect(page).to have_content('£8.50')
     end
 
     it "displays the drinks page with seeded data" do
       visit '/drinks'
       expect(page).to have_content('Flat White')
-      expect(page).to have_content('3.5')
+      expect(page).to have_content('£3.50')
     end
   end
 
@@ -19,25 +22,22 @@ RSpec.describe "User access product pages", type: :feature do
     it "allows a user to add a drink to the basket and view it" do
       visit '/drinks'
       # Assuming your HTML has a button 'Add to Basket' for DrinkID 1
-      click_button 'Add to Basket' 
+      click_button 'Add to basket' 
       
       visit '/view-basket'
       expect(page).to have_content('Flat White')
-      expect(page).to have_content('3.5')
+      expect(page).to have_content('£3.50')
     end
   end
 
   context "when checking out" do
     before do
       # Log in John Doe
-      visit '/login'
-      fill_in 'email', with: 'john@example.com'
-      fill_in 'password', with: 'SecretPassword123'
-      click_button 'Login'
+      log_in_as('john@example.com', 'SecretPassword123')
       
       # Add an item to basket
       visit '/drinks'
-      click_button 'Add to Basket'
+      click_button 'Add to basket'
     end
 
     it "calculates the subtotal correctly on the checkout page" do
@@ -71,10 +71,8 @@ RSpec.describe "User access product pages", type: :feature do
   describe "Payment Gateway" do
     it "updates order status on successful payment callback" do
       # Log in
-      visit '/login'
-      fill_in 'email', with: 'john@example.com'
-      fill_in 'password', with: 'SecretPassword123'
-      click_button 'Login'
+
+      log_in_as('john@example.com', 'SecretPassword123')
 
       # Manually create a pending order to test the callback
       order_id = DB[:Orders].insert(

@@ -35,11 +35,8 @@ RSpec.describe 'Authentification process', type: :feature do
     end
   end
 
-  describe 'Logging out' do
-    it 'allows the user to log out' do
-      visit '/log-out'
-
-      expect(page).to have_content('Log in')
-    end
+  it 'allows the user to log out' do
+    visit '/log-out'
+    expect(page).to have_content('Log in')
   end
 end

@@ -9,13 +9,17 @@ RSpec.describe "Account Management", type: :feature do
   end
 
   context "when logged in" do
-    before do
-      # Perform a standard login using your seeded John Doe
-      visit '/log-in'
-      fill_in 'email', with: 'john@example.com'
-      fill_in 'password', with: 'SecretPassword123'
-      click_button 'Log In'
+    before (:each) do
+      log_in_as('john@example.com', 'SecretPassword123')
     end
+    
+    # before do
+    #   # Perform a standard login using your seeded John Doe
+    #   visit '/log-in'
+    #   fill_in 'email', with: 'john@example.com'
+    #   fill_in 'password', with: 'SecretPassword123'
+    #   click_button 'Log In'
+    # end
 
     describe "user visits accounts page" do
       it "shows the account settings page with user details" do

@@ -26,6 +26,11 @@ class BaseController < Sinatra::Base
     erb :home
   end
 
+  get '/staff-portal' do
+    update_recent_login(session[:UserID]) if session[:UserID]
+    erb :staff_portal
+  end
+
   get '/help' do
     erb :help
   end
