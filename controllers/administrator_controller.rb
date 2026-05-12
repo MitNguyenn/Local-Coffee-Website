@@ -1,8 +1,8 @@
 require_relative 'base_controller'
 require 'wicked_pdf'
-WickedPdf.config = {
-  exe_path: Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
-}
+WickedPdf.configure do |config|
+  config.exe_path = Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
+end
 
 class AdminController < BaseController
   helpers AppHelpers
@@ -12,18 +12,8 @@ class AdminController < BaseController
       redirect '/'
     end
   end
-
-  # get '/staff-portal' do
-  #   update_recent_login(session[:UserID]) if session[:UserID]
-  #   erb :staff_portal
-  # end
   
-  get '/user-tickets' do
-    update_recent_login(session[:UserID]) if session[:UserID]
-    @live_tickets = DB[:Tickets].where(TicketResolved: false).all
-    @past_tickets = DB[:Tickets].where(TicketResolved: true).all
-    erb :ticket_management
-  end
+  
 
   get '/manage-accounts' do
     update_recent_login(session[:UserID]) if session[:UserID]
@@ -71,27 +61,8 @@ class AdminController < BaseController
     erb :order_correction_administrator
   end
   
-  get '/stock-management' do
-    @beans = Bean.all
-    erb :stock_management
-  end
-
-  get '/user-tickets' do
-    erb :ticket_management
-  end
-
   get '/flagged-accounts' do
     erb :flagged_accounts
   end
-
-  post '/update-stamps' do
-  target_user_id = params[:user_id]
-  new_count = params[:stamp_count].to_i
-
-  DB[:Accounts].where(UserID: target_user_id).update(StampCount: new_count)
-
-  redirect '/manage-loyalty-cards'
-end
-
 
 end

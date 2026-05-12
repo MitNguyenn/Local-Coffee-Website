@@ -1,7 +1,5 @@
 class BaseController < Sinatra::Base
   helpers AppHelpers
-  enable :sessions
-  set :session_secret, ENV['SESSION_SECRET'] 
 
   require 'bcrypt'
   require 'require_all' 
@@ -42,4 +40,6 @@ class BaseController < Sinatra::Base
       erb :help
     end
   end
+
+  
 end

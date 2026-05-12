@@ -32,7 +32,7 @@ RSpec.describe 'Home page', type: :feature do
     it 'displays loyalty card page' do
       visit '/loyalty-card'
       expect(current_path).to eq('/loyalty-card')
-      expect(current_path).to have_content('Scan this QR code in store!')
+      expect(page).to have_content('Scan this QR code in store!')
     end
   end
 

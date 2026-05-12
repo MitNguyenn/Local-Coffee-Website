@@ -13,4 +13,20 @@ class ManagerController < BaseController
     erb :metrics_page
   end
 
+  get '/user-tickets' do
+    update_recent_login(session[:UserID]) if session[:UserID]
+    @live_tickets = DB[:Tickets].where(TicketResolved: false).all
+    @past_tickets = DB[:Tickets].where(TicketResolved: true).all
+    erb :ticket_management
+  end
+
+  get '/stock-management' do
+    @beans = Bean.all
+    erb :stock_management
+  end
+
+  get '/user-tickets' do
+    erb :ticket_management
+  end
+
 end

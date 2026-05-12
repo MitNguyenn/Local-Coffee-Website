@@ -8,7 +8,6 @@ class BaristaController < BaseController
   end
 
   get "/staff-portal" do
-    redirect '/' unless session[:AccountType] == 'barista'
     erb :staff_portal
   end
 
