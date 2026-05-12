@@ -145,5 +145,25 @@ RSpec.describe "Barista access unique pages", type: :feature do
         expect(current_path).to eq("/")
       end
     end
+
+        describe "Return Label Generation" do
+      it "can view the create return page with the orders list" do
+        visit "/generate-return"
+        expect(current_path).to eq("/generate-return")
+        # Assuming your HTML list uses order IDs
+        expect(page).to have_content("Order #") 
+      end
+
+      it "successfully generates a return PDF via POST" do
+        # We use page.driver.submit because it's a POST request with params
+        page.driver.submit :post, '/generate-return/1', {
+          external_tracking_id: 'EXT123456'
+        }
+
+        # Verify PDF headers
+        expect(page.response_headers['Content-Type']).to eq('application/pdf')
+        expect(page.response_headers['Content-Disposition']).to include('attachment; filename="Return_Label_1.pdf"')
+      end
+    end
   end
 end

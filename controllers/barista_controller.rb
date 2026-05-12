@@ -33,37 +33,45 @@ class BaristaController < BaseController
     erb :print_label
   end
 
-get '/generate-label/:id' do
-  @order = DB[:Orders].where(OrderID: params[:id]).first
-  
-  # Redirect if order doesn't exist to avoid a crash
-  return redirect back unless @order
-  
-  @account = DB[:Accounts].where(UserID: @order[:UserID]).first
-  @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
-  @courier = "Royal Mail"
-  @qrcode = RQRCode::QRCode.new("https://royalmail.com{@tracking_id}")
-  
-  html = erb :shipping_label, layout: false
-  
-  # Generate the PDF
-  pdf = WickedPdf.new.pdf_from_string(html)
-  
-  content_type 'application/pdf'
-  attachment "Label_#{@order[:OrderID]}.pdf"
-  
-  pdf
-end
+  get '/generate-label/:id' do
+    @order = DB[:Orders].where(OrderID: params[:id]).first
+    
+    # Redirect if order doesn't exist to avoid a crash
+    return redirect back unless @order
+    
+    @account = DB[:Accounts].where(UserID: @order[:UserID]).first
+    @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
+    @courier = "Royal Mail"
+    @qrcode = RQRCode::QRCode.new("https://royalmail.com{@tracking_id}")
+    
+    html = erb :shipping_label, layout: false
+    
+    # Generate the PDF
+    pdf = WickedPdf.new.pdf_from_string(html)
+    
+    content_type 'application/pdf'
+    attachment "Label_#{@order[:OrderID]}.pdf"
+    
+    pdf
+  end
 
-post '/generate-return/:id' do
-  @order = DB[:Orders].where(OrderID: params[:id]).first
-  @account = DB[:Accounts].where(UserID: @order[:UserID]).first
-  @external_id = params[:external_tracking_id]
+  get '/generate-return' do
+    @orders = DB[:Orders].where(IsCompleted: 1).all
+    erb :create_return
+  end
 
-  html = erb :return_label_template, layout: false
-  pdf = WickedPdf.new.pdf_from_string(html)
-  
-  redirect back
-end
+  post '/generate-return/:id' do
+    @order = DB[:Orders].where(OrderID: params[:id]).first
+    @account = DB[:Accounts].where(UserID: @order[:UserID]).first
+    @external_id = params[:external_tracking_id]
+
+    html = erb :return_label_template, layout: false
+    pdf = WickedPdf.new.pdf_from_string(html)
+    
+    # Set headers so the browser treats the response as a file download
+    content_type 'application/pdf'
+    attachment "Return_Label_#{@order[:OrderID]}.pdf"
+    pdf
+  end
 end
 
