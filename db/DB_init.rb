@@ -10,3 +10,11 @@ module DatabaseManager
     puts "Database environment reset and fully seeded successfully!"
   end
 end
+
+if __FILE__ == $0
+  db_absolute_path = File.expand_path("../../db/db.sqlite3", __FILE__)
+
+  DB = Sequel.sqlite(db_absolute_path)
+
+  DatabaseManager.init_tables(DB)
+end
