@@ -5,5 +5,4 @@ PROJECT_ROOT=$(dirname "$SCRIPT_DIR")
 cd "$PROJECT_ROOT"
 
 bundle install
-bundle exec ruby db/initTables.rb
-bundle exec ruby db/seed.rb
+bundle exec ruby db/DB_init.rb

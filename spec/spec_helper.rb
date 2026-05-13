@@ -7,27 +7,28 @@ SimpleCov.start do
   add_filter "/helpers/helpers.rb"
 end
 
-# Establish DB Connection
+# Establish test suite connection using an absolute path definition pattern
 require 'sequel'
-DB = Sequel.connect("sqlite://db/db.sqlite3") 
+db_absolute_path = File.expand_path("../../db/db.sqlite3", __FILE__)
+DB = Sequel.sqlite(db_absolute_path)
 
-# Load helpers
+# Load database initializer script 
+require_relative "../db/DB_init"
+
+# Load application architectural functional helpers
 require_relative "../helpers/validation"
 require_relative "../helpers/passwordCheck"
 require_relative "../helpers/analyzeData"
 require_relative "../helpers/myOrders"
 require_relative "../helpers/accountRecency"
 
-# Load specific test functions (including spec_before)
+# Load specific test functions definitions profile wrapper
 require_relative "spec_functions"
 
-# Load the App
 ENV["APP_ENV"] = "test"
 require_relative "../app"
 
-# Configure Capybara and RSpec
 require "capybara/rspec"
-
 Capybara.app = CoffeeApp
 Capybara.configure do |config|
   config.ignore_hidden_elements = false 
@@ -37,13 +38,12 @@ RSpec.configure do |config|
   config.include Capybara::DSL
   config.include Rack::Test::Methods
 
-  # 1. This runs EXACTLY ONCE at the very start to build/seed the DB
+  # This runs EXACTLY ONCE at the start to clean tables and insert baseline seeds
   config.before(:suite) do
     spec_before 
   end
 
-  # 2. Manual Transaction Management
-  # Wraps every test in a transaction that always rolls back
+  # Manual Transaction rollback manager
   config.around(:each) do |example|
     DB.transaction(rollback: :always, auto_savepoint: true) do
       example.run
