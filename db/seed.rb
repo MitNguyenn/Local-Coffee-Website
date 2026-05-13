@@ -227,14 +227,30 @@ complaint_samples = [
   "Payment failed but money left my account."
 ]
 
+refund_complaints = [
+  "I wasn't satisfied with the quality of the beans",
+  "I asked for dark roast and recieved light",
+  "I ordered 1kg of beans and recieved 500g",
+  "I don't like coffee",
+  "The packaging was heavily damaged on arrival"
+]
+
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 puts "Seeding tickets table..."
 20.times do
   DB[:Tickets].insert(
     UserID: customer_ids.sample,
-    TicketType: ["Complaint", "Technical", "Query", "Refund"].sample,
+    TicketType: ["Complaint", "Technical", "Query"].sample,
     TicketContent: complaint_samples.sample,
+    TicketResolved: [true, false].sample
+  )
+end
+10.times do
+  DB[:Tickets].insert(
+    UserID: customer_ids.sample,
+    TicketType: "Refund",
+    TicketContent: refund_complaints.sample,
     TicketResolved: [true, false].sample
   )
 end
