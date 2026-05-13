@@ -25,13 +25,16 @@ class ManagerController < BaseController
   end
 
   post '/resolve-ticket/:id' do
-    larp
+    DB[:Tickets].where(ticketID: params[:id]).update(ticketResolved: true)
+
+    redirect '/user-tickets'
   end
 
   get '/refund-tickets' do
     @tickets = DB[:Tickets].where(tickettype: "Refund").all
 
     erb :refund_management
+  end
 
   get '/refund/:id' do
     @ticket = DB[:Tickets].where(ticketID: params[:id]).first
