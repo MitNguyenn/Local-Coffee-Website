@@ -14,7 +14,7 @@ class AuthController < BaseController
     @password = params[:password]
     user = DB[:Accounts].where(email: @email).first
     
-    if user && BCrypt::Password.new(user[:hashedPassword]) == @password
+    if user && BCrypt::Password.new(user[:hashed_password]) == @password
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
 
