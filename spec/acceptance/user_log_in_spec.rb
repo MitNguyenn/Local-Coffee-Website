@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Authentication process', type: :feature do
-  before(:each) do
-    spec_before
-  end
 
   context "given a user is trying to log in" do
     context "when valid credentials are provided" do

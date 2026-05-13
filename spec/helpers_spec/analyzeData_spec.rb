@@ -4,9 +4,6 @@ RSpec.describe MyOrders, type: :helper do
   include described_class
 
   let(:user_id) { 10000001 }
-
-  before(:each) do
-    spec_before
     
     # We clear the specific test objects out of the database to guarantee clean targets
     DB[:OrderItems].delete
