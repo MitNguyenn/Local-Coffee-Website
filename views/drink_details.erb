@@ -1,5 +1,5 @@
 <div class="product-detail-container">
-  <h1><%= @item.Beverage %></h1>
+  <h1 id="beverage" data-beverage="<%= @item.Beverage %>" ><%= @item.Beverage %></h1>
   <div class="product-main-content">
     <%
       rel_path = "drinks/#{@item.Beverage}.png"
@@ -16,7 +16,7 @@
       <span id="base-price" data-price="<%= @item.RegularPrice %>" style="display:none;"></span>
       <p><%= @item.Description %></p>
 
-      <label for="drink-sizes">Size:</label>
+      <label for="drink-size-select">Size:</label>
       <select name="drink-size" id="drink-size-select">
         <% @drink_sizes.each do | drink_size | %>
           <option value="<%= drink_size[:DrinkSize] %>" data-multiplier="<%= drink_size[:MarkupMultiplier] %>">
@@ -25,7 +25,7 @@
         <% end %>
       </select>
 
-      <label for="milk-types"><b>Milk types:</b></label>
+      <label for="milk-type-select"><b>Milk types:</b></label>
       <% if @item.ContainsMilk %>
         <select name="milk-type" id="milk-type-select">
           <% @milk_types.each do | milk_type | %>
@@ -54,31 +54,58 @@
       <% end %>
 
       <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.RegularPrice) %></h2>
-      <button class="add-to-cart-button">Add to Cart</button>
-      <button class="buy-button">Buy Now</button>
+      <button onclick="addToCartOnClick(event)" class="add-to-cart-button" id="add-to-cart-button">Add to Cart</button>
     </div> 
   </div> 
   <a href="/drinks">Back to Catalog</a>
 </div>
  
 <script>
+  const beverage = document.getElementById('beverage').dataset.beverage;
+
   const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
   const displayPrice = document.getElementById('display-price');
+
   const drinkSizeSelect = document.getElementById('drink-size-select');
   const milkTypeSelect = document.getElementById('milk-type-select');
 
-  function updatePrice() {
+  function getPrice() {
     const sizeOption = drinkSizeSelect.options[drinkSizeSelect.selectedIndex];
     const milkOption = milkTypeSelect.options[milkTypeSelect.selectedIndex];
 
     const multiplier = parseFloat(sizeOption.dataset.multiplier);
     const milkPrice = parseFloat(milkOption.dataset.milkPrice);
 
-    const newPrice = (basePriceValue * multiplier) + milkPrice;
-    
-    displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
+    return (basePriceValue * multiplier) + milkPrice;
+  }
+
+  function updatePrice() {
+    newPrice = getPrice();
+    displayPrice.innerText = 'Total price: £' + roundToTwoDecimalPlaces(newPrice);
   }
 
   drinkSizeSelect.addEventListener('change', updatePrice);
   milkTypeSelect.addEventListener('change', updatePrice);
+
+  function addToCartOnClick(event) {
+    const drinkSize = document.getElementById('drink-size-select').value;
+    const milkType = document.getElementById('milk-type-select').value;
+    const price = getPrice();
+
+    fetch('/add-to-cart', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `item_type=drink&beverage=${beverage}&drink_size=${drinkSize}&milk_type=${milkType}&price=${price}`
+    })
+    .then(data => {
+      const indicator = document.getElementById('cart-indicator');
+      if (indicator) {
+        indicator.classList.remove('hidden');
+      }
+      
+      const button = document.getElementById('add-to-cart-button');
+      button.textContent = "Added! ✅";
+      setTimeout(() => { button.textContent = "Add to cart"; }, 1000);
+    });
+  }
 </script>

@@ -3,6 +3,10 @@ html {
 }
 
 body {
+
+  display: flex;
+
+
   margin: 0;
   padding: 0;
   font-family: "Lilita One", sans-serif;
@@ -111,11 +115,28 @@ select {
   display: block;
 }
 
-.cart-header {
-  padding: 10px 15px;
-  font-size: 1.1rem;
-  border-bottom: 1px solid #eee;
-  color: #a67458;
+.cart-item-list{
+  width: 60vw;              /* 0.6 * pageWidth */
+  height: 75vh;             /* 0.75 * pageHeight */
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow-y: auto;         /* Adds a scrollbar if you have too many rows */
+  
+  /* Flexbox to manage the rows inside */
+  display: flex;
+  flex-direction: column;   /* Stacks rows vertically */
+  gap: 20px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 .empty-msg {
@@ -1111,7 +1132,9 @@ footer {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s;
 }
-
+.hidden {
+  display: none !important;  
+}
 .ticket-border-open {
   border-left: 5px solid #a67458;
 }
@@ -1594,8 +1617,6 @@ button:active {
 .add-to-cart-button,
 .btn,
 .view-menu-btn,
-.buy-button,
-.add-to-cart-button,
 .submit-btn {
   background:
     linear-gradient(

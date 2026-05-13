@@ -38,10 +38,8 @@
       <!-- Cart Button -->
       <div onclick="cartOnClick(event)" class="cart">
         <img src="/cart.png" alt="cart-icon" width="65" height="65">
-        
-        <% if session[:cart] && session[:cart].any? %>
-          <span class="cart-dot" id="cart-indicator"></span>
-        <% end %>
+
+        <span class="cart-dot <%= 'hidden' if session[:cart].nil? || session[:cart].empty? %>" id="cart-indicator"></span>
       </div>
 
       <!-- Account Button -->
@@ -74,6 +72,10 @@
   </footer>
 
   <script>
+    function roundToTwoDecimalPlaces(n) {
+      return (Math.round((n + Number.EPSILON) * 100) / 100).toFixed(2);
+    } 
+
     function closeAllDropdowns() {
       const dropdowns = [
         document.getElementById("myDropdown"),

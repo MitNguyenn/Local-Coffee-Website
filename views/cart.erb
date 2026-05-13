@@ -1,5 +1,21 @@
 <% if session[:cart] && session[:cart].any? %>
+  <div class="cart-item-list">
+    <% session[:cart].each do | key, data | %>
+      <div class="cart-item">
+        <span class="cart-item-key"><%= key %></span>
+        <div class="cart-item-quantity-controllers">
+          <span class="add-button">
+            +
+          </span>
+          <span class="cart-item-quantity"> <%= data[:quantity] %></span>
+          <span class="remove-button">
+            -
+          </span>
+        </div>
 
+      </div>
+    <% end %>
+  </div>
 <% elsif %>
   You have 0 items in your cart
 <% end %>

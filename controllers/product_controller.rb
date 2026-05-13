@@ -103,42 +103,60 @@ class ProductController < BaseController
     end
   end
 
-  post '/add-to-cart' do
-    if session[:cart].empty? 
-      session[:cart] = { }
-    end
+  put '/add-to-cart' do
+    session[:cart] ||= { }
 
-    # [item_key][quantity, total price = quantity * item_price]
     # for bean item key is:
     # item_key = origin_[pack_weight]_roast
     # for drink item its:
     # item_key = beverage_size_
 
-    item_key = ""
+    item_type = params[:item_type]
 
-    if item_type == 'bean' 
-      origin = params[:id]
-      pack_weight = params[:pack_weight]
-      roast_level = params[:roast_level]
-      item_key = "#{origin}_#{pack_weight}_#{roast_level}"
-    elsif item_type == 'drink'
-      beverage = params[:id]
-      size = params[:size]
-      milk_type = params[:milk_type]
-      item_key = "#{beverage}_#{size}_#{milk_type}"
+    begin
+      if params[:item_type] == 'bean' 
+        origin = params[:origin]
+        pack_weight = params[:pack_weight]
+        roast_level = params[:roast_level]
+        item_key = "#{origin}_#{pack_weight}_#{roast_level}"
+
+        if session[:cart][item_key] # item is in the basket, so just incrementing the quantity
+          session[:cart][item_key][:quantity] += 1
+        else
+          session[:cart][item_key] = {
+            item_type: 
+            origin: origin, 
+            pack_weight: pack_weight,
+            roast_level: roast_level,
+            price: params[:price],
+            quantity: 1 
+          }
+        end
+      elsif params[:item_type] == 'drink'
+        beverage = params[:beverage]
+        drink_size = params[:drink_size]
+        milk_type = params[:milk_type]
+        item_key = "#{beverage}_#{drink_size}_#{milk_type}"
+        if session[:cart][item_key] # same item exists, so just incrementing the quantity
+          session[:cart][item_key][:quantity] += 1
+        else
+          session[:cart][item_key] = { 
+            beverage: beverage,
+            drink_size: drink_size,
+            milk_type: milk_type,
+            price: params[:price],
+            quantity: 1 
+          }
+        end
+      end
+
+      p session[:cart]
+      "Successfully added item to the cart".to_json()
+    rescue => exception
+      warn exception.message
+
+      "Failed to add item to the cart".to_json()
     end
-
-    if session[:cart][item_key]
-      session[:cart][item_key][:quantity] += 1
-    else
-      session[:cart][item_key] = { 
-        id: item_id, 
-        type: item_type, 
-        quantity: 1 
-      }
-    end
-
-    redirect back
   end
 
   get '/order-success' do
@@ -146,25 +164,4 @@ class ProductController < BaseController
     @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
     erb :order_success
   end
-end
-
-def calculate_cart_total(cart, user)
-  return 0.0 if cart.nil? || cart.empty?
-  total = 0.0
-  drink_prices = []
-  cart.each do |item_data|
-    table = (item_data[:type] == 'bean') ? :Beans : :Drinks
-    id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
-    item = DB[table].where(id_col => item_data[:id]).first
-    if item
-      price = item[:Price].to_f
-      total += price
-      drink_prices << price if item_data[:type] == 'drink'
-    end
-  end
-  if user && user[:StampCount] >= 9 && !drink_prices.empty?
-    discount = [drink_prices.min, 5.0].min 
-    total -= discount
-  end
-  total
 end

@@ -1,5 +1,5 @@
 <div class="product-detail-container">
-  <h1><%= @item.Origin %></h1>
+  <h1 id="origin" data-origin="<%= @item.Origin %>"><%= @item.Origin %></h1>
 
   <div class="product-main-content"> 
     <%
@@ -15,39 +15,68 @@
 
     <div class="product-details">
       <span id="base-price" data-price="<%= @item.PricePer250g %>" style="display:none;"></span>
-      <label for="pack-weight">Select Size:</label>
+      <label for="pack-weight-select">Select Size:</label>
       <select name="pack-weight" id="pack-weight-select">
-        <% @bean_packs.each do |pack| %>
-          <option value="<%= pack[:Weight] %>" data-multiplier="<%= pack[:MarkupMultiplier] %>">
+        <% @bean_packs.each do | pack | %>
+          <option value="<%= pack[:PackWeight] %>" data-multiplier="<%= pack[:MarkupMultiplier] %>">
             <%= pack[:PackWeight] %>g
           </option>
         <% end %>
       </select>
 
-      <label for="roast-levels"><b>Roast levels:</b></label>
-      <select name="roast-levels" id="roast-levels">
+      <label for="roast-level-select"><b>Roast levels:</b></label>
+      <select name="roast-level" id="roast-level-select">
         <% @bean_roast_levels.each do | roast | %>
           <option value="<%= roast[:RoastLevel] %>"><%= roast[:RoastLevel] %></option>
         <% end %>
       </select>
 
       <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.PricePer250g) %></h2>
-      <button class="add-to-cart-button">Add to Cart</button>
+      <button onclick="addToCartOnClick(event)" id="add-to-cart-button" class="add-to-cart-button">Add to cart</button>
     </div>
   </div>
 </div> <a href="/coffee-beans" class="back-link">Back to Catalog</a>
 
 <script>
-  const weightSelect = document.getElementById('pack-weight-select');
+  const origin = document.getElementById('origin').dataset.origin;
+
   const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
   const displayPrice = document.getElementById('display-price');
 
-  weightSelect.addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const multiplier = parseFloat(selectedOption.dataset.multiplier);
+  const weightSelect = document.getElementById('pack-weight-select');
 
-    const newPrice = basePriceValue * multiplier;
+  function getPrice() {
+    const packWeightSelect = weightSelect.options[weightSelect.selectedIndex];
+    const multiplier = parseFloat(packWeightSelect.dataset.multiplier);
+    return basePriceValue * multiplier;
+  }
 
-    displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
-  });
+  function updatePrice() {
+    newPrice = getPrice();
+    displayPrice.innerText = 'Total price: £' + roundToTwoDecimalPlaces(newPrice);
+  }
+
+  weightSelect.addEventListener('change', updatePrice);
+
+  function addToCartOnClick(event) {
+    const packWeight = document.getElementById('pack-weight-select').value;
+    const roastLevel = document.getElementById('roast-level-select').value;
+    const price = getPrice();
+
+    fetch('/add-to-cart', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `item_type=bean&origin=${origin}&pack_weight=${packWeight}&roast_level=${roastLevel}&price=${price}`
+    })
+    .then(data => {
+      const indicator = document.getElementById('cart-indicator');
+      if (indicator) {
+        indicator.classList.remove('hidden');
+      }
+      
+      const button = document.getElementById('add-to-cart-button');
+      button.textContent = "Added! ✅";
+      setTimeout(() => { button.textContent = "Add to cart"; }, 1000);
+    });
+  }
 </script>
