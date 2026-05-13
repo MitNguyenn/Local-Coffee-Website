@@ -91,12 +91,12 @@ select {
   gap: 20px;
 }
 
-.cart {
+.basket {
   position: relative;
   display: inline-block;
 }
 
-.cart-dot {
+.basket-dot {
   position: absolute;
   top: 5px; 
   right: 5px;
@@ -111,7 +111,7 @@ select {
   display: block;
 }
 
-.cart-header {
+.basket-header {
   padding: 10px 15px;
   font-size: 1.1rem;
   border-bottom: 1px solid #eee;

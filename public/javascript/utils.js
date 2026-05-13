@@ -84,8 +84,8 @@ function addBeanToBasket(beanId) {
   })
   .then(response => response.json())
   .then(data => {
-	const cartCount = document.getElementById('basket-count');
-	if (cartCount) cartCount.textContent = data.count;
+	const basketCount = document.getElementById('basket-count');
+	if (basketCount) basketCount.textContent = data.count;
 	
 	target.textContent = "Added! ✅";
 	setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
@@ -100,8 +100,8 @@ function addDrinkToBasket(drinkId, size = 'regular', milk_type = 'whole') {
   })
   .then(response => response.json())
   .then(data => {
-	const cartCount = document.getElementById('basket-count');
-	if (cartCount) cartCount.textContent = data.count;
+	const basketCount = document.getElementById('basket-count');
+	if (basketCount) basketCount.textContent = data.count;
 	
 	target.textContent = "Added! ✅";
 	setTimeout(() => { target.textContent = "Remove from basket"; }, 1000);
