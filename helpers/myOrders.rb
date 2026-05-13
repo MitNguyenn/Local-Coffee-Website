@@ -1,31 +1,36 @@
-require 'json'
-
 module MyOrders
-  def fetch_current_orders(userID)
-    orders = DB[:Orders]
-      .where(UserID: userID, IsCompleted: false)
-      .order(Sequel.desc(:CreatedAt))
+  def fetch_current_orders(user_id)
+    DB[:Orders]
+      .join(:OrderItems, OrderID: :OrderID)
+      .where(UserID: user_id, IsCompleted: false)
       .all
-
-    parse_contents(orders)
   end
 
-  def fetch_past_orders(userID)
+  def fetch_past_orders(user_id)
+    DB[:Orders]
+      .join(:OrderItems, OrderID: :OrderID)
+      .where(UserID: user_id, IsCompleted: true)
+      .all
+  end
+  
+  def get_stats(user_id)
     orders = DB[:Orders]
-      .where(UserID: userID, IsCompleted: true)
-      .order(Sequel.desc(:CreatedAt))
+      .join(:OrderItems, OrderID: :OrderID)
+      .where(UserID: user_id)
       .all
 
-    parse_contents(orders)
-  end
+    account = DB[:Accounts].where(UserID: user_id).first
+    stamp_count = account ? account[:StampCount].modulo(10) : 0
 
-  private
+    total_num_coffee = orders.select { |item| item[:ProductType] == 'drink' }.sum { |item| item[:Quantity] }
+    total_num_beans  = orders.select { |item| item[:ProductType] == 'bean' }.sum { |item| item[:Quantity] }
+    until_next_discount = 10 - stamp_count
 
-  def parse_contents(orders)
-    orders.map do |order|
-      # Parse JSON string into Ruby Hash; defaults to empty hash on failure
-      order[:OrderContents] = JSON.parse(order[:OrderContents]) rescue {}
-      order
-    end
+    return {
+      "stamp_count" => stamp_count,
+      "total_num_coffee" => total_num_coffee,
+      "total_num_beans" => total_num_beans,
+      "until_next_discount" => until_next_discount
+    }
   end
 end

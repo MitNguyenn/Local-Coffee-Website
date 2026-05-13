@@ -36,6 +36,7 @@ class AccountController < BaseController
   get '/my-orders' do
     @current_orders = fetch_current_orders(session[:UserID])
     @past_orders = fetch_past_orders(session[:UserID])
+    @order_stats = get_stats(session[:UserID])
     erb :my_orders
   end
 end

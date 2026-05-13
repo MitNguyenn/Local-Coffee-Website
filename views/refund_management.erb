@@ -1,0 +1,76 @@
+<div style="padding: 1rem 0;">
+  <div style="display: flex; gap: 8px; margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); padding-bottom: 0;">
+    <div class="my-orders-nav">
+  <button class="my-orders-nav-btn active" id="btn-open" onclick="showTab('open')">
+    Open Refunds (<%= @live_tickets.count %>)
+  </button>
+  <button class="my-orders-nav-btn" id="btn-resolved" onclick="showTab('resolved')">
+    Resolved History
+  </button>
+</div>
+  </div>
+
+  <div id="view-open">
+    <% if @live_tickets.empty? %>
+      <div class="my-orders-card" style="text-align: center; padding: 3rem;">
+        <p class="m-dash-panel__title">No open refund requests.</p>
+      </div>
+    <% else %>
+      <% @live_tickets.each do |ticket| %>
+        <div class="my-orders-card ticket-border-open">
+          <div class="my-orders-header">
+            <span class="my-orders-title"><%= ticket[:TicketType] %></span>
+            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %H:%M") %></span>
+          </div>
+          <div class="my-orders-grid">
+            <div class="ticket-content-text">
+              <%= ticket[:TicketContent].length > 100 ? ticket[:TicketContent][0..100] + "..." : ticket[:TicketContent] %>
+            </div>
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span>
+              <a href="/refund/<%= ticket[:ticketID] %>" class="view-details-btn">View full ticket</a>
+              <span class="my-orders-badge status-open">Pending review</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div id="view-resolved" style="display: none;">
+    <% if @past_tickets.empty? %>
+      <div class="my-orders-card" style="text-align: center; padding: 3rem;">
+        <p class="m-dash-panel__title">No resolved refunds yet.</p>
+      </div>
+    <% else %>
+      <% @past_tickets.each do |ticket| %>
+        <div class="my-orders-card ticket-resolved-dim">
+          <div class="my-orders-header">
+            <span class="my-orders-title" style="color: #718096;"><%= ticket[:TicketType] %></span>
+            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %Y") %></span>
+          </div>
+          <div class="my-orders-grid">
+            <div class="ticket-content-text" style="color: #a0aec0; font-style: italic;">
+              <%= ticket[:TicketContent].length > 80 ? ticket[:TicketContent][0..80] + "..." : ticket[:TicketContent] %>
+            </div>
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span>
+              <a href="/refund/<%= ticket[:ticketID] %>" class="view-details-btn" style="background: #718096;">View archive</a>
+              <span class="my-orders-badge status-resolved">Resolved</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+function showTab(type) {
+  document.getElementById('view-open').style.display = type === 'open' ? 'block' : 'none';
+  document.getElementById('view-resolved').style.display = type === 'resolved' ? 'block' : 'none';
+
+  document.querySelectorAll('.my-orders-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + type).classList.add('active');
+}
+</script>

@@ -52,7 +52,7 @@ end
 finn_password = BCrypt::Password.create("testpassword?!")
 
 DB[:Accounts].insert(
-  UserID: 23242526,
+  UserID: 23242526, 
   first_name: "Finn",
   last_name: "Elliott",
   StampCount: 3,
@@ -194,7 +194,7 @@ order_id_1 = DB[:Orders].insert(
   OrderType: "In-Person",
   PaymentMethod: "Card",
   CreatedAt: Time.now,
-  Destination: "In-Store",
+  Location: "In-Store",
   IsCompleted: true,
   payment_status: 'Paid',
   TotalCost: 10.33 # Large Latte with Oat milk + Light roasted 250g Arabic beans pack = 5.58 + 4.75 = 10.33
@@ -219,6 +219,35 @@ DB[:OrderItems].insert(
 )
 puts "Done"
 
+order_id_2 = DB[:Orders].insert(
+  UserID: 23242526,
+  OrderType: "In-Person",
+  PaymentMethod: "Card",
+  CreatedAt: Time.now-86400,
+  Location: "In-Store",
+  IsCompleted: false,
+  payment_status: 'Paid',
+  TotalCost: 10.33 # Large Latte with Oat milk + Light roasted 250g Arabic beans pack = 5.58 + 4.75 = 10.33
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_2,
+  ItemID: "Latte", # Latte
+  ProductType: "drink",
+  Quantity: 1,
+  Milk: "Oat",
+  Size: "Large"
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_2,
+  ItemID: "Arabic",
+  ProductType: "bean",
+  Quantity: 1,
+  PackWeight: 250,
+  RoastLevel: "Light"
+)
+
 complaint_samples = [
   "My coffee was cold.",
   "The delivery driver couldn't find my flat.",
@@ -227,14 +256,30 @@ complaint_samples = [
   "Payment failed but money left my account."
 ]
 
+refund_complaints = [
+  "I wasn't satisfied with the quality of the beans",
+  "I asked for dark roast and recieved light",
+  "I ordered 1kg of beans and recieved 500g",
+  "I don't like coffee",
+  "The packaging was heavily damaged on arrival"
+]
+
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 puts "Seeding tickets table..."
-10.times do
+20.times do
   DB[:Tickets].insert(
     UserID: customer_ids.sample,
     TicketType: ["Complaint", "Technical", "Query"].sample,
     TicketContent: complaint_samples.sample,
+    TicketResolved: [true, false].sample
+  )
+end
+10.times do
+  DB[:Tickets].insert(
+    UserID: customer_ids.sample,
+    TicketType: "Refund",
+    TicketContent: refund_complaints.sample,
     TicketResolved: [true, false].sample
   )
 end
@@ -255,40 +300,3 @@ DB.tables.each do | table |
   printf(" %s ", table)
 end
 puts "\n"
-
-# def days_ago(n)
-#   Time.now - (n * 86400) - rand(3600..7200)
-# end
-
-# # Function to generate the JSON string for OrderContents
-# def generate_json_contents(beans)
-#   order_map = {}
-#   # Add 1-3 random menu items
-#   rand(1..3).times do
-#     order_map[MENU_ITEMS.sample] = rand(1..2)
-#   end
-#   # 40% chance to include a specific bean variety
-#   if rand < 0.4
-#     order_map["#{beans.sample} Beans (250g)"] = 1
-#   end
-#   order_map.to_json
-# end
-
-# # --- 4. ORDERS ---
-
-# 40.times do |i|
-#   # First 5 orders are "Recent/Live", the rest are historical
-#   is_past = i > 5 
-  
-#   DB[:Orders].insert(
-#     UserID: customer_ids.sample,
-#     OrderContents: generate_json_contents(bean_types),
-#     OrderType: ["In-Person", "Delivery"].sample,
-#     PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
-#     totalCost: rand(3.50..22.00).round(2),
-#     CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
-#     Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
-#     IsDelivered: is_past,
-#     IsCompleted: is_past
-#   )
-# end

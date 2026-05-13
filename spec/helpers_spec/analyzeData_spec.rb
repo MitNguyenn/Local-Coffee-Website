@@ -1,27 +1,73 @@
-RSpec.describe "AnalyzeData" do
-  include AnalyzeData
+require 'spec_helper'
 
-  describe "#analyze_sales_data" do
-    it "returns correct metrics including seeded data" do
-      # 1. Setup specific test data
-      user_id = 10000001 # Use seeded John Doe
-      test_amount = 50.0
+RSpec.describe MyOrders, type: :helper do
+  include described_class
+
+  let(:user_id) { 10000001 }
+
+  before(:each) do
+    
+    DB[:OrderItems].delete
+    DB[:Orders].delete
+
+    @order_id_current = DB[:Orders].insert(
+      UserID: user_id, 
+      IsCompleted: false, 
+      OrderType: 'In-Store',
+      PaymentMethod: 'Card',
+      TotalCost: 4.40,
+      payment_status: 'Pending'
+    )
+    DB[:OrderItems].insert(
+      OrderID: @order_id_current, 
+      ItemID: 'Latte', 
+      ProductType: 'drink', 
+      Quantity: 1, 
+      Size: 'Large'
+    )
+
+    @order_id_past = DB[:Orders].insert(
+      UserID: user_id, 
+      IsCompleted: true, 
+      OrderType: 'In-Store',
+      PaymentMethod: 'Card',
+      TotalCost: 8.20,
+      payment_status: 'Paid'
+    )
+    DB[:OrderItems].insert(
+      OrderID: @order_id_past, 
+      ItemID: 'Ethiopian', 
+      ProductType: 'bean', 
+      Quantity: 2, 
+      RoastLevel: 'Medium'
+    )
+  end
+
+  describe "#fetch_current_orders" do
+    it "returns only active uncompleted relational joined order objects" do
+      current_orders = fetch_current_orders(user_id)
       
-      DB[:Orders].insert(
-        UserID: user_id, 
-        totalCost: test_amount, 
-        CreatedAt: Time.now, 
-        OrderContents: '[{"item":"Espresso", "price":50.0}]'
-      )
+      expect(current_orders.any? { |o| o[:IsCompleted] == false }).to be true
+      expect(current_orders.any? { |o| o[:IsCompleted] == true }).to be false
+      
+      order_item = current_orders.find { |o| o[:OrderID] == @order_id_current }
+      expect(order_item).not_to be_nil
+      expect(order_item[:ItemID]).to eq('Latte')
+      expect(order_item[:Quantity]).to eq(1)
+    end
+  end
 
-      # 2. Call the method
-      metrics = analyze_sales_data
-
-      # 3. Assertions
-      # Seed (£7.00) + Test (£50.00) = £57.00
-      expect(metrics[:total_sales]).to eq(57.0)
-      expect(metrics[:total_accounts]).to be >= 1
-      expect(metrics).to include(:avg_order_value, :monthly_signups_change)
+  describe "#fetch_past_orders" do
+    it "returns only completed historical relational joined order objects" do
+      past_orders = fetch_past_orders(user_id)
+      
+      expect(past_orders.any? { |o| o[:IsCompleted] == true }).to be true
+      expect(past_orders.any? { |o| o[:IsCompleted] == false }).to be false
+      
+      order_item = past_orders.find { |o| o[:OrderID] == @order_id_past }
+      expect(order_item).not_to be_nil
+      expect(order_item[:ItemID]).to eq('Ethiopian')
+      expect(order_item[:Quantity]).to eq(2)
     end
   end
 end

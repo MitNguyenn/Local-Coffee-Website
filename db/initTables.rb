@@ -28,8 +28,8 @@ end
 
 DB.create_table? :Beans do
   String  :Origin, primary_key: true
-  Double :StockMass # mass in kilograms
-  Double  :PricePer250g # base price (price for 250g pack)
+  Double :StockMass 
+  Double  :PricePer250g 
 end
 
 DB.create_table? :BeansPackWeightPriceMarkupMultipliers do
@@ -65,15 +65,14 @@ DB.create_table? :Orders do
   String      :PaymentMethod
   Double      :TotalCost, size: [10, 2]
   DateTime    :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
-  String      :Destination, default: 'In-Store'
+  String      :Location, default: 'In-Store'
   TrueClass   :IsCompleted, default: false
   String      :payment_status, default: 'Pending'
 end
 
 DB.create_table? :OrderItems do
   foreign_key :OrderID, :Orders, on_delete: :cascade
-  String :ItemID # "Latte" or "Ethiopian"
-
+  String :ItemID 
   String :ProductType
   
   Integer :Quantity, default: 1
@@ -81,7 +80,7 @@ DB.create_table? :OrderItems do
   Double :PackWeight, default: nil
   String :RoastLevel, default: nil
 
-  String  :Milk, default: nil   # Null if item == beans
+  String  :Milk, default: nil  
   String  :Size, default: nil
 
 

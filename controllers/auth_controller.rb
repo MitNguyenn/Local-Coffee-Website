@@ -14,7 +14,7 @@ class AuthController < BaseController
     @password = params[:password]
     user = DB[:Accounts].where(email: @email).first
     
-    if user && BCrypt::Password.new(user[:hashedPassword]) == @password
+    if user && BCrypt::Password.new(user[:hashed_password]) == @password
       session[:UserID] = user[:UserID]
       session[:AccountType] = user[:AccountType]
 
@@ -91,9 +91,6 @@ class AuthController < BaseController
     session[:UserID] = user.UserID
     update_recent_login(session[:UserID]) if session[:UserID]
     redirect '/'
-  rescue => e
-    @error = "Registration failed: #{e.message}"
-    erb :register_account
   end
 
   get '/log-out' do

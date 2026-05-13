@@ -16,14 +16,14 @@
     </div>
 
     <div class="m-dash-card">
-      <h3 class="m-dash-card__label">Top 3 Ranking</h3>
+      <h3 class="m-dash-card__label">Top 5 Ranking</h3>
       <div class="m-dash-ranking">
         <% if @metrics[:top_products].any? %>
-          <% @metrics[:top_products].each_with_index do |(name, qty), index| %>
+          <% @metrics[:top_products].each_with_index do |product, index| %>
             <div class="m-dash-ranking__row">
               <span class="m-dash-ranking__index">#<%= index + 1 %></span>
-              <span class="m-dash-ranking__name"><%= name %></span>
-              <span class="m-dash-ranking__qty"><%= qty %> sold</span>
+              <span class="m-dash-ranking__name"><%= product[:name] %></span>
+              <span class="m-dash-ranking__qty"> - <%= product[:units_sold] %>x sold</span>
             </div>
           <% end %>
         <% else %>
@@ -43,7 +43,7 @@
         <% if @metrics[:monthly_signups_change].any? %>
           <% latest_month = @metrics[:monthly_signups_change].keys.last %>
           <% latest_data = @metrics[:monthly_signups_change][latest_month] %>
-          <p class="m-dash-card__value"><%= latest_data[:change] >= 0 ? '+' : '' %><%= latest_data[:change] %></p>
+          <p class="m-dash-card__value"><%= latest_data[:change] >= 0 ? '+' : '' %><%= latest_data[:change] %>%</p>
           <p class="m-dash-card__subtitle"><%= latest_month %>: <%= latest_data[:signups] %> total</p>
         <% else %>
           <p class="m-dash-card__value">N/A</p>
@@ -60,8 +60,8 @@
       <table class="m-dash-table">
         <% @metrics[:sales_by_category].each do |type, total| %>
           <tr>
-            <td><%= type || "General" %></td>
-            <td class="m-dash-table__price">£<%= sprintf('%.2f', total) %></td>
+            <td><%= type %></td>
+            <td class="m-dash-table__price"><%= total %> units</td>
           </tr>
         <% end %>
       </table>
@@ -104,7 +104,7 @@
               <td><%= month %></td>
               <td><%= data[:signups] %></td>
               <td class="<%= data[:change] >= 0 ? 'positive-change' : 'negative-change' %>">
-                <%= data[:change] >= 0 ? '+' : '' %><%= data[:change] %>
+                <%= data[:change] >= 0 ? '+' : '' %><%= data[:change] %>%
               </td>
             </tr>
           <% end %>
@@ -124,11 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (btn) {
     btn.addEventListener('click', function() {
-      // 1. Get the data from the attribute safely
       const rawData = this.getAttribute('data-metrics');
       const metrics = JSON.parse(rawData);
       
-      // 2. Build the CSV rows
       const rows = [];
       const safeFix = (val) => parseFloat(val || 0).toFixed(2);
 
@@ -139,18 +137,17 @@ document.addEventListener('DOMContentLoaded', function() {
       rows.push(["Financials", "Total Account Holders", metrics.total_accounts]);
       rows.push([]);
 
-      // Top Products
-      rows.push(["Top 3 Ranking", "Product Name", "Qty Sold"]);
-      (metrics.top_products || []).forEach((item, index) => {
-        // item[0] is name, item[1] is qty
-        rows.push([`Rank #${index + 1}`, item[0], item[1]]);
+      // Top Products (Updated keys)
+      rows.push(["Top 5 Ranking", "Product Name", "Qty Sold"]);
+      (metrics.top_products || []).forEach((product, index) => {
+        rows.push([`Rank #${index + 1}`, product.name, product.units_sold]);
       });
       rows.push([]);
 
-      // Sales by Channel
-      rows.push(["Sales by Channel", "Type", "Total"]);
+      // Sales by Channel (Updated to count value representation)
+      rows.push(["Sales by Channel", "Type", "Units Sold"]);
       Object.entries(metrics.sales_by_category || {}).forEach(([type, total]) => {
-        rows.push(["Channel", type || "General", `£${safeFix(total)}`]);
+        rows.push(["Channel", type, total]);
       });
       rows.push([]);
 
@@ -164,10 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Monthly Account Sign-ups
       rows.push(["Monthly Account Sign-ups", "Month", "Sign-ups", "Change"]);
       Object.entries(metrics.monthly_signups_change || {}).forEach(([month, data]) => {
-        rows.push(["Sign-ups", month, data.signups, data.change]);
+        rows.push(["Sign-ups", month, data.signups, `${data.change}%`]);
       });
 
-      // 3. Generate and Download
       const csvContent = rows
         .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
         .join("\n");

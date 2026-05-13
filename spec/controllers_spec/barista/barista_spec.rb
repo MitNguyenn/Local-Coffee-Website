@@ -1,25 +1,25 @@
 RSpec.describe "Barista access unique pages", type: :feature do
 
-  # 1. Test the Security Redirect
+  context "Attempting to visit without valid creds" do
     describe "unauthorised access" do
-    it "redirects an unlogged user to the home page" do
-      visit "/staff-portal"
-      expect(current_path).to eq("/")
-    end
+      it "redirects an unlogged user to the home page" do
+        visit "/staff-portal"
+        expect(current_path).to eq("/")
+      end
 
-    it "redirects a plain customer to the home page" do
-      log_in_as('john@example.com', '_p_')
-      visit "/staff-portal"
-      expect(current_path).to eq("/")
-    end
+      it "redirects a plain customer to the home page" do
+        log_in_as('john@example.com', '_p_')
+        visit "/staff-portal"
+        expect(current_path).to eq("/")
+      end
 
-    it "redirects an unlogged user trying to access manage-loyalty-cards" do
-      visit "/manage-loyalty-cards"
-      expect(current_path).to eq("/")
+      it "redirects an unlogged user trying to access manage-loyalty-cards" do
+        visit "/manage-loyalty-cards"
+        expect(current_path).to eq("/")
+      end
     end
   end
 
-  # 2. Test Barista Actions
   context "as a logged-in barista" do
     before(:each) do
       log_in_as('barista@coffee.com', '_p_')
@@ -112,6 +112,58 @@ RSpec.describe "Barista access unique pages", type: :feature do
         stamp_count: 10
       }
       expect(DB[:Accounts].where(UserID: 10000001).first[:StampCount]).to eq(0)
+    end
+  end
+  
+  context "PDF management" do
+    before(:each) do
+      log_in_as('barista@coffee.com', '_p_')
+    end
+
+    describe "Barista attempts to print shipping label" do
+      it "orders table is viewable" do
+        visit "/print-order-label"
+        expect(current_path).to eq("/print-order-label")
+      end
+      it "generates a PDF file successfully" do
+        # Assuming an order with ID 1 exists from your seeds
+        visit "/generate-label/1"
+        
+        # Check that the response is a PDF
+        expect(page.response_headers['Content-Type']).to eq('application/pdf')
+        
+        # Check that the filename is correct in the header
+        expect(page.response_headers['Content-Disposition']).to include('attachment; filename="Label_1.pdf"')
+      end
+    end
+
+    describe "Customer attempts to print shipping label" do
+      it "redirects or denies access" do
+        log_in_as('john@example.com', '_p_')
+        visit "/generate-label/1"
+
+        expect(current_path).to eq("/")
+      end
+    end
+
+        describe "Return Label Generation" do
+      it "can view the create return page with the orders list" do
+        visit "/generate-return"
+        expect(current_path).to eq("/generate-return")
+        # Assuming your HTML list uses order IDs
+        expect(page).to have_content("Order #") 
+      end
+
+      it "successfully generates a return PDF via POST" do
+        # We use page.driver.submit because it's a POST request with params
+        page.driver.submit :post, '/generate-return/1', {
+          external_tracking_id: 'EXT123456'
+        }
+
+        # Verify PDF headers
+        expect(page.response_headers['Content-Type']).to eq('application/pdf')
+        expect(page.response_headers['Content-Disposition']).to include('attachment; filename="Return_Label_1.pdf"')
+      end
     end
   end
 end

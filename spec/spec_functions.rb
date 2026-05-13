@@ -2,17 +2,14 @@ require 'bcrypt'
 require 'json'
 
 def spec_before
-  # 1. Force clean slate by dropping everything
   DB.run("PRAGMA foreign_keys = OFF")
   [:Audits, :Tickets, :Orders, :Drinks, :Beans, :Accounts].each do |table|
     DB.drop_table?(table)
   end
   DB.run("PRAGMA foreign_keys = ON")
 
-  # 2. Re-create the schema
   create_tables
   
-  # 3. Insert global seeds
   seed_data
 end
 
@@ -24,13 +21,17 @@ def log_in_as(email, password)
 end
 
 def create_tables
-  DB.create_table :Accounts do
+  DB.tables.each do | table | 
+    DB.drop_table?(table)
+  end
+
+  DB.create_table? :Accounts do
     Integer :UserID, primary_key: true
     String :first_name
     String :last_name
     Integer :StampCount, default: 0
     String :email, unique: true, null: false
-    String :hashed_password, null: false
+    String :hashed_password
     String :PhoneNumber, size: 11
     String :Postcode, size: 7
     String :Address
@@ -38,51 +39,95 @@ def create_tables
     DateTime :Created_At, default: Sequel::CURRENT_TIMESTAMP
     DateTime :Recent_Login, default: Sequel::CURRENT_TIMESTAMP
     TrueClass :Flagged, default: false
-    DateTime :Flagged_At
+    DateTime  :Flagged_At, default: nil
     TrueClass :Suspended, default: false
   end
 
-  DB.create_table :Beans do
-    Integer :BeanID, primary_key: true
-    String :Name; String :Type; String :Roast; Integer :PackWeight
-    Double :Price; Integer :CurrentStock
-  end 
-
-  DB.create_table :Drinks do
-    Integer :DrinkID, primary_key: true
-    String :Beverage; Double :Price; String :Description
+  DB.create_table? :Beans do
+    String  :Origin, primary_key: true
+    Double :StockMass 
+    Double  :PricePer250g 
   end
 
-  DB.create_table :Orders do
+  DB.create_table? :BeansPackWeightPriceMarkupMultipliers do
+    Double :PackWeight, primary_key: true
+    Double :MarkupMultiplier
+  end
+
+  DB.create_table? :BeanRoastLevels do
+    String :RoastLevel, primary_key: true 
+  end
+
+  DB.create_table? :Drinks do
+    String    :Beverage, primary_key: true
+    TrueClass :ContainsMilk
+    Double    :RegularPrice, size: [10, 2]
+    String    :Description
+  end
+
+  DB.create_table? :DrinkSizePriceMarkupMultipliers do
+    String :DrinkSize, primary_key: true
+    Double :MarkupMultiplier
+  end
+
+  DB.create_table? :MilkTypes do
+    String :MilkType, primary_key: true
+    Double :Price, size: [10, 2]
+  end
+
+  DB.create_table? :Orders do
     primary_key :OrderID
     foreign_key :UserID, :Accounts, on_delete: :cascade
-    String :OrderContents; String :OrderType; String :PaymentMethod
-    Float :totalCost; DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
-    String :Location, default: 'In-Store'; TrueClass :IsDelivered, default: false
-    TrueClass :IsCompleted, default: false; String :payment_status, default: 'Pending'
+    String      :OrderType
+    String      :PaymentMethod
+    Double      :TotalCost, size: [10, 2]
+    DateTime    :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+    String      :Location, default: 'In-Store'
+    TrueClass   :IsCompleted, default: false
+    String      :payment_status, default: 'Pending'
   end
 
-  DB.create_table :Tickets do
+  DB.create_table? :OrderItems do
+    foreign_key :OrderID, :Orders, on_delete: :cascade
+    String :ItemID 
+    String :ProductType
+    
+    Integer :Quantity, default: 1
+    
+    Double :PackWeight, default: nil
+    String :RoastLevel, default: nil
+
+    String  :Milk, default: nil  
+    String  :Size, default: nil
+
+
+    primary_key [:OrderID, :ItemID]
+  end
+
+  DB.create_table? :Tickets do
     primary_key :ticketID
     foreign_key :UserID, :Accounts, on_delete: :cascade
-    String :TicketType; String :TicketContent
-    FalseClass :TicketResolved, default: false
-    DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+    String      :TicketType
+    String      :TicketContent
+    FalseClass  :TicketResolved, default: false
+    DateTime    :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
   end
 
-  DB.create_table :Audits do
+  DB.create_table? :Audits do
     primary_key :AuditID
     foreign_key :orderID, :Orders, on_delete: :cascade
-    String :BeforeStatus; String :AfterStatus; Text :ChangeReason
-    DateTime :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
+    String      :BeforeStatus
+    String      :AfterStatus
+    Text        :ChangeReason
+    DateTime    :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
   end
+
+  puts "Database tables initialized successfully"
 end
 
 def seed_data
-  # Use cost: 4 for speed in tests
   pass = BCrypt::Password.create('_p_', cost: 4)
 
-  # 1. Accounts
   DB[:Accounts].insert(
     UserID: 10000001,
     first_name: 'John',
@@ -122,35 +167,119 @@ def seed_data
     AccountType: 'manager'
   )
 
-  # 2. Beans
-  DB[:Beans].insert(
-    BeanID: 1,
-    Name: 'Ethiopian Yirgacheffe',
-    Type: 'Arabica',
-    Roast: 'Light',
-    PackWeight: 250,
-    Price: 8.50,
-    CurrentStock: 50
+  bean_list = [
+    ["Ethiopian",   25.0, 8.20],
+    ["Brazillian",  17.0, 6.35],
+    ["Arabic",      13.0, 4.75]
+  ]
+
+  bean_list.each do |origin, mass, price |
+    DB[:Beans].insert(
+      Origin: origin,
+      StockMass: mass,
+      PricePer250g: price
+    )
+  end
+
+  beans_pack_weight_price_markup_multipliers = [
+    [ 250.0,  1.0 ], # 100% of the original price
+    [ 500.0,  1.7 ], # 170% and so on...
+    [ 1000.0, 3.3 ]
+  ]
+  beans_pack_weight_price_markup_multipliers.each do | weight, markup_multiplier |
+    DB[:BeansPackWeightPriceMarkupMultipliers].insert(
+      PackWeight: weight,
+      MarkupMultiplier: markup_multiplier
+    )
+  end
+  bean_roasts = [ "Light", "Medium", "Dark"]
+
+  bean_roasts.each do | roast |
+    DB[:BeanRoastLevels].insert(
+      RoastLevel: roast
+    )
+  end
+
+  drinks = [
+    ["Latte",      4.40, true,   "Smooth espresso with steamed milk"],
+    ["Americano",  3.8,  false,  "A rich, double-shot of espresso diluted with hot water for a smooth, bold finish."], 
+    ["Cappuccino", 4.4,  true,   "Equal parts espresso, steamed milk, and a thick layer of silky foam, topped with a dusting of cocoa."], 
+    ["Flat white", 4.35, true,   "Velvety micro-foam poured over a double-shot of ristretto for a creamy yet coffee-forward experience."],
+    ["Cortado",    3.7,  true,   "A perfectly balanced 1:1 ratio of espresso and warm milk to reduce acidity without the volume of a latte."]
+  ]
+
+  drinks.each do | bev, price, contains_milk, description|
+    DB[:Drinks].insert(
+      Beverage: bev,
+      ContainsMilk: contains_milk,
+      RegularPrice: price,
+      Description: description
+    )
+  end
+  drink_size_price_markup_mutlipliers = [
+    ["Regular", 1.0],
+    ["Large",   1.2]
+  ]
+
+  drink_size_price_markup_mutlipliers.each do | size, markup_multiplier | 
+    DB[:DrinkSizePriceMarkupMultipliers].insert(
+      DrinkSize: size,
+      MarkupMultiplier: markup_multiplier
+    )
+  end
+
+  milk_types = [
+    ["Whole", 0.1], # 10p if drink does NOT contain the milk by default
+    ["Oat",   0.3], # 30p
+    ["Soy",   0.2]  # 20p
+  ]
+
+  milk_types.each do | type, price |
+
+    DB[:MilkTypes].insert(
+      MilkType: type, 
+      Price: price
+    )
+  end
+
+
+  grams_beans_bought = 250.0
+  kg_bought = grams_beans_bought / 1000.0
+  current_mass = DB[:Beans].where(Origin: "Arabic").get(:StockMass)
+
+  DB[:Beans].where(Origin: "Arabic").update(
+    StockMass: Sequel[:StockMass] - kg_bought
   )
 
-  # 3. Drinks
-  DB[:Drinks].insert(
-    DrinkID: 1,
-    Beverage: 'Flat White',
-    Price: 3.50,
-    Description: 'Smooth double shot'
-  )
+  current_mass = DB[:Beans].where(Origin: "Arabic").get(:StockMass)
 
-  # 4. Orders (Capturing ID for Audits)
-  order_items = [{ item: "Flat White", qty: 2, price: 7.00 }].to_json
-  order_id = DB[:Orders].insert(
+  order_id_1 = DB[:Orders].insert(
     UserID: 10000001,
-    OrderContents: order_items,
-    OrderType: 'In-Store',
-    totalCost: 7.00,
-    payment_status: 'Paid',
+    OrderType: "In-Person",
+    PaymentMethod: "Card",
+    CreatedAt: Time.now,
+    Location: "In-Store",
     IsCompleted: true,
-    CreatedAt: Time.now - 86400 # 1 day ago
+    payment_status: 'Paid',
+    TotalCost: 10.33 
+  )
+
+  DB[:OrderItems].insert(
+    OrderID: order_id_1,
+    ItemID: "Latte", 
+    ProductType: "drink",
+    Quantity: 1,
+    Milk: "Oat",
+    Size: "Large"
+  )
+
+  DB[:OrderItems].insert(
+    OrderID: order_id_1,
+    ItemID: "Arabic",
+    ProductType: "bean",
+    Quantity: 1,
+    PackWeight: 250,
+    RoastLevel: "Light"
   )
 
   # 5. Tickets
@@ -164,7 +293,7 @@ def seed_data
 
   # 6. Audits
   DB[:Audits].insert(
-    orderID: order_id,
+    orderID: order_id_1,
     BeforeStatus: 'Pending',
     AfterStatus: 'Paid',
     ChangeReason: 'Customer paid via Card',
@@ -183,4 +312,5 @@ def seed_data
     first_name: 'Sussy',
     Suspended: true
   )
+
 end

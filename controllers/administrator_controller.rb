@@ -12,8 +12,6 @@ class AdminController < BaseController
       redirect '/'
     end
   end
-  
-  
 
   get '/manage-accounts' do
     @accounts = DB[:Accounts].all
@@ -58,9 +56,17 @@ class AdminController < BaseController
     @completed_orders = DB[:Orders].all
     erb :order_correction_administrator
   end
-  
-  get '/flagged-accounts' do
-    erb :flagged_accounts
+
+  get '/employee-accounts' do
+    employees = DB[:Accounts].where(AccountType: ['barista', 'manager', 'administrator']).all
+    @grouped_accounts = employees.group_by { |acc| acc[:AccountType] }
+
+    erb :employee_accounts
   end
 
+  post '/delete-account/:id' do
+    DB[:Accounts].where(UserID: params[:id]).delete
+
+    redirect '/employee-accounts'
+  end
 end
