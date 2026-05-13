@@ -25,7 +25,9 @@ class ManagerController < BaseController
   end
 
   post '/resolve-ticket/:id' do
+    DB[:Tickets].where(ticketID: params[:id]).update(ticketResolved: true)
 
+    redirect '/user-tickets'
   end
 
   get '/refund-tickets' do

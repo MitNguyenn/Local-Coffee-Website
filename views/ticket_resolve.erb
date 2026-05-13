@@ -22,5 +22,8 @@
         <%= @ticket[:CreatedAt].strftime("%d %B %Y at %H:%M") %>
       </div>
     </div>
-  </div>
+    <form action="/resolve-ticket/<%= @ticket[:ticketID]%>" method="POST">
+      <button name="resolve-button" class ="btn" value="">Resolve ticket</button>
+    </form>
+  </div>  
 </div>
