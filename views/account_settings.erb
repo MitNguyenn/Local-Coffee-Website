@@ -13,56 +13,33 @@
   <main class="login-container">
     <div class="login-card">
       
-      <h2>Hi, <%= @first_name %> </h2>
-
+      <h2>Hi, <%= @user[:first_name]%> </h2>
+      <% if @account_flagged %>
+        <p style="color: red;">Your account has been flagged for inactivity.</p>
+      <% end %>
       <h3 class="detail-header">Personal Details</h3>
 
-      <form method="POST" action="/login">
+      <form method="POST" action="/update-account">
         <div class="input-wrapper">
-        <label for="firstname">First Name</label>
-          <input type="text" value="<%= @first_name %>" 
-          readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+        <label for="first_name">First Name</label>
+          <input type="text" name = "first_name" value="<%= @user[:first_name] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
-        <label for="lastname">Last Name</label>
-          <input type="text" value="<%= @last_name %>" 
-          readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
-        </div>
-
-        <div class="input-wrapper">
-        <label for="date">Date of Birth</label>
-          <input type="text" value="<%= @date_of_birth %>"
-          readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+        <label for="last_name">Last Name</label>
+          <input type="text" name = "last_name" value="<%= @user[:last_name] %>" class="account-input">
         </div>
 
         <h3 class="detail-header">Account Details</h3>
         
         <div class="input-wrapper">
         <label for="email">Email</label>
-          <input type="text" value="<%= @email %>" 
-          readonly class="account-input">
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "email" value="<%= @user[:email] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
         <label for="password">Password</label>
-          <input type="password" value="<%= @password %>" 
-          readonly class="account-input">
-          <img src="eye-crossed.png"
-          class="reveal-password"
-          onclick="togglePassword(this)">
+          <input type="password" name = "password_placeholder" value="••••••••••••" class="account-input">
         </div>
 
         <div class="extra-links">
@@ -73,51 +50,22 @@
         
         <div class="input-wrapper">
         <label for="address">Address</label>
-          <input type="text" value="<%= @address %>" 
-          readonly class="account-input" caret-color=transparent>
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name="Address" value="<%= @user[:Address] %>" class="account-input">
         </div>
 
         <div class="input-wrapper">
         <label for="postcode">Postcode</label>
-          <input type="text" value="<%= @postcode %>" 
-          readonly class="account-input" caret-color=transparent>
-          <img src="edit.png"
-          class="edit-icon"
-          onclick="enableEdit(this)">
+          <input type="text" name = "Postcode" value="<%= @user[:Postcode] %>" class="account-input">
         </div>
-
+        <br>
+        <br>
+        <input type = "submit" value="Submit" class = "submit-btn">
       </form>
+      <% if params[:success] %>
+  <p style="color: green;">Profile updated successfully!</p>
+<% end %>
      </div>
   </main>
-  <script>
-    function enableEdit(icon) {
-      const input = icon.previousElementSibling;
-      if (input.hasAttribute('readonly')) {
-        input.removeAttribute('readonly');
-        input.focus();
-        icon.src = 'check.png';
-      } else {
-        input.setAttribute('readonly', true);
-        icon.src = 'edit.png';
-      }
-    }
-
-    function togglePassword(icon) {
-      const wrapper = icon.parentElement;
-      const input = wrapper.querySelector('input');
-
-      if (input.type === "password") {
-        input.type = "text";
-        icon.src = "eye-open.png";
-      } else {
-        input.type = "password";
-        icon.src = "eye-crossed.png";
-      }
-      }
-  </script>
   </body>
 </html>
 

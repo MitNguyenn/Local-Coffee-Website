@@ -1,0 +1,53 @@
+<div class="product-detail-container">
+  <h1><%= @item.Origin %></h1>
+
+  <div class="product-main-content"> 
+    <%
+      rel_path = "beans/#{@item.Origin}.png"
+      
+      if File.exist?(File.join(Dir.pwd, "public", rel_path))
+        display_path = "/#{rel_path}"
+      else
+        display_path = "/beans/beans_img_not_found.png"
+      end
+    %>
+    <img src="<%= display_path %>" alt="<%= @item.Origin %>" width="500" height="500">
+
+    <div class="product-details">
+      <span id="base-price" data-price="<%= @item.PricePer250g %>" style="display:none;"></span>
+      <label for="pack-weight">Select Size:</label>
+      <select name="pack-weight" id="pack-weight-select">
+        <% @bean_packs.each do |pack| %>
+          <option value="<%= pack[:Weight] %>" data-multiplier="<%= pack[:MarkupMultiplier] %>">
+            <%= pack[:PackWeight] %>g
+          </option>
+        <% end %>
+      </select>
+
+      <label for="roast-levels"><b>Roast levels:</b></label>
+      <select name="roast-levels" id="roast-levels">
+        <% @bean_roast_levels.each do | roast | %>
+          <option value="<%= roast[:RoastLevel] %>"><%= roast[:RoastLevel] %></option>
+        <% end %>
+      </select>
+
+      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.PricePer250g) %></h2>
+      <button class="add-to-cart-button">Add to Cart</button>
+    </div>
+  </div>
+</div> <a href="/coffee-beans" class="back-link">Back to Catalog</a>
+
+<script>
+  const weightSelect = document.getElementById('pack-weight-select');
+  const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
+  const displayPrice = document.getElementById('display-price');
+
+  weightSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const multiplier = parseFloat(selectedOption.dataset.multiplier);
+
+    const newPrice = basePriceValue * multiplier;
+
+    displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
+  });
+</script>

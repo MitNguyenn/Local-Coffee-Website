@@ -1,6 +1,10 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  padding-top: 60px;
+  padding: 0;
   font-family: "Lilita One", sans-serif;
   background-color: #fdf5e6;
   color: #4b2c20;
@@ -9,31 +13,133 @@ body {
   min-height: 100vh;
 }
 
+.navbar {
+  height: 90px;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.1) 45%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    url("/wood.jpg");
+  background-repeat: repeat;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid #2a1810;
+}
+
+.nav-left-group {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.home-btn img {
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.home-btn:hover img {
+  transform: scale(1.1);
+}
+
 main {
   flex: 1;
 }
 
-.navbar {
-  background-color: #a67458;
-  height: 80px;
-  padding: 0 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1000;
-  box-sizing: border-box;
+select {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 15px;
+  font-weight: bold;
 }
 
 .menu-icon {
-  font-size: 28px;
+  font-size: 40px;
   color: #fdf5e6;
   cursor: pointer;
   user-select: none;
+}
+
+.home-btn {
+  display: flex;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cart {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-dot {
+  position: absolute;
+  top: 5px; 
+  right: 5px;
+  
+  width: 12px;
+  height: 12px;
+  
+  background-color: #ff4757; 
+  border-radius: 50%;
+  border: 2px solid #fff; 
+  
+  display: block;
+}
+
+.cart-header {
+  padding: 10px 15px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #eee;
+  color: #a67458;
+}
+
+.empty-msg {
+  padding: 15px;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* Make the checkout button stand out */
+.checkout-btn {
+  background-color: #4b2c20 !important;
+  color: white !important;
+  text-align: center;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.checkout-btn:hover {
+  background-color: #a67458 !important;
+}
+/* Ensure the user dropdown aligns to the right edge */
+.user-dropdown-content {
+  right: 0;
+  left: auto;
 }
 
 .user-icon img {
@@ -56,33 +162,118 @@ main {
 .user-dropdown-content {
   display: none;
   position: absolute;
-  background-color: #fdf5e6;
-  min-width: 180px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  min-width: 220px;
+  margin-top: 12px;
   z-index: 1001;
-  border-radius: 8px;
   overflow: hidden;
-  margin-top: 10px;
+
+  /* Deep Smoked Espresso Glass */
+  background: linear-gradient(
+    180deg,
+    rgba(42, 24, 16, 0.9) 0%,
+    /* Darker top */ rgba(75, 44, 32, 0.85) 50%,
+    /* Rich brown center */ rgba(26, 15, 10, 0.95) 100% /* Darker bottom */
+  );
+
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-radius: 24px;
+
+  /* Bright edge highlight to define the shape on dark backgrounds */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
-.user-dropdown-content {
-  right: 0;
+/* The Glossy Cap Reflection */
+.dropdown-content::before,
+.user-dropdown-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  pointer-events: none;
 }
 
 .dropdown-content a,
 .user-dropdown-content a {
-  color: #4b2c20;
-  padding: 12px 16px;
+  color: #ffffff !important;
+  padding: 14px 20px;
   text-decoration: none;
   display: block;
-  font-family: sans-serif;
-  font-weight: bold;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+
+  /* Text glow for readability */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.user-dropdown-content {
+  right: 10px;
+  left: auto;
 }
 
 .dropdown-content a:hover,
 .user-dropdown-content a:hover {
-  background-color: #a67458;
-  color: white;
+  background: linear-gradient(
+    180deg,
+    #a67458 0%,
+    #7b5844 50%,
+    #4b2c20 51%,
+    #5d3a2a 100%
+  );
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  padding-left: 28px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Animation Keyframes */
+@keyframes aeroShimmer {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+/* Shimmer Layer */
+.dropdown-content::after,
+.user-dropdown-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Runs the shimmer once for 1.5s when the menu opens */
+.show::after {
+  animation: aeroShimmer 1.5s ease-out forwards;
 }
 
 .show {
@@ -91,7 +282,7 @@ main {
 
 .hero {
   margin-top: 0;
-  height: 60vh;
+  min-height: calc(100vh - 160px);
   background:
     linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
     url("coffee_bg.avif");
@@ -110,6 +301,7 @@ main {
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
   margin: 0;
 }
+
 .hero h2 {
   font-size: 1.7rem;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
@@ -151,6 +343,11 @@ main {
   width: 100%;
   max-width: 380px;
   text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
 }
 
 .login-card h2 {
@@ -246,6 +443,15 @@ input[type="password"] {
   box-sizing: border-box;
 }
 
+input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
 input[type="text"]:focus,
 input[type="password"]:focus {
   outline: none;
@@ -295,21 +501,49 @@ input[type="password"]:focus {
 }
 
 footer {
-  background-color: #a67458;
-  color: #fdf5e6;
-  padding: 20px 0;
+  height: 120px;
+
+  background-image:
+    linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    url("/wood.jpg");
+
+  background-position: center;
+  border-top: 2px solid black;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  color: white;
+  text-shadow: 1px 1px 2px black;
+}
+
+.btn-skeuo {
+  background: linear-gradient(to bottom, #7b5844 0%, #4b2c20 100%);
+  border: 1px solid #2a1810;
+  border-radius: 50px;
+  color: white;
+  padding: 10px 25px;
+  font-weight: bold;
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .menu-preview {
   text-align: center;
-}
+  margin: 40px auto; /* Added margin to separate it from the hero */
+  width: 90%; /* Makes it look like a board hanging on the wall */
 
-html {
-  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-field {
@@ -324,9 +558,8 @@ html {
 }
 
 .description_box {
-  padding: 10px;
-  width: 400px;
-  height: 130px;
+  padding-top: 10px;
+  width: 20px;
 }
 
 .submit_button {
@@ -467,25 +700,90 @@ html {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   margin: 20px 0;
-  padding: 20px;
+  padding: 25px;
+
   background: #fdf5e6;
-  border-radius: 15px;
-  border: 1px solid #4b2c20;
+  border-radius: 24px;
+  border: 2px solid #4b2c20;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .stamp {
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  border: 2px solid #4b2c20;
-  background: white;
+  border: 2px dashed #4b2c20;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .stamp.filled {
-  background-color: #a67458;
-  background-image: radial-gradient(circle, #a67458 20%, #4b2c20 80%);
+  border: none;
+  background-color: transparent !important;
+
+  background-image: url("bean_stamp.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.4));
+  transform: rotate(-12deg) scale(1.5);
+}
+
+.page-title {
+  text-align: center;
+}
+
+.catalog-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.product-card {
+  flex: 0 1 300px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+.product-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.product-main-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; /* Aligns items to the top of the row */
+  gap: 40px; /* Space between image and text */
+  margin-top: 20px;
+}
+
+.product-main-content img {
+  max-width: 50%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-size {
+  align-self: flex-end;
 }
 
 /* Metrics Page */
@@ -561,39 +859,15 @@ html {
   margin: 0;
 }
 
-/* Ranking Component */
-.m-dash-ranking {
-  margin-top: 1rem;
+.m-dash-card__subtitle {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0.25rem 0 0 0;
 }
 
-.m-dash-ranking__row {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #edf2f7;
-}
-
-.m-dash-ranking__index {
-  font-weight: 700;
-  color: #d4a373; /* Coffee Gold */
-  width: 2.5rem;
-}
-
-.m-dash-ranking__name {
-  flex: 1;
-  font-weight: 500;
-}
-
-.m-dash-ranking__qty {
-  font-size: 0.8rem;
-  background: #f1f5f9;
-  padding: 0.1rem 0.5rem;
-  border-radius: 4px;
-}
-
-.m-dash-ranking__empty {
-  color: #a0aec0;
-  font-style: italic;
+/* Signup Change Component */
+.m-dash-signup-change {
+  margin-top: 0.5rem;
 }
 
 /* Table Styling */
@@ -626,34 +900,1335 @@ html {
   text-align: right;
 }
 
-.my-orders-container { max-width: 800px; margin: 2rem auto; font-family: sans-serif; }
+.positive-change {
+  color: #38a169;
+  font-weight: 600;
+}
+
+.negative-change {
+  color: #e53e3e;
+  font-weight: 600;
+}
+
+.m-dash-panel__subtitle {
+  font-size: 0.875rem;
+  color: #718096;
+  margin-top: -0.5rem;
+}
+/* --- THE DOWNLOAD BUTTON --- */
+.m-download-btn {
+  display: block;
+  margin: 40px auto;
+  padding: 15px 40px;
+  background-color: #a67458; /* Matching your theme brown */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-family: "Lilita One", sans-serif;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(166, 116, 88, 0.3);
+}
+
+.m-download-btn:hover {
+  background-color: #4b2c20; /* Darker coffee brown */
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(75, 44, 32, 0.4);
+}
+
+.m-download-btn:active {
+  transform: scale(0.98);
+}
+
+.my-orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+}
 
 /* The Toggle Buttons */
-.my-orders-nav { display: flex; gap: 10px; margin-bottom: 2rem; }
-.my-orders-nav-btn {
-    flex: 1; padding: 1.2rem; font-size: 1.1rem; font-weight: bold;
-    border: 2px solid #222; background: #fff; cursor: pointer; transition: 0.2s;
+.my-orders-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2rem;
 }
-.my-orders-nav-btn.active { background: #222; color: #fff; }
+.my-orders-nav-btn {
+  flex: 1;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 2px solid #222;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.my-orders-nav-btn.active {
+  background: #222;
+  color: #fff;
+}
 
 /* Sections */
-.my-orders-section { display: none; }
-.my-orders-section.active { display: block; }
+.my-orders-section {
+  display: none;
+}
+.my-orders-section.active {
+  display: block;
+}
 
 /* Order Cards */
 .my-orders-card {
-    border: 1px solid #ddd; border-radius: 12px; padding: 1.5rem;
-    margin-bottom: 1.5rem; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
-.my-orders-header { display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
-.my-orders-title { font-weight: 800; font-size: 1.1rem; }
-.my-orders-date { color: #666; font-size: 0.9rem; }
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+.my-orders-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.my-orders-date {
+  color: #666;
+  font-size: 0.9rem;
+}
 
-.my-orders-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
-.my-orders-items { list-style: none; padding: 0; margin: 0; }
-.my-orders-items li { padding: 4px 0; border-bottom: 1px dashed #eee; }
+.my-orders-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+}
+.my-orders-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.my-orders-items li {
+  padding: 4px 0;
+  border-bottom: 1px dashed #eee;
+}
 
 .my-orders-badge {
-    display: inline-block; padding: 4px 10px; border-radius: 4px;
-    background: #f0f0f0; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #a67458;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-family: "Lilita one", sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #4b2c20;
+}
+
+.submit-btn:disabled {
+  background-color: #a67558bb;
+  color: #ffffffbb;
+  cursor: not-allowed;
+}
+
+.problem_box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: skyblue;
+}
+/* Ticket Management Page */
+/* Container Layout */
+.my-orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: inherit;
+}
+
+/* Tab Navigation */
+.my-orders-nav {
+  display: flex;
+  gap: 0; /* Flush buttons look more modern */
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.my-orders-nav-btn {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s ease;
+}
+
+.my-orders-nav-btn.active {
+  background: #a67458; /* Your Brand Brown */
+  color: #fff;
+}
+
+/* Visibility Toggle */
+.my-orders-section {
+  display: none;
+}
+.my-orders-section.active {
+  display: block;
+}
+
+/* Ticket Cards */
+.my-orders-card {
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s;
+}
+
+.ticket-border-open {
+  border-left: 5px solid #a67458;
+}
+
+.ticket-resolved-dim {
+  background-color: #f8fafc;
+  opacity: 0.9;
+}
+
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.my-orders-title {
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.ticket-content-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+.ticket-id-tag {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+
+/* Badges */
+.my-orders-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.status-open {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Ticket Resolve */
+.view-details-btn {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background-color: #a67458;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+  background-color: #4b2c20;
+}
+
+.login-btn,
+.add-to-cart-button,
+.btn,
+.view-menu-btn,
+.buy-button,
+.add-to-cart-button,
+.purchase-btn,
+.submit-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.1) 48%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    #6f4635;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  color: #ffffff !important;
+  font-weight: 800;
+  padding: 12px 24px;
+
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-btn:hover,
+.add-to-cart-button:hover,
+.btn:hover,
+.purchase-btn:hover,
+.view-menu-btn:hover,
+.buy-button:hover,
+.submit-btn:hover,
+.btn:hover {
+  transform: scale(1.03) translateY(-2px);
+  filter: brightness(1.15) saturate(1.2);
+  box-shadow: 0 10px 25px rgba(75, 44, 32, 0.4);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-menu-btn {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+  padding: 18px 30px;
+}
+
+/* Account Management main page */
+/* Container using your global flex/bg settings */
+.acc-view__main {
+  width: 95%;
+  max-width: 1600px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Title using Lilita One and your primary coffee brown */
+.acc-view__title {
+  font-family: "Lilita One", sans-serif;
+  font-size: 3.5rem;
+  color: #4b2c20;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Search Bar matching your input style */
+.acc-view__search,
+.acc-view__select {
+  width: 60%;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  background-color: white;
+  font-family: inherit;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+.acc-view__search:focus,
+.acc-view__select:focus {
+  outline: none;
+  border-color: #a67458;
+}
+
+/* The Table Board - uses your login-card style logic */
+.acc-view__board {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.acc-view__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table Headers using your Navbar link bold style */
+.acc-view__th {
+  font-family: "Lilita One", sans-serif;
+  background-color: #4b2c20;
+  color: #fdf5e6;
+  padding: 20px;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+/* Table Data - using your body text color and font */
+.acc-view__td {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #4b2c20;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.acc-view__row:hover {
+  background-color: rgba(166, 116, 88, 0.1);
+}
+
+/* The Button - Updated to match your .btn-skeuo class */
+.acc-view__btn {
+  display: inline-block;
+  background: linear-gradient(to bottom, #7b5844 0%, #4b2c20 100%);
+  border: 1px solid #2a1810;
+  border-radius: 50px;
+  color: white !important;
+  padding: 8px 20px;
+  font-family: "Lilita One", sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.acc-view__btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Badge for Role */
+.acc-view__badge {
+  background: #a67458;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+}
+
+.promo-carousel {
+  overflow: hidden;
+  width: 100%;
+  background-color: black;
+  background-size: 100%;
+  background-position: center;
+}
+
+.carousel-track {
+  display: flex;
+  width: max-content;
+  animation: scroll 20s linear infinite;
+}
+
+.carousel-item {
+  min-width: 250px;
+  margin: 5px;
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  font-family: "Doto", sans-serif;
+  font-variation-settings: "ROND" 100;
+  color: rgb(255, 225, 0);
+  text-align: center;
+  border-radius: 10px;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.split-pill-container {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  background: rgba(75, 44, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.pill-half {
+  padding: 20px 40px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 51%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.pill-divider {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
+.pill-half:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  filter: brightness(1.2);
+}
+
+.pill-half:active {
+  transform: translateY(3px) scale(0.97);
+  filter: brightness(0.8);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.problem_box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: black;
+}
+/* Ticket Management Page */
+/* Container Layout */
+.my-orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: inherit;
+}
+
+/* Tab Navigation */
+.my-orders-nav {
+  display: flex;
+  gap: 0; /* Flush buttons look more modern */
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.my-orders-nav-btn {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s ease;
+}
+
+.my-orders-nav-btn.active {
+  background: #a67458; /* Your Brand Brown */
+  color: #fff;
+}
+
+/* Visibility Toggle */
+.my-orders-section {
+  display: none;
+}
+.my-orders-section.active {
+  display: block;
+}
+
+/* Ticket Cards */
+.my-orders-card {
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s;
+}
+
+.ticket-border-open {
+  border-left: 5px solid #a67458;
+}
+
+.ticket-resolved-dim {
+  background-color: #f8fafc;
+  opacity: 0.9;
+}
+
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.my-orders-title {
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.ticket-content-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+.ticket-id-tag {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+
+/* Badges */
+.my-orders-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.status-open {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Ticket Resolve */
+.view-details-btn {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background-color: #a67458;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+  background-color: #4b2c20;
+}
+
+.login-btn,
+.add-to-cart-button,
+.btn,
+.view-menu-btn,
+.buy-button,
+.add-to-cart-button,
+.submit-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.1) 48%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    #6f4635;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  color: #ffffff !important;
+  font-weight: 800;
+  padding: 12px 24px;
+
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-btn:hover,
+.add-to-cart-button:hover,
+.btn:hover,
+.view-menu-btn:hover,
+.buy-button:hover,
+.submit-btn:hover,
+.btn:hover {
+  transform: scale(1.03) translateY(-2px);
+  filter: brightness(1.15) saturate(1.2);
+  box-shadow: 0 10px 25px rgba(75, 44, 32, 0.4);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-menu-btn {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+  padding: 18px 30px;
+}
+
+/* Account Management main page */
+/* Container using your global flex/bg settings */
+.acc-view__main {
+  width: 95%;
+  max-width: 1600px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Title using Lilita One and your primary coffee brown */
+.acc-view__title {
+  font-family: "Lilita One", sans-serif;
+  font-size: 3.5rem;
+  color: #4b2c20;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Search Bar matching your input style */
+.acc-view__search,
+.acc-view__select {
+  width: 60%;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  background-color: white;
+  font-family: inherit;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+.acc-view__search:focus,
+.acc-view__select:focus {
+  outline: none;
+  border-color: #a67458;
+}
+
+/* The Table Board - uses your login-card style logic */
+.acc-view__board {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.acc-view__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.acc-view__th {
+  font-family: "Lilita One", sans-serif;
+  background-color: #4b2c20;
+  color: #fdf5e6;
+  padding: 20px;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+/* Table Data - using your body text color and font */
+.acc-view__td {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #4b2c20;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.acc-view__row:hover {
+  background-color: rgba(166, 116, 88, 0.1);
+}
+
+.acc-view__btn {
+  display: inline-block;
+  background: linear-gradient(to bottom, #7b5844 0%, #4b2c20 100%);
+  border: 1px solid #2a1810;
+  border-radius: 50px;
+  color: white !important;
+  padding: 8px 20px;
+  font-family: "Lilita One", sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.acc-view__btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.acc-view__badge {
+  background: #a67458;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+}
+
+.split-pill-container {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  background: rgba(75, 44, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.pill-half {
+  padding: 20px 40px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 51%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.pill-divider {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
+.pill-half:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  filter: brightness(1.2);
+}
+
+.pill-half:active {
+  transform: translateY(3px) scale(0.97);
+  filter: brightness(0.8);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.problem_box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  color: black;
+}
+
+.checkout-container {
+  font-family: Helvetica, sans-serif;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  min-height: 80vh;
+  padding: 40px;
+  gap: 40px;
+  background: #fdf5e6;
+}
+
+.checkout-form-section h2 {
+  color: #4b2c20;
+  margin-bottom: 20px;
+}
+.form-group {
+  margin-bottom: 30px;
+}
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid #4b2c20;
+}
+
+.summary-glass-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(15px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.total {
+  font-size: 1.4rem;
+  border-top: 1px solid #4b2c20;
+  padding-top: 15px;
+}
+
+.purchase-btn {
+  white-space: nowrap;
+  margin-top: 100px;
+  margin-bottom: 15px;
+
+  padding: 20px 60px;
+  font-size: 1.4rem;
+
+  min-width: 300px;
+
+  border-radius: 50px;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.purchase-btn:active {
+  transform: scale(0.95);
+}
+
+/* Stock Management Table - Brand Themed */
+.stock-mgt-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  font-family: "Lilita one", sans-serif; /* Matched brand font */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.stock-mgt-header {
+  background-color: #a67458; /* Brand Brown */
+}
+
+.stock-mgt-th {
+  padding: 1rem;
+  text-align: left;
+  color: #ffffff; /* White text on brown header */
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+.stock-mgt-row {
+  background-color: #fff;
+  transition: background 0.2s;
+}
+
+.stock-mgt-row:hover {
+  background-color: #f8fafc; /* Subtle hover effect from ticket cards */
+}
+
+.stock-mgt-cell {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid #edf2f7;
+  color: #2d3748;
+  vertical-align: middle;
+}
+
+.stock-mgt-row:last-child .stock-mgt-cell {
+  border-bottom: none;
+}
+
+/* Form Elements */
+.stock-mgt-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stock-mgt-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: inherit;
+  color: #4a5568;
+}
+
+.stock-mgt-btn {
+  background-color: #a67458;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-family: "Lilita one", sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.stock-mgt-btn:hover {
+  background-color: #4b2c20; /* Darker brown from your hover state */
+}
+
+.stock-mgt-name {
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+.stock-mgt-quantity {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.centered-layout {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  grid-template-columns: none !important;
+}
+
+.success-card {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Unique Styles for Order Management/administrator page*/
+
+/* 1. Center the whole container on the screen */
+.audit-page-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  min-height: calc(100vh - 180px); /* Adjusts for navbar height */
+}
+
+.audit-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.audit-title {
+  font-size: 2.5rem;
+  color: #4b2c20;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: "Lilita One", sans-serif;
+}
+
+/* 2. The White Box (Card) */
+.audit-table-wrapper {
+  background: #ffffff; /* Solid White */
+  border-radius: 20px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); /* Stronger shadow for depth */
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  padding: 10px; /* Space between table and box edge */
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.audit-table th {
+  background-color: #4b2c20;
+  color: #fdf5e6;
+  padding: 15px;
+  text-align: left;
+  font-family: "Lilita One", sans-serif;
+  font-size: 0.9rem;
+}
+
+.audit-table td {
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+  font-family: sans-serif;
+  vertical-align: middle;
+}
+
+/* 3. Input & Select Styling */
+.audit-select,
+.audit-input-reason {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.audit-input-reason {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 4. Action Button */
+.audit-submit-btn {
+  background-color: #a67458;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: "Lilita One", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.audit-submit-btn:hover {
+  background-color: #4b2c20;
+}
+
+.barista-page-body {
+  padding: 40px 20px;
+  background-color: #fdf5e6;
+  min-height: 100vh;
+}
+
+.barista-title {
+  font-family: "Lilita One", sans-serif;
+  color: #4b2c20;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.barista-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.barista-order-card {
+  background: white;
+  border-radius: 15px;
+  border-left: 8px solid #a67458; /* Accented edge */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: transform 0.2s;
+}
+
+.barista-order-card:hover {
+  transform: translateY(-5px);
+}
+
+.barista-card-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px dashed #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.barista-order-id {
+  font-family: "Lilita One", sans-serif;
+  font-size: 1.2rem;
+  color: #4b2c20;
+}
+
+.barista-qty {
+  font-weight: bold;
+  color: #a67458;
+  margin-right: 10px;
+}
+
+.barista-contents {
+  flex: 1;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.barista-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.barista-type {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.barista-type.delivery {
+  background: #ffebee;
+  color: #c62828;
+}
+.barista-type.in-person {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.barista-complete-btn {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: "Lilita One", sans-serif;
+  cursor: pointer;
+}
+
+.barista-complete-btn:hover {
+  background-color: #1b5e20;
+}
+
+.barista-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #888;
+  padding: 50px;
+}
+
+/* Staff Portal */
+.sp-page-title {
+  font-family: "Lilita One", sans-serif;
+  color: #4b2c20;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sp-page-box {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.sp-page-title {
+  font-family: "Lilita One", sans-serif;
+  color: #4b2c20;
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sp-page-hyperlink {
+  color: #a67458;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sp-page-hyperlink:hover {
+  color: #4b2c20;
 }

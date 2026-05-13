@@ -1,0 +1,39 @@
+<div class="page-title">
+    <h2>Our Hot Drinks</h2>
+</div>
+
+<div class="catalog-grid" id="item-container">
+  <% @drinks.each do |drink| %>
+    <div class="product-card" data-beverage="<%= drink.Beverage %>">
+      <%
+        rel_path = "drinks/#{drink.Beverage}.png"
+        if File.exist?(File.join(Dir.pwd, "public", rel_path))
+          display_path = "/#{rel_path}"
+        else
+          display_path = "/drinks/drink_img_not_found.png"
+        end
+      %>
+    
+      <img src="<%= display_path %>" alt="<%= drink.Beverage %>">
+      <h3><%= drink.Beverage %></h3>
+      <p class="price">£<%= sprintf('%.2f', drink.RegularPrice) %> (Regular size)</p>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  const container = document.getElementById('item-container');
+
+  container.addEventListener('click', (event) => {
+    const target = event.target;
+    const card = target.closest('.product-card');
+    
+    if (!card) return;
+
+    const beverage = card.dataset.beverage;
+
+    if (card) {
+      window.location.href = `/product/?type=drink&beverage=${beverage}`;
+    }
+  });
+</script>

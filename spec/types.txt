@@ -1,0 +1,29 @@
+rspec test types
+
+- Model (:model)
+  Tests data logic and database interactions. 
+  e.g. Checking if a 'total_price' calculation works or if a user is valid.
+
+- Controller (:controller)
+  Tests specific Sinatra routes. 
+  e.g. Checking if a route sets a session variable or redirects correctly.
+
+- Request (:request)
+  Tests the full HTTP cycle (Request -> App -> Response). 
+  e.g. Verifying a GET request returns status 200 and the expected body.
+
+- Feature (:feature)
+  High-level user flow tests using Capybara. 
+  e.g. Simulating a user clicking 'Add to Cart' and seeing it update.
+
+- View (:view)
+  Tests the rendered HTML template.
+  e.g. Ensuring a specific <div> or text appears on the page.
+
+- Helper (:helper)
+  Tests small formatting methods used in views.
+  e.g. Testing a function that turns numbers into currency strings (£).
+
+- Routing (:routing)
+  Tests that URLs map to the correct controller actions.
+  e.g. Ensuring '/login' actually hits the login logic.

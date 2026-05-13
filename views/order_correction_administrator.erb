@@ -1,0 +1,48 @@
+<div class="audit-page-body">
+    <div class="audit-container">
+        <h1 class="audit-title">Admin Order Controls</h1>
+        
+        <div class="audit-table-wrapper">
+            <table class="audit-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Order Content</th>
+                        <th>Payment Status</th>
+                        <th>Reason for Change</th>
+                        <th>Action</th>
+                        <th>Shipping</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @completed_orders.each do |order| %>
+                    <tr>
+                        <form action="/order-management/administrator" method="POST">
+                            <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
+                            
+                            <td><strong>#<%= order[:OrderID] %></strong></td>
+                            <td style="font-size: 0.8rem; color: #666;"><%= order[:OrderContents] %></td>
+                            <td>
+                                <select name="payment_status" class="audit-select">
+                                    <option value="Pending" <%= "selected" if order[:payment_status] == "Pending" %>>Pending</option>
+                                    <option value="Paid" <%= "selected" if order[:payment_status] == "Paid" %>>Paid</option>
+                                    <option value="Unpaid" <%= "selected" if order[:payment_status] == "Unpaid" %>>Unpaid</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" name="reason_note" class="audit-input-reason" placeholder="Required..." required>
+                            </td>
+                            <td>
+                                <button type="submit" class="audit-submit-btn">Update</button>
+                            </td>
+                        </form>
+                        <td>
+                            <a href="/generate-label/<%= order[:OrderID] %>" class="audit-submit-btn" style="background-color: #444; text-decoration: none; display: inline-block; text-align: center;">Print Label</a>
+                        </td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

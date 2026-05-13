@@ -1,13 +1,28 @@
 require "dotenv/load"
 require "require_all"
-require "sinatra"
+require "sinatra/base"
 require "rqrcode"
 
-enable :sessions
-set :session_secret, ENV['SESSION_SECRET']
-
-require_all "controllers"
-# require_relative "helpers/helpers"
+require_relative "db/db"
 require_all "models"
+require_all "helpers"
+require_all "controllers"
 
-require_relative 'controllers/routes'
+class CoffeeApp < Sinatra::Base
+  helpers AppHelpers
+  enable :sessions
+  set :session_secret, ENV['SESSION_SECRET']
+  
+  set :root, File.dirname(__FILE__)
+  set :views, proc { File.join(root, "views") }
+  set :public_folder, proc { File.join(root, "public") }
+
+  use AuthController
+  use ProductController
+  use AccountController
+  use BaristaController
+  use ManagerController
+  use AdminController
+  
+  run! if app_file == $0
+end

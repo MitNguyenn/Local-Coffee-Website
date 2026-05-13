@@ -9,6 +9,74 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
 </head>
+<script>
+const Validation = {
+  str_email_address: (str) => {
+    if (!str) return false;
+    return /^\S+@\S+$/.test(str);
+  },
+
+  str_digits: (str) => {
+    if (!str) return false;
+      return /^(\d)+$/.test(str);
+  },
+
+  str_min_length: (str, minLen) => {
+    return str && str.length >= minLen;
+  },
+
+  str_max_length: (str, maxLen) => {
+    return str && str.length <= maxLen;
+  },
+  
+  str_uk_telephone: (str) => { // Use a colon, remove 'const'
+    if (!str) return false;
+    const cleanStr = str.replace(/\s+/g, '').replace(/-/g, '');
+    return cleanStr.startsWith('0') &&  cleanStr.length >= 10 && cleanStr.length <= 11;
+  }
+
+
+};
+
+document.querySelector('form').addEventListener('submit', function(e) {
+  let hasError = false;
+  
+  // Reset previous errors
+  document.querySelectorAll('.error-text').forEach(el => el.textContent = "");
+
+  const email = document.getElementById('email').value;
+  const phone = document.getElementById('PhoneNumber').value;
+  const pass1 = document.getElementById('password1').value;
+  const pass2 = document.getElementById('password2').value;
+
+  // Email check
+  if (!Validation.str_email_address(email)) {
+    document.getElementById('email-error').textContent = "Invalid email format.";
+    hasError = true;
+  }
+
+  // Phone check
+  if (!Validation.str_uk_telephone(phone)) {
+    document.getElementById('phone-error').textContent = "Must be a UK number (10-11 digits starting with 0).";
+    hasError = true;
+  }
+
+  // Password check (Min length 8)
+  if (!Validation.str_min_length(pass1, 8)) {
+    document.getElementById('password-error').textContent = "Password must be at least 8 characters.";
+    hasError = true;
+  }
+
+  // Match check
+  if (pass1 !== pass2) {
+    document.getElementById('password-match-error').textContent = "Passwords do not match.";
+    hasError = true;
+  }
+
+  if (hasError) e.preventDefault();
+});
+</script>
+
 
 <body>
 
@@ -39,17 +107,22 @@
       
       <div class="input-group">
         <label for="password1">Password</label>
-        <input type="password" id="password1" name="password1" placeholder="••••••••••••">
+        <input type="password" id="password1" name="password1" placeholder="Enter your password">
       </div>
 
       <div class="input-group">
         <label for="password2">Retype password</label>
-        <input type="password" id="password2" name="password2" placeholder="••••••••••••">
+        <input type="password" id="password2" name="password2" placeholder="Re-enter your password">
       </div>
 
       <div class="input-group">
-        <label for="phone_number">Phone Number</label>
-        <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number">
+        <label for="PhoneNumber">Phone Number</label>
+        <input type="text" id="PhoneNumber" name="PhoneNumber" placeholder="Enter your phone number">
+      </div>
+
+      <div class = "input-group">
+        <label for="Address">Address</label>
+        <input type="text" id="Address" name ="Address" placeholder="Enter your address">
       </div>
 
       <div class="input-group">

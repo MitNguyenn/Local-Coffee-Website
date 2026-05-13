@@ -1,1 +1,43 @@
-beans innit
+<div class="page-title">
+    <h2>Our Coffee Beans</h2>
+</div>
+
+<div class="catalog-grid" id="item-container">
+  <% @beans.each do |bean| %>
+    <% if bean.StockMass >= 0.25 %>
+      <div class="product-card" data-origin="<%= bean.Origin %>">
+        <%
+          rel_path = "beans/#{bean.Origin}.png"
+          if File.exist?(File.join(Dir.pwd, "public", rel_path))
+            display_path = "/#{rel_path}"
+          else
+            display_path = "/beans/brazil_pixel.png"
+            # display_path = "/beans/beans_img_not_found.png"
+          end
+        %>
+        
+        <img src="<%= display_path %>" alt="<%= bean.Origin %>" width="500" height="500">
+
+        <h3><%= bean.Origin %></h3>
+        <p>£<%= sprintf('%.2f', bean.PricePer250g) %> (per 250g)</p>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<script>
+  const container = document.getElementById('item-container');
+
+  container.addEventListener('click', (event) => {
+    const target = event.target;
+    const card = target.closest('.product-card');
+    
+    if (!card) return; 
+
+    const origin = card.dataset.origin;
+
+    if (card) {
+      window.location.href = `/product/?type=bean&origin=${origin}`;
+    }
+  });
+</script>

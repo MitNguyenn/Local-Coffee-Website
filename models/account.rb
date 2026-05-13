@@ -9,11 +9,11 @@ class Account < Sequel::Model(:Accounts)
   def validate
     super
     errors.add(:email, "is required") if !email || email.empty?
-    errors.add(:Account_type, "must be assigned") if !self.Account_type || self.Account_type.empty?
+    errors.add(:AccountType, "must be assigned") if !self.AccountType || self.AccountType.empty?
   end
 
   # Hashes the password before it hits the .sqlite3 file
   def password=(raw_password)
-    self.hashedPassword = BCrypt::Password.create(raw_password)
+    self.hashed_password = BCrypt::Password.create(raw_password)
   end
 end

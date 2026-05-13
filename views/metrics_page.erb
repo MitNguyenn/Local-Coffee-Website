@@ -16,18 +16,38 @@
     </div>
 
     <div class="m-dash-card">
-      <h3 class="m-dash-card__label">Top 3 Ranking</h3>
+      <h3 class="m-dash-card__label">Top 5 Ranking</h3>
       <div class="m-dash-ranking">
         <% if @metrics[:top_products].any? %>
-          <% @metrics[:top_products].each_with_index do |(name, qty), index| %>
+          <% @metrics[:top_products].each_with_index do |product, index| %>
             <div class="m-dash-ranking__row">
               <span class="m-dash-ranking__index">#<%= index + 1 %></span>
-              <span class="m-dash-ranking__name"><%= name %></span>
-              <span class="m-dash-ranking__qty"><%= qty %> sold</span>
+              <span class="m-dash-ranking__name"><%= product[:name] %></span>
+              <span class="m-dash-ranking__qty"> - <%= product[:units_sold] %>x sold</span>
             </div>
           <% end %>
         <% else %>
           <p class="m-dash-ranking__empty">No sales data found.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__label">Total Account Holders</h3>
+      <p class="m-dash-card__value"><%= @metrics[:total_accounts] %></p>
+    </div>
+
+    <div class="m-dash-card">
+      <h3 class="m-dash-card__label">Monthly Sign-up Change</h3>
+      <div class="m-dash-signup-change">
+        <% if @metrics[:monthly_signups_change].any? %>
+          <% latest_month = @metrics[:monthly_signups_change].keys.last %>
+          <% latest_data = @metrics[:monthly_signups_change][latest_month] %>
+          <p class="m-dash-card__value"><%= latest_data[:change] >= 0 ? '+' : '' %><%= latest_data[:change] %>%</p>
+          <p class="m-dash-card__subtitle"><%= latest_month %>: <%= latest_data[:signups] %> total</p>
+        <% else %>
+          <p class="m-dash-card__value">N/A</p>
+          <p class="m-dash-card__subtitle">No data available</p>
         <% end %>
       </div>
     </div>
@@ -40,8 +60,8 @@
       <table class="m-dash-table">
         <% @metrics[:sales_by_category].each do |type, total| %>
           <tr>
-            <td><%= type || "General" %></td>
-            <td class="m-dash-table__price">£<%= sprintf('%.2f', total) %></td>
+            <td><%= type %></td>
+            <td class="m-dash-table__price"><%= total %> units</td>
           </tr>
         <% end %>
       </table>
@@ -66,5 +86,98 @@
         </tbody>
       </table>
     </section>
+
+    <section class="m-dash-panel">
+      <h2 class="m-dash-panel__title">Monthly Account Sign-ups</h2>
+      <h3 class="m-dash-panel__subtitle">Total Sign-ups: <%= @metrics[:total_accounts] %></h3>
+      <table class="m-dash-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Sign-ups</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @metrics[:monthly_signups_change].each do |month, data| %>
+            <tr>
+              <td><%= month %></td>
+              <td><%= data[:signups] %></td>
+              <td class="<%= data[:change] >= 0 ? 'positive-change' : 'negative-change' %>">
+                <%= data[:change] >= 0 ? '+' : '' %><%= data[:change] %>%
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
   </div>
 </div>
+
+<button id="download-btn" class="m-download-btn" data-metrics='<%= @metrics.to_json %>'>
+  Download Data As CSV
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('download-btn');
+  
+  if (btn) {
+    btn.addEventListener('click', function() {
+      const rawData = this.getAttribute('data-metrics');
+      const metrics = JSON.parse(rawData);
+      
+      const rows = [];
+      const safeFix = (val) => parseFloat(val || 0).toFixed(2);
+
+      // Financials
+      rows.push(["Category", "Label/Name", "Value"]);
+      rows.push(["Financials", "Gross Revenue", `£${safeFix(metrics.total_sales)}`]);
+      rows.push(["Financials", "Avg. Order Value", `£${safeFix(metrics.avg_order_value)}`]);
+      rows.push(["Financials", "Total Account Holders", metrics.total_accounts]);
+      rows.push([]);
+
+      // Top Products (Updated keys)
+      rows.push(["Top 5 Ranking", "Product Name", "Qty Sold"]);
+      (metrics.top_products || []).forEach((product, index) => {
+        rows.push([`Rank #${index + 1}`, product.name, product.units_sold]);
+      });
+      rows.push([]);
+
+      // Sales by Channel (Updated to count value representation)
+      rows.push(["Sales by Channel", "Type", "Units Sold"]);
+      Object.entries(metrics.sales_by_category || {}).forEach(([type, total]) => {
+        rows.push(["Channel", type, total]);
+      });
+      rows.push([]);
+
+      // Monthly Timeline
+      rows.push(["Monthly Revenue", "Month", "Total"]);
+      Object.entries(metrics.monthly_sales || {}).forEach(([month, total]) => {
+        rows.push(["Monthly", month, `£${safeFix(total)}`]);
+      });
+      rows.push([]);
+
+      // Monthly Account Sign-ups
+      rows.push(["Monthly Account Sign-ups", "Month", "Sign-ups", "Change"]);
+      Object.entries(metrics.monthly_signups_change || {}).forEach(([month, data]) => {
+        rows.push(["Sign-ups", month, data.signups, `${data.change}%`]);
+      });
+
+      const csvContent = rows
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Analytics_Export_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  }
+});
+</script>

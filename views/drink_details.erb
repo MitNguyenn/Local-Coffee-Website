@@ -1,0 +1,84 @@
+<div class="product-detail-container">
+  <h1><%= @item.Beverage %></h1>
+  <div class="product-main-content">
+    <%
+      rel_path = "drinks/#{@item.Beverage}.png"
+      
+      if File.exist?(File.join(Dir.pwd, "public", rel_path))
+        display_path = "/#{rel_path}"
+      else
+        display_path = "/drinks/drink_img_not_found.png"
+      end
+    %>
+    
+    <img src="<%= display_path %>" alt="<%= @item.Beverage %>" width="500" height="500">
+    <div class="product-details" id="product-details">
+      <span id="base-price" data-price="<%= @item.RegularPrice %>" style="display:none;"></span>
+      <p><%= @item.Description %></p>
+
+      <label for="drink-sizes">Size:</label>
+      <select name="drink-size" id="drink-size-select">
+        <% @drink_sizes.each do | drink_size | %>
+          <option value="<%= drink_size[:DrinkSize] %>" data-multiplier="<%= drink_size[:MarkupMultiplier] %>">
+            <%= drink_size[:DrinkSize] %>
+          </option>
+        <% end %>
+      </select>
+
+      <label for="milk-types"><b>Milk types:</b></label>
+      <% if @item.ContainsMilk %>
+        <select name="milk-type" id="milk-type-select">
+          <% @milk_types.each do | milk_type | %>
+              <% if milk_type[:MilkType] == "Whole" %>
+                <option value="<%= milk_type[:MilkType] %>" data-milk-price="0.0">
+                  <%= milk_type[:MilkType] %> (+£0)
+                </option>
+              <% else %>
+                <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
+                  <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
+                </option>
+              <% end %>
+          <% end %>
+        </select>
+      <% else %>
+        <select name="milk-type" id="milk-type-select">
+          <option value="None" data-milk-price="0.0">
+              Don't add milk
+          </option>
+          <% @milk_types.each do | milk_type | %>
+            <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
+                <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
+            </option>
+          <% end %>
+        </select>
+      <% end %>
+
+      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.RegularPrice) %></h2>
+      <button class="add-to-cart-button">Add to Cart</button>
+      <button class="buy-button">Buy Now</button>
+    </div> 
+  </div> 
+  <a href="/drinks">Back to Catalog</a>
+</div>
+ 
+<script>
+  const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
+  const displayPrice = document.getElementById('display-price');
+  const drinkSizeSelect = document.getElementById('drink-size-select');
+  const milkTypeSelect = document.getElementById('milk-type-select');
+
+  function updatePrice() {
+    const sizeOption = drinkSizeSelect.options[drinkSizeSelect.selectedIndex];
+    const milkOption = milkTypeSelect.options[milkTypeSelect.selectedIndex];
+
+    const multiplier = parseFloat(sizeOption.dataset.multiplier);
+    const milkPrice = parseFloat(milkOption.dataset.milkPrice);
+
+    const newPrice = (basePriceValue * multiplier) + milkPrice;
+    
+    displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
+  }
+
+  drinkSizeSelect.addEventListener('change', updatePrice);
+  milkTypeSelect.addEventListener('change', updatePrice);
+</script>

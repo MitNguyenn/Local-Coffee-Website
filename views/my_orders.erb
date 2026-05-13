@@ -1,6 +1,6 @@
-<link rel="stylesheet" href="/css/my-orders.css">
-
 <div class="my-orders-container">
+  <div class="order-stats">
+  </div>
   <div class="my-orders-nav">
     <button class="my-orders-nav-btn active" id="btn-live" onclick="showTab('live')">Live Orders</button>
     <button class="my-orders-nav-btn" id="btn-past" onclick="showTab('past')">Order History</button>
@@ -11,24 +11,32 @@
     <% if @current_orders.empty? %>
       <p>No active orders at the moment.</p>
     <% else %>
-      <% @current_orders.each do |order| %>
+      <% # Group flat rows into logical orders by OrderID %>
+      <% @current_orders.group_by { |o| o[:OrderID] }.each do |order_id, items| %>
+        <% first_row = items.first %>
         <div class="my-orders-card">
           <div class="my-orders-header">
-            <span class="my-orders-title">Order #<%= order[:user_seq] %></span>
-            <span class="my-orders-date"><%= order[:created_at].strftime("%H:%M") %></span>
+            <span class="my-orders-title">Order #<%= order_id %></span>
+            <span class="my-orders-date"><%= first_row[:CreatedAt].strftime("%H:%M") %></span>
           </div>
           <div class="my-orders-grid">
             <div>
               <ul class="my-orders-items">
-                <% order[:OrderContents].each do |item, qty| %>
-                  <li><strong><%= qty %>x</strong> <%= item %></li>
+                <% items.each do |item| %>
+                  <li>
+                    <strong><%= item[:Quantity] %>x</strong> 
+                    <%= item[:ItemID] %>
+                    <%= " (#{item[:Size]})" if item[:Size] %>
+                    <%= " - #{item[:RoastLevel]} Roast" if item[:RoastLevel] %>
+                    <%= " [#{item[:Milk]} Milk]" if item[:Milk] %>
+                  </li>
                 <% end %>
               </ul>
             </div>
             <div>
-              <strong>Total:</strong> £<%= '%.2f' % order[:totalCost] %><br>
+              <strong>Total:</strong> £<%= '%.2f' % first_row[:TotalCost] %><br>
               <strong>Status:</strong> 
-              <span class="my-orders-badge"><%= order[:is_delivered] ? "On the way" : "Preparing" %></span>
+              <span class="my-orders-badge"><%= first_row[:payment_status] %></span>
             </div>
           </div>
         </div>
@@ -41,22 +49,29 @@
     <% if @past_orders.empty? %>
       <p>Your order history is empty.</p>
     <% else %>
-      <% @past_orders.each do |order| %>
+      <% # Group flat rows into logical orders by OrderID %>
+      <% @past_orders.group_by { |o| o[:OrderID] }.each do |order_id, items| %>
+        <% first_row = items.first %>
         <div class="my-orders-card" style="border-color: #eee; opacity: 0.9;">
           <div class="my-orders-header">
-            <span class="my-orders-title">Order #<%= order[:user_seq] %></span>
-            <span class="my-orders-date"><%= order[:created_at].strftime("%d %b %Y") %></span>
+            <span class="my-orders-title">Order #<%= order_id %></span>
+            <span class="my-orders-date"><%= first_row[:CreatedAt].strftime("%d %b %Y") %></span>
           </div>
           <div class="my-orders-grid">
             <div>
               <ul class="my-orders-items">
-                <% order[:OrderContents].each do |item, qty| %>
-                  <li><%= qty %>x <%= item %></li>
+                <% items.each do |item| %>
+                  <li>
+                    <strong><%= item[:Quantity] %>x</strong> 
+                    <%= item[:ItemID] %>
+                    <%= " (#{item[:Size]})" if item[:Size] %>
+                    <%= " - #{item[:RoastLevel]} Roast" if item[:RoastLevel] %>
+                  </li>
                 <% end %>
               </ul>
             </div>
             <div>
-              <strong>Total:</strong> £<%= '%.2f' % order[:totalCost] %><br>
+              <strong>Total:</strong> £<%= '%.2f' % first_row[:TotalCost] %><br>
               <span class="my-orders-badge">Completed</span>
             </div>
           </div>

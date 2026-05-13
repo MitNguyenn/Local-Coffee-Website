@@ -1,13 +1,14 @@
+# In ./models/ticket.rb
 class Ticket < Sequel::Model(:Tickets)
   set_primary_key :ticketID
 
   def validate
     super
-    errors.add(:ticketContent, "cannot be blank") if !ticketContent || ticketContent.empty?
+    # Use self. to distinguish the column method from a Constant
+    errors.add(:TicketContent, "cannot be blank") if !self.TicketContent || self.TicketContent.strip.empty?
   end
 
-  # Logic to handle the boolean field from your PDF
   def resolved?
-    self.ticketResolved == true
+    self.TicketResolved == true
   end
 end

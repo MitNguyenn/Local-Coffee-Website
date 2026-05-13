@@ -5,6 +5,15 @@ _coverage/
 .bundle/
 vendor/ 
 
+# used for debugging
+output.txt
 Gemfile.lock
 
 .env
+
+db/db.sqlite3
+tempCodeRunnerFile.rb
+
+spec/_coverage/
+coverage/
+*.html

@@ -1,0 +1,25 @@
+<h1 class = >
+
+<% @tickets.each do |ticket| %>
+        <div class="my-orders-card ticket-border-open">
+          <div class="my-orders-header">
+            <span class="my-orders-title"><%= ticket[:TicketType] %></span>
+            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %H:%M") %></span>
+          </div>
+          
+          <div class="my-orders-grid">
+            <div class="ticket-content-text">
+              <%= ticket[:TicketContent].length > 100 ? ticket[:TicketContent][0..100] + "..." : ticket[:TicketContent] %>
+            </div>
+            
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;">
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span>
+              
+              <!-- DYNAMIC DETAILS BUTTON -->
+              <a href="/refund/<%= ticket[:ticketID] %>" class="view-details-btn">View Full Ticket</a>
+              
+              <span class="my-orders-badge status-open">Pending Review</span>
+            </div>
+          </div>
+        </div>
+<% end %>

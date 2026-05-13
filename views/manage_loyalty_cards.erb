@@ -1,0 +1,28 @@
+<main class="acc-view__main">
+  <h1 class="acc-view__title">Manage Loyalty Cards</h1>
+  <div class="acc-view__board">
+    <table id="accountsTable" class="acc-view__table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Email</th><th>Stamps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @accounts.each do |account| %>
+        <tr class="acc-view__row">
+          <td><%= account[:UserID] %></td>
+          <td><%= account[:email] %></td>
+          <td>
+            <!-- Unique ID added here for easier testing -->
+            <form id="form-user-<%= account[:UserID] %>" action="/update-stamps" method="POST">
+              <input type="hidden" name="user_id" value="<%= account[:UserID] %>">
+              <input type="number" name="stamp_count" value="<%= account[:StampCount] %>" min="0" max="10">
+              <button type="submit" class="acc-view__update-btn">Save</button>
+            </form>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</main>
