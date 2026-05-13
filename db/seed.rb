@@ -230,10 +230,10 @@ complaint_samples = [
 customer_ids = DB[:Accounts].where(AccountType: "customer").map(:UserID)
 
 puts "Seeding tickets table..."
-10.times do
+20.times do
   DB[:Tickets].insert(
     UserID: customer_ids.sample,
-    TicketType: ["Complaint", "Technical", "Query"].sample,
+    TicketType: ["Complaint", "Technical", "Query", "Refund"].sample,
     TicketContent: complaint_samples.sample,
     TicketResolved: [true, false].sample
   )
@@ -255,40 +255,3 @@ DB.tables.each do | table |
   printf(" %s ", table)
 end
 puts "\n"
-
-# def days_ago(n)
-#   Time.now - (n * 86400) - rand(3600..7200)
-# end
-
-# # Function to generate the JSON string for OrderContents
-# def generate_json_contents(beans)
-#   order_map = {}
-#   # Add 1-3 random menu items
-#   rand(1..3).times do
-#     order_map[MENU_ITEMS.sample] = rand(1..2)
-#   end
-#   # 40% chance to include a specific bean variety
-#   if rand < 0.4
-#     order_map["#{beans.sample} Beans (250g)"] = 1
-#   end
-#   order_map.to_json
-# end
-
-# # --- 4. ORDERS ---
-
-# 40.times do |i|
-#   # First 5 orders are "Recent/Live", the rest are historical
-#   is_past = i > 5 
-  
-#   DB[:Orders].insert(
-#     UserID: customer_ids.sample,
-#     OrderContents: generate_json_contents(bean_types),
-#     OrderType: ["In-Person", "Delivery"].sample,
-#     PaymentMethod: ["Card", "Cash", "Apple Pay"].sample,
-#     totalCost: rand(3.50..22.00).round(2),
-#     CreatedAt: is_past ? days_ago(rand(1..30)) : Time.now,
-#     Location: ["Counter", "Table #{rand(1..8)}", "Delivery"].sample,
-#     IsDelivered: is_past,
-#     IsCompleted: is_past
-#   )
-# end
