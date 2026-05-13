@@ -91,12 +91,12 @@ select {
   gap: 20px;
 }
 
-.basket {
+.cart {
   position: relative;
   display: inline-block;
 }
 
-.basket-dot {
+.cart-dot {
   position: absolute;
   top: 5px; 
   right: 5px;
@@ -111,7 +111,7 @@ select {
   display: block;
 }
 
-.basket-header {
+.cart-header {
   padding: 10px 15px;
   font-size: 1.1rem;
   border-bottom: 1px solid #eee;
@@ -1186,11 +1186,11 @@ footer {
 }
 
 .login-btn,
-.add-to-basket-button,
+.add-to-cart-button,
 .btn,
 .view-menu-btn,
 .buy-button,
-.add-to-basket-button,
+.add-to-cart-button,
 .purchase-btn,
 .submit-btn {
   background:
@@ -1220,7 +1220,7 @@ footer {
 }
 
 .login-btn:hover,
-.add-to-basket-button:hover,
+.add-to-cart-button:hover,
 .btn:hover,
 .purchase-btn:hover,
 .view-menu-btn:hover,
@@ -1591,11 +1591,11 @@ button:active {
 }
 
 .login-btn,
-.add-to-basket-button,
+.add-to-cart-button,
 .btn,
 .view-menu-btn,
 .buy-button,
-.add-to-basket-button,
+.add-to-cart-button,
 .submit-btn {
   background:
     linear-gradient(
@@ -1624,7 +1624,7 @@ button:active {
 }
 
 .login-btn:hover,
-.add-to-basket-button:hover,
+.add-to-cart-button:hover,
 .btn:hover,
 .view-menu-btn:hover,
 .buy-button:hover,

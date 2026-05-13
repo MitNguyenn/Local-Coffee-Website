@@ -3,9 +3,9 @@ require_relative 'base_controller'
 class ProductController < BaseController
   helpers AppHelpers
 
-  def finalize_stamps(user_id, basket)
+  def finalize_stamps(user_id, cart)
     stamps_to_add = 0
-    basket.each do |item_data|
+    cart.each do |item_data|
       if item_data['type'] == 'bean'
         stamps_to_add += 3
       elsif item_data['type'] == 'drink'
@@ -55,19 +55,19 @@ class ProductController < BaseController
   get '/checkout' do
     redirect '/log-in' unless logged_in?
     @user = DB[:Accounts].where(UserID: session[:UserID]).first
-    @subtotal = calculate_basket_total(session[:basket], @user)
+    @subtotal = calculate_cart_total(session[:cart], @user)
     erb :checkout
   end
 
   post '/place-order' do
     redirect '/log-in' unless logged_in?
     user_record = DB[:Accounts].where(UserID: session[:UserID]).first
-    subtotal = calculate_basket_total(session[:basket], user_record)
+    subtotal = calculate_cart_total(session[:cart], user_record)
     total_to_charge = subtotal + 3.50
 
     order_id = DB[:Orders].insert(
       UserID: session[:UserID],
-      OrderContents: session[:basket].to_json,
+      OrderContents: session[:cart].to_json,
       OrderType: 'Delivery',
       PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
       totalCost: total_to_charge,
@@ -78,8 +78,8 @@ class ProductController < BaseController
     if params[:payment_timing] == 'online'
       redirect "/external-payment-gateway?order_id=#{order_id}"
     else
-      finalize_stamps(session[:UserID], session[:basket])
-      session[:basket] = []
+      finalize_stamps(session[:UserID], session[:cart])
+      session[:cart] = []
       redirect '/order-success'
     end
   end
@@ -93,9 +93,9 @@ class ProductController < BaseController
     order = DB[:Orders].where(OrderID: params[:order_id]).first
     if params[:status] == 'success' && order
       DB[:Orders].where(OrderID: params[:order_id]).update(IsCompleted: true, payment_status: 'Paid')
-      basket = JSON.parse(order[:OrderContents])
-      finalize_stamps(session[:UserID], basket)
-      session[:basket] = [] 
+      cart = JSON.parse(order[:OrderContents])
+      finalize_stamps(session[:UserID], cart)
+      session[:cart] = [] 
       redirect '/order-success'
     else
       @error = "Payment Cancelled"
@@ -103,9 +103,9 @@ class ProductController < BaseController
     end
   end
 
-  post '/add-to-basket' do
-    if session[:basket].empty? 
-      session[:basket] = { }
+  post '/add-to-cart' do
+    if session[:cart].empty? 
+      session[:cart] = { }
     end
 
     # [item_key][quantity, total price = quantity * item_price]
@@ -128,10 +128,10 @@ class ProductController < BaseController
       item_key = "#{beverage}_#{size}_#{milk_type}"
     end
 
-    if session[:basket][item_key]
-      session[:basket][item_key][:quantity] += 1
+    if session[:cart][item_key]
+      session[:cart][item_key][:quantity] += 1
     else
-      session[:basket][item_key] = { 
+      session[:cart][item_key] = { 
         id: item_id, 
         type: item_type, 
         quantity: 1 
@@ -148,11 +148,11 @@ class ProductController < BaseController
   end
 end
 
-def calculate_basket_total(basket, user)
-  return 0.0 if basket.nil? || basket.empty?
+def calculate_cart_total(cart, user)
+  return 0.0 if cart.nil? || cart.empty?
   total = 0.0
   drink_prices = []
-  basket.each do |item_data|
+  cart.each do |item_data|
     table = (item_data[:type] == 'bean') ? :Beans : :Drinks
     id_col = (item_data[:type] == 'bean') ? :BeanID : :DrinkID
     item = DB[table].where(id_col => item_data[:id]).first

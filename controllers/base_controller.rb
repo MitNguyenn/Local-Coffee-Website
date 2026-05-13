@@ -20,8 +20,8 @@ class BaseController < Sinatra::Base
     erb :help
   end
 
-  get '/basket' do 
-    erb :basket
+  get '/cart' do 
+    erb :cart
   end
 
   post '/help' do

@@ -35,12 +35,12 @@
     </div>
     <div class="nav-right">
 
-      <!-- Basket Button -->
-      <div onclick="basketOnClick(event)" class="basket">
-        <img src="/cart.png" alt="basket-icon" width="65" height="65">
+      <!-- Cart Button -->
+      <div onclick="cartOnClick(event)" class="cart">
+        <img src="/cart.png" alt="cart-icon" width="65" height="65">
         
-        <% if session[:basket] && session[:basket].any? %>
-          <span class="basket-dot" id="basket-indicator"></span>
+        <% if session[:cart] && session[:cart].any? %>
+          <span class="cart-dot" id="cart-indicator"></span>
         <% end %>
       </div>
 
@@ -99,9 +99,9 @@
       }
     }
 
-    function basketOnClick(event) {
+    function cartOnClick(event) {
       event.stopPropagation();
-      window.location.href = `/basket`;
+      window.location.href = `/cart`;
     }
 
     function toggleDropdownUser(event) {

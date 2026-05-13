@@ -18,13 +18,13 @@ RSpec.describe "User access product pages", type: :feature do
     end
   end
 
-  describe "Basket Management" do
-    it "allows a user to add a drink to the basket and view it" do
+  describe "Cart Management" do
+    it "allows a user to add a drink to the cart and view it" do
       visit '/drinks'
-      # Assuming your HTML has a button 'Add to Basket' for DrinkID 1
-      click_button 'Add to basket' 
+      # Assuming your HTML has a button 'Add to Cart' for DrinkID 1
+      click_button 'Add to cart' 
       
-      visit '/view-basket'
+      visit '/view-cart'
       expect(page).to have_content('Flat White')
       expect(page).to have_content('£3.50')
     end
@@ -35,9 +35,9 @@ RSpec.describe "User access product pages", type: :feature do
       # Log in John Doe
       log_in_as('john@example.com', '_p_')
       
-      # Add an item to basket
+      # Add an item to cart
       visit '/drinks'
-      click_button 'Add to basket'
+      click_button 'Add to cart'
     end
 
     it "calculates the subtotal correctly on the checkout page" do

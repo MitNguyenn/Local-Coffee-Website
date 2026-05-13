@@ -14,7 +14,7 @@ rspec test types
 
 - Feature (:feature)
   High-level user flow tests using Capybara. 
-  e.g. Simulating a user clicking 'Add to Basket' and seeing it update.
+  e.g. Simulating a user clicking 'Add to Cart' and seeing it update.
 
 - View (:view)
   Tests the rendered HTML template.
