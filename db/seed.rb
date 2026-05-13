@@ -219,6 +219,35 @@ DB[:OrderItems].insert(
 )
 puts "Done"
 
+order_id_2 = DB[:Orders].insert(
+  UserID: 23242526,
+  OrderType: "In-Person",
+  PaymentMethod: "Card",
+  CreatedAt: Time.now-86400,
+  Location: "In-Store",
+  IsCompleted: false,
+  payment_status: 'Paid',
+  TotalCost: 10.33 # Large Latte with Oat milk + Light roasted 250g Arabic beans pack = 5.58 + 4.75 = 10.33
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_2,
+  ItemID: "Latte", # Latte
+  ProductType: "drink",
+  Quantity: 1,
+  Milk: "Oat",
+  Size: "Large"
+)
+
+DB[:OrderItems].insert(
+  OrderID: order_id_2,
+  ItemID: "Arabic",
+  ProductType: "bean",
+  Quantity: 1,
+  PackWeight: 250,
+  RoastLevel: "Light"
+)
+
 complaint_samples = [
   "My coffee was cold.",
   "The delivery driver couldn't find my flat.",
