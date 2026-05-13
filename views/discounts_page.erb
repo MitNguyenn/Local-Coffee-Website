@@ -1,0 +1,12 @@
+<h1 class="discount-page-title">Our Current Discounts!</h1>
+
+<div class="discount-list">
+    <% @discounts.each do |name, data| %>
+    <div class="discount-item">
+        <h1><%= name %></h1>
+        <span class="discount-percentage">
+          <%= ((1.0 - data[:multiplier]) * 100).round %>% OFF
+        </span>
+    </div>
+    <% end %>
+</div>

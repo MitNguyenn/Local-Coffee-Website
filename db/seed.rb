@@ -295,6 +295,22 @@ puts "Done"
   )
 end
 
+#DISCOUNTS
+DB[:Discounts].insert(
+  DiscountName: "discount1",
+  DiscountMultiplier: 0.9
+)
+
+DB[:Discounts].insert(
+  DiscountName: "discount2",
+  DiscountMultiplier: 0.8
+)
+
+DB[:Discounts].insert(
+  DiscountName: "discount3",
+  DiscountMultiplier: 0.5
+)
+
 puts "#{DB.tables.count} tables populated:"
 DB.tables.each do | table | 
   printf(" %s ", table)
