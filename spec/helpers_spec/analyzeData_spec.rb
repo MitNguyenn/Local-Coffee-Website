@@ -4,12 +4,12 @@ RSpec.describe MyOrders, type: :helper do
   include described_class
 
   let(:user_id) { 10000001 }
+
+  before(:each) do
     
-    # We clear the specific test objects out of the database to guarantee clean targets
     DB[:OrderItems].delete
     DB[:Orders].delete
 
-    # Insert an uncompleted current order containing a Drink item
     @order_id_current = DB[:Orders].insert(
       UserID: user_id, 
       IsCompleted: false, 
@@ -26,7 +26,6 @@ RSpec.describe MyOrders, type: :helper do
       Size: 'Large'
     )
 
-    # Insert a completed past order containing a Bean item
     @order_id_past = DB[:Orders].insert(
       UserID: user_id, 
       IsCompleted: true, 
