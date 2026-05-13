@@ -16,7 +16,6 @@ class AdminController < BaseController
   
 
   get '/manage-accounts' do
-    update_recent_login(session[:UserID]) if session[:UserID]
     @accounts = DB[:Accounts].all
     erb :account_management
   end
@@ -46,7 +45,6 @@ class AdminController < BaseController
   end
 
   get '/flagged-accounts' do
-    update_recent_login(session[:UserID]) if session[:UserID]
     @flagged_accounts = DB[:Accounts].where(Flagged: true).all
     erb :flagged_accounts
   end

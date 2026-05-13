@@ -2,7 +2,7 @@
   <h1><%= @item.Beverage %></h1>
   <div class="product-main-content">
     <%
-      rel_path = "drinks/#{@item.DrinkID}.png"
+      rel_path = "drinks/#{@item.Beverage}.png"
       
       if File.exist?(File.join(Dir.pwd, "public", rel_path))
         display_path = "/#{rel_path}"
@@ -13,76 +13,72 @@
     
     <img src="<%= display_path %>" alt="<%= @item.Beverage %>" width="500" height="500">
     <div class="product-details" id="product-details">
+      <span id="base-price" data-price="<%= @item.RegularPrice %>" style="display:none;"></span>
       <p><%= @item.Description %></p>
-      <div class = "product-properties">
-        <div class="product-price">
-          <p>Price: <strong>£<%= sprintf('%.2f', @item.Price) %></strong></p>
-        </div><br>
 
-        <label for="milk-type">Milk Type: </label>
-        <select name="milk-type">
-          <option value="whole">Whole</option>
-          <option value="oat">Oat</option>
-          <option value="soy">Soy</option>
-        </select><br><br>
+      <label for="drink-sizes">Size:</label>
+      <select name="drink-size" id="drink-size-select">
+        <% @drink_sizes.each do | drink_size | %>
+          <option value="<%= drink_size[:DrinkSize] %>" data-multiplier="<%= drink_size[:MarkupMultiplier] %>">
+            <%= drink_size[:DrinkSize] %>
+          </option>
+        <% end %>
+      </select>
 
-        <label for="size">Size</label>
-        <select name="size">
-          <option value="regular">Regular</option>
-          <option value="large">Large &#40;&#43;&#163; 1.00&#41;</option>
-        </select><br><br>
+      <label for="milk-types"><b>Milk types:</b></label>
+      <% if @item.ContainsMilk %>
+        <select name="milk-type" id="milk-type-select">
+          <% @milk_types.each do | milk_type | %>
+              <% if milk_type[:MilkType] == "Whole" %>
+                <option value="<%= milk_type[:MilkType] %>" data-milk-price="0.0">
+                  <%= milk_type[:MilkType] %> (+£0)
+                </option>
+              <% else %>
+                <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
+                  <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
+                </option>
+              <% end %>
+          <% end %>
+        </select>
+      <% else %>
+        <select name="milk-type" id="milk-type-select">
+          <option value="None" data-milk-price="0.0">
+              Don't add milk
+          </option>
+          <% @milk_types.each do | milk_type | %>
+            <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
+                <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
+            </option>
+          <% end %>
+        </select>
+      <% end %>
 
-      </div>
-      <button class="add-to-basket-button" data-id="<%= @item.DrinkID %>">Add to Basket</button>
+      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.RegularPrice) %></h2>
+      <button class="add-to-basket-button">Add to Basket</button>
       <button class="buy-button">Buy Now</button>
     </div> 
   </div> 
   <a href="/drinks">Back to Catalog</a>
 </div>
-
+ 
 <script>
-  const container = document.getElementById('product-details');
-  const sizeSelect = document.querySelector('select[name="size"]');
-  const priceEl = document.querySelector('.product-price p');
-  const basePrice = <%= @item.Price %>;
+  const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
+  const displayPrice = document.getElementById('display-price');
+  const drinkSizeSelect = document.getElementById('drink-size-select');
+  const milkTypeSelect = document.getElementById('milk-type-select');
 
-  container.addEventListener('click', (event) => {
-    if (event.target.classList.contains('add-to-basket-button')) {
-      const drinkID = event.target.dataset.id;
-      const size = document.querySelector('select[name="size"]').value;
-      const milk_type = document.querySelector('select[name="milk-type"]').value;
-      
-      fetch('/add-to-basket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${drinkID}&type=drink&size=${size}&milk_type=${milk_type}`
-      })
-      .then(response => response.json())
-      .then(data => {
-        event.target.textContent = "Added! ✅";
-        setTimeout(() => { event.target.textContent = "Add to Basket"; }, 1000);
-      });
-      return;
-}
+  function updatePrice() {
+    const sizeOption = drinkSizeSelect.options[drinkSizeSelect.selectedIndex];
+    const milkOption = milkTypeSelect.options[milkTypeSelect.selectedIndex];
 
-    if (event.target.classList.contains('buy-button')) {
-      const drinkId = document.querySelector('.add-to-basket-button').dataset.id;
-      const size = document.querySelector('select[name="size"]').value;
-      const milk_type = document.querySelector('select[name="milk-type"]').value;
-      fetch('/add-to-basket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${drinkId}&type=drink&size=${size}&milk_type=${milk_type}`
-      })
-      .then(() => {
-        window.location.href = '/checkout';
-      });
-      return;
-    } 
-  });
-  sizeSelect.addEventListener('change', () => {
-    const extra = sizeSelect.value === 'large' ? 1.00 : 0.00;
-    const total = basePrice + extra;
-    priceEl.innerHTML = `Price: <strong>£${total.toFixed(2)}</strong>`;
-  });
+    const multiplier = parseFloat(sizeOption.dataset.multiplier);
+    const milkPrice = parseFloat(milkOption.dataset.milkPrice);
+
+    const newPrice = (basePriceValue * multiplier) + milkPrice;
+    
+    displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
+  }
+
+  drinkSizeSelect.addEventListener('change', updatePrice);
+  milkTypeSelect.addEventListener('change', updatePrice);
 </script>

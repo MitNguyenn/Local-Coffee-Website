@@ -4,33 +4,40 @@
 
 <div class="catalog-grid" id="item-container">
   <% @beans.each do |bean| %>
-    <% if bean.CurrentStock > 0 %>
-      <div class="product-card" data-bean-id="<%= bean[:BeanID] %>">
+    <% if bean.StockMass >= 0.25 %>
+      <div class="product-card" data-origin="<%= bean.Origin %>">
         <%
-          rel_path = "beans/#{bean.BeanID}.png"
+          rel_path = "beans/#{bean.Origin}.png"
           if File.exist?(File.join(Dir.pwd, "public", rel_path))
             display_path = "/#{rel_path}"
           else
-            display_path = "/beans/beans_img_not_found.png"
+            display_path = "/beans/brazil_pixel.png"
+            # display_path = "/beans/beans_img_not_found.png"
           end
         %>
         
-        <img src="<%= display_path %>" alt="<%= bean.Name %>" width="500" height="500">
+        <img src="<%= display_path %>" alt="<%= bean.Origin %>" width="500" height="500">
 
-        <h3><%= bean.Name %></h3>
-        <p>£<%= sprintf('%.2f', bean.Price) %></p>
-        
-        <button class="add-to-basket-button">Add to basket</button>
-        <button class="buy-button">Buy</button>
+        <h3><%= bean.Origin %></h3>
+        <p>£<%= sprintf('%.2f', bean.PricePer250g) %> (per 250g)</p>
       </div>
     <% end %>
   <% end %>
 </div>
 
 <script>
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', eventHandlerBeanPage);
-  } else {
-    eventHandlerBeanPage();
-  }
+  const container = document.getElementById('item-container');
+
+  container.addEventListener('click', (event) => {
+    const target = event.target;
+    const card = target.closest('.product-card');
+    
+    if (!card) return; 
+
+    const origin = card.dataset.origin;
+
+    if (card) {
+      window.location.href = `/product/?type=bean&origin=${origin}`;
+    }
+  });
 </script>
