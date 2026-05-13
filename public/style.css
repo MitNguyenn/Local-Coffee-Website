@@ -2232,3 +2232,84 @@ button:active {
 .sp-page-hyperlink:hover {
   color: #4b2c20;
 }
+
+/* Container layout constraints */
+.order-stats {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* Grid display metrics wrapper */
+.stats-grid {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Individual metric tracking box template profiles */
+.stats-card {
+  flex: 1;
+  min-width: 220px;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Section block label elements */
+.stats-card__label {
+  margin: 0 0 0.5rem 0;
+  color: #666666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+}
+
+/* Prominent dynamic volume number items */
+.stats-card__value {
+  margin: 0.5rem 0;
+  color: #111111;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Secondary meta subtitles */
+.stats-card__subtext {
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+/* Loyalty program grid visual tracking alignment elements */
+.stamp-tracker {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 1.25rem 0;
+  flex-wrap: wrap;
+}
+
+/* Inactive circle placeholder shapes */
+.stamp-slot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #555555;
+  background: transparent;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+/* Active collection progress marker items */
+.stamp-slot--filled {
+  background: #555555;
+}
