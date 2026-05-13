@@ -101,7 +101,7 @@ end
   end
 
   get '/refund-tickets' do
-    @tickets = DB[:Tickets].where(tickettype: "Refund").all
+    @tickets = DB[:Tickets].where(TicketType: "Refund").all
 
     erb :refund_management
   end
