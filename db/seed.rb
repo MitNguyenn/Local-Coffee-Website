@@ -52,7 +52,7 @@ end
 finn_password = BCrypt::Password.create("testpassword?!")
 
 DB[:Accounts].insert(
-  UserID: 23242526,
+  UserID: 23242526, 
   first_name: "Finn",
   last_name: "Elliott",
   StampCount: 3,
