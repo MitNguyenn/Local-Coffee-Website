@@ -16,6 +16,9 @@ module AppHelpers
   include MyOrders
 
   include AccountRecency
+
+  include Discounts
+  
   def current_user
 
     return nil unless session[:UserID]

@@ -45,5 +45,10 @@ class BaseController < Sinatra::Base
     end
   end
 
-  
+  get '/discounts' do
+    @discounts = get_current_discounts()
+
+    erb :discounts_page
+  end
+
 end

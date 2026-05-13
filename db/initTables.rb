@@ -105,6 +105,13 @@ DB.create_table? :Audits do
   DateTime    :CreatedAt, default: Sequel::CURRENT_TIMESTAMP
 end
 
+
+DB.create_table? :Discounts do
+  primary_key :DiscountID
+  String :DiscountName,
+  Double :DiscountMult, default: 1.0
+end
+
 puts "Database tables initialized successfully"
 
 # Denormalized version of beans data

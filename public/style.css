@@ -2313,3 +2313,49 @@ button:active {
 .stamp-slot--filled {
   background: #555555;
 }
+
+/* Page Title Layout Properties */
+.discount-page-title {
+  color: #111111;
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 2.5rem 0 2rem 0;
+  letter-spacing: -0.5px;
+}
+
+/* Flexbox List Container Layout */
+.discount-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Individual Deal Box Components */
+.discount-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.discount-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Typography elements within the loops */
+.discount-item h1 {
+  margin: 0;
+  color: #222222;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
