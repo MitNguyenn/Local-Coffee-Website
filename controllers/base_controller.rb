@@ -11,7 +11,7 @@ class BaseController < Sinatra::Base
   set :public_folder, proc { File.join(root, "public") }
 
   get '/' do
-    update_recent_login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:user_id]) if session[:user_id]
     
     erb :home
   end
@@ -25,7 +25,7 @@ class BaseController < Sinatra::Base
   end
 
   post '/help' do
-    userid = DB[:Accounts].where(email: params[:form_useremail]).get(:UserID)
+    userid = DB[:Accounts].where(email: params[:form_useremail]).get(:user_id)
     
     if userid.nil? || params[:form_request_description].to_s.strip.empty?
       @error = "Missing info! Please check the email and description."
@@ -34,9 +34,9 @@ class BaseController < Sinatra::Base
 
     begin
       Ticket.create(
-        UserID: userid, 
-        TicketType: params[:problem_type], 
-        TicketContent: params[:form_request_description]
+        user_id: userid, 
+        ticket_type: params[:problem_type], 
+        ticket_content: params[:form_request_description]
       )
       redirect "/"
     rescue => e

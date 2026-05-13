@@ -1,29 +1,29 @@
 module MyOrders
   def fetch_current_orders(user_id)
     DB[:Orders]
-      .join(:OrderItems, OrderID: :OrderID)
-      .where(UserID: user_id, IsCompleted: false)
+      .join(:OrderItems, order_id: :order_id)
+      .where(user_id: user_id, is_completed: false)
       .all
   end
 
   def fetch_past_orders(user_id)
     DB[:Orders]
-      .join(:OrderItems, OrderID: :OrderID)
-      .where(UserID: user_id, IsCompleted: true)
+      .join(:OrderItems, order_id: :order_id)
+      .where(user_id: user_id, is_completed: true)
       .all
   end
   
   def get_stats(user_id)
     orders = DB[:Orders]
-      .join(:OrderItems, OrderID: :OrderID)
-      .where(UserID: user_id)
+      .join(:OrderItems, order_id: :order_id)
+      .where(user_id: user_id)
       .all
 
-    account = DB[:Accounts].where(UserID: user_id).first
-    stamp_count = account ? account[:StampCount].modulo(10) : 0
+    account = DB[:Accounts].where(user_id: user_id).first
+    stamp_count = account ? account[:stamp_count].modulo(10) : 0
 
-    total_num_coffee = orders.select { |item| item[:ProductType] == 'drink' }.sum { |item| item[:Quantity] }
-    total_num_beans  = orders.select { |item| item[:ProductType] == 'bean' }.sum { |item| item[:Quantity] }
+    total_num_coffee = orders.select { |item| item[:product_type] == 'drink' }.sum { |item| item[:quantity] }
+    total_num_beans  = orders.select { |item| item[:product_type] == 'bean' }.sum { |item| item[:quantity] }
     until_next_discount = 10 - stamp_count
 
     return {

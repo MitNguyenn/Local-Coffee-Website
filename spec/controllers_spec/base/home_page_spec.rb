@@ -24,7 +24,7 @@ RSpec.describe 'Home page', type: :feature do
     visit '/'
     click_link 'Help'
     expect(current_path).to eq('/help')
-    expect(page).to have_content('Request Description')
+    expect(page).to have_content('Request description')
   end
 
   context 'when logged in as user' do 

@@ -1,28 +1,28 @@
 <div class="my-orders-container">
   <div class="my-orders-header">
-    <h1 class="my-orders-title">Ticket #<%= @ticket[:ticketID] %>: <%= @ticket[:TicketType] %></h1>
+    <h1 class="my-orders-title">Ticket #<%= @ticket[:ticket_id] %>: <%= @ticket[:ticket_type] %></h1>
     <a href="/user-tickets" style="color: #a67458; text-decoration: none;">← Back to List</a>
   </div>
 
   <div class="my-orders-card">
-    <div class="m-dash-panel__title">Issue Description</div>
-    <p class="ticket-content-text"><%= @ticket[:TicketContent] %></p>
+    <div class="m-dash-panel__title">Issue description</div>
+    <p class="ticket-content-text"><%= @ticket[:ticket_content] %></p>
     
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
     
     <div class="my-orders-grid">
       <div>
         <strong>Status:</strong> 
-        <span class="my-orders-badge <%= @ticket[:TicketResolved] ? 'status-resolved' : 'status-open' %>">
-          <%= @ticket[:TicketResolved] ? 'Resolved' : 'Open' %>
+        <span class="my-orders-badge <%= @ticket[:ticket_resolved] ? 'status-resolved' : 'status-open' %>">
+          <%= @ticket[:ticket_resolved] ? 'Resolved' : 'Open' %>
         </span>
       </div>
       <div>
         <strong>Submitted on:</strong><br>
-        <%= @ticket[:CreatedAt].strftime("%d %B %Y at %H:%M") %>
+        <%= @ticket[:created_at].strftime("%d %B %Y at %H:%M") %>
       </div>
     </div>
-    <form action="/resolve-ticket/<%= @ticket[:ticketID]%>" method="POST">
+    <form action="/resolve-ticket/<%= @ticket[:ticket_id]%>" method="POST">
       <button name="resolve-button" class ="btn" value="">Resolve ticket</button>
     </form>
   </div>  

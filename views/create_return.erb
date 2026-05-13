@@ -12,15 +12,15 @@
                 <li class="barista-order-row" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #ddd; background: white; margin-bottom: 10px; border-radius: 8px;">
                     
                     <div class="barista-order-info">
-                        <strong>Order #<%= order[:OrderID] %></strong> 
-                        <span style="color: #666; margin-left: 10px;"><%= order[:CreatedAt].strftime("%H:%M") %></span>
+                        <strong>Order #<%= order[:order_id] %></strong> 
+                        <span style="color: #666; margin-left: 10px;"><%= order[:created_at].strftime("%H:%M") %></span>
                         <div style="font-size: 0.9rem; color: #444; margin-top: 5px;">
                             <%= JSON.parse(order[:OrderContents]).map { |k, v| "#{v}x #{k}" }.join(", ") %>
                         </div>
                     </div>
 
                     <div class="barista-actions">
-                        <form action="/generate-return/<%= order[:OrderID] %>" method="POST" style="display: inline;">
+                        <form action="/generate-return/<%= order[:order_id] %>" method="POST" style="display: inline;">
                             <!-- Adding an optional input for the external ID if your route expects it -->
                             <input type="text" name="external_tracking_id" placeholder="Tracking ID..." required style="padding: 5px; margin-right: 5px; border: 1px solid #ccc; border-radius: 4px;">
                             <button type="submit" class="barista-complete-btn" style="background-color: #d9534f; cursor: pointer;">Generate Return PDF</button>

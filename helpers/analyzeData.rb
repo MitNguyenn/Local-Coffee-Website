@@ -5,30 +5,30 @@ module AnalyzeData
     prev_month_start = start_date - (30 * 24 * 60 * 60)
     current_month_name = now.strftime("%B")
     
-    recent_orders = DB[:Orders].where(Sequel.lit('CreatedAt >= ?', start_date))
+    recent_orders = DB[:Orders].where(Sequel.lit('created_at >= ?', start_date))
     
-    total_sales = recent_orders.sum(:TotalCost) || 0.0
+    total_sales = recent_orders.sum(:total_cost) || 0.0
     order_count = recent_orders.count
     avg_order = order_count > 0 ? (total_sales / order_count).round(2) : 0.0
 
-    this_month_signups = DB[:Accounts].where(Created_At: start_date..now).count
-    last_month_signups = DB[:Accounts].where(Created_At: prev_month_start..start_date).count
+    this_month_signups = DB[:Accounts].where(created_at: start_date..now).count
+    last_month_signups = DB[:Accounts].where(created_at: prev_month_start..start_date).count
     
     signup_change = last_month_signups > 0 ? 
       (((this_month_signups - last_month_signups).to_f / last_month_signups) * 100).round(1) : 0.0
 
     recent_items = DB[:OrderItems]
-      .join(:Orders, OrderID: :OrderID)
-      .where(Sequel.lit('Orders.CreatedAt >= ?', start_date))
+      .join(:Orders, order_id: :order_id)
+      .where(Sequel.lit('Orders.created_at >= ?', start_date))
 
     top_products = recent_items
       .select(
         Sequel.lit("CASE 
-          WHEN ProductType = 'Drink' AND Size IS NOT NULL THEN ItemID || ' (' || Size || ')'
-          WHEN ProductType = 'Bean' AND RoastLevel IS NOT NULL THEN ItemID || ' ' || RoastLevel || ' Roast'
-          ELSE ItemID 
+          WHEN product_type = 'Drink' AND size IS NOT NULL THEN item_id || ' (' || size || ')'
+          WHEN product_type = 'Bean' AND roast_level IS NOT NULL THEN item_id || ' ' || roast_level || ' Roast'
+          ELSE item_id 
         END AS product_name"),
-        Sequel.function(:sum, :Quantity).as(:total_units)
+        Sequel.function(:sum, :quantity).as(:total_units)
       )
       .group(:product_name)
       .order(Sequel.desc(:total_units))
@@ -36,9 +36,9 @@ module AnalyzeData
       .map { |row| { name: row[:product_name], units_sold: row[:total_units].to_i } }
 
     category_raw = recent_items
-      .group(:ProductType)
-      .select(:ProductType, Sequel.function(:sum, :Quantity).as(:qty))
-      .to_hash(:ProductType, :qty)
+      .group(:product_type)
+      .select(:product_type, Sequel.function(:sum, :quantity).as(:qty))
+      .to_hash(:product_type, :qty)
 
     sales_by_category = {
       "Drinks" => category_raw["Drink"] || 0,

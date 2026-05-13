@@ -1,9 +1,9 @@
 <div class="product-detail-container">
-  <h1 id="origin" data-origin="<%= @item.Origin %>"><%= @item.Origin %></h1>
+  <h1 id="origin" data-origin="<%= @item.origin %>"><%= @item.origin %></h1>
 
   <div class="product-main-content"> 
     <%
-      rel_path = "beans/#{@item.Origin}.png"
+      rel_path = "beans/#{@item.origin}.png"
       
       if File.exist?(File.join(Dir.pwd, "public", rel_path))
         display_path = "/#{rel_path}"
@@ -11,15 +11,15 @@
         display_path = "/beans/beans_img_not_found.png"
       end
     %>
-    <img src="<%= display_path %>" alt="<%= @item.Origin %>" width="500" height="500">
+    <img src="<%= display_path %>" alt="<%= @item.origin %>" width="500" height="500">
 
     <div class="product-details">
-      <span id="base-price" data-price="<%= @item.PricePer250g %>" style="display:none;"></span>
-      <label for="pack-weight-select">Select Size:</label>
+      <span id="base-price" data-price="<%= @item.price_per_250g %>" style="display:none;"></span>
+      <label for="pack-weight-select">Select size:</label>
       <select name="pack-weight" id="pack-weight-select">
         <% @bean_packs.each do | pack | %>
-          <option value="<%= pack[:PackWeight] %>" data-multiplier="<%= pack[:MarkupMultiplier] %>">
-            <%= pack[:PackWeight] %>g
+          <option value="<%= pack[:pack_weight] %>" data-multiplier="<%= pack[:markup_multiplier] %>">
+            <%= pack[:pack_weight] %>g
           </option>
         <% end %>
       </select>
@@ -27,11 +27,11 @@
       <label for="roast-level-select"><b>Roast levels:</b></label>
       <select name="roast-level" id="roast-level-select">
         <% @bean_roast_levels.each do | roast | %>
-          <option value="<%= roast[:RoastLevel] %>"><%= roast[:RoastLevel] %></option>
+          <option value="<%= roast[:roast_level] %>"><%= roast[:roast_level] %></option>
         <% end %>
       </select>
 
-      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.PricePer250g) %></h2>
+      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.price_per_250g) %></h2>
       <button onclick="addToCartOnClick(event)" id="add-to-cart-button" class="add-to-cart-button">Add to cart</button>
     </div>
   </div>

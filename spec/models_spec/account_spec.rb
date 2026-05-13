@@ -1,5 +1,5 @@
 RSpec.describe Account, type: :model do
-  let(:account) { Account.new(email: "testemail123@gmail.com", AccountType: "Admin") }  
+  let(:account) { Account.new(email: "testemail123@gmail.com", account_type: "Admin") }  
   
   describe "validations" do
     it "is valid with valid attributes" do
@@ -12,10 +12,10 @@ RSpec.describe Account, type: :model do
       expect(account.errors[:email]).to include("is required")
     end
 
-    it "is invalid without an AccountType" do
-      account.AccountType = nil
+    it "is invalid without an account_type" do
+      account.account_type = nil
       expect(account).not_to be_valid
-      expect(account.errors[:AccountType]).to include("must be assigned")
+      expect(account.errors[:account_type]).to include("must be assigned")
     end
   end
 

@@ -2,7 +2,7 @@ require_relative 'base_controller'
 
 class ManagerController < BaseController
   before do
-    unless session[:UserID] && session[:AccountType] == 'manager' || session[:AccountType] == 'administrator'
+    unless session[:user_id] && session[:account_type] == 'manager' || session[:account_type] == 'administrator'
       redirect '/'
     end
   end

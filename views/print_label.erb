@@ -17,9 +17,9 @@
                     <% @orders.each do |order| %>
                     <tr>
                         <form action="/order-management/administrator" method="POST">
-                            <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
+                            <input type="hidden" name="order_id" value="<%= order[:order_id] %>">
                             
-                            <td><strong>#<%= order[:OrderID] %></strong></td>
+                            <td><strong>#<%= order[:order_id] %></strong></td>
                             <td style="font-size: 0.8rem; color: #666;"><%= order[:OrderContents] %></td>
 
                             <td>
@@ -30,7 +30,7 @@
                             </td>
                         </form>
                         <td>
-                            <a href="/generate-label/<%= order[:OrderID] %>" class="audit-submit-btn" style="background-color: #444; text-decoration: none; display: inline-block; text-align: center;">Print Label</a>
+                            <a href="/generate-label/<%= order[:order_id] %>" class="audit-submit-btn" style="background-color: #444; text-decoration: none; display: inline-block; text-align: center;">Print Label</a>
                         </td>
                     </tr>
                     <% end %>

@@ -38,7 +38,7 @@ RSpec.describe "Account Management", type: :feature do
         expect(page.current_path).to eq("/")
         
         # Verify the DB change persisted through the redirect
-        user = DB[:Accounts].where(UserID: user_id).first
+        user = DB[:Accounts].where(user_id: user_id).first
         expect(user[:first_name]).to eq("Jonathan")
       end
     end
@@ -46,7 +46,7 @@ RSpec.describe "Account Management", type: :feature do
     describe "user visits loyalty card page" do
       it "displays the QR code and correct stamp count" do
         # Update user stamps to verify display
-        DB[:Accounts].where(UserID: user_id).update(StampCount: 5)
+        DB[:Accounts].where(user_id: user_id).update(stamp_count: 5)
         
         visit "/loyalty-card"
         expect(page).to have_selector('svg') # Check for the QR code SVG
@@ -57,8 +57,8 @@ RSpec.describe "Account Management", type: :feature do
     describe "user visits my orders page" do
       it "shows current and past orders correctly" do
         # Seed specific orders for this test context
-        DB[:Orders].insert(UserID: user_id, IsCompleted: false, OrderContents: '{"item":"Latte"}', totalCost: 3.50)
-        DB[:Orders].insert(UserID: user_id, IsCompleted: true, OrderContents: '{"item":"Cake"}', totalCost: 4.00)
+        DB[:Orders].insert(user_id: user_id, is_completed: false, OrderContents: '{"item":"Latte"}', totalCost: 3.50)
+        DB[:Orders].insert(user_id: user_id, is_completed: true, OrderContents: '{"item":"Cake"}', totalCost: 4.00)
 
         visit "/my-orders"
         expect(page).to have_content("Latte")

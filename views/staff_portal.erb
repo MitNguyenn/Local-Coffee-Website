@@ -1,4 +1,4 @@
-<% if session[:AccountType] == 'barista' %>
+<% if session[:account_type] == 'barista' %>
 <h1 class = "sp-page-title">Barista Portal</h1>
   <div class = "sp-page-box">
     <a href="/order-management/barista" class="sp-page-hyperlink">View Orders</a>
@@ -12,7 +12,7 @@
   <div class = "sp-page-box">
     <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
   </div>
-<% elsif session[:AccountType] == 'manager' %>
+<% elsif session[:account_type] == 'manager' %>
 <h1 class = "sp-page-title">Manager Portal</h1>
   <div class = "sp-page-box">
     <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
@@ -30,7 +30,7 @@
     <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
   </div>
 
-<% elsif session[:AccountType] == 'administrator' %>
+<% elsif session[:account_type] == 'administrator' %>
 <h1 class = "sp-page-title">Administrator Portal</h1>
   <div class = "sp-page-box">
     <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
@@ -51,7 +51,7 @@
     <a href="/order-management/administrator" class="sp-page-hyperlink">Manage Orders</a>
   </div>
   <div class = "sp-page-box">
-    <a href="/flagged-accounts" class="sp-page-hyperlink">Flagged Accounts</a>
+    <a href="/flagged-accounts" class="sp-page-hyperlink">flagged Accounts</a>
   </div>
   <div class = "sp-page-box">
     <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>

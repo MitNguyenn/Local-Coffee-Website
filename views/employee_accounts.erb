@@ -12,9 +12,9 @@
         <tr>
           <th class="acc-view__th">ID</th>
           <th class="acc-view__th">Full Name</th>
-          <th class="acc-view__th">Email Address</th>
+          <th class="acc-view__th">Email address</th>
           <th class="acc-view__th">Phone Number</th>
-          <th class="acc-view__th">Postcode</th>
+          <th class="acc-view__th">postcode</th>
           <th class="acc-view__th">Account Type</th>
           <th class="acc-view__th">Actions</th>
         </tr>
@@ -23,20 +23,20 @@
         <% @grouped_accounts.each do |role, accounts| %>
           <% accounts.each do |account| %>
             <tr class="acc-view__row">
-              <td class="acc-view__td">#<%= account[:UserID] %></td>
+              <td class="acc-view__td">#<%= account[:user_id] %></td>
               <td class="acc-view__td"><%= account[:first_name] %> <%= account[:last_name] %></td>
               <td class="acc-view__td"><%= account[:email] %></td>
-              <td class="acc-view__td"><%= account[:PhoneNumber] %></td>
-              <td class="acc-view__td"><%= account[:Postcode] %></td>
+              <td class="acc-view__td"><%= account[:phone_number] %></td>
+              <td class="acc-view__td"><%= account[:postcode] %></td>
               <td class="acc-view__td">
-                <span class="acc-view__badge"><%= account[:AccountType] || role %></span>
+                <span class="acc-view__badge"><%= account[:account_type] || role %></span>
               </td>
               <td class="acc-view__td">
                 <!-- Keep original Edit Link -->
-                <a href="/edit-account/<%= account[:UserID] %>" id="editaccount-<%= account[:UserID] %>" style="margin-right: 15px;">Edit Account</a>
+                <a href="/edit-account/<%= account[:user_id] %>" id="editaccount-<%= account[:user_id] %>" style="margin-right: 15px;">Edit Account</a>
                 
                 <!-- Added RESTful Delete Form using Method Overriding -->
-                <form action="/delete-account/<%= account[:UserID] %>" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to permanently delete this account?');">
+                <form action="/delete-account/<%= account[:user_id] %>" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to permanently delete this account?');">
                   <input type="hidden" name="_method" value="delete">
                   <button type="submit" style="color: #dc3545; background: none; border: none; padding: 0; font-family: inherit; font-size: inherit; cursor: pointer; text-decoration: underline;">
                     Delete

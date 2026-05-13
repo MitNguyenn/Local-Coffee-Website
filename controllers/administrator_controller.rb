@@ -8,7 +8,7 @@ class AdminController < BaseController
   helpers AppHelpers
 
   before do
-    unless session[:UserID] && session[:AccountType] == 'administrator'
+    unless session[:user_id] && session[:account_type] == 'administrator'
       redirect '/'
     end
   end
@@ -19,23 +19,23 @@ class AdminController < BaseController
   end
 
   get '/edit-account/:id' do
-    @account = DB[:Accounts].where(UserID: params[:id]).first
+    @account = DB[:Accounts].where(user_id: params[:id]).first
     erb :edit_account
   end
 
   post '/edit-account/:id' do
     resetPassword = params[:reset_password] == "on"
     
-    DB[:Accounts].where(UserID: params[:id]).update(
+    DB[:Accounts].where(user_id: params[:id]).update(
       first_name: params[:first_name],
       last_name: params[:last_name],
       email: params[:email],
-      PhoneNumber: params[:PhoneNumber],
-      Postcode: params[:Postcode],
-      AccountType: params[:AccountType]
+      phone_number: params[:phone_number],
+      postcode: params[:postcode],
+      account_type: params[:account_type]
     )
     if resetPassword
-      DB[:Accounts].where(UserID: params[:id]).update(
+      DB[:Accounts].where(user_id: params[:id]).update(
         hashed_password: BCrypt::Password.create("password123").to_s
       )
     end
@@ -43,12 +43,12 @@ class AdminController < BaseController
   end
 
   get '/flagged-accounts' do
-    @flagged_accounts = DB[:Accounts].where(Flagged: true).all
+    @flagged_accounts = DB[:Accounts].where(flagged: true).all
     erb :flagged_accounts
   end
 
   get '/suspend-account/:id' do
-    DB[:Accounts].where(UserID: params[:id]).update(Suspended: true)
+    DB[:Accounts].where(user_id: params[:id]).update(suspended: true)
     redirect '/flagged-accounts'
   end
 
@@ -58,14 +58,14 @@ class AdminController < BaseController
   end
 
   get '/employee-accounts' do
-    employees = DB[:Accounts].where(AccountType: ['barista', 'manager', 'administrator']).all
-    @grouped_accounts = employees.group_by { |acc| acc[:AccountType] }
+    employees = DB[:Accounts].where(account_type: ['barista', 'manager', 'administrator']).all
+    @grouped_accounts = employees.group_by { |acc| acc[:account_type] }
 
     erb :employee_accounts
   end
 
   post '/delete-account/:id' do
-    DB[:Accounts].where(UserID: params[:id]).delete
+    DB[:Accounts].where(user_id: params[:id]).delete
 
     redirect '/employee-accounts'
   end

@@ -21,14 +21,14 @@ module AppHelpers
   
   def current_user
 
-    return nil unless session[:UserID]
+    return nil unless session[:user_id]
     
 
-    @current_user ||= DB[:Accounts].where(UserID: session[:UserID]).first
+    @current_user ||= DB[:Accounts].where(user_id: session[:user_id]).first
   end
 
   def update_recent_login(user_id)
-    DB[:Accounts].where(UserID: user_id).update(Recent_Login: Time.now)
+    DB[:Accounts].where(user_id: user_id).update(recent_login: Time.now)
   end
 
   def logged_in?

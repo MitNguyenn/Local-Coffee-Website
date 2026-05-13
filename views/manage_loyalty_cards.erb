@@ -10,13 +10,13 @@
       <tbody>
         <% @accounts.each do |account| %>
         <tr class="acc-view__row">
-          <td><%= account[:UserID] %></td>
+          <td><%= account[:user_id] %></td>
           <td><%= account[:email] %></td>
           <td>
             <!-- Unique ID added here for easier testing -->
-            <form id="form-user-<%= account[:UserID] %>" action="/update-stamps" method="POST">
-              <input type="hidden" name="user_id" value="<%= account[:UserID] %>">
-              <input type="number" name="stamp_count" value="<%= account[:StampCount] %>" min="0" max="10">
+            <form id="form-user-<%= account[:user_id] %>" action="/update-stamps" method="POST">
+              <input type="hidden" name="user_id" value="<%= account[:user_id] %>">
+              <input type="number" name="stamp_count" value="<%= account[:stamp_count] %>" min="0" max="10">
               <button type="submit" class="acc-view__update-btn">Save</button>
             </form>
           </td>

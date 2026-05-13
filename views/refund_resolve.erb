@@ -1,25 +1,25 @@
 <div class="my-orders-container">
   <div class="my-orders-header">
-    <h1 class="my-orders-title">Refund #<%= @ticket[:ticketID] %></h1>
+    <h1 class="my-orders-title">Refund #<%= @ticket[:ticket_id] %></h1>
     <a href="/refund-tickets" style="color: #a67458; text-decoration: none;">← Back to List</a>
   </div>
 
   <div class="my-orders-card">
-    <div class="m-dash-panel__title">Refund Description</div>
-    <p class="ticket-content-text"><%= @ticket[:TicketContent] %></p>
+    <div class="m-dash-panel__title">Refund description</div>
+    <p class="ticket-content-text"><%= @ticket[:ticket_content] %></p>
     
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
     
     <div class="my-orders-grid">
       <div>
         <strong>Status:</strong> 
-        <span class="my-orders-badge <%= @ticket[:TicketResolved] ? 'status-resolved' : 'status-open' %>">
-          <%= @ticket[:TicketResolved] ? 'Resolved' : 'Open' %>
+        <span class="my-orders-badge <%= @ticket[:ticket_resolved] ? 'status-resolved' : 'status-open' %>">
+          <%= @ticket[:ticket_resolved] ? 'Resolved' : 'Open' %>
         </span>
       </div>
       <div>
         <strong>Submitted on:</strong><br>
-        <%= @ticket[:CreatedAt].strftime("%d %B %Y at %H:%M") %>
+        <%= @ticket[:created_at].strftime("%d %B %Y at %H:%M") %>
       </div>
       <form action = "/refund/<%= @ticket[:id]%>" method = "POST">
         <button name = "resolve-refund-button" class = "btn">Resolve Ticket</button>

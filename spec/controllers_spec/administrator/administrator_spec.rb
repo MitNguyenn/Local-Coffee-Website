@@ -71,7 +71,7 @@ RSpec.describe "Admin Management", type: :feature do
       click_button "Save Changes"
       expect(current_path).to eq("/manage-accounts")
 
-      account = DB[:Accounts].where(UserID: customer_id).first
+      account = DB[:Accounts].where(user_id: customer_id).first
       expect(account[:first_name]).to eq("Jane")
       expect(account[:last_name]).to  eq("Smith")
     end
@@ -81,17 +81,17 @@ RSpec.describe "Admin Management", type: :feature do
       fill_in "email", with: "newemail@example.com"
       click_button "Save Changes"
 
-      account = DB[:Accounts].where(UserID: customer_id).first
+      account = DB[:Accounts].where(user_id: customer_id).first
       expect(account[:email]).to eq("newemail@example.com")
     end
 
     it "updates the account type" do
       visit "/edit-account/#{customer_id}"
-      select "Barista", from: "AccountType"
+      select "Barista", from: "account_type"
       click_button "Save Changes"
 
-      account = DB[:Accounts].where(UserID: customer_id).first
-      expect(account[:AccountType]).to eq("barista")
+      account = DB[:Accounts].where(user_id: customer_id).first
+      expect(account[:account_type]).to eq("barista")
     end
 
     it "resets the password to 'password123' when the reset checkbox is ticked" do
@@ -99,25 +99,25 @@ RSpec.describe "Admin Management", type: :feature do
       check "reset_password"
       click_button "Save Changes"
 
-      account = DB[:Accounts].where(UserID: customer_id).first
+      account = DB[:Accounts].where(user_id: customer_id).first
       expect(BCrypt::Password.new(account[:hashed_password])).to eq("password123")
     end
 
     it "does not change the password when reset checkbox is not ticked" do
-      original_hash = DB[:Accounts].where(UserID: customer_id).get(:hashed_password)
+      original_hash = DB[:Accounts].where(user_id: customer_id).get(:hashed_password)
 
       visit "/edit-account/#{customer_id}"
       uncheck "reset_password"
       click_button "Save Changes"
 
-      account = DB[:Accounts].where(UserID: customer_id).first
+      account = DB[:Accounts].where(user_id: customer_id).first
       expect(account[:hashed_password]).to eq(original_hash)
     end
   end
   
-  describe "Flagged Accounts" do
+  describe "flagged Accounts" do
     before do
-      DB[:Accounts].where(UserID: customer_id).update(Flagged: true, Flagged_At: Time.now)
+      DB[:Accounts].where(user_id: customer_id).update(flagged: true, flagged_at: Time.now)
     end
 
     it "renders the flagged accounts page" do
@@ -139,15 +139,15 @@ RSpec.describe "Admin Management", type: :feature do
       visit "/suspend-account/#{customer_id}"
       expect(current_path).to eq("/flagged-accounts")
 
-      account = DB[:Accounts].where(UserID: customer_id).first
-      expect(account[:Suspended]).to be_truthy
+      account = DB[:Accounts].where(user_id: customer_id).first
+      expect(account[:suspended]).to be_truthy
     end
 
     it "does not suspend an already-clean account unintentionally" do
-      DB[:Accounts].where(UserID: admin_id).update(Suspended: false)
+      DB[:Accounts].where(user_id: admin_id).update(suspended: false)
       visit "/flagged-accounts"
-      account = DB[:Accounts].where(UserID: admin_id).first
-      expect(account[:Suspended]).to be_falsy
+      account = DB[:Accounts].where(user_id: admin_id).first
+      expect(account[:suspended]).to be_falsy
     end
   end
 

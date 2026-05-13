@@ -11,7 +11,7 @@
     <div class="login-card" style="max-width: 500px;">
       
       <h1 class="acc-view__title" style="font-size: 2rem;">Edit Account</h1>
-      <p style="margin-top: -20px; color: #a67458;">Updating User ID: <strong>#<%= @account[:UserID] %></strong></p>
+      <p style="margin-top: -20px; color: #a67458;">Updating User ID: <strong>#<%= @account[:user_id] %></strong></p>
       <form method="POST">
 
         <input type="reset">
@@ -37,35 +37,35 @@
         
         <!-- ROLE SELECTION -->
       <div class="input-group">
-        <label for="AccountType">System Role</label>
-        <select name="AccountType" class="acc-view__search" style="width: 100%; border-radius: 8px; margin-bottom: 15px; appearance: auto; background-color: #fdf5e6;">
-          <option value="customer" <%= 'selected' if @account[:AccountType] == 'customer' %>>Customer</option>
-          <option value="barista" <%= 'selected' if @account[:AccountType] == 'barista' %>>Barista</option>
-          <option value="manager" <%= 'selected' if @account[:AccountType] == 'manager' %>>Manager</option>
-          <option value="administrator" <%= 'selected' if @account[:AccountType] == 'administrator' %>>Administrator</option>
+        <label for="account_type">System Role</label>
+        <select name="account_type" class="acc-view__search" style="width: 100%; border-radius: 8px; margin-bottom: 15px; appearance: auto; background-color: #fdf5e6;">
+          <option value="customer" <%= 'selected' if @account[:account_type] == 'customer' %>>Customer</option>
+          <option value="barista" <%= 'selected' if @account[:account_type] == 'barista' %>>Barista</option>
+          <option value="manager" <%= 'selected' if @account[:account_type] == 'manager' %>>Manager</option>
+          <option value="administrator" <%= 'selected' if @account[:account_type] == 'administrator' %>>Administrator</option>
         </select>
         </div>
 
         <div class="input-group">
-          <label for="email">Email Address</label>
+          <label for="email">Email address</label>
           <input type="text" name="email" value="<%= @account[:email] %>" class="account-input">
         </div>
 
         <div class="input-group">
-          <label for="PhoneNumber">Phone Number</label>
-          <input type="text" name="PhoneNumber" value="<%= @account[:PhoneNumber] %>" class="account-input">
+          <label for="phone_number">Phone Number</label>
+          <input type="text" name="phone_number" value="<%= @account[:phone_number] %>" class="account-input">
         </div>
 
-        <h3 class="detail-header">Location</h3>
+        <h3 class="detail-header">location</h3>
         
         <div class="input-group">
-          <label for="Address">Full Address</label>
-          <input type="text" name="Address" value="<%= @account[:Address] %>" class="account-input">
+          <label for="address">Full address</label>
+          <input type="text" name="address" value="<%= @account[:address] %>" class="account-input">
         </div>
 
         <div class="input-group">
-          <label for="Postcode">Postcode</label>
-          <input type="text" name="Postcode" value="<%= @account[:Postcode] %>" class="account-input">
+          <label for="postcode">postcode</label>
+          <input type="text" name="postcode" value="<%= @account[:postcode] %>" class="account-input">
         </div>
 
         <div style="margin-top: 30px; display: flex; gap: 10px;">
@@ -74,7 +74,7 @@
         </div>
       </form>
       <div style="margin-top: 30px;">
-        <a href="/manage-accounts-delete/<%= @account[:UserID] %>" class="acc-view__btn" style="padding: 15px; background: #64748b;">Delete Account</a>
+        <a href="/manage-accounts-delete/<%= @account[:user_id] %>" class="acc-view__btn" style="padding: 15px; background: #64748b;">Delete Account</a>
       </div>
     </div>
   </main>

@@ -15,24 +15,24 @@ class AuthController < BaseController
     user = DB[:Accounts].where(email: @email).first
     
     if user && BCrypt::Password.new(user[:hashed_password]) == @password
-      session[:UserID] = user[:UserID]
-      session[:AccountType] = user[:AccountType]
+      session[:user_id] = user[:user_id]
+      session[:account_type] = user[:account_type]
 
-      attempt_flag_account(session[:UserID])
-      attempt_suspend_account(session[:UserID])
+      attempt_flag_account(session[:user_id])
+      attempt_suspend_account(session[:user_id])
 
-      user = DB[:Accounts].where(UserID: user[:UserID]).first
+      user = DB[:Accounts].where(user_id: user[:user_id]).first
 
-      if user[:Suspended]
+      if user[:suspended]
         session.clear
         @error = "Your account has been suspended. Please contact support."
         return erb :login_screen
       end
 
-      session[:UserID] = user[:UserID]
-      session[:AccountType] = user[:AccountType]
+      session[:user_id] = user[:user_id]
+      session[:account_type] = user[:account_type]
       
-      update_recent_login(session[:UserID]) if session[:UserID]
+      update_recent_login(session[:user_id]) if session[:user_id]
 
       redirect '/'
 
@@ -52,10 +52,10 @@ class AuthController < BaseController
     password2 = params[:password2]
     
     # Generate Unique ID
-    UserID = nil
+    user_id = nil
     loop do
-      UserID = rand(10000000..99999999)
-      break unless Account[UserID]
+      user_id = rand(10000000..99999999)
+      break unless Account[user_id]
     end
 
     # Validations
@@ -63,7 +63,7 @@ class AuthController < BaseController
       @error = "Invalid email format."
       return erb :register_account
     end
-    unless str_uk_telephone?(params[:PhoneNumber])
+    unless str_uk_telephone?(params[:phone_number])
       @error = "Invalid UK phone number."
       return erb :register_account
     end
@@ -77,19 +77,19 @@ class AuthController < BaseController
     end
 
     user = Account.create(
-      UserID: UserID,
+      user_id: user_id,
       first_name: params[:first_name],
       last_name: params[:last_name],
       email: email,
       password: password1,
-      PhoneNumber: params[:PhoneNumber],
-      Address: params[:Address],
-      Postcode: params[:postcode],
-      AccountType: 'customer'
+      phone_number: params[:phone_number],
+      address: params[:address],
+      postcode: params[:postcode],
+      account_type: 'customer'
     )
 
-    session[:UserID] = user.UserID
-    update_recent_login(session[:UserID]) if session[:UserID]
+    session[:user_id] = user.user_id
+    update_recent_login(session[:user_id]) if session[:user_id]
     redirect '/'
   end
 

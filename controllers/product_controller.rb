@@ -13,10 +13,10 @@ class ProductController < BaseController
       end
     end
 
-    current_stamps = DB[:Accounts].where(UserID: user_id).get(:StampCount) || 0
+    current_stamps = DB[:Accounts].where(user_id: user_id).get(:stamp_count) || 0
     final_count = (current_stamps + stamps_to_add) % 10
 
-    DB[:Accounts].where(UserID: user_id).update(StampCount: final_count)
+    DB[:Accounts].where(user_id: user_id).update(stamp_count: final_count)
   end
 
   # product page
@@ -41,44 +41,44 @@ class ProductController < BaseController
   end
 
   get '/coffee-beans' do
-    update_recent_login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:user_id]) if session[:user_id]
     @beans = Bean.all
     erb :beans
   end
 
   get '/drinks' do
-    update_recent_login(session[:UserID]) if session[:UserID]
+    update_recent_login(session[:user_id]) if session[:user_id]
     @drinks = Drink.all
     erb :drinks
   end
 
   get '/checkout' do
     redirect '/log-in' unless logged_in?
-    @user = DB[:Accounts].where(UserID: session[:UserID]).first
+    @user = DB[:Accounts].where(user_id: session[:user_id]).first
     @subtotal = calculate_cart_total(session[:cart], @user)
     erb :checkout
   end
 
   post '/place-order' do
     redirect '/log-in' unless logged_in?
-    user_record = DB[:Accounts].where(UserID: session[:UserID]).first
+    user_record = DB[:Accounts].where(user_id: session[:user_id]).first
     subtotal = calculate_cart_total(session[:cart], user_record)
     total_to_charge = subtotal + 3.50
 
     order_id = DB[:Orders].insert(
-      UserID: session[:UserID],
+      user_id: session[:user_id],
       OrderContents: session[:cart].to_json,
-      OrderType: 'Delivery',
-      PaymentMethod: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
+      order_type: 'Delivery',
+      payment_method: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
       totalCost: total_to_charge,
-      IsCompleted: params[:payment_timing] == 'online' ? false : true,
+      is_completed: params[:payment_timing] == 'online' ? false : true,
       payment_status: params[:payment_timing] == 'online' ? 'Pending' : 'Paid'
     )
 
     if params[:payment_timing] == 'online'
       redirect "/external-payment-gateway?order_id=#{order_id}"
     else
-      finalize_stamps(session[:UserID], session[:cart])
+      finalize_stamps(session[:user_id], session[:cart])
       session[:cart] = []
       redirect '/order-success'
     end
@@ -90,11 +90,11 @@ class ProductController < BaseController
   end
 
   get '/payment-callback' do
-    order = DB[:Orders].where(OrderID: params[:order_id]).first
+    order = DB[:Orders].where(order_id: params[:order_id]).first
     if params[:status] == 'success' && order
-      DB[:Orders].where(OrderID: params[:order_id]).update(IsCompleted: true, payment_status: 'Paid')
+      DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true, payment_status: 'Paid')
       cart = JSON.parse(order[:OrderContents])
-      finalize_stamps(session[:UserID], cart)
+      finalize_stamps(session[:user_id], cart)
       session[:cart] = [] 
       redirect '/order-success'
     else
@@ -161,7 +161,7 @@ class ProductController < BaseController
   end
 
   get '/order-success' do
-    @order = DB[:Orders].where(UserID: session[:UserID]).order(Sequel.desc(:CreatedAt)).first
+    @order = DB[:Orders].where(user_id: session[:user_id]).order(Sequel.desc(:created_at)).first
     @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
     erb :order_success
   end

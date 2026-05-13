@@ -2,10 +2,10 @@
   <div class="flagged-account">
     <h3><%= account[:first_name] %> <%= account[:last_name] %></h3>
     <p>Email: <%= account[:email] %></p>
-    <p>Phone: <%= account[:PhoneNumber] %></p>
+    <p>Phone: <%= account[:phone_number] %></p>
     <p>Last Login: <%= account[:LastLogin] %></p>
     
-    <a href="/suspend-account/<%= account[:UserID] %>" class="suspend-button">
+    <a href="/suspend-account/<%= account[:user_id] %>" class="suspend-button">
       Suspend Account
     </a>
   </div>

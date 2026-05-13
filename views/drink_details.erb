@@ -1,8 +1,8 @@
 <div class="product-detail-container">
-  <h1 id="beverage" data-beverage="<%= @item.Beverage %>" ><%= @item.Beverage %></h1>
+  <h1 id="beverage" data-beverage="<%= @item.beverage %>" ><%= @item.beverage %></h1>
   <div class="product-main-content">
     <%
-      rel_path = "drinks/#{@item.Beverage}.png"
+      rel_path = "drinks/#{@item.beverage}.png"
       
       if File.exist?(File.join(Dir.pwd, "public", rel_path))
         display_path = "/#{rel_path}"
@@ -11,31 +11,31 @@
       end
     %>
     
-    <img src="<%= display_path %>" alt="<%= @item.Beverage %>" width="500" height="500">
+    <img src="<%= display_path %>" alt="<%= @item.beverage %>" width="500" height="500">
     <div class="product-details" id="product-details">
-      <span id="base-price" data-price="<%= @item.RegularPrice %>" style="display:none;"></span>
-      <p><%= @item.Description %></p>
+      <span id="base-price" data-price="<%= @item.regular_price %>" style="display:none;"></span>
+      <p><%= @item.description %></p>
 
-      <label for="drink-size-select">Size:</label>
+      <label for="drink-size-select">size:</label>
       <select name="drink-size" id="drink-size-select">
         <% @drink_sizes.each do | drink_size | %>
-          <option value="<%= drink_size[:DrinkSize] %>" data-multiplier="<%= drink_size[:MarkupMultiplier] %>">
-            <%= drink_size[:DrinkSize] %>
+          <option value="<%= drink_size[:drink_size] %>" data-multiplier="<%= drink_size[:markup_multiplier] %>">
+            <%= drink_size[:drink_size] %>
           </option>
         <% end %>
       </select>
 
-      <label for="milk-type-select"><b>Milk types:</b></label>
-      <% if @item.ContainsMilk %>
+      <label for="milk-type-select"><b>milk types:</b></label>
+      <% if @item.contains_milk %>
         <select name="milk-type" id="milk-type-select">
           <% @milk_types.each do | milk_type | %>
-              <% if milk_type[:MilkType] == "Whole" %>
-                <option value="<%= milk_type[:MilkType] %>" data-milk-price="0.0">
-                  <%= milk_type[:MilkType] %> (+£0)
+              <% if milk_type[:milk_type] == "Whole" %>
+                <option value="<%= milk_type[:milk_type] %>" data-milk-price="0.0">
+                  <%= milk_type[:milk_type] %> (+£0)
                 </option>
               <% else %>
-                <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
-                  <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
+                <option value="<%= milk_type[:milk_type] %>" data-milk-price="<%= milk_type[:price] %>">
+                  <%= milk_type[:milk_type] %> (+£<%= milk_type[:price] %>)
                 </option>
               <% end %>
           <% end %>
@@ -46,14 +46,14 @@
               Don't add milk
           </option>
           <% @milk_types.each do | milk_type | %>
-            <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
-                <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
+            <option value="<%= milk_type[:milk_type] %>" data-milk-price="<%= milk_type[:price] %>">
+                <%= milk_type[:milk_type] %> (+£<%= milk_type[:price] %>)
             </option>
           <% end %>
         </select>
       <% end %>
 
-      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.RegularPrice) %></h2>
+      <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.regular_price) %></h2>
       <button onclick="addToCartOnClick(event)" class="add-to-cart-button" id="add-to-cart-button">Add to Cart</button>
     </div> 
   </div> 

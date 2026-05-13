@@ -4,9 +4,9 @@
 
 <div class="catalog-grid" id="item-container">
   <% @drinks.each do |drink| %>
-    <div class="product-card" data-beverage="<%= drink.Beverage %>">
+    <div class="product-card" data-beverage="<%= drink.beverage %>">
       <%
-        rel_path = "drinks/#{drink.Beverage}.png"
+        rel_path = "drinks/#{drink.beverage}.png"
         if File.exist?(File.join(Dir.pwd, "public", rel_path))
           display_path = "/#{rel_path}"
         else
@@ -14,9 +14,9 @@
         end
       %>
     
-      <img src="<%= display_path %>" alt="<%= drink.Beverage %>">
-      <h3><%= drink.Beverage %></h3>
-      <p class="price">£<%= sprintf('%.2f', drink.RegularPrice) %> (Regular size)</p>
+      <img src="<%= display_path %>" alt="<%= drink.beverage %>">
+      <h3><%= drink.beverage %></h3>
+      <p class="price">£<%= sprintf('%.2f', drink.regular_price) %> (Regular size)</p>
     </div>
   <% end %>
 </div>

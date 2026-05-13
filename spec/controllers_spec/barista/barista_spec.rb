@@ -76,11 +76,11 @@ RSpec.describe "Barista access unique pages", type: :feature do
         click_button "Save"
       end
 
-      expect(DB[:Accounts].where(UserID: 10000001).first[:StampCount]).to eq(7)
+      expect(DB[:Accounts].where(user_id: 10000001).first[:stamp_count]).to eq(7)
     end
 
     it "can set stamps to zero" do
-      DB[:Accounts].where(UserID: 10000001).update(StampCount: 5)
+      DB[:Accounts].where(user_id: 10000001).update(stamp_count: 5)
 
       visit "/manage-loyalty-cards"
 
@@ -111,7 +111,7 @@ RSpec.describe "Barista access unique pages", type: :feature do
         user_id: 10000001,
         stamp_count: 10
       }
-      expect(DB[:Accounts].where(UserID: 10000001).first[:StampCount]).to eq(0)
+      expect(DB[:Accounts].where(user_id: 10000001).first[:stamp_count]).to eq(0)
     end
   end
   

@@ -21,60 +21,60 @@ module DatabaseSeeder
 
     staff_data.each do |first, last, email, role|
       db_connection[:Accounts].insert(
-        UserID: rand(100000..199999),
+        user_id: rand(100000..199999),
         first_name: first,
         last_name: last,
-        StampCount: 0,
+        stamp_count: 0,
         email: email,
         hashed_password: password_hash,
-        PhoneNumber: "07#{rand(100000000..999999999)}",
-        Postcode: "S1 1AA",
-        Address: "1 Cafe Lane, Sheffield",
-        AccountType: role
+        phone_number: "07#{rand(100000000..999999999)}",
+        postcode: "S1 1AA",
+        address: "1 Cafe Lane, Sheffield",
+        account_type: role
       )
     end
 
     15.times do |i|
       db_connection[:Accounts].insert(
-        UserID: 200000 + i,
+        user_id: 200000 + i,
         first_name: ["Liam", "Emma", "Noah", "Olivia", "James"].sample,
         last_name: ["Smith", "Jones", "Brown", "Taylor"].sample,
-        StampCount: rand(0..9),
+        stamp_count: rand(0..9),
         email: "customer#{i}@example.com",
         hashed_password: password_hash,
-        PhoneNumber: "07#{rand(100000000..999999999)}",
-        Postcode: "S#{rand(1..10)} 2BB",
-        Address: "#{rand(1..100)} Residence Rd, Sheffield",
-        AccountType: "customer"
+        phone_number: "07#{rand(100000000..999999999)}",
+        postcode: "S#{rand(1..10)} 2BB",
+        address: "#{rand(1..100)} Residence Rd, Sheffield",
+        account_type: "customer"
       )
     end
 
     finn_password = BCrypt::Password.create("testpassword?!")
     db_connection[:Accounts].insert(
-      UserID: 23242526, 
+      user_id: 23242526, 
       first_name: "Finn",
       last_name: "Elliott",
-      StampCount: 3,
+      stamp_count: 3,
       email: "finn@mail.com",
       hashed_password: finn_password,
-      PhoneNumber: "07395456262",
-      Postcode: "S10 3AJ",
-      Address: "58 Endcliffe Vale Road",
-      AccountType: "administrator"
+      phone_number: "07395456262",
+      postcode: "S10 3AJ",
+      address: "58 Endcliffe Vale Road",
+      account_type: "administrator"
     )
 
     taha_password = BCrypt::Password.create("Tahatest1234")
     db_connection[:Accounts].insert(
-      UserID: 38452738,
+      user_id: 38452738,
       first_name: "Taha",
       last_name: "Hassanein",
-      StampCount: 5,
+      stamp_count: 5,
       email: "taha@gmail.com",
       hashed_password: taha_password,
-      PhoneNumber: "07536476923",
-      Postcode: "S10 3AJ",
-      Address: "58 Endcliffe Vale Road",
-      AccountType: "administrator"
+      phone_number: "07536476923",
+      postcode: "S10 3AJ",
+      address: "58 Endcliffe Vale Road",
+      account_type: "administrator"
     )
     puts "Done"
 
@@ -88,9 +88,9 @@ module DatabaseSeeder
     bean_list.each do |origin, mass, price |
       puts "inserting: #{origin} #{mass} #{price}"
       db_connection[:Beans].insert(
-        Origin: origin,
-        StockMass: mass,
-        PricePer250g: price
+        origin: origin,
+        stock_mass: mass,
+        price_per_250g: price
       )
     end
     puts "Done"
@@ -103,8 +103,8 @@ module DatabaseSeeder
     ]
     beans_pack_weight_price_markup_multipliers.each do | weight, markup_multiplier |
       db_connection[:BeansPackWeightPriceMarkupMultipliers].insert(
-        PackWeight: weight,
-        MarkupMultiplier: markup_multiplier
+        pack_weight: weight,
+        markup_multiplier: markup_multiplier
       )
     end
     puts "Done"
@@ -114,7 +114,7 @@ module DatabaseSeeder
     bean_roasts.each do | roast |
       puts "inserting: #{roast}"
       db_connection[:BeanRoastLevels].insert(
-        RoastLevel: roast
+        roast_level: roast
       )
     end
     puts "Done"
@@ -131,10 +131,10 @@ module DatabaseSeeder
     drinks.each do | bev, price, contains_milk, description|
       puts "inserting: #{bev} #{price} #{description}"
       db_connection[:Drinks].insert(
-        Beverage: bev,
-        ContainsMilk: contains_milk,
-        RegularPrice: price,
-        Description: description
+        beverage: bev,
+        contains_milk: contains_milk,
+        regular_price: price,
+        description: description
       )
     end
     puts "Done"
@@ -147,8 +147,8 @@ module DatabaseSeeder
     drink_size_price_markup_mutlipliers.each do | size, markup_multiplier | 
       puts "inserting: #{size} #{markup_multiplier}"
       db_connection[:DrinkSizePriceMarkupMultipliers].insert(
-        DrinkSize: size,
-        MarkupMultiplier: markup_multiplier
+        drink_size: size,
+        markup_multiplier: markup_multiplier
       )
     end
     puts "Done"
@@ -162,8 +162,8 @@ module DatabaseSeeder
     milk_types.each do | type, price |
       puts "inserting: #{type} #{price}"
       db_connection[:MilkTypes].insert(
-        MilkType: type, 
-        Price: price
+        milk_type: type, 
+        price: price
       )
     end
     puts "Done"
@@ -172,67 +172,67 @@ module DatabaseSeeder
     grams_beans_bought = 250.0
     kg_bought = grams_beans_bought / 1000.0
     
-    db_connection[:Beans].where(Origin: "Arabic").update(
-      StockMass: Sequel[:StockMass] - kg_bought
+    db_connection[:Beans].where(origin: "Arabic").update(
+      stock_mass: Sequel[:stock_mass] - kg_bought
     )
 
     order_id_1 = db_connection[:Orders].insert(
-      UserID: 23242526,
-      OrderType: "In-Person",
-      PaymentMethod: "Card",
-      CreatedAt: Time.now,
-      Location: "In-Store",
-      IsCompleted: true,
+      user_id: 23242526,
+      order_type: "In-Person",
+      payment_method: "Card",
+      created_at: Time.now,
+      location: "In-Store",
+      is_completed: true,
       payment_status: 'Paid',
-      TotalCost: 10.33 
+      total_cost: 10.33 
     )
 
     db_connection[:OrderItems].insert(
-      OrderID: order_id_1,
-      ItemID: "Latte", 
-      ProductType: "drink",
-      Quantity: 1,
-      Milk: "Oat",
-      Size: "Large"
+      order_id: order_id_1,
+      item_id: "Latte", 
+      product_type: "drink",
+      quantity: 1,
+      milk: "Oat",
+      size: "Large"
     )
 
     db_connection[:OrderItems].insert(
-      OrderID: order_id_1,
-      ItemID: "Arabic",
-      ProductType: "bean",
-      Quantity: 1,
-      PackWeight: 250,
-      RoastLevel: "Light"
+      order_id: order_id_1,
+      item_id: "Arabic",
+      product_type: "bean",
+      quantity: 1,
+      pack_weight: 250,
+      roast_level: "Light"
     )
     puts "Done"
 
     order_id_2 = db_connection[:Orders].insert(
-      UserID: 23242526,
-      OrderType: "In-Person",
-      PaymentMethod: "Card",
-      CreatedAt: Time.now-86400,
-      Location: "In-Store",
-      IsCompleted: false,
+      user_id: 23242526,
+      order_type: "In-Person",
+      payment_method: "Card",
+      created_at: Time.now-86400,
+      location: "In-Store",
+      is_completed: false,
       payment_status: 'Paid',
-      TotalCost: 10.33 
+      total_cost: 10.33 
     )
 
     db_connection[:OrderItems].insert(
-      OrderID: order_id_2,
-      ItemID: "Latte", 
-      ProductType: "drink",
-      Quantity: 1,
-      Milk: "Oat",
-      Size: "Large"
+      order_id: order_id_2,
+      item_id: "Latte", 
+      product_type: "drink",
+      quantity: 1,
+      milk: "Oat",
+      size: "Large"
     )
 
     db_connection[:OrderItems].insert(
-      OrderID: order_id_2,
-      ItemID: "Arabic",
-      ProductType: "bean",
-      Quantity: 1,
-      PackWeight: 250,
-      RoastLevel: "Light"
+      order_id: order_id_2,
+      item_id: "Arabic",
+      product_type: "bean",
+      quantity: 1,
+      pack_weight: 250,
+      roast_level: "Light"
     )
 
     complaint_samples = [
@@ -251,43 +251,43 @@ module DatabaseSeeder
       "The packaging was heavily damaged on arrival"
     ]
 
-    customer_ids = db_connection[:Accounts].where(AccountType: "customer").map(:UserID)
+    customer_ids = db_connection[:Accounts].where(account_type: "customer").map(:user_id)
 
     puts "Seeding tickets table..."
     20.times do
       db_connection[:Tickets].insert(
-        UserID: customer_ids.sample,
-        TicketType: ["Complaint", "Technical", "Query"].sample,
-        TicketContent: complaint_samples.sample,
-        TicketResolved: [true, false].sample
+        user_id: customer_ids.sample,
+        ticket_type: ["Complaint", "Technical", "Query"].sample,
+        ticket_content: complaint_samples.sample,
+        ticket_resolved: [true, false].sample
       )
     end
     10.times do
       db_connection[:Tickets].insert(
-        UserID: customer_ids.sample,
-        TicketType: "Refund",
-        TicketContent: refund_complaints.sample,
-        TicketResolved: [true, false].sample
+        user_id: customer_ids.sample,
+        ticket_type: "Refund",
+        ticket_content: refund_complaints.sample,
+        ticket_resolved: [true, false].sample
       )
     end
     puts "Done"
 
     10.times do
-      order_row = db_connection[:Orders].select(:OrderID).order(Sequel.lit('RANDOM()')).first
+      order_row = db_connection[:Orders].select(:order_id).order(Sequel.lit('RANDOM()')).first
       if order_row
         db_connection[:Audits].insert(
-          orderID: order_row[:OrderID],
-          BeforeStatus: ["Pending", "Paid", "Unpaid"].sample,
-          AfterStatus: ["Pending", "Paid", "Unpaid"].sample,
-          ChangeReason: ["Customer requested change", "Payment issue", "Admin correction"].sample
+          order_id: order_row[:order_id],
+          before_status: ["Pending", "Paid", "Unpaid"].sample,
+          after_status: ["Pending", "Paid", "Unpaid"].sample,
+          change_reason: ["Customer requested change", "Payment issue", "Admin correction"].sample
         )
       end
     end
 
     # DISCOUNTS
-    db_connection[:Discounts].insert(DiscountName: "discount1", DiscountMultiplier: 0.9)
-    db_connection[:Discounts].insert(DiscountName: "discount2", DiscountMultiplier: 0.8)
-    db_connection[:Discounts].insert(DiscountName: "discount3", DiscountMultiplier: 0.5)
+    db_connection[:Discounts].insert(discount_name: "discount1", discount_multiplier: 0.9)
+    db_connection[:Discounts].insert(discount_name: "discount2", discount_multiplier: 0.8)
+    db_connection[:Discounts].insert(discount_name: "discount3", discount_multiplier: 0.5)
 
     puts "#{db_connection.tables.count} tables populated:"
     db_connection.tables.each { |table| printf(" %s ", table) }

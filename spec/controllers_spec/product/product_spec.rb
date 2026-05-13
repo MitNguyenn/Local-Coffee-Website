@@ -52,15 +52,15 @@ RSpec.describe "User access product pages", type: :feature do
 
     it "calculates the subtotal correctly on the checkout page" do
       visit '/checkout'
-      # Price (3.50)
+      # price (3.50)
       expect(page).to have_content('3.5')
     end
 
     it "applies a loyalty discount when user has 9 stamps" do
-      DB[:Accounts].where(UserID: user_id).update(StampCount: 9)
+      DB[:Accounts].where(user_id: user_id).update(stamp_count: 9)
       
       visit '/checkout'
-      # Price 3.50 - Discount 3.50 = 0.00
+      # price 3.50 - Discount 3.50 = 0.00
       expect(page).to have_content('0.0')
     end
 
@@ -73,8 +73,8 @@ RSpec.describe "User access product pages", type: :feature do
       expect(page).to have_content('TXN-')
       
       # Verify stamp was added (1 for a drink)
-      user = DB[:Accounts].where(UserID: user_id).first
-      expect(user[:StampCount]).to eq(1)
+      user = DB[:Accounts].where(user_id: user_id).first
+      expect(user[:stamp_count]).to eq(1)
     end
   end
 
@@ -86,10 +86,10 @@ RSpec.describe "User access product pages", type: :feature do
 
       # Manually create a pending order to test the callback
       order_id = DB[:Orders].insert(
-        UserID: user_id,
+        user_id: user_id,
         OrderContents: '[{"id":"1","type":"drink"}]',
         payment_status: 'Pending',
-        IsCompleted: false
+        is_completed: false
       )
 
       # Simulate the callback from the "Gateway"
@@ -97,9 +97,9 @@ RSpec.describe "User access product pages", type: :feature do
 
       expect(page).to have_current_path('/order-success')
       
-      order = DB[:Orders].where(OrderID: order_id).first
+      order = DB[:Orders].where(order_id: order_id).first
       expect(order[:payment_status]).to eq('Paid')
-      expect(order[:IsCompleted]).to be true
+      expect(order[:is_completed]).to be true
     end
   end
 end

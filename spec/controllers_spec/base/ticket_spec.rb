@@ -80,10 +80,10 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
       it "persists a Query ticket for the correct user" do
         submit_ticket(type: "Query", description: "When does my order arrive?")
-        ticket = DB[:Tickets].order(:ticketID).last
-        expect(ticket[:TicketType]).to eq("query")
-        expect(ticket[:TicketContent]).to eq("When does my order arrive?")
-        expect(ticket[:UserID]).to eq(10000001)
+        ticket = DB[:Tickets].order(:ticket_id).last
+        expect(ticket[:ticket_type]).to eq("query")
+        expect(ticket[:ticket_content]).to eq("When does my order arrive?")
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -95,10 +95,10 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
       it "persists a Technical ticket for the correct user" do
         submit_ticket(type: "Technical", description: "The site won't load on Safari")
-        ticket = DB[:Tickets].order(:ticketID).last
-        expect(ticket[:TicketType]).to eq("technical")
-        expect(ticket[:TicketContent]).to eq("The site won't load on Safari")
-        expect(ticket[:UserID]).to eq(10000001)
+        ticket = DB[:Tickets].order(:ticket_id).last
+        expect(ticket[:ticket_type]).to eq("technical")
+        expect(ticket[:ticket_content]).to eq("The site won't load on Safari")
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -110,10 +110,10 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
       it "persists a Complaint ticket for the correct user" do
         submit_ticket(type: "Complaint", description: "My beans arrived crushed")
-        ticket = DB[:Tickets].order(:ticketID).last
-        expect(ticket[:TicketType]).to eq("complaint")
-        expect(ticket[:TicketContent]).to eq("My beans arrived crushed")
-        expect(ticket[:UserID]).to eq(10000001)
+        ticket = DB[:Tickets].order(:ticket_id).last
+        expect(ticket[:ticket_type]).to eq("complaint")
+        expect(ticket[:ticket_content]).to eq("My beans arrived crushed")
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -125,10 +125,10 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
       it "persists an Other ticket for the correct user" do
         submit_ticket(type: "Other", description: "I have a general enquiry")
-        ticket = DB[:Tickets].order(:ticketID).last
-        expect(ticket[:TicketType]).to eq("other")
-        expect(ticket[:TicketContent]).to eq("I have a general enquiry")
-        expect(ticket[:UserID]).to eq(10000001)
+        ticket = DB[:Tickets].order(:ticket_id).last
+        expect(ticket[:ticket_type]).to eq("other")
+        expect(ticket[:ticket_content]).to eq("I have a general enquiry")
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -140,8 +140,8 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
     it "new ticket is unresolved by default" do
       submit_ticket(type: "Complaint")
-      ticket = DB[:Tickets].order(:ticketID).last
-      expect(ticket[:TicketResolved]).to be_falsy
+      ticket = DB[:Tickets].order(:ticket_id).last
+      expect(ticket[:ticket_resolved]).to be_falsy
     end
   end
 end

@@ -3,9 +3,9 @@
     
     <div class="loyalty-main-info">
       <div class="user-details">
-        <p><strong>First Name:</strong><br><%= @user[:FirstName]%></p>
+        <p><strong>First Name:</strong><br><%= @user[:first_name]%></p>
         <p><strong>Last Name:</strong><br><%= @user[:LastName]%></p>
-        <p><strong>Loyalty Card Number:</strong><br><%= @user[:UserID] %></p>
+        <p><strong>Loyalty Card Number:</strong><br><%= @user[:user_id] %></p>
       </div>
       
       <div class="qr-section">
@@ -20,10 +20,10 @@
   <h3>Stamps</h3>
   <div class="stamps-grid">
     <% 10.times do |i| %>
-      <div class="stamp <%= 'filled' if @user[:StampCount] > i %>"></div>
+      <div class="stamp <%= 'filled' if @user[:stamp_count] > i %>"></div>
     <% end %>
   </div>
-  <p><%= 10 - @user[:StampCount] %> more until your free coffee!</p>
+  <p><%= 10 - @user[:stamp_count] %> more until your free coffee!</p>
 </div>
 
     <div class="extra-links">

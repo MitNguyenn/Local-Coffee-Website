@@ -4,10 +4,10 @@
 
 <div class="catalog-grid" id="item-container">
   <% @beans.each do |bean| %>
-    <% if bean.StockMass >= 0.25 %>
-      <div class="product-card" data-origin="<%= bean.Origin %>">
+    <% if bean.stock_mass >= 0.25 %>
+      <div class="product-card" data-origin="<%= bean.origin %>">
         <%
-          rel_path = "beans/#{bean.Origin}.png"
+          rel_path = "beans/#{bean.origin}.png"
           if File.exist?(File.join(Dir.pwd, "public", rel_path))
             display_path = "/#{rel_path}"
           else
@@ -16,10 +16,10 @@
           end
         %>
         
-        <img src="<%= display_path %>" alt="<%= bean.Origin %>" width="500" height="500">
+        <img src="<%= display_path %>" alt="<%= bean.origin %>" width="500" height="500">
 
-        <h3><%= bean.Origin %></h3>
-        <p>£<%= sprintf('%.2f', bean.PricePer250g) %> (per 250g)</p>
+        <h3><%= bean.origin %></h3>
+        <p>£<%= sprintf('%.2f', bean.price_per_250g) %> (per 250g)</p>
       </div>
     <% end %>
   <% end %>

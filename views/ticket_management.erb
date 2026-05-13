@@ -20,20 +20,20 @@
       <% @live_tickets.each do |ticket| %>
         <div class="my-orders-card ticket-border-open">
           <div class="my-orders-header">
-            <span class="my-orders-title"><%= ticket[:TicketType] %></span>
-            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %H:%M") %></span>
+            <span class="my-orders-title"><%= ticket[:ticket_type] %></span>
+            <span class="my-orders-date"><%= ticket[:created_at].strftime("%d %b %H:%M") %></span>
           </div>
           
           <div class="my-orders-grid">
             <div class="ticket-content-text">
-              <%= ticket[:TicketContent].length > 100 ? ticket[:TicketContent][0..100] + "..." : ticket[:TicketContent] %>
+              <%= ticket[:ticket_content].length > 100 ? ticket[:ticket_content][0..100] + "..." : ticket[:ticket_content] %>
             </div>
             
             <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;">
-              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span>
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticket_id] %></span>
               
               <!-- DYNAMIC DETAILS BUTTON -->
-              <a href="/ticket/<%= ticket[:ticketID] %>" class="view-details-btn">View Full Ticket</a>
+              <a href="/ticket/<%= ticket[:ticket_id] %>" class="view-details-btn">View Full Ticket</a>
               
               <span class="my-orders-badge status-open">Pending Review</span>
             </div>
@@ -53,18 +53,18 @@
       <% @past_tickets.each do |ticket| %>
         <div class="my-orders-card ticket-resolved-dim">
           <div class="my-orders-header">
-            <span class="my-orders-title" style="color: #718096;"><%= ticket[:TicketType] %></span>
-            <span class="my-orders-date"><%= ticket[:CreatedAt].strftime("%d %b %Y") %></span>
+            <span class="my-orders-title" style="color: #718096;"><%= ticket[:ticket_type] %></span>
+            <span class="my-orders-date"><%= ticket[:created_at].strftime("%d %b %Y") %></span>
           </div>
           
           <div class="my-orders-grid">
             <div class="ticket-content-text" style="color: #a0aec0; font-style: italic;">
-              <%= ticket[:TicketContent].length > 80 ? ticket[:TicketContent][0..80] + "..." : ticket[:TicketContent] %>
+              <%= ticket[:ticket_content].length > 80 ? ticket[:ticket_content][0..80] + "..." : ticket[:ticket_content] %>
             </div>
             
             <div style="text-align: right;">
-              <span class="ticket-id-tag">#ID: <%= ticket[:ticketID] %></span><br>
-              <a href="/ticket/<%= ticket[:ticketID] %>" class="view-details-btn" style="background: #718096;">View Archive</a><br>
+              <span class="ticket-id-tag">#ID: <%= ticket[:ticket_id] %></span><br>
+              <a href="/ticket/<%= ticket[:ticket_id] %>" class="view-details-btn" style="background: #718096;">View Archive</a><br>
               <span class="my-orders-badge status-resolved">Resolved</span>
             </div>
           </div>

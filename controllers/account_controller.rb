@@ -4,28 +4,28 @@ require 'rqrcode'
 class AccountController < BaseController
   helpers AppHelpers
   before do
-    redirect '/' unless session[:UserID]
+    redirect '/' unless session[:user_id]
   end
 
   get '/account-settings' do
-    @user = DB[:Accounts].where(UserID: session[:UserID]).first
-    @account_flagged = @user[:Flagged]
+    @user = DB[:Accounts].where(user_id: session[:user_id]).first
+    @account_flagged = @user[:flagged]
     erb :account_settings
   end
 
   post '/update-account' do
-    DB[:Accounts].where(UserID: session[:UserID]).update(
+    DB[:Accounts].where(user_id: session[:user_id]).update(
       first_name: params[:first_name],
       last_name: params[:last_name],
-      Postcode: params[:Postcode],
+      postcode: params[:postcode],
     )
     redirect '/'
   end
 
   get '/loyalty-card' do
-    @user = DB[:Accounts].where(UserID: session[:UserID]).first
+    @user = DB[:Accounts].where(user_id: session[:user_id]).first
     if @user
-      qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:UserID]}")
+      qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:user_id]}")
       @qr_svg = qrcode.as_svg(color: "4b2c20", module_size: 6, standalone: true, viewbox: true)
       erb :loyalty_card
     else
@@ -34,9 +34,9 @@ class AccountController < BaseController
   end
 
   get '/my-orders' do
-    @current_orders = fetch_current_orders(session[:UserID])
-    @past_orders = fetch_past_orders(session[:UserID])
-    @order_stats = get_stats(session[:UserID])
+    @current_orders = fetch_current_orders(session[:user_id])
+    @past_orders = fetch_past_orders(session[:user_id])
+    @order_stats = get_stats(session[:user_id])
     erb :my_orders
   end
 end

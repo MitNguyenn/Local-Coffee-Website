@@ -10,8 +10,8 @@
             <% @pending_orders.each do |order| %>
             <div class="barista-order-card">
                 <div class="barista-card-header">
-                    <span class="barista-order-id">Order #<%= order[:OrderID] %></span>
-                    <span class="barista-order-time"><%= order[:CreatedAt].strftime("%H:%M") %></span>
+                    <span class="barista-order-id">Order #<%= order[:order_id] %></span>
+                    <span class="barista-order-time"><%= order[:created_at].strftime("%H:%M") %></span>
                 </div>
 
                 <div class="barista-contents">
@@ -24,12 +24,12 @@
                 </div>
 
                 <div class="barista-footer">
-                    <span class="barista-type <%= order[:OrderType].downcase %>">
-                        <%= order[:OrderType] %>
+                    <span class="barista-type <%= order[:order_type].downcase %>">
+                        <%= order[:order_type] %>
                     </span>
                     
                     <form action="/order-management/barista" method="POST">
-                        <input type="hidden" name="order_id" value="<%= order[:OrderID] %>">
+                        <input type="hidden" name="order_id" value="<%= order[:order_id] %>">
                         <button type="submit" class="barista-complete-btn">Mark Done</button>
                     </form>
                 </div>

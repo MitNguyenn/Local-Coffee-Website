@@ -26,8 +26,8 @@
     <div class="address-section">
       <strong>Deliver To:</strong><br>
       <%= @account[:first_name] %> <%= @account[:last_name] %><br>
-      <%= @account[:Address] %><br>
-      <%= @account[:Postcode] %>
+      <%= @account[:address] %><br>
+      <%= @account[:postcode] %>
     </div>
     
     <div class="qr-code-space">
@@ -36,7 +36,7 @@
 
     <div style="margin-top: 20px;">
       <strong>Tracking ID:</strong> <%= @tracking_id %><br>
-      <strong>Order Ref:</strong> <%= @order[:OrderID] %>
+      <strong>Order Ref:</strong> <%= @order[:order_id] %>
     </div>
   </div>
 </body>
