@@ -1,9 +1,12 @@
 <% @flagged_accounts.each do |account| %>
   <div class="flagged-account">
-    <h3><%= account.first_name %> <%= account.last_name %></h3>
-    <p>Email: <%= account.email %></p>
-    <p>Phone: <%= account.PhoneNumber %></p>
-    <p>Last Login: <%= account.LastLogin %></p>
-    <button class = "suspend-button" href = "/suspend-account/<%= account.UserID %>">Suspend Account</button>
+    <h3><%= account[:first_name] %> <%= account[:last_name] %></h3>
+    <p>Email: <%= account[:email] %></p>
+    <p>Phone: <%= account[:PhoneNumber] %></p>
+    <p>Last Login: <%= account[:LastLogin] %></p>
+    
+    <a href="/suspend-account/<%= account[:UserID] %>" class="suspend-button">
+      Suspend Account
+    </a>
   </div>
 <% end %>

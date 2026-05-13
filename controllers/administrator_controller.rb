@@ -58,9 +58,5 @@ class AdminController < BaseController
     @completed_orders = DB[:Orders].all
     erb :order_correction_administrator
   end
-  
-  get '/flagged-accounts' do
-    erb :flagged_accounts
-  end
 
 end

@@ -22,9 +22,4 @@ class ManagerController < BaseController
     @beans = Bean.all
     erb :stock_management
   end
-
-  get '/user-tickets' do
-    erb :ticket_management
-  end
-
 end
