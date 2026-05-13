@@ -1,6 +1,36 @@
-<div class="my-orders-container">
-  <div class="order-stats">
+<div class="order-stats">
+  <div class="stats-grid">
+    
+    <!-- Loyalty Tracker Box -->
+    <div class="stats-card">
+      <h4 class="stats-card__label">Loyalty Progress</h4>
+      <div class="stamp-tracker">
+        <% 10.times do |i| %>
+          <span class="stamp-slot <%= 'stamp-slot--filled' if i < @stats['stamp_count'] %>"></span>
+        <% end %>
+      </div>
+      <p class="stats-card__subtext" style="color: #444;">
+        <strong><%= @stats['until_next_discount'] %></strong> stamps until your next free drink!
+      </p>
+    </div>
+
+    <!-- Drinks Metric Box -->
+    <div class="stats-card">
+      <h4 class="stats-card__label">Drinks Ordered</h4>
+      <p class="stats-card__value"><%= @stats['total_num_coffee'] %></p>
+      <span class="stats-card__subtext">Total beverages purchased</span>
+    </div>
+
+    <!-- Bean Bag Metric Box -->
+    <div class="stats-card">
+      <h4 class="stats-card__label">Coffee Bags</h4>
+      <p class="stats-card__value"><%= @stats['total_num_beans'] %></p>
+      <span class="stats-card__subtext">Whole bean retail packs</span>
+    </div>
+
   </div>
+</div>
+
   <div class="my-orders-nav">
     <button class="my-orders-nav-btn active" id="btn-live" onclick="showTab('live')">Live Orders</button>
     <button class="my-orders-nav-btn" id="btn-past" onclick="showTab('past')">Order History</button>
