@@ -30,7 +30,7 @@
         <select name="milk-type" id="milk-type-select">
           <% @milk_types.each do | milk_type | %>
               <% if milk_type[:MilkType] == "Whole" %>
-                <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= 0.0 %>">
+                <option value="<%= milk_type[:MilkType] %>" data-milk-price="0.0">
                   <%= milk_type[:MilkType] %> (+£0)
                 </option>
               <% else %>
@@ -42,6 +42,9 @@
         </select>
       <% else %>
         <select name="milk-type" id="milk-type-select">
+          <option value="None" data-milk-price="0.0">
+              Don't add milk
+          </option>
           <% @milk_types.each do | milk_type | %>
             <option value="<%= milk_type[:MilkType] %>" data-milk-price="<%= milk_type[:Price] %>">
                 <%= milk_type[:MilkType] %> (+£<%= milk_type[:Price] %>)
@@ -68,12 +71,11 @@
     const sizeOption = drinkSizeSelect.options[drinkSizeSelect.selectedIndex];
     const milkOption = milkTypeSelect.options[milkTypeSelect.selectedIndex];
 
-    const multiplier = parseFloat(sizeOption.dataset.multiplier) || 1;
-    const milkPrice = parseFloat(milkOption.dataset.milkPrice) || 0;
+    const multiplier = parseFloat(sizeOption.dataset.multiplier);
+    const milkPrice = parseFloat(milkOption.dataset.milkPrice);
 
     const newPrice = (basePriceValue * multiplier) + milkPrice;
     
-    console.log("Updating price:", newPrice);
     displayPrice.innerText = 'Total price: £' + newPrice.toFixed(2);
   }
 
