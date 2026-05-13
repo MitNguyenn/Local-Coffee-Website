@@ -115,19 +115,6 @@
     window.onclick = function (event) {
       closeAllDropdowns();
     }
-
-    function updateBasketUI(newCount) {
-      let countSpan = document.getElementById("basket-count");
-      if (!countSpan) {
-        const basketDiv = document.querySelector(".basket");
-        countSpan = document.createElement("span");
-        countSpan.id = "basket-count";
-        countSpan.className = "basket-count";
-        basketDiv.appendChild(countSpan);
-      }
-      countSpan.innerText = newCount;
-    }
-
   </script>
 </body>
 

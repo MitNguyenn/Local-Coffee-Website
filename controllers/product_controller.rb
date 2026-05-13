@@ -52,10 +52,6 @@ class ProductController < BaseController
     erb :drinks
   end
 
-  get '/view-basket' do
-    erb :basket
-  end
-
   get '/checkout' do
     redirect '/log-in' unless logged_in?
     @user = DB[:Accounts].where(UserID: session[:UserID]).first
