@@ -194,7 +194,7 @@ order_id_1 = DB[:Orders].insert(
   OrderType: "In-Person",
   PaymentMethod: "Card",
   CreatedAt: Time.now,
-  Destination: "In-Store",
+  Location: "In-Store",
   IsCompleted: true,
   payment_status: 'Paid',
   TotalCost: 10.33 # Large Latte with Oat milk + Light roasted 250g Arabic beans pack = 5.58 + 4.75 = 10.33
