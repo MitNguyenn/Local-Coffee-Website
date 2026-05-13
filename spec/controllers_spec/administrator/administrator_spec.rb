@@ -1,9 +1,9 @@
 RSpec.describe "Admin Management", type: :feature do
-  let(:admin_id)    { 99999999 }
-  let(:customer_id) { 10000001 }
+  let(:admin_id)    { 4 }
+  let(:customer_id) { 1 }
 
   before(:each) do
-    log_in_as('admin@coffee.com', '_p_')
+    log_in_as('testadmin@bbc.com', 'testpass')
   end
 
   describe "access control" do
@@ -21,14 +21,14 @@ RSpec.describe "Admin Management", type: :feature do
 
     it "redirects a barista away from manage-accounts" do
       Capybara.reset_sessions!
-      log_in_as('barista@coffee.com', '_p_')
+      log_in_as('testbarista@bbc.com', 'testpass')
       visit "/manage-accounts"
       expect(current_path).to eq("/")
     end
 
     it "redirects a customer away from manage-accounts" do
       Capybara.reset_sessions!
-      log_in_as('john@example.com', '_p_')
+      log_in_as('testcust@bbc.com', 'testpass')
       visit "/manage-accounts"
       expect(current_path).to eq("/")
     end
@@ -37,9 +37,9 @@ RSpec.describe "Admin Management", type: :feature do
   describe "Account Management Table" do
     it "displays all seeded accounts with correct IDs" do
       visit "/manage-accounts"
-      expect(page).to have_content("10000001")
-      expect(page).to have_content("John Doe")
-      expect(page).to have_content("customer")
+      expect(page).to have_content("1")
+      expect(page).to have_content("Customer")
+      expect(page).to have_content("Test")
     end
 
     it "has a functional search input field" do
@@ -49,19 +49,19 @@ RSpec.describe "Admin Management", type: :feature do
 
     it "navigates to the edit page via the table button" do
       visit "/manage-accounts"
-      within(".acc-view__row", text: "john@example.com") do
+      within(".acc-view__row", text: "testcust@bbc.com") do
         click_link "Edit Account"
       end
-      expect(current_path).to eq("/edit-account/10000001")
+      expect(current_path).to eq("/edit-account/1")
     end
   end
 
   describe "Edit Account" do
     it "renders the edit form pre-populated with the account's data" do
       visit "/edit-account/#{customer_id}"
-      expect(find_field("first_name").value).to eq("John")
-      expect(find_field("last_name").value).to  eq("Doe")
-      expect(find_field("email").value).to       eq("john@example.com")
+      expect(find_field("first_name").value).to eq("Customer")
+      expect(find_field("last_name").value).to  eq("Test")
+      expect(find_field("email").value).to       eq("testcust@bbc.com")
     end
 
     it "updates first and last name and redirects to manage-accounts" do
@@ -127,12 +127,12 @@ RSpec.describe "Admin Management", type: :feature do
 
     it "displays accounts that are flagged" do
       visit "/flagged-accounts"
-      expect(page).to have_content("john@example.com")
+      expect(page).to have_content("testcust@bbc.com")
     end
 
     it "does not display unflagged accounts" do
       visit "/flagged-accounts"
-      expect(page).not_to have_content("admin@coffee.com")
+      expect(page).not_to have_content("testadmin@bbc.com")
     end
 
     it "suspends an account and redirects to flagged-accounts" do
@@ -159,8 +159,7 @@ RSpec.describe "Admin Management", type: :feature do
 
     it "displays the seeded order" do
       visit "/order-management/administrator"
-      # Seeded order total is 7.00
-      expect(page).to have_content("7")
+      expect(page).to have_content("#1")
     end
 
     it "displays the order's payment status" do

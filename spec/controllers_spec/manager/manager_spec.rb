@@ -18,7 +18,7 @@ RSpec.describe "Manager visits pages", type: :feature do
 
   context "Logged in as manager" do
     before(:each) do
-      log_in_as('manager@coffee.com', '_p_')
+      log_in_as('testmanager@bbc.com', 'testpass')
     end
 
     describe "Manager visits all pages" do

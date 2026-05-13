@@ -33,7 +33,14 @@ class AccountController < BaseController
     end
   end
 
-  get '/my-orders' do
+  get '/my-orders' do\
+    user = DB[:Accounts].where(user_id: session[:user_id]).first
+    @stats = {
+      'stamp_count' => user[:stamp_count] || 0,
+      'until_next_discount' => 10 - (user[:stamp_count] || 0),
+      'total_num_coffee' => 0, 
+      'total_num_beans' => 0
+    }
     @current_orders = fetch_current_orders(session[:user_id])
     @past_orders = fetch_past_orders(session[:user_id])
     @order_stats = get_stats(session[:user_id])

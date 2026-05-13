@@ -17,8 +17,8 @@ class BaristaController < BaseController
   end
 
   get '/staff-portal' do
-  erb :staff_portal
-end
+    erb :staff_portal
+  end
 
   get '/manage-loyalty-cards' do
     redirect '/' unless session[:account_type] == 'barista'
@@ -35,7 +35,7 @@ end
     redirect '/manage-loyalty-cards'
   end
 
-  get "/print-order-label" do
+  get "/order-management/barista" do
     # Changed from @current_orders to @orders to match typical view naming
     @orders = DB[:Orders].where(is_completed: false).all 
     erb :print_label
@@ -50,7 +50,7 @@ end
     @account = DB[:Accounts].where(user_id: @order[:user_id]).first
     @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
     @courier = "Royal Mail"
-    @qrcode = RQRCode::QRCode.new("https://royalmail.com{@tracking_id}")
+    @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
     
     html = erb :shipping_label, layout: false
     

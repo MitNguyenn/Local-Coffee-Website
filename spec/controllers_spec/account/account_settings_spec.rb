@@ -1,5 +1,5 @@
 RSpec.describe "Account Management", type: :feature do
-  let(:user_id) { 10000001 }
+  let(:user_id) { 1 }
 
   describe "Unauthenticated access" do
     it "redirects to home when attempting to access account settings" do
@@ -10,21 +10,14 @@ RSpec.describe "Account Management", type: :feature do
 
   context "when logged in" do
     before (:each) do
-      log_in_as('john@example.com', '_p_')
+      log_in_as('testcust@bbc.com', 'testpass')
     end
-    
-    # before do
-    #   # Perform a standard login using your seeded John Doe
-    #   visit '/log-in'
-    #   fill_in 'email', with: 'john@example.com'
-    #   fill_in 'password', with: '_p_'
-    #   click_button 'Log In'
-    # end
 
     describe "user visits accounts page" do
       it "shows the account settings page with user details" do
         visit "/account-settings"
-        expect(page).to have_content("John")
+        expected_name = DB[:Accounts].where(user_id: user_id)
+        expect(page).to have_content("Hi, Customer")
         expect(page).to have_content("Personal Details")
       end
     end
@@ -37,7 +30,7 @@ RSpec.describe "Account Management", type: :feature do
 
         expect(page.current_path).to eq("/")
         
-        # Verify the DB change persisted through the redirect
+
         user = DB[:Accounts].where(user_id: user_id).first
         expect(user[:first_name]).to eq("Jonathan")
       end

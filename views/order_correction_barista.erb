@@ -4,7 +4,7 @@
         
         <div class="barista-card-grid">
             <% if @pending_orders.empty? %>
-                <div class="barista-empty">🎉 All caught up! No pending orders.</div>
+                <div class="barista-empty"> All caught up! No pending orders.</div>
             <% end %>
 
             <% @pending_orders.each do |order| %>

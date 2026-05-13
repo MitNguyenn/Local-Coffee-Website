@@ -34,6 +34,70 @@ module DatabaseSeeder
       )
     end
 
+    # ACCOUNTS USED IN TESTING ARE BELOW!
+
+    # Test customer
+
+    test_password_hash = BCrypt::Password.create("testpass")
+
+    db_connection[:Accounts].insert(
+      user_id: 1,
+      first_name: "Customer",
+      last_name: "Test",
+      stamp_count: 4,
+      email: "testcust@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07395456261",
+      postcode: "S2 08L",
+      address: "1 Street Road, Sheffield",
+      account_type: "customer"
+    )
+
+    # Test barista
+
+    db_connection[:Accounts].insert(
+      user_id: 2,
+      first_name: "Barista",
+      last_name: "Test",
+      stamp_count: 0,
+      email: "testbarista@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07526472935",
+      postcode: "S10 3AJ",
+      address: "3 Barista Street, Sheffield",
+      account_type: "barista"
+    )
+
+    # Test manager
+
+    db_connection[:Accounts].insert(
+      user_id: 3,
+      first_name: "Manager",
+      last_name: "Test",
+      stamp_count: 0,
+      email: "testmanager@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07738456253",
+      postcode: "S3 JS6",
+      address: "5 Manager Street, Sheffield",
+      account_type: "manager"
+    )
+
+    # Test administrator
+
+    db_connection[:Accounts].insert(
+      user_id: 4,
+      first_name: "Admin",
+      last_name: "Test",
+      stamp_count: 0,
+      email: "testadmin@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07027662738",
+      postcode: "S11 32P",
+      address: "21 Admin Street, Sheffield",
+      account_type: "administrator"
+    )
+
     15.times do |i|
       db_connection[:Accounts].insert(
         user_id: 200000 + i,
