@@ -114,7 +114,7 @@ class ProductController < BaseController
     item_type = params[:item_type]
 
     begin
-      if params[:item_type] == 'bean' 
+      if item_type == 'bean' 
         origin = params[:origin]
         pack_weight = params[:pack_weight]
         roast_level = params[:roast_level]
@@ -124,7 +124,7 @@ class ProductController < BaseController
           session[:cart][item_key][:quantity] += 1
         else
           session[:cart][item_key] = {
-            item_type: 
+            item_type: item_type,
             origin: origin, 
             pack_weight: pack_weight,
             roast_level: roast_level,
@@ -132,7 +132,7 @@ class ProductController < BaseController
             quantity: 1 
           }
         end
-      elsif params[:item_type] == 'drink'
+      elsif item_type == 'drink'
         beverage = params[:beverage]
         drink_size = params[:drink_size]
         milk_type = params[:milk_type]
@@ -141,6 +141,7 @@ class ProductController < BaseController
           session[:cart][item_key][:quantity] += 1
         else
           session[:cart][item_key] = { 
+            item_type: item_type,
             beverage: beverage,
             drink_size: drink_size,
             milk_type: milk_type,
