@@ -25,13 +25,14 @@ class ManagerController < BaseController
   end
 
   post '/resolve-ticket/:id' do
-    larp
+
   end
 
   get '/refund-tickets' do
     @tickets = DB[:Tickets].where(tickettype: "Refund").all
 
     erb :refund_management
+  end
 
   get '/refund/:id' do
     @ticket = DB[:Tickets].where(ticketID: params[:id]).first
@@ -40,7 +41,9 @@ class ManagerController < BaseController
   end
 
   post '/refund/:id' do
+    DB[:Tickets].where(ticketID: params[:id]).update(ticketResolved: true)
 
+    redirect '/refund-tickets'
   end
 
   get '/stock-management' do

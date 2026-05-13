@@ -1,11 +1,11 @@
 <div class="my-orders-container">
   <div class="my-orders-header">
-    <h1 class="my-orders-title">Ticket #<%= @ticket[:ticketID] %>: <%= @ticket[:TicketType] %></h1>
-    <a href="/user-tickets" style="color: #a67458; text-decoration: none;">← Back to List</a>
+    <h1 class="my-orders-title">Refund #<%= @ticket[:ticketID] %></h1>
+    <a href="/refund-tickets" style="color: #a67458; text-decoration: none;">← Back to List</a>
   </div>
 
   <div class="my-orders-card">
-    <div class="m-dash-panel__title">Issue Description</div>
+    <div class="m-dash-panel__title">Refund Description</div>
     <p class="ticket-content-text"><%= @ticket[:TicketContent] %></p>
     
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
@@ -21,7 +21,9 @@
         <strong>Submitted on:</strong><br>
         <%= @ticket[:CreatedAt].strftime("%d %B %Y at %H:%M") %>
       </div>
-      
+      <form action = "/refund/<%= @ticket[:id]%>" method = "POST">
+        <button name = "resolve-refund-button" class = "btn">Resolve Ticket</button>
+      </form>
     </div>
   </div>
 </div>
