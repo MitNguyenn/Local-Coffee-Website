@@ -167,7 +167,6 @@ def seed_data
     AccountType: 'manager'
   )
 
-  puts "Seeding beans..."
   bean_list = [
     ["Ethiopian",   25.0, 8.20],
     ["Brazillian",  17.0, 6.35],
@@ -175,16 +174,13 @@ def seed_data
   ]
 
   bean_list.each do |origin, mass, price |
-    puts "inserting: #{origin} #{mass} #{price}"
     DB[:Beans].insert(
       Origin: origin,
       StockMass: mass,
       PricePer250g: price
     )
   end
-  puts "Done"
 
-  puts "Seeding beans pack prices..."
   beans_pack_weight_price_markup_multipliers = [
     [ 250.0,  1.0 ], # 100% of the original price
     [ 500.0,  1.7 ], # 170% and so on...
@@ -196,20 +192,14 @@ def seed_data
       MarkupMultiplier: markup_multiplier
     )
   end
-  puts "Done"
-
-  puts "Seeding roasts..."
   bean_roasts = [ "Light", "Medium", "Dark"]
 
   bean_roasts.each do | roast |
-    puts "inserting: #{roast}"
     DB[:BeanRoastLevels].insert(
       RoastLevel: roast
     )
   end
-  puts "Done"
 
-  puts "Seeding drinks..."
   drinks = [
     ["Latte",      4.40, true,   "Smooth espresso with steamed milk"],
     ["Americano",  3.8,  false,  "A rich, double-shot of espresso diluted with hot water for a smooth, bold finish."], 
@@ -219,7 +209,6 @@ def seed_data
   ]
 
   drinks.each do | bev, price, contains_milk, description|
-    puts "inserting: #{bev} #{price} #{description}"
     DB[:Drinks].insert(
       Beverage: bev,
       ContainsMilk: contains_milk,
@@ -227,24 +216,18 @@ def seed_data
       Description: description
     )
   end
-  puts "Done"
-
-  puts "Seeding drink-size price markup mutlipliers..."
   drink_size_price_markup_mutlipliers = [
     ["Regular", 1.0],
     ["Large",   1.2]
   ]
 
   drink_size_price_markup_mutlipliers.each do | size, markup_multiplier | 
-    puts "inserting: #{size} #{markup_multiplier}"
     DB[:DrinkSizePriceMarkupMultipliers].insert(
       DrinkSize: size,
       MarkupMultiplier: markup_multiplier
     )
   end
-  puts "Done"
 
-  puts "Seeding milkTypes table..."
   milk_types = [
     ["Whole", 0.1], # 10p if drink does NOT contain the milk by default
     ["Oat",   0.3], # 30p
@@ -252,29 +235,23 @@ def seed_data
   ]
 
   milk_types.each do | type, price |
-    puts "inserting: #{type} #{price}"
+
     DB[:MilkTypes].insert(
       MilkType: type, 
       Price: price
     )
   end
-  puts "Done"
 
-  puts "Seeding orders and orderItems tables..."
-  puts "Finn is buying large Latte with oat milk and lightly roasted 250g Arabic beans pack"
 
-  puts "Updating beans stock mass"
   grams_beans_bought = 250.0
   kg_bought = grams_beans_bought / 1000.0
   current_mass = DB[:Beans].where(Origin: "Arabic").get(:StockMass)
 
-  puts "Current stock mass = #{current_mass}"
   DB[:Beans].where(Origin: "Arabic").update(
     StockMass: Sequel[:StockMass] - kg_bought
   )
-  puts "Finn bought #{kg_bought}kg of Arabic beans"
+
   current_mass = DB[:Beans].where(Origin: "Arabic").get(:StockMass)
-  puts "Current stock mass = #{current_mass}"
 
   order_id_1 = DB[:Orders].insert(
     UserID: 10000001,
@@ -304,7 +281,6 @@ def seed_data
     PackWeight: 250,
     RoastLevel: "Light"
   )
-  puts "Done"
 
   # 5. Tickets
   DB[:Tickets].insert(
