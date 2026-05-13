@@ -108,8 +108,8 @@ end
 
 DB.create_table? :Discounts do
   primary_key :DiscountID
-  String :DiscountName,
-  Double :DiscountMult, default: 1.0
+  String :DiscountName
+  Double :DiscountMultiplier, default: 1.0
 end
 
 puts "Database tables initialized successfully"
