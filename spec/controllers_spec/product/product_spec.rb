@@ -1,7 +1,5 @@
 RSpec.describe "User access product pages", type: :feature do
-  before(:each) do
-    spec_before
-  end
+
   let(:user_id) { 10000001 }
   
   describe "Browsing Products" do
@@ -17,8 +15,16 @@ RSpec.describe "User access product pages", type: :feature do
 
     it "displays the drinks page with seeded data" do
       visit '/drinks'
+      expect(page).to have_content('Latte')
+      expect(page).to have_content('£4.40')
+      expect(page).to have_content('Americano')
+      expect(page).to have_content('£3.80')
+      expect(page).to have_content('Cappuccino')
+      expect(page).to have_content('£4.40')
       expect(page).to have_content('Flat White')
-      expect(page).to have_content('£3.50')
+      expect(page).to have_content('£4.35')
+      expect(page).to have_content('Cortado')
+      expect(page).to have_content('£3.70')
     end
   end
 

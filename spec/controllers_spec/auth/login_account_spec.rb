@@ -1,7 +1,4 @@
 RSpec.describe 'Authentification process', type: :feature do
-  before(:each) do
-    spec_before
-  end
 
   describe 'Logging In' do
     it 'allows the user to log in' do
