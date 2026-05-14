@@ -144,7 +144,22 @@ end
   end
 
   get '/sales-history' do
-
+    @orders = DB[:Orders]
+    .join(:OrderItems, order_id: :order_id)
+    .select(
+      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:created_at],
+      Sequel[:Orders][:order_type],
+      Sequel[:Orders][:is_completed],
+      Sequel[:OrderItems][:item_id],
+      Sequel[:OrderItems][:quantity],
+      Sequel[:OrderItems][:milk],
+      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:product_type]
+    )
+    .all
+    
+    @orders = @orders.group_by { |row| row[:order_id] } if @orders
     erb :sales_history
   end
 
