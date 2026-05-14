@@ -8,15 +8,6 @@ end
 # ==============================================================================
 # CORE WORKER MODULE METHODS (No Class Context)
 # ==============================================================================
-def finalize_stamps(user_id, cart)
-  stamps_to_add = 0
-  cart.each do |item_data|
-    if item_data['type'] == 'bean'
-      stamps_to_add += 3
-    elsif item_data['type'] == 'drink'
-      stamps_to_add += 1
-    end
-  end
 
   def finalize_stamps(user_id, cart)
     stamps_to_add = 0
@@ -295,5 +286,3 @@ def finalize_stamps(user_id, cart)
       "Failed to add item to the cart".to_json()
     end
   end
-
-end

@@ -48,7 +48,7 @@ module DatabaseSeeder
       email: "testcust@bbc.com",
       hashed_password: test_password_hash,
       phone_number: "07395456261",
-      postcode: "S2 08L",
+      postcode: "S3 6RL",
       address: "1 Street Road, Sheffield",
       account_type: "customer"
     )
@@ -61,7 +61,7 @@ module DatabaseSeeder
       email: "testflag@bbc.com",
       hashed_password: test_password_hash,
       phone_number: "07395456261",
-      postcode: "S2 08L",
+      postcode: "S3 6RL",
       address: "1 Street Road, Sheffield",
       account_type: "customer",
       recent_login: Time.now - (31 * 24 * 60 * 60)
