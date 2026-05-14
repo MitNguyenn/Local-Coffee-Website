@@ -137,10 +137,7 @@ end
     orders = DB[:Orders].where { created_at >= today_start }
 
     @daily_summary = {
-      total_sales: orders.sum(:total_cost) || 0,
-      free_coffees: DB[:Orders].where(order_type: 'free_coffee')
-                               .where { created_at >= today_start }
-                               .count
+      total_sales: orders.sum(:total_cost) || 0
     }
 
     erb :daily_summary
