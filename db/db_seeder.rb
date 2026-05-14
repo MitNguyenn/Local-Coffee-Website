@@ -98,6 +98,20 @@ module DatabaseSeeder
       account_type: "administrator"
     )
 
+    db_connection[:Accounts].insert(
+      user_id: 5,
+      first_name: "Sussy",
+      last_name: "Acca",
+      stamp_count: 52,
+      email: "testsuspended@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07638992635",
+      postcode: "S12 PL3",
+      address: "21 Suspended Street, Sheffield",
+      account_type: "customer",
+      suspended: true
+    )
+
     15.times do |i|
       db_connection[:Accounts].insert(
         user_id: 200000 + i,
@@ -109,7 +123,7 @@ module DatabaseSeeder
         phone_number: "07#{rand(100000000..999999999)}",
         postcode: "S#{rand(1..10)} 2BB",
         address: "#{rand(1..100)} Residence Rd, Sheffield",
-        account_type: "customer"
+        account_type: "customer",
       )
     end
 
