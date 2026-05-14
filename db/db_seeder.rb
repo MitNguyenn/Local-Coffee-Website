@@ -53,6 +53,19 @@ module DatabaseSeeder
       account_type: "customer"
     )
 
+    db_connection[:Accounts].insert(
+      user_id: 11,
+      first_name: "toBeFlagged",
+      last_name: "Customer",
+      stamp_count: 50000,
+      email: "testflag@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07395456261",
+      postcode: "S2 08L",
+      address: "1 Street Road, Sheffield",
+      account_type: "customer",
+      recent_login: Time.now - (31 * 24 * 60 * 60)
+    )
     # Test barista
 
     db_connection[:Accounts].insert(

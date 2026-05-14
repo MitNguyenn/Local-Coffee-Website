@@ -4,16 +4,10 @@ RSpec.describe AccountRecency, type: :helper do
   include described_class
 
   # We use the user_id 10000001 seeded in spec_functions.rb
-  let(:user_id) { 10000001 }
+  let(:user_id) { 11 }
 
   describe "#check_account_recency" do
     it "flags accounts that haven't logged in for 30 days" do
-      # Modify seeded user to be old
-      DB[:Accounts].where(user_id: user_id).update(
-        recent_login: Time.now - (31 * 24 * 60 * 60),
-        flagged: false
-      )
-
       attempt_flag_account(user_id)
 
       account = DB[:Accounts].where(user_id: user_id).first
