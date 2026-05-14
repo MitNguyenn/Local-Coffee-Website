@@ -115,23 +115,23 @@ RSpec.describe "Barista access unique pages", type: :feature do
   end
   
   context "PDF management" do
-    before(:each) do
-      log_in_as('testbarista@bbc.com', 'testpass')
+  before(:each) do
+    log_in_as('testbarista@bbc.com', 'testpass')
+  end
+
+  describe "Barista attempts to print shipping label" do
+    it "orders table is viewable" do
+      visit "/order-management/barista"
+      expect(current_path).to eq("/order-management/barista")
+      expect(page).to have_content("Shipping Label")
     end
 
-    describe "Barista attempts to print shipping label" do
-      it "orders table is viewable" do
-        visit "/order-management/barista"  
-        expect(current_path).to eq("/order-management/barista")
-        expect(page).to have_content("Print Label")  
-      end
-
-      it "generates a PDF file successfully" do
-        order_id = DB[:Orders].first[:order_id] 
-        visit "/generate-label/#{order_id}"
-        expect(page.driver.response.headers['Content-Type']).to eq('application/pdf')
-        expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"Label_#{order_id}.pdf\"")
-      end
+    it "generates a PDF file successfully" do
+      order_id = DB[:Orders].first[:order_id]
+      visit "/generate-label/#{order_id}"
+      expect(page.driver.response.headers['Content-Type']).to eq('application/pdf')
+      expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"Label_#{order_id}.pdf\"")
+    end
   end
 
   describe "Customer attempts to print shipping label" do
@@ -144,17 +144,15 @@ RSpec.describe "Barista access unique pages", type: :feature do
   end
 
   describe "Return Label Generation" do
-    it "can view the create return page with the orders list" do
-      visit "/generate-return"
-      expect(current_path).to eq("/generate-return")
-      expect(page).to have_content("Order #")
+    it "can view the return label button on the order management page" do
+      visit "/order-management/barista"
+      expect(current_path).to eq("/order-management/barista")
+      expect(page).to have_content("Return Label")
     end
 
     it "successfully generates a return PDF via POST" do
-      order_id = DB[:Orders].where(is_completed: 1).first[:order_id]
-      page.driver.submit :post, "/generate-return/#{order_id}", {
-        external_tracking_id: 'EXT123456'
-      }
+      order_id = DB[:Orders].where(is_completed: true).first[:order_id]
+      page.driver.submit :post, "/generate-return/#{order_id}", {}
       expect(page.driver.response.headers['Content-Type']).to eq('application/pdf')
       expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"Return_Label_#{order_id}.pdf\"")
     end
