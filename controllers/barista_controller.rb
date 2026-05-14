@@ -21,7 +21,7 @@ class BaristaController < BaseController
   end
 
   get '/manage-loyalty-cards' do
-    redirect '/' unless session[:account_type] == 'barista'
+    redirect '/' if session[:account_type] == 'customer' 
     @accounts = DB[:Accounts].where(account_type: 'customer').all
     erb :manage_loyalty_cards
   end
