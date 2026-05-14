@@ -2590,3 +2590,49 @@ button:active {
 .cs-mgt-submit-btn:active {
   transform: scale(0.98);
 }
+/* Container rules */
+.portal-box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.portal-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  min-height: 120px;
+  padding: 20px;
+  background-color: #ffffff;
+  
+  /* Persistent outline/border styling */
+  border: 1px solid #d1d5db; 
+  border-radius: 6px;
+  
+  /* Typography normalization */
+  color: #1f2937;
+  text-align: center;
+  
+  /* Smooth transition for active state */
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Typography override inside the boxes to force uniform size */
+.portal-box .portal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+  color: inherit;
+}
+
+/* Subtle focus state for keyboard accessibility */
+.portal-box:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
