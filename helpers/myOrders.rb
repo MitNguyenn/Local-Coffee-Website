@@ -32,8 +32,7 @@ module MyOrders
       "total_num_beans" => total_num_beans,
       "until_next_discount" => until_next_discount
     }
-
-    puts stats
+    
     stats
   end
 end

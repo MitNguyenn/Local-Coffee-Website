@@ -5,12 +5,6 @@ RSpec.describe MyOrders, type: :helper do
 
   let(:user_id) { 1 }
 
-  before do
-    # Initialise tables and insert seeded production data before every test run
-    DatabaseInitializer.create_tables(DB)
-    DatabaseSeeder.seed_data(DB)
-  end
-
   describe "#fetch_current_orders" do
     it "returns active uncompleted orders matching relational item profiles" do
       current_orders = fetch_current_orders(user_id)
@@ -47,9 +41,6 @@ RSpec.describe MyOrders, type: :helper do
         .all
 
       user_stats = get_stats(user_id)
-
-      # Fix 1: Read values using string keys since get_stats returns string keys
-      # Fix 2: Assert against the correct calculated expectations instead of expected_stamp_count every time
       
       expected_stamp_count = user[:stamp_count]
       expect(user_stats["stamp_count"]).to eq(expected_stamp_count)
