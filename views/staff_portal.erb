@@ -3,6 +3,9 @@
 <div class="portal-box-container">
   <% if ["administrator", "manager", "barista"].include?(session[:account_type]) %>
     <!-- Everyone items -->
+    <a href="/place-order/find-user" class="portal-box">
+      <h1 class="portal-title">Place User Order</h1>
+    </a>
     <a href="/order-management-barista" class="portal-box">
       <h1 class="portal-title">Order Management</h1>
     </a>

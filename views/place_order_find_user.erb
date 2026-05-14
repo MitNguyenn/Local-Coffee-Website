@@ -1,0 +1,76 @@
+<main class="acc-view__main">
+  <h1 class="acc-view__title">Place Order - Select Customer</h1>
+
+  <!-- ACTIVE SELECTION CONTEXT BANNER -->
+  <% if @selected_customer %>
+    <div style="margin-bottom: 2rem; padding: 1rem; background: #e6f4ea; border-radius: 8px; border: 1px solid #137333; display: flex; justify-content: space-between; align-items: center; font-family: inherit;">
+      <div>
+        <span style="background: #137333; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Active Assignment</span>
+        <strong style="display: block; margin-top: 0.5rem; font-size: 1.1rem; color: #137333;"><%= @selected_customer[:first_name] %> <%= @selected_customer[:last_name] %></strong>
+        <span style="font-size: 0.85rem; color: #555;"><%= @selected_customer[:email] %></span>
+      </div>
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <form action="/place-order/clear-user" method="POST" style="margin: 0;">
+          <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 0.95rem;">Clear</button>
+        </form>
+        <a href="/place-order/contents" style="background: #222; color: #fff; border: none; text-decoration: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; font-size: 0.95rem;">Continue to Basket →</a>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Search Input -->
+  <input type="text" id="accountSearch" class="acc-view__search" 
+         onkeyup="filterTable()" placeholder="Search by name, email, or postcode...">
+
+  <!-- Table Board -->
+  <div class="acc-view__board">
+    <table id="accountsTable" class="acc-view__table">
+      <thead>
+        <tr>
+          <th class="acc-view__th">ID</th>
+          <th class="acc-view__th">Full Name</th>
+          <th class="acc-view__th">Email address</th>
+          <th class="acc-view__th">Phone Number</th>
+          <th class="acc-view__th">postcode</th>
+          <th class="acc-view__th">Account Type</th>
+          <th class="acc-view__th">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @all_customers.each do |account| %>
+          <tr class="acc-view__row">
+            <td class="acc-view__td">#<%= account[:user_id] %></td>
+            <td class="acc-view__td"><%= account[:first_name] %> <%= account[:last_name] %></td>
+            <td class="acc-view__td"><%= account[:email] %></td>
+            <td class="acc-view__td"><%= account[:phone_number] %></td>
+            <td class="acc-view__td"><%= account[:postcode] %></td>
+            <td class="acc-view__td">
+              <span class="acc-view__badge"><%= account[:account_type] %></span>
+            </td>
+            <td class="acc-view__td">
+              <!-- Inline Select Form passing user_id forward -->
+              <form action="/place-order/select-user" method="POST" style="margin: 0; display: inline;">
+                <input type="hidden" name="customer_id" value="<%= account[:user_id] %>">
+                <button type="submit" id="selectuser-<%= account[:user_id] %>" style="color: #0056b3; background: none; border: none; padding: 0; font-family: inherit; font-size: inherit; cursor: pointer; text-decoration: underline; font-weight: 500;">
+                  Select Customer
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  function filterTable() {
+    const filter = document.getElementById("accountSearch").value.toLowerCase();
+    const rows = document.querySelectorAll(".acc-view__row");
+
+    rows.forEach(row => {
+      const isMatch = row.textContent.toLowerCase().includes(filter);
+      row.style.display = isMatch ? "" : "none";
+    });
+  }
+</script>
