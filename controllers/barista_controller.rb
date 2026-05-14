@@ -143,6 +143,11 @@ end
     erb :daily_summary
   end
 
+  get '/sales-history' do
+
+    erb :sales_history
+  end
+
   get '/place-order/find-user' do
     # Fetch all customer accounts directly from the DB table
     @all_customers = DB[:Accounts].where(account_type: 'customer').all
