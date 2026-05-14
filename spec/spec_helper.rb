@@ -5,6 +5,11 @@ SimpleCov.start do
   add_filter "/app.rb"
   add_filter "/db/db.rb"
   add_filter "/helpers/helpers.rb"
+
+  #db init files
+  add_filter "db/DB_init"
+  add_filter "db_setup"
+  add_filter "db_seeder"
 end
 
 # Establish test suite connection using an absolute path definition pattern
