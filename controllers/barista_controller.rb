@@ -143,6 +143,26 @@ end
     erb :daily_summary
   end
 
+  get '/sales-history' do
+    @orders = DB[:Orders]
+    .join(:OrderItems, order_id: :order_id)
+    .select(
+      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:created_at],
+      Sequel[:Orders][:order_type],
+      Sequel[:Orders][:is_completed],
+      Sequel[:OrderItems][:item_id],
+      Sequel[:OrderItems][:quantity],
+      Sequel[:OrderItems][:milk],
+      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:product_type]
+    )
+    .all
+    
+    @orders = @orders.group_by { |row| row[:order_id] } if @orders
+    erb :sales_history
+  end
+
   get '/place-order/find-user' do
     # Fetch all customer accounts directly from the DB table
     @all_customers = DB[:Accounts].where(account_type: 'customer').all
