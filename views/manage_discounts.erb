@@ -1,8 +1,7 @@
 <h1 class="discount-page-title">Manage Store Discounts</h1>
 
-<!-- NEW DISCOUNT CREATION FORM -->
 <div class="discount-item discount-create-card" style="border: 2px dashed #444; margin-bottom: 2rem; background: #fafafa;">
-  <h3 style="margin: 0 0 1rem 0; color: #222; font-size: 1.1rem; font-weight: 600;">➕ Create New Discount</h3>
+  <h3 style="margin: 0 0 1rem 0; color: #222; font-size: 1.1rem; font-weight: 600;">Create New Discount</h3>
   
   <form action="/create-discount" method="POST" class="discount-form">
     <div class="discount-field-group">
@@ -21,14 +20,13 @@
   </form>
 </div>
 
-<!-- EXISTING DISCOUNT LIST LOOP -->
 <div class="discount-list">
   <% if @discounts.empty? %>
     <p>No promotional discounts configured in the database.</p>
   <% else %>
     <% @discounts.each do |name, data| %>
-      <!-- ... Rest of your existing list loop template remains exactly the same ... -->
-      <div class="discount-item">
+      <!-- FIX: Attached a unique database ID attribute wrapper to eliminate ambiguous sibling form states -->
+      <div class="discount-item" id="discount-row-<%= data[:id] %>">
         <form action="/update-discount" method="POST" class="discount-form">
           <input type="hidden" name="discount_id" value="<%= data[:id] %>">
           <div class="discount-field-group">
