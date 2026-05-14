@@ -14,7 +14,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
     it "redirects an unauthenticated user trying to access loyalty dashboards" do
       visit "/manage-loyalty-cards"
-      expect(current_path).to eq("//")
+      expect(current_path).to eq("/")
     end
 
     it "redirects a plain customer away from finding users for an order" do
