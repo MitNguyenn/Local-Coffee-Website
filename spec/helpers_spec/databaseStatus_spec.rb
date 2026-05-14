@@ -2,19 +2,15 @@ require 'spec_helper'
 require 'fileutils'
 
 RSpec.describe DatabaseStatus do
-  # Include the module directly under test to match internal helper execution conventions
   include described_class
   
-  # Resolve the directory target matching the module's relative structural resolution logic
   let(:test_backup_dir) { File.expand_path('../../helpers/../db/backups', __dir__) }
 
   before(:each) do
-    # Completely clear out the target layout to isolate each evaluation scenario run
     FileUtils.rm_rf(test_backup_dir)
   end
 
   after(:each) do
-    # Guarantee no residual temporary disk artifacts leak onto the workspace
     FileUtils.rm_rf(test_backup_dir)
   end
 
@@ -45,7 +41,6 @@ RSpec.describe DatabaseStatus do
         FileUtils.mkdir_p(test_backup_dir)
         target_file = File.join(test_backup_dir, 'snapshot_metrics.sqlite3')
         
-        # Write exactly 4096 bytes to verify precision (4096 bytes / 1024 = 4.0 KB)
         File.write(target_file, 'x' * 4096)
         
         fixed_time = Time.new(2026, 5, 14, 12, 30, 0)
@@ -71,7 +66,6 @@ RSpec.describe DatabaseStatus do
         File.write(mid_snap, 'data')
         File.write(new_snap, 'data')
 
-        # Artificially shift modification times to test configuration integrity
         anchor_time = Time.now
         File.utime(anchor_time - 60, anchor_time - 60, old_snap)
         File.utime(anchor_time - 30, anchor_time - 30, mid_snap)
@@ -80,7 +74,6 @@ RSpec.describe DatabaseStatus do
         result = list_available_backups
         
         expect(result.size).to eq(3)
-        # Verify the array sequence (newest index registers first)
         expect(result[0][:filename]).to eq('backup_new.sqlite3')
         expect(result[1][:filename]).to eq('backup_mid.sqlite3')
         expect(result[2][:filename]).to eq('backup_old.sqlite3')
