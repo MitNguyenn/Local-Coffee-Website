@@ -178,7 +178,7 @@ RSpec.describe 'Staff Portal', type: :feature do
             expect(current_path).to eq('/')
             expect(page).to have_content('')
         end
-        
+    end
 
     end
 end
