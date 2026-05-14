@@ -64,8 +64,8 @@ module DatabaseInitializer
 
       DateTime    :created_at, default: Sequel::CURRENT_TIMESTAMP
 
-      String      :address_line, default:  '1 Coffee Lane'
-      String      :post_code, default:  'S1 1AA'
+      String      :address, default:  '1 Coffee Lane'
+      String      :postcode, default:  'S1 1AA'
       
       Double      :total_cost, size: [10, 2]
       TrueClass   :payment_is_completed, default: false

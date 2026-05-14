@@ -43,7 +43,7 @@ get '/order-management/barista' do
       Sequel[:Orders][:order_id],
       Sequel[:Orders][:created_at],
       Sequel[:Orders][:order_type],
-      Sequel[:Orders][:is_completed],
+      Sequel[:Orders][:order_is_completed],
       Sequel[:OrderItems][:item_id],
       Sequel[:OrderItems][:quantity],
       Sequel[:OrderItems][:milk],
@@ -56,7 +56,7 @@ get '/order-management/barista' do
 end
 
 post '/order-management/barista' do
-  DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true)
+  DB[:Orders].where(order_id: params[:order_id]).update(order_is_completed: true)
   redirect '/order-management/barista'
 end
 
@@ -209,7 +209,7 @@ end
         payment_method: params[:payment_method] || 'Card',
         total_cost: 0.0,
         location: 'In-Store',
-        is_completed: false,
+        order_is_completed: false,
         payment_status: 'Paid',
         created_at: Time.now
       )

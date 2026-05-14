@@ -35,13 +35,13 @@
               <td><%= items.first[:created_at].strftime("%d %b %H:%M") %></td>
 
               <td>
-                <span style="color: <%= items.first[:is_completed] ? 'green' : 'orange' %>;">
-                  <%= items.first[:is_completed] ? 'Completed' : 'Pending' %>
+                <span style="color: <%= items.first[:order_is_completed] ? 'green' : 'orange' %>;">
+                  <%= items.first[:order_is_completed] ? 'Completed' : 'Pending' %>
                 </span>
               </td>
 
               <td>
-                <% unless items.first[:is_completed] %>
+                <% unless items.first[:order_is_completed] %>
                   <form action="/order-management/barista" method="POST">
                     <input type="hidden" name="order_id" value="<%= order_id %>">
                     <button type="submit" class="audit-submit-btn">Mark Done</button>

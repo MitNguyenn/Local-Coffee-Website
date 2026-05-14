@@ -274,8 +274,8 @@ module DatabaseSeeder
 
       created_at: Time.now,
 
-      address_line: "221b Baker St",
-      post_code:    "NW1 6XE",
+      address: "221b Baker St",
+      postcode:    "NW1 6XE",
 
       total_cost: 5.58,
       payment_is_completed: false,
@@ -298,8 +298,8 @@ module DatabaseSeeder
 
       created_at: Time.now-86400,
 
-      address_line: "1 Coffee Lane",
-      post_code: "S1 1AA",
+      address: "1 Coffee Lane",
+      postcode: "S1 1AA",
       
       total_cost: 4.75,
       payment_is_completed: true,

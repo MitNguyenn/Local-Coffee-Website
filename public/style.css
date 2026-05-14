@@ -143,8 +143,11 @@ select {
   border-radius: 5px;
 }
 
-.cart-page-chekout-column {
+.cart-page-checkout-column {
   padding: 15px;
+  display: flex;
+  flex-direction: column; 
+  gap: 20px;
 }
 
 .empty-msg {

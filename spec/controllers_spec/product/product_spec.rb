@@ -89,7 +89,7 @@ RSpec.describe "User access product pages", type: :feature do
         user_id: user_id,
         OrderContents: '[{"id":"1","type":"drink"}]',
         payment_status: 'Pending',
-        is_completed: false
+        order_is_completed: false
       )
 
       # Simulate the callback from the "Gateway"
@@ -99,7 +99,7 @@ RSpec.describe "User access product pages", type: :feature do
       
       order = DB[:Orders].where(order_id: order_id).first
       expect(order[:payment_status]).to eq('Paid')
-      expect(order[:is_completed]).to be true
+      expect(order[:order_is_completed]).to be true
     end
   end
 end

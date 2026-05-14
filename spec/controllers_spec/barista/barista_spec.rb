@@ -108,7 +108,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         page.driver.submit :post, '/order-management/barista', { order_id: order_id }
         
         expect(current_path).to eq("/order-management/barista")
-        expect(DB[:Orders].where(order_id: order_id).get(:is_completed)).to be true
+        expect(DB[:Orders].where(order_id: order_id).get(:order_is_completed)).to be true
       end
 
       it "generates a shipping documentation PDF successfully via inline browser calls" do
@@ -229,7 +229,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         # Verify underlying database table calculation state logic matches formulas
         new_order = DB[:Orders].order(:order_id).last
         expect(new_order[:user_id]).to eq(1)
-        expect(new_order[:is_completed]).to be false
+        expect(new_order[:order_is_completed]).to be false
         
         # Calculation formula logic verification check targets:
         # Latte: (4.40 base * 1.2 markup multiplier + 0.30 oat price) * 2 qty = 11.16

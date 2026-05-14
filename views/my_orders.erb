@@ -64,9 +64,14 @@
               </ul>
             </div>
             <div>
-              <strong>Total:</strong> £<%= '%.2f' % first_row[:total_cost] %><br>
-              <strong>Status:</strong> 
-              <span class="my-orders-badge"><%= first_row[:payment_status] %></span>
+              <strong>Total:</strong> £<%= '%.2f' % first_row[:total_cost] %>
+              <br>
+              <strong>Order collected/received: <%= if first_row[:order_is_completed] then "Yes" else "No" end %></strong> 
+              <br>
+              <div>
+                <strong>Payment status:</strong>
+                <span class="my-orders-badge"><%= if first_row[:payment_is_completed] then "Paid" else "Not paid" end %></span>
+              </div>
             </div>
           </div>
         </div>

@@ -19,6 +19,16 @@ class ProductController < BaseController
     DB[:Accounts].where(user_id: user_id).update(stamp_count: final_count)
   end
 
+  def cart_contains_drink() 
+    session[:cart].each do | key, data |
+      if data[:item_type] == "drink"
+        return true
+      end
+    end
+    
+    return false
+  end
+
   # product page
   get '/product/' do
     @type = params[:type]
@@ -62,126 +72,159 @@ class ProductController < BaseController
     end
   end
 
-  def to_boolean(s)
+  post '/checkout' do
+    redirect '/log-in' unless logged_in?
+    user = DB[:Accounts].where(user_id: session[:user_id]).first
 
-    if s.downcase == "true"
-      true
-    elsif s.downcase == "false"
-      false
-    else
-      nil
+    p 
+    p params[:payment]
+    p "=================="
+    total_cost = params[:total_cost].to_f.round(2)
+    payment_successful    = nil
+    payment_is_completed = false
+
+    if params[:payment] == "pay-now"
+      p "checking if payment is successful"
+      payment_successful = flip_coin()
+      payment_is_completed = payment_successful
     end
-  end
 
-  put '/checkout' do
-    begin 
-      redirect '/log-in' unless logged_in?
-      @user = DB[:Accounts].where(user_id: session[:user_id]).first
-      
-      delivery = params[:delivery]
+    address = params[:address]
+    postcode = params[:postcode]
 
-      payment_successful    = nil
-      paymenet_is_completed = false
+    p "payment_successful = #{payment_successful}"
+    p "user_id = #{user[:user_id]}"
+    p "address = #{address}"
+    p "postcode = #{postcode}" 
+    p "total_cost = #{total_cost}"
+    p "payment_is_completed = #{payment_is_completed}"
 
-      if to_boolean(params[:pay_now]) == true
-        payment_is_completed = payment_successful = flip_coin
+    session[:cart].each do | key, data |
+      p data
+      if data[:item_type] == "bean"
+        p data[:item_type]
+        p data[:origin]
+        p data[:quantity]
+        p data[:pack_weight]
+        p data[:roast_level]
+      else
+        p data[:item_data]
+        p data[:beverage]
+        p data[:quantity]
+        p data[:milk_type]
+        p data[:drink_size]
+      end
+    end
+    p "=================="
+    p
+
+    if payment_successful == true || payment_successful == nil
+      begin 
+        order_id = DB[:Orders].insert(
+          user_id: user[:user_id],
+          created_at: Time.now,
+
+          address: address,
+          postcode: postcode,
+
+          total_cost: total_cost,
+          payment_is_completed: payment_is_completed,
+
+          order_is_completed: false
+        )
+      rescue StandardError => e
+        p "Failed to create order in db"
+        puts "Caught an error: #{e.message}"
+        puts "Error class: #{e.class}"
+        return "Failed".to_json
       end
 
-      is_completed = false
-
-      if payment_successful
-        # some logic must be added to understand
-        # whether the order will be collected or
-        # delivered
-
-        # I guess iterating over the cart twice
-        # and finding a drink in it
-        # using a drink_type in data
-        # and then make like a contains_drink
-
-        # if contains_drink
-        #   order_type = "In-Person"
-        #   location = "In-Store"
-        #   ...
-        # end
-
-        order_id = db_connection[:Orders].insert(
-          user_id: @user,
-          created_at: Time.now,
-          payment_is_completed: payment_is_completed,
-          order_is_completed: false,
-          total_cost: total_price
-        )
-        session[:cart].each do | key, data |
+      session[:cart].each do | key, data |
+        begin
           if data[:item_type] == 'bean'
-            db_connection[:OrderItems].insert(
+            DB[:OrderItems].insert(
               order_id:     order_id,
-              product_type: data[:product_type],
+              product_type: data[:item_type],
               item_id:      data[:origin],
               quantity:     data[:quantity],
               pack_weight:  data[:pack_weight],
               roast_level:  data[:roast_level]
             )
 
-            grams_beans_bought = data[:pack_weight] * data[:pack_weight]
+            grams_beans_bought = data[:pack_weight] * data[:quantity]
             kg_bought = grams_beans_bought / 1000.0
 
-            db_connection[:Beans].where(origin: data[:origin]).update(
+            DB[:Beans].where(origin: data[:origin]).update(
               stock_mass: Sequel[:stock_mass] - kg_bought
             )
           else
-            db_connection[:OrderItems].insert(
+            DB[:OrderItems].insert(
               order_id:     order_id,
-              product_type: data[:item_data],
+              product_type: data[:item_type],
               item_id:      data[:beverage],
               quantity:     data[:quantity],
               milk_type:    data[:milk_type],
               drink_size:   data[:drink_size]
             )
           end
+        rescue StandardError => e
+          p "Failed to add order items to db"
+          puts "Caught an error: #{e.message}"
+          puts "Error class: #{e.class}"
+          return "Failed".to_json
         end
-      else
-        # notify that payment is wrong or smth
       end
 
-      "Success".to_json
-    rescue
-      "Fail".to_json
+      p "Successfully placed order"
+      session[:cart].clear
+      session[:contains_drink] = false
+      { status: :ok }.to_json
+    elsif payment_successful == false
+      p "Payment failed"
+      status 422
+      { status: :unprocessable_entity }.to_json
     end
   end
 
-  # post '/place-order' do
+  get '/order-fail' do
+    erb :order_fail
+  end
 
-  #   if params[:payment_timing] == 'online'
-  #     redirect "/external-payment-gateway?order_id=#{order_id}"
-  #   else
-  #     finalize_stamps(session[:user_id], session[:cart])
-  #     session[:cart] = []
-  #     redirect '/order-success'
-  #   end
-  # end
+  get '/order-success' do
+    erb :order_success
+  end
 
-  # get '/external-payment-gateway' do
-  #   @order_id = params[:order_id]
-  #   erb :mock_gateway, layout: false 
-  # end
+  put '/remove-from-cart' do
+    key = params[:item_id]
+    session[:cart].delete(key)
+    session[:contains_drink] = cart_contains_drink()
 
-  # get '/payment-callback' do
-  #   order = DB[:Orders].where(order_id: params[:order_id]).first
-  #   if params[:status] == 'success' && order
-  #     DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true, payment_status: 'Paid')
-  #     cart = JSON.parse(order[:OrderContents])
-  #     finalize_stamps(session[:user_id], cart)
-  #     session[:cart] = [] 
-  #     redirect '/order-success'
-  #   else
-  #     @error = "Payment Cancelled"
-  #     redirect '/checkout'
-  #   end
-  # end
+    "Success".to_json
+  end
+
+  put '/update-cart-item-quantity' do
+    key = params[:item_id]
+    action = params[:action]
+
+    if action == "add" 
+      session[:cart][key][:quantity] += 1
+    else
+      current_quantity = session[:cart][key][:quantity]
+      if current_quantity <= 1
+        session[:cart].delete(key)
+      else
+        session[:cart][key][:quantity] -= 1
+      end
+    end
+
+    session[:contains_drink] = cart_contains_drink()
+
+    "Success".to_json
+  end
 
   put '/add-to-cart' do
     session[:cart] ||= { }
+    session[:contains_drink] ||= false
 
     # for bean item key is:
     # item_key = origin_[pack_weight]_roast
@@ -210,6 +253,7 @@ class ProductController < BaseController
           }
         end
       elsif item_type == 'drink'
+        session[:contains_drink] = true
         beverage = params[:beverage]
         drink_size = params[:drink_size]
         milk_type = params[:milk_type]
@@ -227,8 +271,8 @@ class ProductController < BaseController
           }
         end
       end
-
-      p session[:cart]
+      
+      session[:contains_drink] = cart_contains_drink
       "Successfully added item to the cart".to_json()
     rescue => exception
       warn exception.message
@@ -237,9 +281,4 @@ class ProductController < BaseController
     end
   end
 
-  # get '/order-success' do
-  #   @order = DB[:Orders].where(user_id: session[:user_id]).order(Sequel.desc(:created_at)).first
-  #   @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
-  #   erb :order_success
-  # end
 end
