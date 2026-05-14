@@ -1215,7 +1215,8 @@ footer {
 .buy-button,
 .add-to-cart-button,
 .purchase-btn,
-.submit-btn {
+.submit-btn,
+.change-btn {
   background:
     linear-gradient(
       180deg,
@@ -2423,4 +2424,21 @@ button:active {
 
 .discount-delete-btn:hover {
   background-color: #c9302c;
+}
+
+.change-button{
+  padding: 0.6rem 1.2rem;
+  background-color: #5bc0de;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.change-btn {
+
+  width:fit-content;
 }

@@ -44,4 +44,19 @@ class ManagerController < BaseController
     redirect '/manage-discounts'
   end
 
+  get '/edit-drink-details' do
+    @drinks = Drink.all
+    erb :edit_drink_details
+  end
+
+  post '/update-drink-details' do
+    new_prices = params[:prices]
+    @drinks = Drink.all
+    
+    @drinks.each_with_index do |drink, i|
+      drink.update(regular_price: new_prices[i].to_f)
+    end
+    redirect '/edit-drink-details'
+  end
+
 end
