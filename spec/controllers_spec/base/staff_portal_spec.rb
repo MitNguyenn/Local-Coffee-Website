@@ -7,7 +7,7 @@ RSpec.describe 'Staff Portal', type: :feature do
         }
 
         it 'shows order management link and clicks through to correct page' do
-            click_link 'Order Management'
+            click_link 'Barista Order Management'
             expect(current_path).to eq('/order-management/barista')
             expect(page).to have_content('Barista Order Controls')
         end
@@ -46,7 +46,7 @@ RSpec.describe 'Staff Portal', type: :feature do
         }
 
         it 'shows order management link and clicks through to correct page' do
-            click_link 'Order Management'
+            click_link 'Barista Order Management'
             expect(current_path).to eq('/order-management/barista')
             expect(page).to have_content('Barista Order Controls')
         end
@@ -99,6 +99,7 @@ RSpec.describe 'Staff Portal', type: :feature do
             expect(page).to have_content('Manage Store Discounts')
         end
     end
+
     context "when logged in as an admin" do
         before(:each) {
             log_in_as('testadmin@bbc.com', 'testpass')
@@ -106,9 +107,9 @@ RSpec.describe 'Staff Portal', type: :feature do
         }
 
         it 'shows order management link and clicks through to correct page' do
-            click_link 'Order Management'
-            expect(current_path).to eq('/order-management/administrator')
-            expect(page).to have_content('Administrator Order Controls')
+            click_link 'Barista Order Management'
+            expect(current_path).to eq('/order-management/barista')
+            expect(page).to have_content('Barista Order Controls')
         end
         it 'shows place user order link and clicks through to correct page' do
             click_link 'Place User Order'
@@ -159,7 +160,7 @@ RSpec.describe 'Staff Portal', type: :feature do
             expect(page).to have_content('Manage Store Discounts')
         end
         it 'shows manage user accounts link and clicks through to correct page' do
-            click_link 'Manager User Accounts'
+            click_link 'Manage User Accounts'
             expect(current_path).to eq('/manage-accounts')
             expect(page).to have_content('Account Management')
         end
@@ -170,15 +171,13 @@ RSpec.describe 'Staff Portal', type: :feature do
         end
         it 'shows  link and clicks through to correct page' do
             click_link 'Flagged Accounts'
-            expect(current_path).to eq('/')
-            expect(page).to have_content('')
+            expect(current_path).to eq('/flagged-accounts')
+            expect(page).to have_content('Flagged Accounts')
         end
         it 'shows  link and clicks through to correct page' do
-            click_link ''
-            expect(current_path).to eq('/')
-            expect(page).to have_content('')
+            click_link 'Admin Order Management'
+            expect(current_path).to eq('/order-management/administrator')
+            expect(page).to have_content('Admin Order Controls')
         end
-    end
-
     end
 end

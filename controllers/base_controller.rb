@@ -32,17 +32,12 @@ class BaseController < Sinatra::Base
       return erb :help
     end
 
-    begin
-      Ticket.create(
-        user_id: userid, 
-        ticket_type: params[:problem_type], 
-        ticket_content: params[:form_request_description]
-      )
-      redirect "/"
-    rescue => e
-      @error = "Something went wrong: #{e.message}"
-      erb :help
-    end
+    Ticket.create(
+      user_id: userid, 
+      ticket_type: params[:problem_type], 
+      ticket_content: params[:form_request_description]
+    )
+    redirect "/"
   end
 
   get '/discounts' do
