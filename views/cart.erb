@@ -1,21 +1,65 @@
 <% if session[:cart] && session[:cart].any? %>
-  <div class="cart-item-list">
-    <% session[:cart].each do | key, data | %>
-      <div class="cart-item">
-        <span class="cart-item-key"><%= key %></span>
-        <div class="cart-item-quantity-controllers">
-          <span class="add-button">
-            +
-          </span>
-          <span class="cart-item-quantity"> <%= data[:quantity] %></span>
-          <span class="remove-button">
-            -
-          </span>
-        </div>
+  <% total_cost = 0.0 %>
+  <div class="cart-page-content">
+    <div class="cart-item-list">
+      <% session[:cart].each do | key, data | %>
+        <div class="cart-item">
+          <span class="cart-item-key"><%= key %></span>
+          <div class="cart-item-quantity-controllers">
+            <button class="add-button">+</button>
+            <span class="cart-item-quantity"> <%= data[:quantity] %></span>
+            <button class="remove-button">-</button>
+          </div>
 
-      </div>
-    <% end %>
+        </div>
+        <% total_cost += data[:quantity] * data[:price] %>
+      <% end %>
+    </div>
+
+    <div class="cart-page-checkout-column">
+      <h2 id="display-total-cost" data-total-cost="<%= total_cost %>">Total cost: £<%= total_cost%></h2>
+      <button onclick="addButtonOnClick(event)" class="checkout-button">Check Out</button>
+    </div>
   </div>
+  <script>
+    function getTotalCost() {
+      
+    }
+
+    function addButtonOnClick(event) {
+
+    }
+
+    function removeButtonOnClick(event) {
+        
+    }
+
+    function checkoutButtonOnClick(event) {
+      const totalPrice = document.getElementById('total-price').dataset.totalPrice;
+      /* 
+         send post request here and pass totalPrice in params,
+         to avoid recalculating the price.
+         all the data is already in the session[:cart]
+         to push OrderItems data to the db.
+      */
+
+    fetch('/add-to-cart', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `total_cost=drink&beverage=${beverage}&drink_size=${drinkSize}&milk_type=${milkType}&price=${price}`
+    })
+    .then(data => {
+      const indicator = document.getElementById('cart-indicator');
+      if (indicator) {
+        indicator.classList.remove('hidden');
+      }
+      
+      const button = document.getElementById('add-to-cart-button');
+      button.textContent = "Added! ✅";
+      setTimeout(() => { button.textContent = "Add to cart"; }, 1000);
+    });
+    }
+  </script>  
 <% elsif %>
-  You have 0 items in your cart
+  You haven't added any items to the cart yet
 <% end %>

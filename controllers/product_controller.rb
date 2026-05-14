@@ -52,56 +52,126 @@ class ProductController < BaseController
     erb :drinks
   end
 
-  get '/checkout' do
-    redirect '/log-in' unless logged_in?
-    @user = DB[:Accounts].where(user_id: session[:user_id]).first
-    @subtotal = calculate_cart_total(session[:cart], @user)
-    erb :checkout
-  end
+  put '/checkout' do
+    begin 
+      redirect '/log-in' unless logged_in?
+      @user = DB[:Accounts].where(user_id: session[:user_id]).first
+      
+      total_price = params[:total_price]
+      
+      # ==============
+      # do the payment or do like collect in the shop thing
+      # ==============
+      order_type = nil
+      location = nil
+      is_completed = false
 
-  post '/place-order' do
-    redirect '/log-in' unless logged_in?
-    user_record = DB[:Accounts].where(user_id: session[:user_id]).first
-    subtotal = calculate_cart_total(session[:cart], user_record)
-    total_to_charge = subtotal + 3.50
+      if payment_successful
+        # some logic must be added to understand
+        # whether the order will be collected or
+        # delivered
 
-    order_id = DB[:Orders].insert(
-      user_id: session[:user_id],
-      OrderContents: session[:cart].to_json,
-      order_type: 'Delivery',
-      payment_method: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
-      totalCost: total_to_charge,
-      is_completed: params[:payment_timing] == 'online' ? false : true,
-      payment_status: params[:payment_timing] == 'online' ? 'Pending' : 'Paid'
-    )
+        # I guess iterating over the cart twice
+        # and finding a drink in it
+        # using a drink_type in data
+        # and then make like a contains_drink
 
-    if params[:payment_timing] == 'online'
-      redirect "/external-payment-gateway?order_id=#{order_id}"
-    else
-      finalize_stamps(session[:user_id], session[:cart])
-      session[:cart] = []
-      redirect '/order-success'
+        # if contains_drink
+        #   order_type = "In-Person"
+        #   location = "In-Store"
+        #   ...
+        # end
+
+        order_id = db_connection[:Orders].insert(
+          user_id: @user,
+          order_type: "In-Person",
+          payment_method: "Card",
+          created_at: Time.now,
+          location: "In-Store",
+          is_completed: true,
+          payment_status: 'Paid',
+          total_cost: total_price
+        )
+        session[:cart].each do | key, data |
+          if data[:item_type] == 'bean'
+            db_connection[:OrderItems].insert(
+              order_id:     order_id,
+              product_type: data[:product_type],
+              item_id:      data[:origin],
+              quantity:     data[:quantity],
+              pack_weight:  data[:pack_weight],
+              roast_level:  data[:roast_level]
+            )
+
+            grams_beans_bought = data[:pack_weight]
+
+            db_connection[:Beans].where(origin: data[:origin]).update(
+              stock_mass: Sequel[:stock_mass] - kg_bought
+            )
+          else
+            db_connection[:OrderItems].insert(
+              order_id:     order_id,
+              product_type: data[:item_data],
+              item_id:      data[:beverage],
+              quantity:     data[:quantity],
+              milk_type:    data[:milk_type],
+              drink_size:   data[:drink_size]
+            )
+          end
+        end
+      else
+        # notify that payment is wrong or smth
+      end
+
+      "Success".to_json
+    rescue
+      "Fail".to_json
     end
   end
 
-  get '/external-payment-gateway' do
-    @order_id = params[:order_id]
-    erb :mock_gateway, layout: false 
-  end
+  # post '/place-order' do
+  #   redirect '/log-in' unless logged_in?
+  #   user_record = DB[:Accounts].where(user_id: session[:user_id]).first
+  #   subtotal = calculate_cart_total(session[:cart], user_record)
+  #   total_to_charge = subtotal + 3.50
 
-  get '/payment-callback' do
-    order = DB[:Orders].where(order_id: params[:order_id]).first
-    if params[:status] == 'success' && order
-      DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true, payment_status: 'Paid')
-      cart = JSON.parse(order[:OrderContents])
-      finalize_stamps(session[:user_id], cart)
-      session[:cart] = [] 
-      redirect '/order-success'
-    else
-      @error = "Payment Cancelled"
-      redirect '/checkout'
-    end
-  end
+  #   order_id = DB[:Orders].insert(
+  #     user_id: session[:user_id],
+  #     OrderContents: session[:cart].to_json,
+  #     order_type: 'Delivery',
+  #     payment_method: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
+  #     totalCost: total_to_charge,
+  #     is_completed: params[:payment_timing] == 'online' ? false : true,
+  #     payment_status: params[:payment_timing] == 'online' ? 'Pending' : 'Paid'
+  #   )
+
+  #   if params[:payment_timing] == 'online'
+  #     redirect "/external-payment-gateway?order_id=#{order_id}"
+  #   else
+  #     finalize_stamps(session[:user_id], session[:cart])
+  #     session[:cart] = []
+  #     redirect '/order-success'
+  #   end
+  # end
+
+  # get '/external-payment-gateway' do
+  #   @order_id = params[:order_id]
+  #   erb :mock_gateway, layout: false 
+  # end
+
+  # get '/payment-callback' do
+  #   order = DB[:Orders].where(order_id: params[:order_id]).first
+  #   if params[:status] == 'success' && order
+  #     DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true, payment_status: 'Paid')
+  #     cart = JSON.parse(order[:OrderContents])
+  #     finalize_stamps(session[:user_id], cart)
+  #     session[:cart] = [] 
+  #     redirect '/order-success'
+  #   else
+  #     @error = "Payment Cancelled"
+  #     redirect '/checkout'
+  #   end
+  # end
 
   put '/add-to-cart' do
     session[:cart] ||= { }
@@ -126,9 +196,9 @@ class ProductController < BaseController
           session[:cart][item_key] = {
             item_type: item_type,
             origin: origin, 
-            pack_weight: pack_weight,
+            pack_weight: pack_weight.to_f,
             roast_level: roast_level,
-            price: params[:price],
+            price: params[:price].to_f,
             quantity: 1 
           }
         end
@@ -145,7 +215,7 @@ class ProductController < BaseController
             beverage: beverage,
             drink_size: drink_size,
             milk_type: milk_type,
-            price: params[:price],
+            price: params[:price].to_f,
             quantity: 1 
           }
         end
@@ -160,9 +230,9 @@ class ProductController < BaseController
     end
   end
 
-  get '/order-success' do
-    @order = DB[:Orders].where(user_id: session[:user_id]).order(Sequel.desc(:created_at)).first
-    @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
-    erb :order_success
-  end
+  # get '/order-success' do
+  #   @order = DB[:Orders].where(user_id: session[:user_id]).order(Sequel.desc(:created_at)).first
+  #   @mock_token = "TXN-" + SecureRandom.hex(4).upcase 
+  #   erb :order_success
+  # end
 end

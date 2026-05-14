@@ -192,8 +192,8 @@ module DatabaseSeeder
       item_id: "Latte", 
       product_type: "drink",
       quantity: 1,
-      milk: "Oat",
-      size: "Large"
+      milk_type: "Oat",
+      drink_size: "Large"
     )
 
     db_connection[:OrderItems].insert(

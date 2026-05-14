@@ -115,17 +115,21 @@ select {
   display: block;
 }
 
+.cart-page-content {
+  display: flex;
+}
+
 .cart-item-list{
-  width: 60vw;              /* 0.6 * pageWidth */
-  height: 75vh;             /* 0.75 * pageHeight */
-  background-color: white;
+  width: 60vw;
+  height: 75vh;
+  background-color: #fdf5e6;
   padding: 20px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  overflow-y: auto;         /* Adds a scrollbar if you have too many rows */
+  overflow-y: auto; 
+  border-radius: 10px;
   
-  /* Flexbox to manage the rows inside */
   display: flex;
-  flex-direction: column;   /* Stacks rows vertically */
+  flex-direction: column; 
   gap: 20px;
 }
 
@@ -137,6 +141,10 @@ select {
   background-color: #fafafa;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+.cart-page-chekout-column {
+  padding: 15px;
 }
 
 .empty-msg {

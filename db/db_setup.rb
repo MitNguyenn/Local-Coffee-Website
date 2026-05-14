@@ -77,8 +77,8 @@ module DatabaseInitializer
       Integer :quantity, default: 1
       Double :pack_weight, default: nil
       String :roast_level, default: nil
-      String  :milk, default: nil  
-      String  :size, default: nil
+      String  :milk_type, default: nil  
+      String  :drink_size, default: nil
       primary_key [:order_id, :item_id]
     end
 
