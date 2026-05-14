@@ -1,49 +1,41 @@
-class BaseController < Sinatra::Base
-  helpers AppHelpers
+# ==============================================================================
+# GENERAL / CORE ROUTES (No Class Wrapper)
+# ==============================================================================
 
-  require 'bcrypt'
-  require 'require_all' 
+get '/' do
+  update_recent_login(session[:user_id]) if session[:user_id]
+  erb :home
+end
 
-  require_relative '../db/db'
+get '/help' do
+  erb :help
+end
 
-  set :root, File.expand_path("..", __dir__)
-  set :views, proc { File.join(root, "views") }
-  set :public_folder, proc { File.join(root, "public") }
+get '/cart' do 
+  erb :cart
+end
 
-  get '/' do
-    update_recent_login(session[:user_id]) if session[:user_id]
-    
-    erb :home
+get '/discounts' do
+  @discounts = get_current_discounts()
+  erb :discounts_page
+end
+
+# ==============================================================================
+# POST ROUTING ENGINE
+# ==============================================================================
+
+post '/help' do
+  userid = DB[:Accounts].where(email: params[:form_useremail]).get(:user_id)
+  
+  if userid.nil? || params[:form_request_description].to_s.strip.empty?
+    @error = "Missing info! Please check the email and description."
+    return erb :help
   end
 
-  get '/help' do
-    erb :help
-  end
-
-  get '/cart' do 
-    erb :cart
-  end
-
-  post '/help' do
-    userid = DB[:Accounts].where(email: params[:form_useremail]).get(:user_id)
-    
-    if userid.nil? || params[:form_request_description].to_s.strip.empty?
-      @error = "Missing info! Please check the email and description."
-      return erb :help
-    end
-
-    Ticket.create(
-      user_id: userid, 
-      ticket_type: params[:problem_type], 
-      ticket_content: params[:form_request_description]
-    )
-    redirect "/"
-  end
-
-  get '/discounts' do
-    @discounts = get_current_discounts()
-
-    erb :discounts_page
-  end
-
+  Ticket.create(
+    user_id: userid, 
+    ticket_type: params[:problem_type], 
+    ticket_content: params[:form_request_description]
+  )
+  redirect "/"
 end

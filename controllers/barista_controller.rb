@@ -1,41 +1,53 @@
-require_relative 'base_controller'
 require 'wicked_pdf'
+require 'json'
 
-class BaristaController < BaseController
-  before do
-    unless session[:user_id]
-      redirect '/log-in'
-    end
-
-    if session[:account_type] == 'customer'
-      redirect '/'
-    end
-
-    unless ['barista', 'manager', 'administrator'].include?(session[:account_type])
-      redirect '/'
-    end
+# ==============================================================================
+# STAFF BOUNDARY WALL (TARGETED REGEX FILTER)
+# ==============================================================================
+before [
+  '/staff-portal*', 
+  '/manage-loyalty-cards*', 
+  '/update-stamps*', 
+  '/order-management/barista*', 
+  '/generate-label*', 
+  '/generate-return*', 
+  '/user-tickets*', 
+  '/ticket*', 
+  '/resolve-ticket*', 
+  '/refund-tickets*', 
+  '/refund*', 
+  '/daily-summary*', 
+  '/sales-history*', 
+  '/place-order*'
+] do
+  unless session[:user_id]
+    redirect '/log-in'
   end
 
-  get '/staff-portal' do
-    erb :staff_portal
+  if session[:account_type] == 'customer'
+    redirect '/'
   end
 
-  get '/manage-loyalty-cards' do
-    redirect '/' if session[:account_type] == 'customer' 
-    @accounts = DB[:Accounts].where(account_type: 'customer').all
-    erb :manage_loyalty_cards
+  unless ['barista', 'manager', 'administrator'].include?(session[:account_type])
+    redirect '/'
   end
+end
 
-  post '/update-stamps' do
 
-    target_user_id = params[:user_id]
-    new_count = params[:stamp_count].to_i
-    DB[:Accounts].where(user_id: target_user_id).update(stamp_count: new_count)
+# ==============================================================================
+# GET ROUTING ENGINE
+# ==============================================================================
 
-    redirect '/manage-loyalty-cards'
-  end
+get '/staff-portal' do
+  erb :staff_portal
+end
 
-  # For the drink queue
+get '/manage-loyalty-cards' do
+  redirect '/' if session[:account_type] == 'customer' 
+  @accounts = DB[:Accounts].where(account_type: 'customer').all
+  erb :manage_loyalty_cards
+end
+
 get '/order-management/barista' do
   @orders = DB[:Orders]
     .join(:OrderItems, order_id: :order_id)
@@ -55,11 +67,6 @@ get '/order-management/barista' do
   erb :order_management_barista
 end
 
-post '/order-management/barista' do
-  DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true)
-  redirect '/order-management/barista'
-end
-
 get '/generate-label/:id' do
   @order = DB[:Orders].where(order_id: params[:id]).first
   return redirect '/order-management/barista' unless @order
@@ -67,7 +74,7 @@ get '/generate-label/:id' do
   @account = DB[:Accounts].where(user_id: @order[:user_id]).first
   @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
   @courier = "Royal Mail"
-  @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
+  @qrcode = RQRCode::QRCode.new("royalmail.com{@tracking_id}")
   @qrcode_svg = @qrcode.as_svg(module_size: 4)
 
   html = erb :shipping_label_template, layout: false
@@ -77,74 +84,39 @@ get '/generate-label/:id' do
   pdf
 end
 
-post '/generate-return/:id' do
-  @order = DB[:Orders].where(order_id: params[:id]).first
-  return redirect '/order-management/barista' unless @order
-
-  @account = DB[:Accounts].where(user_id: @order[:user_id]).first
-  @tracking_id = "RTN#{Array.new(10) { rand(10) }.join}"
-  @courier = "Royal Mail"
-  @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
-  @qrcode_svg = @qrcode.as_svg(module_size: 4)
-
-  html = erb :return_label_template, layout: false
-  pdf = WickedPdf.new.pdf_from_string(html)
-  content_type 'application/pdf'
-  attachment "Return_Label_#{@order[:order_id]}.pdf"
-  pdf
+get '/user-tickets' do
+  @live_tickets = DB[:Tickets].where(ticket_resolved: false).all
+  @past_tickets = DB[:Tickets].where(ticket_resolved: true).all
+  erb :ticket_management
 end
 
-  get '/user-tickets' do
-    @live_tickets = DB[:Tickets].where(ticket_resolved: false).all
-    @past_tickets = DB[:Tickets].where(ticket_resolved: true).all
-    erb :ticket_management
-  end
+get '/ticket/:id' do
+  @ticket = DB[:Tickets].where(ticket_id: params[:id]).first
+  erb :ticket_resolve
+end
 
-  get '/ticket/:id' do
-    @ticket = DB[:Tickets].where(ticket_id: params[:id]).first
+get '/refund-tickets' do
+  @live_tickets = DB[:Tickets].where(ticket_resolved: false, ticket_type: 'Refund').all
+  @past_tickets = DB[:Tickets].where(ticket_resolved: true,  ticket_type: 'Refund').all
+  erb :refund_management
+end
 
-    erb :ticket_resolve
-  end
+get '/refund/:id' do
+  @ticket = DB[:Tickets].where(ticket_id: params[:id]).first
+  erb :refund_resolve
+end
 
-  post '/resolve-ticket/:id' do
-    DB[:Tickets].where(ticket_id: params[:id]).update(ticket_resolved: true)
+get '/daily-summary' do
+  today_start = Time.now - 86400 
+  orders = DB[:Orders].where { created_at >= today_start }
+  @daily_summary = {
+    total_sales: orders.sum(:total_cost) || 0
+  }
+  erb :daily_summary
+end
 
-    redirect '/user-tickets'
-  end
-
-  get '/refund-tickets' do
-    @live_tickets = DB[:Tickets].where(ticket_resolved: false, ticket_type: 'Refund').all
-    @past_tickets  = DB[:Tickets].where(ticket_resolved: true,  ticket_type: 'Refund').all
-
-    erb :refund_management
-  end
-
-  get '/refund/:id' do
-    @ticket = DB[:Tickets].where(ticket_id: params[:id]).first
-
-    erb :refund_resolve
-  end
-
-  post '/refund/:id' do
-    DB[:Tickets].where(ticket_id: params[:id]).update(ticket_resolved: true)
-
-    redirect '/refund-tickets'
-  end
-
-  get '/daily-summary' do
-    today_start = Time.now - 86400 
-
-    orders = DB[:Orders].where { created_at >= today_start }
-
-    @daily_summary = {
-      total_sales: orders.sum(:total_cost) || 0
-    }
-
-    erb :daily_summary
-  end
-
-  get '/sales-history' do
-    @orders = DB[:Orders]
+get '/sales-history' do
+  @orders = DB[:Orders]
     .join(:OrderItems, order_id: :order_id)
     .select(
       Sequel[:Orders][:order_id],
@@ -158,131 +130,164 @@ end
       Sequel[:OrderItems][:product_type]
     )
     .all
-    
-    @orders = @orders.group_by { |row| row[:order_id] } if @orders
-    erb :sales_history
+  
+  @orders = @orders.group_by { |row| row[:order_id] } if @orders
+  erb :sales_history
+end
+
+get '/place-order/find-user' do
+  @all_customers = DB[:Accounts].where(account_type: 'customer').all
+  @selected_customer_id = session[:assigned_order_customer_id]
+  @selected_customer = DB[:Accounts].where(user_id: @selected_customer_id).first if @selected_customer_id
+  erb :place_order_find_user
+end
+
+get '/place-order/contents' do
+  @selected_customer_id = session[:assigned_order_customer_id]
+  return redirect '/place-order/find-user' unless @selected_customer_id
+
+  @selected_customer = DB[:Accounts].where(user_id: @selected_customer_id).first
+  
+  @available_drinks = DB[:Drinks].all
+  @available_beans  = DB[:Beans].where { stock_mass > 0 }.all
+  @milk_types       = DB[:MilkTypes].all
+  @drink_sizes      = DB[:DrinkSizePriceMarkupMultipliers].all
+  @pack_weights     = DB[:BeansPackWeightPriceMarkupMultipliers].all
+  @roast_levels     = DB[:BeanRoastLevels].all
+  @common_items     = get_common_orders(5)
+
+  erb :place_order_contents
+end
+
+# ==========================================
+# POST ROUTING ENGINE
+# ==========================================
+
+post '/update-stamps' do
+  target_user_id = params[:user_id]
+  new_count = params[:stamp_count].to_i
+  DB[:Accounts].where(user_id: target_user_id).update(stamp_count: new_count)
+  redirect '/manage-loyalty-cards'
+end
+
+post '/order-management/barista' do
+  DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true)
+  redirect '/order-management/barista'
+end
+
+post '/generate-return/:id' do
+  @order = DB[:Orders].where(order_id: params[:id]).first
+  return redirect '/order-management/barista' unless @order
+
+  @account = DB[:Accounts].where(user_id: @order[:user_id]).first
+  @tracking_id = "RTN#{Array.new(10) { rand(10) }.join}"
+  @courier = "Royal Mail"
+  @qrcode = RQRCode::QRCode.new("royalmail.com{@tracking_id}")
+  @qrcode_svg = @qrcode.as_svg(module_size: 4)
+
+  html = erb :return_label_template, layout: false
+  pdf = WickedPdf.new.pdf_from_string(html)
+  content_type 'application/pdf'
+  attachment "Return_Label_#{@order[:order_id]}.pdf"
+  pdf
+end
+
+post '/resolve-ticket/:id' do
+  DB[:Tickets].where(ticket_id: params[:id]).update(ticket_resolved: true)
+  redirect '/user-tickets'
+end
+
+post '/refund/:id' do
+  DB[:Tickets].where(ticket_id: params[:id]).update(ticket_resolved: true)
+  redirect '/refund-tickets'
+end
+
+post '/place-order/select-user' do
+  session[:assigned_order_customer_id] = params[:customer_id]
+  redirect '/place-order/contents'
+end
+
+post '/place-order/clear-user' do
+  session.delete(:assigned_order_customer_id)
+  redirect '/place-order/find-user'
+end
+
+post '/place-order/complete' do
+  customer_id = session[:assigned_order_customer_id]
+  order_items_json = params[:order_items_json]
+
+  if customer_id.nil?
+    status 400
+    return "Error: Session timed out or no customer is assigned to this checkout transaction."
   end
 
-  get '/place-order/find-user' do
-    # Fetch all customer accounts directly from the DB table
-    @all_customers = DB[:Accounts].where(account_type: 'customer').all
-
-    # Check if a customer context is already stored in the active session
-    @selected_customer_id = session[:assigned_order_customer_id]
-    @selected_customer = DB[:Accounts].where(user_id: @selected_customer_id).first if @selected_customer_id
-
-    erb :place_order_find_user
+  parsed_items = JSON.parse(order_items_json) rescue []
+  if parsed_items.empty?
+    status 400
+    return "Error: Cannot checkout an empty shopping cart configuration."
   end
 
-  post '/place-order/select-user' do
-    session[:assigned_order_customer_id] = params[:customer_id]
-    redirect '/place-order/contents'
-  end
+  DB.transaction do
+    calculated_total = 0.0
 
-  post '/place-order/clear-user' do
-    session.delete(:assigned_order_customer_id)
-    redirect '/place-order/find-user'
-  end
+    order_id = DB[:Orders].insert(
+      user_id: customer_id.to_i,
+      order_type: 'In-Store',
+      payment_method: params[:payment_method] || 'Card',
+      total_cost: 0.0,
+      location: 'In-Store',
+      is_completed: false,
+      payment_status: 'Paid',
+      created_at: Time.now
+    )
 
-  get '/place-order/contents' do
-    # Redirect back to boundary start if no user context resides in execution layers
-    @selected_customer_id = session[:assigned_order_customer_id]
-    return redirect '/place-order/find-user' unless @selected_customer_id
+    parsed_items.each do |item|
+      item_id      = item['item_id']
+      product_type = item['product_type']
+      quantity     = item['quantity'].to_i
 
-    @selected_customer = DB[:Accounts].where(user_id: @selected_customer_id).first
-    
-    # Pull menu asset collections for building choices selector elements
-    @available_drinks = DB[:Drinks].all
-    @available_beans  = DB[:Beans].where { stock_mass > 0 }.all
-    @milk_types       = DB[:MilkTypes].all
-    @drink_sizes      = DB[:DrinkSizePriceMarkupMultipliers].all
-    @pack_weights     = DB[:BeansPackWeightPriceMarkupMultipliers].all
-    @roast_levels     = DB[:BeanRoastLevels].all
+      if product_type == 'drink'
+        base_price = DB[:Drinks].where(beverage: item_id).get(:regular_price).to_f
+        size_mult  = DB[:DrinkSizePriceMarkupMultipliers].where(drink_size: item['size']).get(:markup_multiplier).to_f || 1.0
+        milk_cost  = DB[:MilkTypes].where(milk_type: item['milk']).get(:price).to_f || 0.0
+        
+        item_cost = ((base_price * size_mult) + milk_cost) * quantity
+        calculated_total += item_cost
 
-    # Fetch common historical trend combinations
-    @common_items = get_common_orders(5)
+        DB[:OrderItems].insert(
+          order_id: order_id,
+          item_id: item_id,
+          product_type: 'drink',
+          quantity: quantity,
+          milk: item['milk'],
+          size: item['size']
+        )
 
-    erb :place_order_contents
-  end
+      elsif product_type == 'bean'
+        price_per_250g = DB[:Beans].where(origin: item_id).get(:price_per_250g).to_f
+        weight_mult    = DB[:BeansPackWeightPriceMarkupMultipliers].where(pack_weight: item['pack_weight'].to_f).get(:markup_multiplier).to_f || 1.0
+        
+        item_cost = (price_per_250g * weight_mult) * quantity
+        calculated_total += item_cost
 
-  post '/place-order/complete' do
-    customer_id = session[:assigned_order_customer_id]
-    order_items_json = params[:order_items_json]
+        kg_consumed = (item['pack_weight'].to_f / 1000.0) * quantity
+        DB[:Beans].where(origin: item_id).update(stock_mass: Sequel[:stock_mass] - kg_consumed)
 
-    if customer_id.nil?
-      status 400
-      return "Error: Session timed out or no customer is assigned to this checkout transaction."
-    end
-
-    parsed_items = JSON.parse(order_items_json) rescue []
-    if parsed_items.empty?
-      status 400
-      return "Error: Cannot checkout an empty shopping cart configuration."
-    end
-
-    DB.transaction do
-      calculated_total = 0.0
-
-      order_id = DB[:Orders].insert(
-        user_id: customer_id.to_i,
-        order_type: 'In-Store',
-        payment_method: params[:payment_method] || 'Card',
-        total_cost: 0.0,
-        location: 'In-Store',
-        is_completed: false,
-        payment_status: 'Paid',
-        created_at: Time.now
-      )
-
-      parsed_items.each do |item|
-        item_id      = item['item_id']
-        product_type = item['product_type']
-        quantity     = item['quantity'].to_i
-
-        if product_type == 'drink'
-          base_price = DB[:Drinks].where(beverage: item_id).get(:regular_price).to_f
-          size_mult  = DB[:DrinkSizePriceMarkupMultipliers].where(drink_size: item['size']).get(:markup_multiplier).to_f || 1.0
-          milk_cost  = DB[:MilkTypes].where(milk_type: item['milk']).get(:price).to_f || 0.0
-          
-          item_cost = ((base_price * size_mult) + milk_cost) * quantity
-          calculated_total += item_cost
-
-          DB[:OrderItems].insert(
-            order_id: order_id,
-            item_id: item_id,
-            product_type: 'drink',
-            quantity: quantity,
-            milk: item['milk'],
-            size: item['size']
-          )
-
-        elsif product_type == 'bean'
-          price_per_250g = DB[:Beans].where(origin: item_id).get(:price_per_250g).to_f
-          weight_mult    = DB[:BeansPackWeightPriceMarkupMultipliers].where(pack_weight: item['pack_weight'].to_f).get(:markup_multiplier).to_f || 1.0
-          
-          item_cost = (price_per_250g * weight_mult) * quantity
-          calculated_total += item_cost
-
-          kg_consumed = (item['pack_weight'].to_f / 1000.0) * quantity
-          DB[:Beans].where(origin: item_id).update(stock_mass: Sequel[:stock_mass] - kg_consumed)
-
-          DB[:OrderItems].insert(
-            order_id: order_id,
-            item_id: item_id,
-            product_type: 'bean',
-            quantity: quantity,
-            pack_weight: item['pack_weight'].to_f,
-            roast_level: item['roast_level']
-          )
-        end
+        DB[:OrderItems].insert(
+          order_id: order_id,
+          item_id: item_id,
+          product_type: 'bean',
+          quantity: quantity,
+          pack_weight: item['pack_weight'].to_f,
+          roast_level: item['roast_level']
+        )
       end
-
-      DB[:Orders].where(order_id: order_id).update(total_cost: calculated_total.round(2))
-      DB[:Accounts].where(user_id: customer_id.to_i).update(stamp_count: Sequel[:stamp_count] + parsed_items.sum { |i| i['quantity'].to_i })
     end
 
-    # Scrub ordering tokens from thread states on completion path success
-    session.delete(:assigned_order_customer_id)
-    redirect '/order-management/barista'
+    DB[:Orders].where(order_id: order_id).update(total_cost: calculated_total.round(2))
+    DB[:Accounts].where(user_id: customer_id.to_i).update(stamp_count: Sequel[:stamp_count] + parsed_items.sum { |i| i['quantity'].to_i })
   end
+
+  session.delete(:assigned_order_customer_id)
+  redirect '/order-management/barista'
 end
