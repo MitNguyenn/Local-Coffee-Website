@@ -46,7 +46,7 @@ RSpec.describe "Manager visits pages", type: :feature do
       it "can visit discount management page" do
         visit "/manage-discounts"
         expect(current_path).to eq("/manage-discounts")
-        expect(page).to have_selector("h1.discount-page-title", text: "Our Current Discounts!")
+        expect(page).to have_selector("h1.discount-page-title", text: "Manage Store Discounts")
       end
     end
 
