@@ -3,9 +3,7 @@ html {
 }
 
 body {
-
   display: flex;
-
 
   margin: 0;
   padding: 0;
@@ -102,30 +100,30 @@ select {
 
 .cart-dot {
   position: absolute;
-  top: 5px; 
+  top: 5px;
   right: 5px;
-  
+
   width: 12px;
   height: 12px;
-  
-  background-color: #ff4757; 
+
+  background-color: #ff4757;
   border-radius: 50%;
-  border: 2px solid #fff; 
-  
+  border: 2px solid #fff;
+
   display: block;
 }
 
-.cart-item-list{
-  width: 60vw;              /* 0.6 * pageWidth */
-  height: 75vh;             /* 0.75 * pageHeight */
+.cart-item-list {
+  width: 60vw; /* 0.6 * pageWidth */
+  height: 75vh; /* 0.75 * pageHeight */
   background-color: white;
   padding: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  overflow-y: auto;         /* Adds a scrollbar if you have too many rows */
-  
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Adds a scrollbar if you have too many rows */
+
   /* Flexbox to manage the rows inside */
   display: flex;
-  flex-direction: column;   /* Stacks rows vertically */
+  flex-direction: column; /* Stacks rows vertically */
   gap: 20px;
 }
 
@@ -1133,7 +1131,7 @@ footer {
   transition: transform 0.2s;
 }
 .hidden {
-  display: none !important;  
+  display: none !important;
 }
 .ticket-border-open {
   border-left: 5px solid #a67458;
@@ -1215,7 +1213,8 @@ footer {
 .buy-button,
 .add-to-cart-button,
 .purchase-btn,
-.submit-btn {
+.submit-btn,
+.change-btn {
   background:
     linear-gradient(
       180deg,
@@ -2425,10 +2424,27 @@ button:active {
   background-color: #c9302c;
 }
 
+.change-button{
+  padding: 0.6rem 1.2rem;
+  background-color: #5bc0de;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.change-btn {
+
+  width:fit-content;
 /* --- CUSTOM COFFEE STOCK INTERFACE STYLES --- */
 
 .cs-mgt-wrapper {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   color: #2d241e;
   max-width: 1000px;
   margin: 40px auto;
@@ -2454,7 +2470,9 @@ button:active {
   background: #ffffff;
   border: 1px solid #e8e3df;
   border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
   overflow: hidden;
 }
 
@@ -2580,7 +2598,9 @@ button:active {
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .cs-mgt-submit-btn:hover {
@@ -2597,6 +2617,13 @@ button:active {
   gap: 20px;
   margin-bottom: 40px;
   width: 100%;
+  justify-content: center;
+  margin: 30px;
+}
+
+.portal-box-title {
+  text-align: center;
+  padding: 20px;
 }
 
 .portal-box {
@@ -2609,17 +2636,19 @@ button:active {
   min-height: 120px;
   padding: 20px;
   background-color: #ffffff;
-  
+
   /* Persistent outline/border styling */
-  border: 1px solid #d1d5db; 
-  border-radius: 6px;
-  
+  border: 1px solid #d1d5db;
+  border-radius: 15px;
+
   /* Typography normalization */
   color: #1f2937;
   text-align: center;
-  
+
   /* Smooth transition for active state */
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 /* Typography override inside the boxes to force uniform size */
@@ -2635,6 +2664,302 @@ button:active {
 .portal-box:focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
+}
+
+/* --- BARISTA IN-STORE ORDERING DASHBOARD --- */
+
+.bo-panel-wrapper {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  color: #2b221a;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 30px;
+}
+
+/* Clear full-width layout for headers or setups fallback */
+.bo-full-width-header {
+  grid-column: 1 / -1;
+  border-bottom: 2px solid #ebdcd0;
+  padding-bottom: 16px;
+  margin-bottom: 10px;
+}
+
+.bo-panel-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a120b;
+  margin: 0 0 6px 0;
+}
+
+/* --- CUSTOMER SEARCH & SELECTION SECTION --- */
+.bo-section-card {
+  background: #ffffff;
+  border: 1px solid #e8e3df;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+}
+
+.bo-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #5c4431;
+}
+
+.bo-search-box {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.bo-input-text {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  border: 1px solid #d1c7bd;
+  border-radius: 8px;
+  background-color: #fcfbfa;
+}
+
+.bo-input-text:focus {
+  outline: none;
+  border-color: #8c6d53;
+  box-shadow: 0 0 0 3px rgba(140, 109, 83, 0.15);
+}
+
+.bo-btn-secondary {
+  background-color: #f5f2f0;
+  color: #5c4431;
+  border: 1px solid #d1c7bd;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bo-btn-secondary:hover {
+  background-color: #ebdcd0;
+}
+
+/* Search results listing matching layout styles */
+.bo-customer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #e8e3df;
+  border-radius: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.bo-customer-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f2f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bo-customer-item:last-child {
+  border-bottom: none;
+}
+
+.bo-customer-item:hover {
+  background-color: #faf9f8;
+}
+
+.bo-active-badge {
+  background-color: #e6f4ea;
+  color: #137333;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* --- INTERACTIVE MENU CATALOG TABS --- */
+.bo-tabs-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e8e3df;
+  padding-bottom: 12px;
+}
+
+.bo-tab-toggle {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6b5a4f;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.bo-tab-toggle:hover {
+  background-color: #faf9f8;
+  color: #2b221a;
+}
+
+.bo-tab-toggle.bo-active {
+  background-color: #6f4e37;
+  color: #ffffff;
+}
+
+.bo-tab-content-panel {
+  display: none;
+}
+
+.bo-tab-content-panel.bo-active {
+  display: block;
+}
+
+/* --- FREQUENT COMMONLY ORDERED ITEMS GRID --- */
+.bo-frequent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.bo-frequent-card {
+  background: #fcfbfa;
+  border: 1px solid #e8e3df;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.bo-frequent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.05);
+}
+
+.bo-frequent-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #1a120b;
+  margin-bottom: 4px;
+}
+
+.bo-frequent-stats {
+  font-size: 0.85rem;
+  color: #8c6d53;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+}
+
+.bo-btn-fast-add {
+  background-color: #ffffff;
+  color: #6f4e37;
+  border: 1px solid #6f4e37;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.bo-btn-fast-add:hover {
+  background-color: #6f4e37;
+  color: #ffffff;
+}
+
+/* --- CHECKOUT SIDEBAR SHOPPING CART --- */
+.bo-sidebar-checkout {
+  background: #ffffff;
+  border: 2px solid #5c4431;
+  border-radius: 12px;
+  padding: 24px;
+  position: sticky;
+  top: 30px;
+  height: fit-content;
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+.bo-cart-items-list {
+  min-height: 150px;
+  max-height: 350px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #ebdcd0;
+  padding-bottom: 16px;
+}
+
+.bo-cart-empty-msg {
+  color: #a39284;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.95rem;
+}
+
+.bo-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.bo-summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid #ebdcd0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a120b;
+}
+
+.bo-select-dropdown {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1c7bd;
+  border-radius: 8px;
+  background-color: #fcfbfa;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.bo-btn-submit-order {
+  background-color: #6f4e37;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 6px -1px rgba(111, 78, 55, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.bo-btn-submit-order:hover {
+  background-color: #563c2a;
+}
+
+.bo-btn-submit-order:disabled {
+  background-color: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* --- BARISTA IN-STORE ORDERING DASHBOARD --- */
