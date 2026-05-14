@@ -5,11 +5,11 @@ class ProductController < BaseController
 
   def finalize_stamps(user_id, cart)
     stamps_to_add = 0
-    cart.each do |item_data|
-      if item_data['type'] == 'bean'
-        stamps_to_add += 3
-      elsif item_data['type'] == 'drink'
-        stamps_to_add += 1
+    cart.each do |key, data|
+      if [data[:item_type]] == 'bean'
+        stamps_to_add += 3*data[:quantity]
+      elsif data[:item_type] == 'drink'
+        stamps_to_add += data[:quantity]
       end
     end
 
@@ -129,20 +129,6 @@ class ProductController < BaseController
   end
 
   # post '/place-order' do
-  #   redirect '/log-in' unless logged_in?
-  #   user_record = DB[:Accounts].where(user_id: session[:user_id]).first
-  #   subtotal = calculate_cart_total(session[:cart], user_record)
-  #   total_to_charge = subtotal + 3.50
-
-  #   order_id = DB[:Orders].insert(
-  #     user_id: session[:user_id],
-  #     OrderContents: session[:cart].to_json,
-  #     order_type: 'Delivery',
-  #     payment_method: params[:payment_timing] == 'online' ? 'Card' : 'Cash',
-  #     totalCost: total_to_charge,
-  #     is_completed: params[:payment_timing] == 'online' ? false : true,
-  #     payment_status: params[:payment_timing] == 'online' ? 'Pending' : 'Paid'
-  #   )
 
   #   if params[:payment_timing] == 'online'
   #     redirect "/external-payment-gateway?order_id=#{order_id}"
