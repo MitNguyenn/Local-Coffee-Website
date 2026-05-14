@@ -57,4 +57,48 @@ module AnalyzeData
       monthly_sales: { current_month_name => total_sales.to_f.round(2) }
     }
   end
+
+    def get_common_orders(limit_count = 5)
+    # 1. Pull the most recurrent groupings of exact customer selections
+    frequent_combinations = DB[:OrderItems]
+      .select(
+        :item_id,
+        :product_type,
+        :milk,
+        :size,
+        :pack_weight,
+        :roast_level,
+        Sequel.function(:count, :order_id).as(:frequency_count)
+      )
+      .group(:item_id, :product_type, :milk, :size, :pack_weight, :roast_level)
+      .order(Sequel.desc(:frequency_count))
+      .limit(limit_count)
+      .all
+
+    # 2. Map payload arrays into legible, presentation-ready structural hash entries
+    frequent_combinations.map do |row|
+      # Format descriptive title names based strictly on the production category properties
+      display_title = case row[:product_type]&.downcase
+                      when 'drink'
+                        "#{row[:size]} #{row[:item_id]} (#{row[:milk]} Milk)"
+                      when 'bean'
+                        "#{row[:item_id]} #{row[:roast_level]} Roast [#{row[:pack_weight].to_i}g]"
+                      else
+                        row[:item_id].to_s
+                      end
+
+      {
+        item_id: row[:item_id],
+        product_type: row[:product_type],
+        specifications: {
+          milk: row[:milk],
+          size: row[:size],
+          pack_weight: row[:pack_weight],
+          roast_level: row[:roast_level]
+        },
+        display_name: display_title,
+        order_frequency: row[:frequency_count].to_i
+      }
+    end
+  end
 end

@@ -3,7 +3,10 @@
 <div class="portal-box-container">
   <% if ["administrator", "manager", "barista"].include?(session[:account_type]) %>
     <!-- Everyone items -->
-    <a href="/order-management/barista" class="portal-box">
+    <a href="/place-order/find-user" class="portal-box">
+      <h1 class="portal-title">Place User Order</h1>
+    </a>
+    <a href="/order-management-barista" class="portal-box">
       <h1 class="portal-title">Order Management</h1>
     </a>
     <a href="/manage-loyalty-cards" class="portal-box">
@@ -14,6 +17,9 @@
     </a>
     <a href="/refund-tickets" class="portal-box">
       <h1 class="portal-title">Refunds</h1>
+    </a>
+    <a href="/daily-summary" class="portal-box">
+      <h1 class="portal-title">Daily Summary</h1>
     </a>
   <% end %>
 
