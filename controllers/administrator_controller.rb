@@ -1,11 +1,17 @@
 require_relative 'base_controller'
 require 'wicked_pdf'
+require 'sqlite3'
+require 'fileutils'
+
 WickedPdf.configure do |config|
   config.exe_path = Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
 end
 
 class AdminController < BaseController
   helpers AppHelpers
+
+  # Configure backup workspace directory relative to the current file structure
+  set :backup_dir, File.expand_path('../db/backups', __dir__)
 
   before do
     unless session[:user_id] && session[:account_type] == 'administrator'
@@ -68,5 +74,58 @@ class AdminController < BaseController
     DB[:Accounts].where(user_id: params[:id]).delete
 
     redirect '/employee-accounts'
+  end
+
+  get '/database-status' do
+    # Fetch current metadata safely from Sequel connection pool
+    @live_db_size = File.size(DB.opts[:database]) rescue 0
+    @live_db_size_kb = (@live_db_size / 1024.0).round(2)
+    @live_db_path = DB.opts[:database]
+
+    # Gather available save states
+    @backups = list_available_backups
+    erb :database_status
+  end
+
+  # Trigger hot backup snapshot creation
+  post '/database-status/backup' do
+    FileUtils.mkdir_p(settings.backup_dir)
+    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
+    target_file = File.join(settings.backup_dir, "backup_#{timestamp}.sqlite3")
+
+    # Extract raw SQLite3 connection pointer out of Sequel connection pool
+    DB.pool.hold do |raw_conn|
+      destination_db = SQLite3::Database.new(target_file)
+      begin
+        backup = SQLite3::Backup.new(destination_db, 'main', raw_conn, 'main')
+        backup.step(-1)
+        backup.finish
+      ensure
+        destination_db.close if destination_db
+      end
+    end
+
+    redirect '/database-status'
+  end
+
+  # Restore runtime database from a specific file
+  post '/database-status/restore' do
+    filename = params[:filename]
+    source_file = File.join(settings.backup_dir, filename)
+
+    if File.exist?(source_file)
+      DB.pool.hold do |raw_conn|
+        source_db = SQLite3::Database.new(source_file)
+        begin
+          backup = SQLite3::Backup.new(raw_conn, 'main', source_db, 'main')
+          backup.step(-1)
+          backup.finish
+        ensure
+          source_db.close if source_db
+        end
+      end
+    end
+
+    redirect '/database-status'
   end
 end
