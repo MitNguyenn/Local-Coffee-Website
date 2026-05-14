@@ -21,6 +21,7 @@ module AppHelpers
   
   include GetBeans
   
+  include DatabaseStatus
   def current_user
 
     return nil unless session[:user_id]

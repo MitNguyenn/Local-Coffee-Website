@@ -1,0 +1,61 @@
+<!-- Unique Namespace Container Wrapper -->
+<div id="db-status-dashboard-panel">
+
+  <h1>Database Status Control Panel</h1>
+  <p><a href="/manage-accounts" class="back-link">&larr; Return to Admin Dashboard</a></p>
+
+  <!-- Live Database Metrics -->
+  <div class="card">
+    <h3>Runtime Database Profile</h3>
+    <p><strong>Database Path File:</strong> <code><%= @live_db_path %></code></p>
+    <p><strong>Current File Footprint:</strong> <%= @live_db_size_kb %> KB</p>
+  </div>
+
+  <!-- Manual Backup Execution Card -->
+  <div class="card flex-header">
+    <div>
+      <h3>Generate Immediate Save State</h3>
+      <p style="margin: 0; color: #6c757d;">Locks down a safe snapshot copy of current tables without active server disconnects.</p>
+    </div>
+    <form action="/database-status/backup" method="POST">
+      <button type="submit" class="btn btn-success">Backup Live Database</button>
+    </form>
+  </div>
+
+  <!-- Archived Backups Target Table -->
+  <h2>Available Restore Targets</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Backup Log File</th>
+          <th>Timestamp Created</th>
+          <th>File Volume Size</th>
+          <th>Operations</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @backups.empty? %>
+          <tr>
+            <td colspan="4" style="text-align: center; color: #6c757d; padding: 24px 0;">No active save point archives found on disk.</td>
+          </tr>
+        <% else %>
+          <% @backups.each do |backup| %>
+            <tr>
+              <td><span class="file-name"><%= backup[:filename] %></span></td>
+              <td><%= backup[:created_at] %></td>
+              <td><%= backup[:size_kb] %> KB</td>
+              <td>
+                <form action="/database-status/restore" method="POST" style="margin: 0;" onsubmit="return confirm('CRITICAL WARNING: This completely replaces all live customer accounts, history and orders with this file snapshot. Continue?');">
+                  <input type="hidden" name="filename" value="<%= backup[:filename] %>">
+                  <button type="submit" class="btn btn-danger">Restore Version</button>
+                </form>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
