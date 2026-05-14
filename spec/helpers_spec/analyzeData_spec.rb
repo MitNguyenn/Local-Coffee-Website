@@ -19,7 +19,7 @@ RSpec.describe AnalyzeData do
       it 'counts total accounts cleanly across seeded configurations' do
         result = analyze_sales_data(30)
         
-        expect(result[:total_accounts]).to eq(26)
+        expect(result[:total_accounts]).to eq(27)
       end
 
       it 'applies correct structural string translations to seeded product profiles' do

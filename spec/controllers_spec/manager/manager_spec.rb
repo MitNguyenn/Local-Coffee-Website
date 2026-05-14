@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe ManagerController, type: :feature do
+RSpec.describe "ManagerController", type: :feature do
   describe "Attempts to visit pages without valid credentials" do
     it "redirects an unauthenticated guest away from metrics" do
       visit "/metrics"

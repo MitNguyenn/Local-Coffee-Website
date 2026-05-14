@@ -1,12 +1,49 @@
-<% @flagged_accounts.each do |account| %>
-  <div class="flagged-account">
-    <h3><%= account[:first_name] %> <%= account[:last_name] %></h3>
-    <p>Email: <%= account[:email] %></p>
-    <p>Phone: <%= account[:phone_number] %></p>
-    <p>Last Login: <%= account[:LastLogin] %></p>
-    
-    <a href="/suspend-account/<%= account[:user_id] %>" class="suspend-button">
-      Suspend Account
-    </a>
+<main class="acc-view__main">
+  <h1 class="acc-view__title">Flagged Accounts</h1>
+
+  <!-- Search Input -->
+  <input type="text" id="accountSearch" class="acc-view__search" 
+         onkeyup="filterTable()" placeholder="Search by name, email, or role...">
+
+  <!-- Table Board -->
+  <div class="acc-view__board">
+    <table id="accountsTable" class="acc-view__table">
+      <thead>
+        <tr>
+          <th class="acc-view__th">ID</th>
+          <th class="acc-view__th">Full Name</th>
+          <th class="acc-view__th">Email address</th>
+          <th class="acc-view__th">Account Type</th>
+          <th class="acc-view__th">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @flagged_accounts.each do |account| %>
+          <tr class="acc-view__row">
+            <td class="acc-view__td">#<%= account[:user_id] %></td>
+            <td class="acc-view__td"><%= account[:first_name] %> <%= account[:last_name] %></td>
+            <td class="acc-view__td"><%= account[:email] %></td>
+            <td class="acc-view__td">
+              <span class="acc-view__badge"><%= account[:account_type] %></span>
+            </td>
+            <td class="acc-view__td">
+              <a href="/edit-account/<%= account[:user_id] %>" id="editaccount-<%=account[:user_id]%>">Edit Account</a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
-<% end %>
+</main>
+
+<script>
+  function filterTable() {
+    const filter = document.getElementById("accountSearch").value.toLowerCase();
+    const rows = document.querySelectorAll(".acc-view__row");
+
+    rows.forEach(row => {
+      const isMatch = row.textContent.toLowerCase().includes(filter);
+      row.style.display = isMatch ? "" : "none";
+    });
+  }
+</script>

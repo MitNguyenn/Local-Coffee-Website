@@ -1,41 +1,4 @@
-<<<<<<< HEAD
-<% if session[:account_type] == 'barista' %>
-<h1 class = "sp-page-title">Barista Portal</h1>
-  <div class = "sp-page-box">
-    <a href="/order-management/barista" class="sp-page-hyperlink">View Orders</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
-  </div>
-<% elsif session[:account_type] == 'manager' %>
-<h1 class = "sp-page-title">Manager Portal</h1>
-  <div class = "sp-page-box">
-    <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/stock-management" class="sp-page-hyperlink">Manage Stock</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/edit-drink-details" class="sp-page-hyperlink">Edit Drink Details</a>
-  </div>
-=======
 <h1 class="portal-box-title">Staff Portal</h1>
->>>>>>> origin
 
 <div class="portal-box-container">
   <% if ["administrator", "manager", "barista"].include?(session[:account_type]) %>
@@ -43,8 +6,8 @@
     <a href="/place-order/find-user" class="portal-box">
       <h1 class="portal-title">Place User Order</h1>
     </a>
-    <a href="/order-management-barista" class="portal-box">
-      <h1 class="portal-title">Order Management</h1>
+    <a href="/order-management/barista" class="portal-box">
+      <h1 class="portal-title">Barista Order Management</h1>
     </a>
     <a href="/manage-loyalty-cards" class="portal-box">
       <h1 class="portal-title">Loyalty Cards</h1>
@@ -58,15 +21,15 @@
     <a href="/daily-summary" class="portal-box">
       <h1 class="portal-title">Daily Summary</h1>
     </a>
+    <a href="/sales-history" class="portal-box">
+      <h1 class="portal-title">Sales History</h1>
+    </a>
   <% end %>
 
   <% if ["administrator", "manager"].include?(session[:account_type]) %>
     <!-- Manager and Administrator items -->
     <a href="/metrics" class="portal-box">
       <h1 class="portal-title">Metrics</h1>
-    </a>
-    <a href="/stock-management" class="portal-box">
-      <h1 class="portal-title">Stock Management</h1>
     </a>
     <a href="/manage-discounts" class="portal-box">
       <h1 class="portal-title">Discount Management</h1>
@@ -88,7 +51,7 @@
       <h1 class="portal-title">Flagged Accounts</h1>
     </a>
     <a href="/order-management/administrator" class="portal-box">
-      <h1 class="portal-title">Manage Orders</h1>
+      <h1 class="portal-title">Admin Order Management</h1>
     </a>
   <% end %>
 </div>

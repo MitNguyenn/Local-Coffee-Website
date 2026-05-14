@@ -1,7 +1,22 @@
-require_relative 'base_controller'
+# ==============================================================================
+# SECURE CHECKOUT & ORDERING PATH PROTECTION (TARGETED FILTER)
+# ==============================================================================
+before ['/checkout*', '/place-order*', '/external-payment-gateway*', '/payment-callback*', '/order-success*'] do
+  redirect '/log-in' unless session[:user_id] # swapped logged_in? helper check for direct session lookup to stay robust
+end
 
-class ProductController < BaseController
-  helpers AppHelpers
+# ==============================================================================
+# CORE WORKER MODULE METHODS (No Class Context)
+# ==============================================================================
+def finalize_stamps(user_id, cart)
+  stamps_to_add = 0
+  cart.each do |item_data|
+    if item_data['type'] == 'bean'
+      stamps_to_add += 3
+    elsif item_data['type'] == 'drink'
+      stamps_to_add += 1
+    end
+  end
 
   def finalize_stamps(user_id, cart)
     stamps_to_add = 0

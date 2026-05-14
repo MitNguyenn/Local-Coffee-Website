@@ -125,6 +125,20 @@ module DatabaseSeeder
       suspended: true
     )
 
+    db_connection[:Accounts].insert(
+      user_id: 8,
+      first_name: "Flaggy",
+      last_name: "Boy",
+      stamp_count: 52,
+      email: "testflagged@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07027536552",
+      postcode: "S13 HS9",
+      address: "67 Flagdown Street, Sheffield",
+      account_type: "customer",
+      flagged: true
+    )
+
     15.times do |i|
       db_connection[:Accounts].insert(
         user_id: 200000 + i,
