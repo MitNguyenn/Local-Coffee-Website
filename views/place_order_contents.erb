@@ -1,0 +1,200 @@
+<div class="bo-panel-wrapper">
+  <div class="bo-full-width-header">
+    <h1 class="bo-panel-title">In-Store Checkout</h1>
+    <p class="cs-mgt-subtitle">Step 2: Compile items for <strong><%= @selected_customer[:first_name] %> <%= @selected_customer[:last_name] %></strong></p>
+    <a href="/place-order/find-user" style="font-size: 0.9rem; color: #8c6d53;">← Switch Customer Profile</a>
+  </div>
+  
+  <!-- LEFT: TAB SELECTION INTERFACE CONTROLS -->
+  <div>
+    <div class="bo-section-card">
+      <div class="bo-tabs-row">
+        <button type="button" id="toggle-standard" class="bo-tab-toggle bo-active" onclick="switchMenuTab('standard-catalog', 'toggle-standard')">☕ Full Menu Catalog</button>
+        <button type="button" id="toggle-frequent" class="bo-tab-toggle" onclick="switchMenuTab('frequent-catalog', 'toggle-frequent')">🔥 Most Common Items</button>
+      </div>
+
+      <!-- PANEL 1: FULL STANDARD MENU -->
+      <div id="standard-catalog" class="bo-tab-content-panel bo-active">
+        <div style="margin-bottom: 24px;">
+          <h4 style="color: #5c4431; margin-bottom: 12px;">Crafted Beverages</h4>
+          <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 2; min-width: 150px;">
+              <select id="cat-drink-id" class="bo-select-dropdown" style="margin-bottom: 0;">
+                <% @available_drinks.each do |d| %>
+                  <option value="<%= d[:beverage] %>"><%= d[:beverage] %> (£<%= sprintf('%.2f', d[:regular_price]) %>)</option>
+                <% end %>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 90px;">
+              <select id="cat-drink-size" class="bo-select-dropdown" style="margin-bottom: 0;">
+                <% @drink_sizes.each do |s| %>
+                  <option value="<%= s[:drink_size] %>"><%= s[:drink_size] %></option>
+                <% end %>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 100px;">
+              <select id="cat-drink-milk" class="bo-select-dropdown" style="margin-bottom: 0;">
+                <% @milk_types.each do |m| %>
+                  <option value="<%= m[:milk_type] %>"><%= m[:milk_type] %> (+£<%= sprintf('%.2f', m[:price]) %>)</option>
+                <% end %>
+              </select>
+            </div>
+            <button type="button" class="bo-btn-secondary" style="background: #6f4e37; color: #fff; border: none;" onclick="addDrinkFromCatalog()">Add</button>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color: #5c4431; margin-bottom: 12px;">Coffee Beans</h4>
+          <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 2; min-width: 150px;">
+              <select id="cat-bean-id" class="bo-select-dropdown" style="margin-bottom: 0;">
+                <% @available_beans.each do |b| %>
+                  <option value="<%= b[:origin] %>"><%= b[:origin] %> (<%= b[:stock_mass].round(1) %>kg)</option>
+                <% end %>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 90px;">
+              <select id="cat-bean-roast" class="bo-select-dropdown" style="margin-bottom: 0;">
+                <% @roast_levels.each do |r| %>
+                  <option value="<%= r[:roast_level] %>"><%= r[:roast_level] %></option>
+                <% end %>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 90px;">
+              <select id="cat-bean-weight" class="bo-select-dropdown" style="margin-bottom: 0;">
+                <% @pack_weights.each do |w| %>
+                  <option value="<%= w[:pack_weight] %>"><%= w[:pack_weight].to_i %>g</option>
+                <% end %>
+              </select>
+            </div>
+            <button type="button" class="bo-btn-secondary" style="background: #6f4e37; color: #fff; border: none;" onclick="addBeanFromCatalog()">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: PREDICTIVE HISTORICAL FREQUENCY -->
+      <div id="frequent-catalog" class="bo-tab-content-panel">
+        <div class="bo-frequent-grid">
+          <% @common_items.each do |frequent| %>
+            <div class="bo-frequent-card">
+              <div>
+                <div class="bo-frequent-name"><%= frequent[:display_name] %></div>
+                <div class="bo-frequent-stats">Ordered <%= frequent[:order_frequency] %> times recently</div>
+              </div>
+              <button type="button" class="bo-btn-fast-add" 
+                      data-id="<%= frequent[:item_id] %>"
+                      data-type="<%= frequent[:product_type] %>"
+                      data-milk="<%= frequent[:specifications][:milk] %>"
+                      data-size="<%= frequent[:specifications][:size] %>"
+                      data-weight="<%= frequent[:specifications][:pack_weight] %>"
+                      data-roast="<%= frequent[:specifications][:roast_level] %>"
+                      data-display="<%= frequent[:display_name] %>"
+                      onclick="addFrequentItem(this)">
+                ⚡ Quick Add
+              </button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: STICKY BASKET FRAME -->
+  <div class="bo-sidebar-checkout">
+    <h3 class="bo-section-title" style="border-bottom: 1px solid #ebdcd0; padding-bottom: 10px;">🛒 Active Checkout Basket</h3>
+    
+    <div id="cart-items-container" class="bo-cart-items-list">
+      <p class="bo-cart-empty-msg">No entries compiled inside checkout state.</p>
+    </div>
+
+    <form action="/place-order/complete" method="POST" onsubmit="compileCartPayloadBeforeSubmit()">
+      <input type="hidden" id="order_items_json" name="order_items_json" value="[]">
+
+      <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 6px;">Payment Method</label>
+      <select name="payment_method" class="bo-select-dropdown">
+        <option value="Card">Card Transaction</option>
+        <option value="Cash">Cash Transaction</option>
+      </select>
+
+      <button type="submit" id="submit-order-btn" class="bo-btn-submit-order">
+        Confirm & Finalize Order
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  let activeCart = [];
+
+  function switchMenuTab(panelId, activeToggleId) {
+    document.querySelectorAll('.bo-tab-content-panel').forEach(p => p.classList.remove('bo-active'));
+    document.querySelectorAll('.bo-tab-toggle').forEach(t => t.classList.remove('bo-active'));
+    
+    document.getElementById(panelId).classList.add('bo-active');
+    document.getElementById(activeToggleId).classList.add('bo-active');
+  }
+
+  function addDrinkFromCatalog() {
+    let id = document.getElementById('cat-drink-id').value;
+    let size = document.getElementById('cat-drink-size').value;
+    let milk = document.getElementById('cat-drink-milk').value;
+    appendCartRow({ item_id: id, product_type: 'drink', quantity: 1, size: size, milk: milk, display_name: `${size} ${id} (${milk})` });
+  }
+
+  function addBeanFromCatalog() {
+    let id = document.getElementById('cat-bean-id').value;
+    let roast = document.getElementById('cat-bean-roast').value;
+    let weight = document.getElementById('cat-bean-weight').value;
+    appendCartRow({ item_id: id, product_type: 'bean', quantity: 1, roast_level: roast, pack_weight: weight, display_name: `${id} ${roast} (${parseInt(weight)}g)` });
+  }
+
+  function addFrequentItem(btn) {
+    appendCartRow({
+      item_id: btn.dataset.id,
+      product_type: btn.dataset.type.toLowerCase(),
+      quantity: 1,
+      size: btn.dataset.size || null,
+      milk: btn.dataset.milk || null,
+      roast_level: btn.dataset.roast || null,
+      pack_weight: btn.dataset.weight || null,
+      display_name: btn.dataset.display
+    });
+  }
+
+  function appendCartRow(item) {
+    let exactMatch = activeCart.find(i => i.item_id === item.item_id && i.size === item.size && i.milk === item.milk && i.roast_level === item.roast_level && i.pack_weight === item.pack_weight);
+    if (exactMatch) {
+      exactMatch.quantity += 1;
+    } else {
+      activeCart.push(item);
+    }
+    renderCartUI();
+  }
+
+  function renderCartUI() {
+    let container = document.getElementById('cart-items-container');
+    if (activeCart.length === 0) {
+      container.innerHTML = '<p class="bo-cart-empty-msg">No entries compiled inside checkout state.</p>';
+      return;
+    }
+
+    container.innerHTML = activeCart.map((item, idx) => `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; background: #faf9f8; padding: 8px; border-radius: 6px;">
+        <div>
+          <strong>${item.display_name}</strong>
+          <div style="color: #6b5a4f;">Qty: ${item.quantity}</div>
+        </div>
+        <button type="button" onclick="removeCartRow(${idx})" style="background: none; border: none; color: #dc3545; font-weight: 600; cursor: pointer;">Remove</button>
+      </div>
+    `).join('');
+  }
+
+  function removeCartRow(idx) {
+    activeCart.splice(idx, 1);
+    renderCartUI();
+  }
+
+  function compileCartPayloadBeforeSubmit() {
+    document.getElementById('order_items_json').value = JSON.stringify(activeCart);
+  }
+</script>
