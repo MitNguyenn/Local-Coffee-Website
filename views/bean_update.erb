@@ -1,0 +1,28 @@
+<div class="cs-mgt-wrapper">
+  <a class="cs-mgt-back-link" href="/bean-stock-management">← Back to Management</a>
+  
+  <h1 class="cs-mgt-title">Update Profile: <%= @current_bean[:origin] %></h1>
+  <p class="cs-mgt-subtitle">Modify inventory weight metrics or base pricing tiers.</p>
+
+  <div class="cs-mgt-form-panel">
+    <form action="/update-bean-stock/<%= @current_bean[:origin] %>" method="post">
+      
+      <div class="cs-mgt-form-group">
+        <label for="new_origin">Origin Name</label>
+        <input class="cs-mgt-input-field" type="text" id="new_origin" name="new_origin" value="<%= @current_bean[:origin] %>" required>
+      </div>
+
+      <div class="cs-mgt-form-group">
+        <label for="new_stock">Stock Mass (kg)</label>
+        <input class="cs-mgt-input-field" type="number" id="new_stock" name="new_stock" step="0.01" value="<%= @current_bean[:stock_mass] %>" required>
+      </div>
+
+      <div class="cs-mgt-form-group">
+        <label for="new_price_per_250g">Price per 250g (£)</label>
+        <input class="cs-mgt-input-field" type="number" id="new_price_per_250g" name="new_price_per_250g" step="0.01" value="<%= @current_bean[:price_per_250g] %>" required>
+      </div>
+
+      <button class="cs-mgt-submit-btn" type="submit">Save Inventory Changes</button>
+    </form>
+  </div>
+</div>
