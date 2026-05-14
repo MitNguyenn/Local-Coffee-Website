@@ -10,7 +10,7 @@ end
 class AdminController < BaseController
   helpers AppHelpers
 
-  # Configure backup workspace directory relative to the current file structure
+  
   set :backup_dir, File.expand_path('../db/backups', __dir__)
 
   before do
@@ -108,21 +108,21 @@ class AdminController < BaseController
     redirect '/database-status'
   end
 
-  # Restore runtime database from a specific file
-  post '/database-status/restore' do
+    post '/database-status/restore' do
     filename = params[:filename]
     source_file = File.join(settings.backup_dir, filename)
 
     if File.exist?(source_file)
-      DB.pool.hold do |raw_conn|
-        source_db = SQLite3::Database.new(source_file)
-        begin
+      source_db = SQLite3::Database.new(source_file)
+      
+      begin
+        DB.pool.hold do |raw_conn|
           backup = SQLite3::Backup.new(raw_conn, 'main', source_db, 'main')
           backup.step(-1)
           backup.finish
-        ensure
-          source_db.close if source_db
         end
+      ensure
+        source_db.close if source_db
       end
     end
 

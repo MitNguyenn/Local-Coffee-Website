@@ -5,15 +5,13 @@ require 'sqlite3'
 RSpec.describe "Admin Management", type: :feature do
   let(:admin_id)    { 4 }
   let(:customer_id) { 1 }
-  let(:backup_dir)  { File.expand_path('../db/backups', __dir__) }
+  let(:backup_dir)  { File.expand_path('../../../db/backups', __dir__) }
 
   before(:each) do
-    # Clear out files to isolate each test scenario run
     FileUtils.rm_rf(backup_dir)
   end
 
   after(:each) do
-    # Guarantee no test artifacts leak onto the workspace
     FileUtils.rm_rf(backup_dir)
   end
 
@@ -126,7 +124,7 @@ RSpec.describe "Admin Management", type: :feature do
 
         expect(current_path).to eq("/database-status")
         expect(Dir.glob(File.join(backup_dir, '*.sqlite3')).size).to eq(1)
-        expect(page).to have_selector(".db-status-file-name")
+        expect(page).to have_selector(".file-name")
       end
 
       it "executes database state restoration and safely updates live connection tables" do
@@ -149,8 +147,11 @@ RSpec.describe "Admin Management", type: :feature do
         DB[:Accounts].where(user_id: admin_id).update(email: "compromised_state@bbc.com")
         expect(DB[:Accounts].where(user_id: admin_id).get(:email)).to eq("compromised_state@bbc.com")
 
+        DB.disconnect
         visit "/database-status"
+      
         within("table", text: "backup_rollback_checkpoint.sqlite3") do
+          DB.disconnect
           click_button "Restore Version"
         end
 

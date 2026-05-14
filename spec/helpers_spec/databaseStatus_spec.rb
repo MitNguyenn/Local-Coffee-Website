@@ -4,10 +4,18 @@ require 'fileutils'
 RSpec.describe DatabaseStatus do
   include described_class
   
-  let(:test_backup_dir) { File.expand_path('../../helpers/../db/backups', __dir__) }
+  # Point exactly to the project root directory
+  let(:test_backup_dir) { File.expand_path('../../../db/backups', __dir__) }
 
+  # Mock a settings method matching Sinatra's structure to override path resolution during testing
   before(:each) do
     FileUtils.rm_rf(test_backup_dir)
+    
+    # Overrides the controller environment configuration during test runs
+    allow(self).to receive(:settings).and_return(double(backup_dir: test_backup_dir))
+    
+    # If your helper does not look at settings, mock the dynamic target variable choice:
+    allow(File).to receive(:expand_path).with('../db/backups', anything).and_return(test_backup_dir)
   end
 
   after(:each) do
