@@ -73,33 +73,33 @@ RSpec.describe 'Home page', type: :feature do
     context 'when logged in as an admin' do
       before(:each) { log_in_as('testadmin@bbc.com', 'testpass') }
 
-      it 'shows the administrator portal' do
+      it 'shows the staff portal for admins' do
         visit '/'
         click_link 'Staff Portal'
         expect(current_path).to eq('/staff-portal')
-        expect(page).to have_content('Administrator Portal')
+        expect(page).to have_content('Staff Portal')
       end
     end
 
     context 'when logged in as a barista' do
       before(:each) { log_in_as('testbarista@bbc.com', 'testpass') }
 
-      it 'shows the barista portal' do
+      it 'shows the staff portal for baristas' do
         visit '/'
         click_link 'Staff Portal'
         expect(current_path).to eq('/staff-portal')
-        expect(page).to have_content('Barista Portal')
+        expect(page).to have_content('Staff Portal')
       end
     end
 
     context 'when logged in as a manager' do
       before(:each) { log_in_as('testmanager@bbc.com', 'testpass') }
 
-      it 'shows the manager portal' do
+      it 'shows the staff portal for managers' do
         visit '/'
         click_link 'Staff Portal'
         expect(current_path).to eq('/staff-portal')
-        expect(page).to have_content('Manager Portal')
+        expect(page).to have_content('Staff Portal')
       end
     end
   end
