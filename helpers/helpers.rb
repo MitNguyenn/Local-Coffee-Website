@@ -19,6 +19,8 @@ module AppHelpers
 
   include Discounts
   
+  include GetBeans
+  
   def current_user
 
     return nil unless session[:user_id]

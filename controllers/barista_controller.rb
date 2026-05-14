@@ -35,52 +35,64 @@ class BaristaController < BaseController
     redirect '/manage-loyalty-cards'
   end
 
-  get "/order-management/barista" do
-    # Changed from @current_orders to @orders to match typical view naming
-    @orders = DB[:Orders].where(is_completed: false).all 
-    erb :print_label
-  end
+  # For the drink queue
+get '/order-management/barista' do
+  @orders = DB[:Orders]
+    .join(:OrderItems, order_id: :order_id)
+    .select(
+      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:created_at],
+      Sequel[:Orders][:order_type],
+      Sequel[:Orders][:is_completed],
+      Sequel[:OrderItems][:item_id],
+      Sequel[:OrderItems][:quantity],
+      Sequel[:OrderItems][:milk],
+      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:product_type]
+    )
+    .all
+    .group_by { |row| row[:order_id] }
+  erb :order_management_barista
+end
 
-  get '/generate-label/:id' do
-    @order = DB[:Orders].where(order_id: params[:id]).first
-    
-    # Redirect if order doesn't exist to avoid a crash
-    return redirect back unless @order
-    
-    @account = DB[:Accounts].where(user_id: @order[:user_id]).first
-    @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
-    @courier = "Royal Mail"
-    @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
-    
-    html = erb :shipping_label, layout: false
-    
-    # Generate the PDF
-    pdf = WickedPdf.new.pdf_from_string(html)
-    
-    content_type 'application/pdf'
-    attachment "Label_#{@order[:order_id]}.pdf"
-    
-    pdf
-  end
+post '/order-management/barista' do
+  DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true)
+  redirect '/order-management/barista'
+end
 
-  get '/generate-return' do
-    @orders = DB[:Orders].where(is_completed: 1).all
-    erb :create_return
-  end
+get '/generate-label/:id' do
+  @order = DB[:Orders].where(order_id: params[:id]).first
+  return redirect '/order-management/barista' unless @order
 
-  post '/generate-return/:id' do
-    @order = DB[:Orders].where(order_id: params[:id]).first
-    @account = DB[:Accounts].where(user_id: @order[:user_id]).first
-    @external_id = params[:external_tracking_id]
+  @account = DB[:Accounts].where(user_id: @order[:user_id]).first
+  @tracking_id = "TRK#{Array.new(10){rand(10)}.join}"
+  @courier = "Royal Mail"
+  @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
+  @qrcode_svg = @qrcode.as_svg(module_size: 4)
 
-    html = erb :return_label_template, layout: false
-    pdf = WickedPdf.new.pdf_from_string(html)
-    
-    # Set headers so the browser treats the response as a file download
-    content_type 'application/pdf'
-    attachment "Return_Label_#{@order[:order_id]}.pdf"
-    pdf
-  end
+  html = erb :shipping_label_template, layout: false
+  pdf = WickedPdf.new.pdf_from_string(html)
+  content_type 'application/pdf'
+  attachment "Label_#{@order[:order_id]}.pdf"
+  pdf
+end
+
+post '/generate-return/:id' do
+  @order = DB[:Orders].where(order_id: params[:id]).first
+  return redirect '/order-management/barista' unless @order
+
+  @account = DB[:Accounts].where(user_id: @order[:user_id]).first
+  @tracking_id = "RTN#{Array.new(10) { rand(10) }.join}"
+  @courier = "Royal Mail"
+  @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
+  @qrcode_svg = @qrcode.as_svg(module_size: 4)
+
+  html = erb :return_label_template, layout: false
+  pdf = WickedPdf.new.pdf_from_string(html)
+  content_type 'application/pdf'
+  attachment "Return_Label_#{@order[:order_id]}.pdf"
+  pdf
+end
 
   get '/user-tickets' do
     @live_tickets = DB[:Tickets].where(ticket_resolved: false).all
@@ -95,7 +107,7 @@ class BaristaController < BaseController
   end
 
   post '/resolve-ticket/:id' do
-    DB[:Tickets].where(ticket_id: params[:id]).update(ticketResolved: true)
+    DB[:Tickets].where(ticket_id: params[:id]).update(ticket_resolved: true)
 
     redirect '/user-tickets'
   end
@@ -114,7 +126,7 @@ class BaristaController < BaseController
   end
 
   post '/refund/:id' do
-    DB[:Tickets].where(ticket_id: params[:id]).update(ticketResolved: true)
+    DB[:Tickets].where(ticket_id: params[:id]).update(ticket_resolved: true)
 
     redirect '/refund-tickets'
   end
