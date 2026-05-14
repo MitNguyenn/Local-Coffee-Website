@@ -94,7 +94,7 @@ post '/edit-account/:id' do
 end
 
 post '/delete-account/:id' do
-  DB[:Accounts].where(user_id: params[:id]).delete
+  DB[:Accounts].where(user_id: params[:id].to_i).delete
   redirect '/employee-accounts'
 end
 

@@ -18,22 +18,22 @@ RSpec.describe "Admin Management", type: :feature do
   describe "Attempts to visit pages without valid credentials" do
     it "redirects an unauthenticated user away from manage-accounts" do
       visit "/manage-accounts"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects an unauthenticated user away from flagged-accounts" do
       visit "/flagged-accounts"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects an unauthenticated user away from employee-accounts" do
       visit "/employee-accounts"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects an unauthenticated user away from database-status" do
       visit "/database-status"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects a barista away from manage-accounts" do

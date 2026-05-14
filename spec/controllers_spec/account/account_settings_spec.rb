@@ -2,9 +2,9 @@ RSpec.describe "Account Management", type: :feature do
   let(:user_id) { 1 }
 
   describe "Unauthenticated access" do
-    it "redirects to home when attempting to access account settings" do
+    it "redirects to log in when attempting to access account settings" do
       visit "/account-settings"
-      expect(page.current_path).to eq("/")
+      expect(page.current_path).to eq("/log-in")
     end
   end
 
