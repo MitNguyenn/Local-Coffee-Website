@@ -61,12 +61,16 @@ module DatabaseInitializer
     db_connection.create_table? :Orders do
       primary_key :order_id
       foreign_key :user_id, :Accounts, on_delete: :cascade
-      String      :payment_method
-      Double      :total_cost, size: [10, 2]
+
       DateTime    :created_at, default: Sequel::CURRENT_TIMESTAMP
-      String      :location, default: 'In-Store'
-      TrueClass   :is_completed, default: false
-      String      :payment_status, default: 'Pending'
+
+      String      :address_line, default:  '1 Coffee Lane'
+      String      :post_code, default:  'S1 1AA'
+      
+      Double      :total_cost, size: [10, 2]
+      TrueClass   :payment_is_completed, default: false
+
+      TrueClass   :order_is_completed, default: false
     end
 
     db_connection.create_table? :OrderItems do

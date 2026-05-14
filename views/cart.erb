@@ -18,7 +18,19 @@
 
     <div class="cart-page-checkout-column">
       <h2 id="display-total-cost" data-total-cost="<%= total_cost %>">Total cost: £<%= total_cost%></h2>
-      <button onclick="addButtonOnClick(event)" class="checkout-button">Check Out</button>
+      <% if session[:user_id] %>
+      <%   @user = DB[:Accounts].where(user_id: session[:user_id]).first %>
+          <button onclick="addButtonOnClick(event)" class="checkout-button">Check Out</button>
+          <label for="order-delivery-select"><b>Select your delivery option</b></label>
+          <select name="delivery-select" id="order-delivery-select">
+              <option value="Collect in store" data-address-line="1 Coffee Lane" data-postcode="S1 1AA">Collect in store</option>
+              <option value="Account Address" data-address-line="<%= session[] %>">Use my address</option>
+              <option value="">Use another address</option>
+          </select>
+      <% else %>
+          <h3>Please log in to proceed</h3>
+          <button onclick="toggleDropdownUser(event)" class="cart-page-log-in-button">Log In</button>
+      <% end %>
     </div>
   </div>
   <script>
@@ -43,10 +55,12 @@
          to push OrderItems data to the db.
       */
 
-    fetch('/add-to-cart', {
+      const
+
+    fetch('/chekout', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `total_cost=drink&beverage=${beverage}&drink_size=${drinkSize}&milk_type=${milkType}&price=${price}`
+      body: `delivery=${delivery}&address_line=${}`
     })
     .then(data => {
       const indicator = document.getElementById('cart-indicator');

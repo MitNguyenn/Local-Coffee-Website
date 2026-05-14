@@ -52,17 +52,41 @@ class ProductController < BaseController
     erb :drinks
   end
 
+  def flip_coin()
+    n = rand(0.0..1.0)
+    chance_of_failure = 0.05
+    if n > chance_of_failure
+      true
+    else 
+      false
+    end
+  end
+
+  def to_boolean(s)
+
+    if s.downcase == "true"
+      true
+    elsif s.downcase == "false"
+      false
+    else
+      nil
+    end
+  end
+
   put '/checkout' do
     begin 
       redirect '/log-in' unless logged_in?
       @user = DB[:Accounts].where(user_id: session[:user_id]).first
       
-      total_price = params[:total_price]
-      
-      # ==============
-      # do the payment or do like collect in the shop thing
-      # ==============
-      location = nil
+      delivery = params[:delivery]
+
+      payment_successful    = nil
+      paymenet_is_completed = false
+
+      if to_boolean(params[:pay_now]) == true
+        payment_is_completed = payment_successful = flip_coin
+      end
+
       is_completed = false
 
       if payment_successful
@@ -83,12 +107,9 @@ class ProductController < BaseController
 
         order_id = db_connection[:Orders].insert(
           user_id: @user,
-          order_type: "In-Person",
-          payment_method: "Card",
           created_at: Time.now,
-          location: "In-Store",
-          is_completed: true,
-          payment_status: 'Paid',
+          payment_is_completed: payment_is_completed,
+          order_is_completed: false,
           total_cost: total_price
         )
         session[:cart].each do | key, data |
@@ -102,7 +123,8 @@ class ProductController < BaseController
               roast_level:  data[:roast_level]
             )
 
-            grams_beans_bought = data[:pack_weight]
+            grams_beans_bought = data[:pack_weight] * data[:pack_weight]
+            kg_bought = grams_beans_bought / 1000.0
 
             db_connection[:Beans].where(origin: data[:origin]).update(
               stock_mass: Sequel[:stock_mass] - kg_bought
