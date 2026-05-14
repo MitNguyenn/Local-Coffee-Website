@@ -70,7 +70,7 @@ get '/generate-label/:id' do
   @qrcode = RQRCode::QRCode.new("https://royalmail.com/track-details/#{@tracking_id}")
   @qrcode_svg = @qrcode.as_svg(module_size: 4)
 
-  html = erb :shipping_label, layout: false
+  html = erb :shipping_label_template, layout: false
   pdf = WickedPdf.new.pdf_from_string(html)
   content_type 'application/pdf'
   attachment "Label_#{@order[:order_id]}.pdf"
