@@ -35,6 +35,44 @@ class BaristaController < BaseController
     redirect '/manage-loyalty-cards'
   end
 
+  # For the drink queue
+get '/order-management/barista' do
+  @pending_orders = DB[:Orders]
+    .join(:OrderItems, order_id: :order_id)
+    .where(Sequel[:Orders][:is_completed] => false)
+    .select(
+      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:created_at],
+      Sequel[:Orders][:order_type],
+      Sequel[:OrderItems][:item_id],
+      Sequel[:OrderItems][:quantity],
+      Sequel[:OrderItems][:milk],
+      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:product_type]
+    )
+    .all
+    .group_by { |row| row[:order_id] }  # group items under their order
+  erb :order_correction_barista
+end
+
+# For the return labels page
+get '/generate-return' do
+  @orders = DB[:Orders]
+    .join(:OrderItems, order_id: :order_id)
+    .where(Sequel[:Orders][:is_completed] => true)
+    .select(
+      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:created_at],
+      Sequel[:OrderItems][:item_id],
+      Sequel[:OrderItems][:quantity],
+      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:milk]
+    )
+    .all
+    .group_by { |row| row[:order_id] }
+  erb :create_return
+end
+
   get "/order-management/barista" do
     # Changed from @current_orders to @orders to match typical view naming
     @orders = DB[:Orders].where(is_completed: false).all 

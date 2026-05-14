@@ -1,40 +1,45 @@
 <div class="barista-page-body">
-    <div class="barista-container">
-        <h1 class="barista-title">Drink Queue</h1>
-        
-        <div class="barista-card-grid">
-            <% if @pending_orders.empty? %>
-                <div class="barista-empty"> All caught up! No pending orders.</div>
-            <% end %>
+  <div class="barista-container">
+    <h1 class="barista-title">Order Return Labels</h1>
 
-            <% @pending_orders.each do |order| %>
-            <div class="barista-order-card">
-                <div class="barista-card-header">
-                    <span class="barista-order-id">Order #<%= order[:order_id] %></span>
-                    <span class="barista-order-time"><%= order[:created_at].strftime("%H:%M") %></span>
-                </div>
+    <div class="barista-list-wrapper">
+      <% if @pending_orders.empty? %>
+        <div class="barista-empty">No orders found.</div>
+      <% end %>
 
-                <div class="barista-contents">
-                    <% # Parsing the JSON string to display as a list %>
-                    <% JSON.parse(order[:OrderContents]).each do |item, qty| %>
-                        <div class="barista-item">
-                            <span class="barista-qty"><%= qty %>x</span> <%= item %>
-                        </div>
+      <ul class="barista-order-list" style="list-style: none; padding: 0;">
+        <% @pending_orders.each do |order_id, items| %>
+          <li class="barista-order-row" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #ddd; background: white; margin-bottom: 10px; border-radius: 8px;">
+
+            <div class="barista-order-info">
+              <strong>Order #<%= order_id %></strong>
+              <span style="color: #666; margin-left: 10px;">
+                <%= items.first[:created_at].strftime("%H:%M") %>
+              </span>
+              <div style="font-size: 0.9rem; color: #444; margin-top: 5px;">
+                <% items.each do |item| %>
+                  <div>
+                    <%= item[:quantity] %>x <%= item[:item_id] %>
+                    <% if item[:size] || item[:milk] %>
+                      (<%= [item[:size], item[:milk] ? "#{item[:milk]} milk" : nil].compact.join(", ") %>)
                     <% end %>
-                </div>
-
-                <div class="barista-footer">
-                    <span class="barista-type <%= order[:order_type].downcase %>">
-                        <%= order[:order_type] %>
-                    </span>
-                    
-                    <form action="/order-management/barista" method="POST">
-                        <input type="hidden" name="order_id" value="<%= order[:order_id] %>">
-                        <button type="submit" class="barista-complete-btn">Mark Done</button>
-                    </form>
-                </div>
+                  </div>
+                <% end %>
+              </div>
             </div>
-            <% end %>
-        </div>
+
+            <div class="barista-actions">
+              <form action="/generate-return/<%= order_id %>" method="POST" style="display: inline;">
+                <input type="text" name="external_tracking_id" placeholder="Tracking ID..." required
+                  style="padding: 5px; margin-right: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                <button type="submit" class="barista-complete-btn" style="background-color: #d9534f; cursor: pointer;">
+                  Generate Return PDF
+                </button>
+              </form>
+            </div>
+          </li>
+        <% end %>
+      </ul>
     </div>
+  </div>
 </div>

@@ -95,7 +95,6 @@ RSpec.describe "Barista access unique pages", type: :feature do
     end
   end
 
-  # 3. Role boundary tests
   context "as a logged-in customer" do
     before(:each) do
       log_in_as('testcust@bbc.com', 'testpass')
@@ -116,23 +115,23 @@ RSpec.describe "Barista access unique pages", type: :feature do
   end
   
   context "PDF management" do
-  before(:each) do
-    log_in_as('testbarista@bbc.com', 'testpass')
-  end
-
-  describe "Barista attempts to print shipping label" do
-    it "orders table is viewable" do
-      visit "/order-management/barista"  
-      expect(current_path).to eq("/order-management/barista")
-      expect(page).to have_content("Print Label")  
+    before(:each) do
+      log_in_as('testbarista@bbc.com', 'testpass')
     end
 
-    it "generates a PDF file successfully" do
-      order_id = DB[:Orders].first[:order_id] 
-      visit "/generate-label/#{order_id}"
-      expect(page.driver.response.headers['Content-Type']).to eq('application/pdf')
-      expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"Label_#{order_id}.pdf\"")
-    end
+    describe "Barista attempts to print shipping label" do
+      it "orders table is viewable" do
+        visit "/order-management/barista"  
+        expect(current_path).to eq("/order-management/barista")
+        expect(page).to have_content("Print Label")  
+      end
+
+      it "generates a PDF file successfully" do
+        order_id = DB[:Orders].first[:order_id] 
+        visit "/generate-label/#{order_id}"
+        expect(page.driver.response.headers['Content-Type']).to eq('application/pdf')
+        expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"Label_#{order_id}.pdf\"")
+      end
   end
 
   describe "Customer attempts to print shipping label" do

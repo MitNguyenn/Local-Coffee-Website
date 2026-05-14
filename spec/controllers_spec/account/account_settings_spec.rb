@@ -49,13 +49,12 @@ RSpec.describe "Account Management", type: :feature do
 
     describe "user visits my orders page" do
       it "shows current and past orders correctly" do
-        # Seed specific orders for this test context
-        DB[:Orders].insert(user_id: user_id, is_completed: false, OrderContents: '{"item":"Latte"}', totalCost: 3.50)
-        DB[:Orders].insert(user_id: user_id, is_completed: true, OrderContents: '{"item":"Cake"}', totalCost: 4.00)
+
+        log_in_as('finn@mail.com', 'testpassword?!')
 
         visit "/my-orders"
         expect(page).to have_content("Latte")
-        expect(page).to have_content("Cake")
+        expect(page).to have_content("Arabic")
       end
     end
   end
