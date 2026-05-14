@@ -1,0 +1,29 @@
+<div class="cs-mgt-wrapper">
+  <h1 class="cs-mgt-title">Bean Stock Management</h1>
+  <p class="cs-mgt-subtitle">Select a coffee origin to manage inventory values.</p>
+
+  <div class="cs-mgt-table-container">
+    <table class="cs-mgt-data-table">
+      <thead>
+        <tr>
+          <th>Origin Country</th>
+          <th>Available Stock</th>
+          <th>Price per 250g</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @current_bean_stock.each do |origin, details| %>
+          <tr>
+            <td class="cs-mgt-origin-text"><%= origin %></td>
+            <td><%= details[:current_stock] %> kg</td>
+            <td>£<%= sprintf('%.2f', details[:price_per_250g]) %></td>
+            <td>
+              <a class="cs-mgt-edit-btn" href="/bean-update/<%= origin %>">Edit Details</a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
