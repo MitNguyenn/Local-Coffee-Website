@@ -130,5 +130,20 @@ end
 
     redirect '/refund-tickets'
   end
+
+  get '/daily-summary' do
+    today_start = Time.now - 86400 
+
+    orders = DB[:Orders].where { created_at >= today_start }
+
+    @daily_summary = {
+      total_sales: orders.sum(:total_cost) || 0,
+      free_coffees: DB[:Orders].where(order_type: 'free_coffee')
+                               .where { created_at >= today_start }
+                               .count
+    }
+
+    erb :daily_summary
+  end
 end
 
