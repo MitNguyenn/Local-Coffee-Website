@@ -1,0 +1,71 @@
+<div class="audit-page-body">
+  <div class="audit-container">
+    <h1 class="audit-title">Barista Order Controls</h1>
+
+    <div class="audit-table-wrapper">
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Items</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Mark Done</th>
+            <th>Shipping Label</th>
+            <th>Return Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order_id, items| %>
+            <tr>
+              <td><strong>#<%= order_id %></strong></td>
+
+              <td style="font-size: 0.8rem; color: #666;">
+                <% items.each do |item| %>
+                  <div>
+                    <%= item[:quantity] %>x <%= item[:item_id] %>
+                    <% extras = [item[:size], item[:milk] ? "#{item[:milk]} milk" : nil].compact %>
+                    <%= "(#{extras.join(', ')})" unless extras.empty? %>
+                  </div>
+                <% end %>
+              </td>
+
+              <td><%= items.first[:created_at].strftime("%d %b %H:%M") %></td>
+
+              <td>
+                <span style="color: <%= items.first[:is_completed] ? 'green' : 'orange' %>;">
+                  <%= items.first[:is_completed] ? 'Completed' : 'Pending' %>
+                </span>
+              </td>
+
+              <td>
+                <% unless items.first[:is_completed] %>
+                  <form action="/order-management/barista" method="POST">
+                    <input type="hidden" name="order_id" value="<%= order_id %>">
+                    <button type="submit" class="audit-submit-btn">Mark Done</button>
+                  </form>
+                <% end %>
+              </td>
+
+              <td>
+                <a href="/generate-label/<%= order_id %>"
+                   class="audit-submit-btn"
+                   style="background-color: #444; text-decoration: none; display: inline-block; text-align: center;">
+                  Shipping Label
+                </a>
+              </td>
+
+              <td>
+                <form action="/generate-return/<%= order_id %>" method="POST">
+  <button type="submit" class="audit-submit-btn" style="background-color: #d9534f;">
+    Return Label
+  </button>
+</form>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

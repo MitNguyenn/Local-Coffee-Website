@@ -7,7 +7,6 @@ class Order < Sequel::Model(:Orders)
       user_id: userID, 
       OrderContents: contents, 
       totalCost: cost, 
-      order_type: type
     )
   end
 end

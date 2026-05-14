@@ -13,7 +13,6 @@ RSpec.describe MyOrders, type: :helper do
     @order_id_current = DB[:Orders].insert(
       user_id: user_id, 
       is_completed: false, 
-      order_type: 'In-Store',
       payment_method: 'Card',
       total_cost: 4.40,
       payment_status: 'Pending'
@@ -29,7 +28,6 @@ RSpec.describe MyOrders, type: :helper do
     @order_id_past = DB[:Orders].insert(
       user_id: user_id, 
       is_completed: true, 
-      order_type: 'In-Store',
       payment_method: 'Card',
       total_cost: 8.20,
       payment_status: 'Paid'

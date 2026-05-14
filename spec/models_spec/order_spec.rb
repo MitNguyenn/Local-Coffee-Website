@@ -16,7 +16,6 @@ RSpec.describe "Order", type: :model do
       expect(new_order.user_id).to eq(user_id)
       expect(new_order.OrderContents).to eq(contents)
       expect(new_order.totalCost).to eq(cost)
-      expect(new_order.order_type).to eq(type)
     end
   end
 end

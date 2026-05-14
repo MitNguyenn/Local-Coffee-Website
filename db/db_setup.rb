@@ -61,7 +61,6 @@ module DatabaseInitializer
     db_connection.create_table? :Orders do
       primary_key :order_id
       foreign_key :user_id, :Accounts, on_delete: :cascade
-      String      :order_type
       String      :payment_method
       Double      :total_cost, size: [10, 2]
       DateTime    :created_at, default: Sequel::CURRENT_TIMESTAMP

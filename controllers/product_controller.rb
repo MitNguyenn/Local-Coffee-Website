@@ -62,7 +62,6 @@ class ProductController < BaseController
       # ==============
       # do the payment or do like collect in the shop thing
       # ==============
-      order_type = nil
       location = nil
       is_completed = false
 

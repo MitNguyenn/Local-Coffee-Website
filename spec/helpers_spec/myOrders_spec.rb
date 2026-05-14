@@ -13,7 +13,6 @@ RSpec.describe MyOrders, type: :helper do
       user_id: user_id, 
       is_completed: false, 
       created_at: Time.now - 3600,
-      order_type: 'In-Store',
       payment_method: 'Card',
       total_cost: 4.40
     )
@@ -29,7 +28,6 @@ RSpec.describe MyOrders, type: :helper do
       user_id: user_id, 
       is_completed: true, 
       created_at: Time.now - 7200,
-      order_type: 'In-Store',
       payment_method: 'Card',
       total_cost: 8.20
     )

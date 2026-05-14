@@ -178,7 +178,6 @@ module DatabaseSeeder
 
     order_id_1 = db_connection[:Orders].insert(
       user_id: 23242526,
-      order_type: "In-Person",
       payment_method: "Card",
       created_at: Time.now,
       location: "In-Store",
@@ -208,7 +207,6 @@ module DatabaseSeeder
 
     order_id_2 = db_connection[:Orders].insert(
       user_id: 23242526,
-      order_type: "In-Person",
       payment_method: "Card",
       created_at: Time.now-86400,
       location: "In-Store",
@@ -222,8 +220,8 @@ module DatabaseSeeder
       item_id: "Latte", 
       product_type: "drink",
       quantity: 1,
-      milk: "Oat",
-      size: "Large"
+      milk_type: "Oat",
+      drink_size: "Large"
     )
 
     db_connection[:OrderItems].insert(
