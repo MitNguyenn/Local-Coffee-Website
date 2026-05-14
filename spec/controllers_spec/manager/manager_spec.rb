@@ -45,11 +45,7 @@ RSpec.describe ManagerController, type: :feature do
       it "can access the current store discounts board" do
         visit "/manage-discounts"
         expect(current_path).to eq("/manage-discounts")
-<<<<<<< HEAD
-        expect(page).to have_selector("h1.discount-page-title", text: "Manage Store Discounts")
-=======
         expect(page).to have_content("Manage Store Discounts")
->>>>>>> testing
       end
     end
 
