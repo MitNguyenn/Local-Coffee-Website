@@ -5,7 +5,7 @@ RSpec.describe 'Authentication process', type: :feature do
   context "given a user is trying to log in" do
     context "when valid credentials are provided" do
       it "then authenticates successfully and redirects to home" do
-        log_in_as('test@bbc.com', 'password123')
+        log_in_as('testcust@bbc.com', 'testpass')
 
         expect(current_path).to eq('/')
         expect(page).to have_content('Log out')
@@ -14,7 +14,7 @@ RSpec.describe 'Authentication process', type: :feature do
 
     context "when wrong credentials are provided" do
       it "then displays a login error message and keeps them on the login page" do
-        log_in_as('test@coffee.com', 'password124')                       
+        log_in_as('testcust@bbc.com', 'password124')                       
 
         expect(page).to have_content('Log in')
         expect(current_path).to eq('/log-in')
@@ -23,7 +23,7 @@ RSpec.describe 'Authentication process', type: :feature do
 
     context "when the account is suspended" do
       it "then blocks the authentication request and shows a suspension message" do
-        log_in_as('suspended@bbc.com', 'suspended123')
+        log_in_as('testsuspended@bbc.com', 'testpass')
 
         expect(page).to have_content('Your account has been suspended. Please contact support.')
         expect(current_path).to eq('/log-in')
@@ -33,7 +33,7 @@ RSpec.describe 'Authentication process', type: :feature do
 
   context "given a user is logged into the application" do
     before(:each) do
-      log_in_as('test@bbc.com', 'password123')
+      log_in_as('testcust@bbc.com', 'testpass')
     end
 
     context "when the logout action is executed" do

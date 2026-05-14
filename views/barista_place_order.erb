@@ -1,0 +1,130 @@
+<!-- TAB BLOCK 1: COMPLETE INVENTORY CATALOG -->
+<div id="standard-catalog" class="bo-tab-content-panel bo-active">
+  
+  <!-- DRINK ORDER SELECTION SECTION -->
+  <div class="bo-menu-category-block" style="margin-bottom: 32px;">
+    <h3 style="font-size: 1.2rem; color: #5c4431; margin-bottom: 14px; border-bottom: 1px solid #ebdcd0; padding-bottom: 6px;">📋 Crafted Beverages</h3>
+    
+    <div id="drink-selection-form-row" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 180px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Select Drink</label>
+        <select id="catalog-drink-id" class="bo-select-dropdown" style="margin-bottom: 0;">
+          <% @available_drinks.each do |drink| %>
+            <option value="<%= drink[:beverage] %>"><%= drink[:beverage] %> (£<%= sprintf('%.2f', drink[:regular_price]) %>)</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 120px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Size</label>
+        <select id="catalog-drink-size" class="bo-select-dropdown" style="margin-bottom: 0;">
+          <% @drink_sizes.each do |size| %>
+            <option value="<%= size[:drink_size] %>"><%= size[:drink_size] %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 120px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Milk Variant</label>
+        <select id="catalog-drink-milk" class="bo-select-dropdown" style="margin-bottom: 0;">
+          <% @milk_types.each do |milk| %>
+            <option value="<%= milk[:milk_type] %>"><%= milk[:milk_type] %> (+£<%= sprintf('%.2f', milk[:price]) %>)</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div style="width: 80px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Qty</label>
+        <input type="number" id="catalog-drink-qty" value="1" min="1" max="50" class="bo-input-text" style="padding: 10px; width: 100%; box-sizing: border-box;">
+      </div>
+
+      <button type="button" class="bo-btn-secondary" style="background-color: #6f4e37; color: #fff; border: none; padding: 12px 24px;" onclick="addDrinkFromCatalog()">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+  <!-- COFFEE BEAN ORDER SELECTION SECTION -->
+  <div class="bo-menu-category-block">
+    <h3 style="font-size: 1.2rem; color: #5c4431; margin-bottom: 14px; border-bottom: 1px solid #ebdcd0; padding-bottom: 6px;">🫘 Single-Origin Coffee Beans</h3>
+    
+    <div id="bean-selection-form-row" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 180px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Select Origin</label>
+        <select id="catalog-bean-id" class="bo-select-dropdown" style="margin-bottom: 0;">
+          <% @available_beans.each do |bean| %>
+            <option value="<%= bean[:origin] %>"><%= bean[:origin] %> (Stock: <%= bean[:stock_mass].round(2) %>kg)</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 120px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Roast Profile</label>
+        <select id="catalog-bean-roast" class="bo-select-dropdown" style="margin-bottom: 0;">
+          <% @roast_levels.each do |roast| %>
+            <option value="<%= roast[:roast_level] %>"><%= roast[:roast_level] %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 120px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Package Size</label>
+        <select id="catalog-bean-weight" class="bo-select-dropdown" style="margin-bottom: 0;">
+          <% @pack_weights.each do |pack| %>
+            <option value="<%= pack[:pack_weight] %>"><%= pack[:pack_weight].to_i %>g</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div style="width: 80px;">
+        <label class="discount-label" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Qty</label>
+        <input type="number" id="catalog-bean-qty" value="1" min="1" max="50" class="bo-input-text" style="padding: 10px; width: 100%; box-sizing: border-box;">
+      </div>
+
+      <button type="button" class="bo-btn-secondary" style="background-color: #6f4e37; color: #fff; border: none; padding: 12px 24px;" onclick="addBeanFromCatalog()">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // DOM integration callbacks linking values to the sidebar array state
+  function addDrinkFromCatalog() {
+    const itemId = document.getElementById('catalog-drink-id').value;
+    const size = document.getElementById('catalog-drink-size').value;
+    const milk = document.getElementById('catalog-drink-milk').value;
+    const qty = parseInt(document.getElementById('catalog-drink-qty').value) || 1;
+
+    // Dispatches properties to your global dynamic client-side cart arrays
+    appendCartItem({
+      item_id: itemId,
+      product_type: 'drink',
+      quantity: qty,
+      size: size,
+      milk: milk,
+      pack_weight: null,
+      roast_level: null,
+      display_name: `${size} ${itemId} (${milk} Milk)`
+    });
+  }
+
+  function addBeanFromCatalog() {
+    const itemId = document.getElementById('catalog-bean-id').value;
+    const roast = document.getElementById('catalog-bean-roast').value;
+    const weight = document.getElementById('catalog-bean-weight').value;
+    const qty = parseInt(document.getElementById('catalog-bean-qty').value) || 1;
+
+    appendCartItem({
+      item_id: itemId,
+      product_type: 'bean',
+      quantity: qty,
+      size: null,
+      milk: null,
+      pack_weight: parseFloat(weight),
+      roast_level: roast,
+      display_name: `${itemId} ${roast} Roast (${parseInt(weight)}g)`
+    });
+  }
+</script>

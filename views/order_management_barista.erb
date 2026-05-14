@@ -8,6 +8,7 @@
           <tr>
             <th>ID</th>
             <th>Items</th>
+            <th>Type</th>
             <th>Time</th>
             <th>Status</th>
             <th>Mark Done</th>
@@ -30,6 +31,7 @@
                 <% end %>
               </td>
 
+              <td><%= items.first[:order_type] %></td>
               <td><%= items.first[:created_at].strftime("%d %b %H:%M") %></td>
 
               <td>

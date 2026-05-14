@@ -12,14 +12,28 @@ class ManagerController < BaseController
     erb :metrics_page
   end
 
-  
+  get '/bean-stock-management' do
+  @current_bean_stock = get_bean_stock()
+  erb :bean_stock_management
+  end
 
-    get '/stock-management' do
-      @beans = Bean.all
-      erb :stock_management
-    end
+  get '/bean-update/:origin' do
+    @current_bean = get_bean_data(params[:origin])
+    erb :bean_update
+  end
 
-    get '/manage-discounts' do
+  post '/update-bean-stock/:origin' do
+    new_data = {
+      new_origin: params[:new_origin],
+      new_stock: params[:new_stock].to_f,
+      new_price_per_250g: params[:new_price_per_250g].to_f
+    }
+    
+    update_bean_stock(params[:origin], new_data)
+    redirect '/bean-stock-management'
+  end
+
+  get '/manage-discounts' do
     @discounts = get_current_discounts
     erb :manage_discounts
   end
@@ -44,6 +58,21 @@ class ManagerController < BaseController
   post '/delete-discount' do
     delete_discount(params[:discount_id])
     redirect '/manage-discounts'
+  end
+
+  get '/edit-drink-details' do
+    @drinks = Drink.all
+    erb :edit_drink_details
+  end
+
+  post '/update-drink-details' do
+    new_prices = params[:prices]
+    @drinks = Drink.all
+    
+    @drinks.each_with_index do |drink, i|
+      drink.update(regular_price: new_prices[i].to_f)
+    end
+    redirect '/edit-drink-details'
   end
 
 end

@@ -18,23 +18,21 @@ class AuthController < BaseController
       session[:user_id] = user[:user_id]
       session[:account_type] = user[:account_type]
 
-      attempt_flag_account(session[:user_id])
-      attempt_suspend_account(session[:user_id])
-
-      user = DB[:Accounts].where(user_id: user[:user_id]).first
-
       if user[:suspended]
         session.clear
         @error = "Your account has been suspended. Please contact support."
-        return erb :login_screen
+        erb :login_screen
+      else
+        attempt_flag_account(session[:user_id])
+        attempt_suspend_account(session[:user_id])
+
+        session[:user_id] = user[:user_id]
+        session[:account_type] = user[:account_type]
+        
+        update_recent_login(session[:user_id]) if session[:user_id]
+
+        redirect '/'
       end
-
-      session[:user_id] = user[:user_id]
-      session[:account_type] = user[:account_type]
-      
-      update_recent_login(session[:user_id]) if session[:user_id]
-
-      redirect '/'
 
     else
       @error = "Invalid email or password"

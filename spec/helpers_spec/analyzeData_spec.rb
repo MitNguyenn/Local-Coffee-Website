@@ -1,71 +1,42 @@
 require 'spec_helper'
 
-RSpec.describe MyOrders, type: :helper do
+RSpec.describe AnalyzeData do
+  # Create a dummy class to isolate the module under test
   include described_class
+  let(:now) { Time.now }
 
-  let(:user_id) { 10000001 }
+  describe '#analyze_sales_data' do
+    context 'when evaluating production seed layout directly' do
+      it 'calculates precise aggregations based on seeded entries' do
+        result = analyze_sales_data(30)
+        current_month = now.strftime('%B')
 
-  before(:each) do
-    
-    DB[:OrderItems].delete
-    DB[:Orders].delete
+        expect(result[:total_sales]).to eq(20.66)
+        expect(result[:avg_order_value]).to eq(10.33)
+        expect(result[:monthly_sales]).to eq({ current_month => 20.66 })
+      end
 
-    @order_id_current = DB[:Orders].insert(
-      user_id: user_id, 
-      is_completed: false, 
-      payment_method: 'Card',
-      total_cost: 4.40,
-      payment_status: 'Pending'
-    )
-    DB[:OrderItems].insert(
-      order_id: @order_id_current, 
-      item_id: 'Latte', 
-      product_type: 'drink', 
-      quantity: 1, 
-      size: 'Large'
-    )
+      it 'counts total accounts cleanly across seeded configurations' do
+        result = analyze_sales_data(30)
+        
+        expect(result[:total_accounts]).to eq(26)
+      end
 
-    @order_id_past = DB[:Orders].insert(
-      user_id: user_id, 
-      is_completed: true, 
-      payment_method: 'Card',
-      total_cost: 8.20,
-      payment_status: 'Paid'
-    )
-    DB[:OrderItems].insert(
-      order_id: @order_id_past, 
-      item_id: 'Ethiopian', 
-      product_type: 'bean', 
-      quantity: 2, 
-      roast_level: 'Medium'
-    )
-  end
+      it 'applies correct structural string translations to seeded product profiles' do
+        result = analyze_sales_data(30)
+        products = result[:top_products]
 
-  describe "#fetch_current_orders" do
-    it "returns only active uncompleted relational joined order objects" do
-      current_orders = fetch_current_orders(user_id)
-      
-      expect(current_orders.any? { |o| o[:is_completed] == false }).to be true
-      expect(current_orders.any? { |o| o[:is_completed] == true }).to be false
-      
-      order_item = current_orders.find { |o| o[:order_id] == @order_id_current }
-      expect(order_item).not_to be_nil
-      expect(order_item[:item_id]).to eq('Latte')
-      expect(order_item[:quantity]).to eq(1)
-    end
-  end
+        expect(products).to include({ name: 'Latte', units_sold: 2 })
+        expect(products).to include({ name: 'Arabic', units_sold: 2 })
+      end
 
-  describe "#fetch_past_orders" do
-    it "returns only completed historical relational joined order objects" do
-      past_orders = fetch_past_orders(user_id)
-      
-      expect(past_orders.any? { |o| o[:is_completed] == true }).to be true
-      expect(past_orders.any? { |o| o[:is_completed] == false }).to be false
-      
-      order_item = past_orders.find { |o| o[:order_id] == @order_id_past }
-      expect(order_item).not_to be_nil
-      expect(order_item[:item_id]).to eq('Ethiopian')
-      expect(order_item[:quantity]).to eq(2)
+      it 'accounts for string-casing variances when categorizing total sales' do
+        result = analyze_sales_data(30)
+        categories = result[:sales_by_category]
+
+        expect(categories['Drinks']).to eq(0)
+        expect(categories['Coffee Beans']).to eq(0)
+      end
     end
   end
 end

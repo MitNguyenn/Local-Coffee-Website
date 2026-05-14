@@ -1,0 +1,62 @@
+<html>
+<head>
+  <style>
+    .label-container {
+      width: 4in;
+      height: 6in;
+      border: 2px solid black;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .qr-code-space {
+      margin-top: 30px;
+      text-align: center;
+      border: 1px dashed #ccc;
+      height: 100px;
+    }
+    .address-section {
+      margin-top: 20px;
+    }
+    .return-banner {
+      background-color: #d9534f;
+      color: white;
+      text-align: center;
+      padding: 6px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="label-container">
+    <div class="return-banner">RETURN LABEL</div>
+    <h2>Royal Mail Tracked Returns</h2>
+    <hr>
+
+    <div class="address-section">
+      <strong>Return From:</strong><br>
+      <%= @account[:first_name] %> <%= @account[:last_name] %><br>
+      <%= @account[:address] %><br>
+      <%= @account[:postcode] %>
+    </div>
+
+    <div class="address-section">
+      <strong>Return To:</strong><br>
+      Badly Brewed Coffee<br>
+      1 Coffee Lane<br>
+      Sheffield, S1 1AA
+    </div>
+
+    <div class="qr-code-space">
+      <%= @qrcode_svg %>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <strong>Return Tracking ID:</strong> <%= @tracking_id %><br>
+      <strong>Order Ref:</strong> <%= @order[:order_id] %>
+    </div>
+  </div>
+</body>
+</html>

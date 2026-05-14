@@ -32,7 +32,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
     it "shows an error when the description is blank" do
       visit "/help"
-      fill_in "form_useremail", with: "john@example.com"
+      fill_in "form_useremail", with: "testcust@bbc.com"
       fill_in "form_request_description", with: ""
       click_button "Submit"
 
@@ -42,7 +42,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
     it "shows an error when the description is only whitespace" do
       visit "/help"
-      fill_in "form_useremail", with: "john@example.com"
+      fill_in "form_useremail", with: "testcust@bbc.com"
       fill_in "form_request_description", with: "     "
       click_button "Submit"
 
@@ -66,7 +66,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
     # Shared helper so each example stays concise
     def submit_ticket(type:, description: "This is a test request")
       visit "/help"
-      fill_in "form_useremail",           with: "john@example.com"
+      fill_in "form_useremail",           with: "testcust@bbc.com"
       fill_in "form_request_description", with: description
       select type, from: "problem_type"
       click_button "Submit"
@@ -83,7 +83,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         ticket = DB[:Tickets].order(:ticket_id).last
         expect(ticket[:ticket_type]).to eq("query")
         expect(ticket[:ticket_content]).to eq("When does my order arrive?")
-        expect(ticket[:user_id]).to eq(10000001)
+        expect(ticket[:user_id]).to eq(1)
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         ticket = DB[:Tickets].order(:ticket_id).last
         expect(ticket[:ticket_type]).to eq("technical")
         expect(ticket[:ticket_content]).to eq("The site won't load on Safari")
-        expect(ticket[:user_id]).to eq(10000001)
+        expect(ticket[:user_id]).to eq(1)
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         ticket = DB[:Tickets].order(:ticket_id).last
         expect(ticket[:ticket_type]).to eq("complaint")
         expect(ticket[:ticket_content]).to eq("My beans arrived crushed")
-        expect(ticket[:user_id]).to eq(10000001)
+        expect(ticket[:user_id]).to eq(1)
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         ticket = DB[:Tickets].order(:ticket_id).last
         expect(ticket[:ticket_type]).to eq("other")
         expect(ticket[:ticket_content]).to eq("I have a general enquiry")
-        expect(ticket[:user_id]).to eq(10000001)
+        expect(ticket[:user_id]).to eq(1)
       end
     end
 

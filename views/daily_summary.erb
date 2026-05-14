@@ -1,0 +1,17 @@
+<div class="m-dash-wrapper">
+    <header class="m-dash-header">
+        <h1 class="m-dash-header__title">Daily Summary</h1>
+    </header>
+
+    <!-- Daily Stats Card -->
+    <div class="m-dash-grid m-dash-grid--hero">
+
+        <div class="m-dash-card">
+            <h3 class="m-dash-card__label">Total Sales (24h)</h3>
+            <p class="m-dash-card__value">
+                £<%= sprintf('%.2f', @daily_summary[:total_sales]) %>
+            </p>
+        </div>
+
+    </div>
+</div>
