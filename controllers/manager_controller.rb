@@ -11,15 +11,13 @@ class ManagerController < BaseController
     @metrics = analyze_sales_data
     erb :metrics_page
   end
-
   
+  get '/stock-management' do
+    @beans = Bean.all
+    erb :stock_management
+  end
 
-    get '/stock-management' do
-      @beans = Bean.all
-      erb :stock_management
-    end
-
-    get '/manage-discounts' do
+  get '/manage-discounts' do
     @discounts = get_current_discounts
     erb :manage_discounts
   end

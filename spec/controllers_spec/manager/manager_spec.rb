@@ -14,6 +14,11 @@ RSpec.describe "Manager visits pages", type: :feature do
       visit "/stock-management"
       expect(current_path).to eq("/")
     end
+
+    it "Attempt to visit discount management page" do
+      visit "/manage-discounts"
+      expect(current_path).to eq("/")
+    end
   end
 
   context "Logged in as manager" do
@@ -36,6 +41,24 @@ RSpec.describe "Manager visits pages", type: :feature do
       it "can access the stock-management page" do
         visit "/stock-management"
         expect(current_path).to eq("/stock-management")
+      end
+
+      it "can visit discount management page" do
+        visit "/manage-discounts"
+        expect(current_path).to eq("/manage-discounts")
+        expect(page).to have_selector("h1.discount-page-title", text: "Our Current Discounts!")
+      end
+    end
+
+    describe "Manager discount interface elements" do
+      it "displays discounts formatted with percentage calculation rules" do
+        # Assumes test mock payload includes a multiplier of 0.85
+        visit "/manage-discounts"
+        
+        within(".discount-list") do
+          expect(page).to have_selector(".discount-item")
+          expect(page).to have_selector(".discount-percentage", text: "15% OFF")
+        end
       end
     end
   end
