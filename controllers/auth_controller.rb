@@ -13,20 +13,16 @@ class AuthController < BaseController
     @email = params[:email]
     @password = params[:password]
     user = DB[:Accounts].where(email: @email).first
-    puts(user)
     
     if user && BCrypt::Password.new(user[:hashed_password]) == @password
-      puts("match")
       session[:user_id] = user[:user_id]
       session[:account_type] = user[:account_type]
 
       if user[:suspended]
-        puts "sussy"
         session.clear
         @error = "Your account has been suspended. Please contact support."
         erb :login_screen
       else
-        puts "not sussy"
         attempt_flag_account(session[:user_id])
         attempt_suspend_account(session[:user_id])
 
@@ -39,7 +35,6 @@ class AuthController < BaseController
       end
 
     else
-      puts "invalid"
       @error = "Invalid email or password"
       erb :login_screen
     end
