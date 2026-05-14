@@ -27,6 +27,13 @@ RSpec.describe 'Home page', type: :feature do
     expect(page).to have_content('Request description')
   end
 
+  it 'opens the discount page' do
+    visit '/'
+    click_link 'Discounts'
+    expect(current_path).to eq('/discounts')
+    expect(page).to have_content('Our Current Discounts!')
+  end
+
   context 'when logged in as user' do 
     before(:each) { log_in_as('testcust@bbc.com', 'testpass')}
     it 'opens the loyalty card page' do
