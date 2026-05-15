@@ -2426,7 +2426,6 @@ button:active {
   background-color: #c9302c;
 }
 
-<<<<<<< HEAD
 .change-button{
   padding: 0.6rem 1.2rem;
   background-color: #5bc0de;
@@ -2442,7 +2441,6 @@ button:active {
 .change-btn {
 
   width:fit-content;
-=======
 /* --- CUSTOM COFFEE STOCK INTERFACE STYLES --- */
 
 .cs-mgt-wrapper {
@@ -2653,7 +2651,6 @@ button:active {
 .portal-box:focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
->>>>>>> origin
 }
 
 /* --- BARISTA IN-STORE ORDERING DASHBOARD --- */
