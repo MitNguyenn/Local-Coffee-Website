@@ -12,6 +12,9 @@ get '/help' do
 end
 
 get '/cart' do 
+  redirect '/log-in' unless session[:user_id]
+  @user = DB[:Accounts].where(user_id: session[:user_id]).first
+  @subtotal = session[:cart].sum { |_, data| data[:price] * data[:quantity] }
   erb :cart
 end
 
