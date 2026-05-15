@@ -1,57 +1,85 @@
-<h1 class="portal-box-title">Staff Portal</h1>
+<div class="portal-page-wrapper">
+  <h1 class="portal-page-title">Staff Portal</h1>
 
-<div class="portal-box-container">
   <% if ["administrator", "manager", "barista"].include?(session[:account_type]) %>
-    <!-- Everyone items -->
-    <a href="/place-order/find-user" class="portal-box">
-      <h1 class="portal-title">Place User Order</h1>
-    </a>
-    <a href="/order-management/barista" class="portal-box">
-      <h1 class="portal-title">Barista Order Management</h1>
-    </a>
-    <a href="/manage-loyalty-cards" class="portal-box">
-      <h1 class="portal-title">Loyalty Cards</h1>
-    </a>
-    <a href="/user-tickets" class="portal-box">
-      <h1 class="portal-title">User Tickets</h1>
-    </a>
-    <a href="/refund-tickets" class="portal-box">
-      <h1 class="portal-title">Refunds</h1>
-    </a>
-    <a href="/daily-summary" class="portal-box">
-      <h1 class="portal-title">Daily Summary</h1>
-    </a>
-    <a href="/sales-history" class="portal-box">
-      <h1 class="portal-title">Sales History</h1>
-    </a>
+    <p class="portal-section-label">Operations</p>
+    <div class="portal-grid">
+      <a href="/place-order/find-user" class="portal-tile">
+        <p class="portal-tile-label">Place User Order</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/order-management/barista" class="portal-tile">
+        <p class="portal-tile-label">Order Management</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/manage-loyalty-cards" class="portal-tile">
+        <p class="portal-tile-label">Loyalty Cards</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/daily-summary" class="portal-tile">
+        <p class="portal-tile-label">Daily Summary</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/sales-history" class="portal-tile">
+        <p class="portal-tile-label">Sales History</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
+
+    <p class="portal-section-label">Support</p>
+    <div class="portal-grid">
+      <a href="/user-tickets" class="portal-tile">
+        <p class="portal-tile-label">User Tickets</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/refund-tickets" class="portal-tile">
+        <p class="portal-tile-label">Refunds</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
   <% end %>
 
   <% if ["administrator", "manager"].include?(session[:account_type]) %>
-    <!-- Manager and Administrator items -->
-    <a href="/metrics" class="portal-box">
-      <h1 class="portal-title">Metrics</h1>
-    </a>
-    <a href="/manage-discounts" class="portal-box">
-      <h1 class="portal-title">Discount Management</h1>
-    </a>
-    <a href="/bean-stock-management" class="portal-box">
-      <h1 class="portal-title">Bean Stocks</h1>
-    </a>
+    <p class="portal-section-label">Management</p>
+    <div class="portal-grid">
+      <a href="/metrics" class="portal-tile">
+        <p class="portal-tile-label">Metrics</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/manage-discounts" class="portal-tile">
+        <p class="portal-tile-label">Discount Management</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/bean-stock-management" class="portal-tile">
+        <p class="portal-tile-label">Bean Stocks</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
   <% end %>
 
   <% if session[:account_type] == "administrator" %>
-    <!-- Administrator only items -->
-    <a href="/manage-accounts" class="portal-box">
-      <h1 class="portal-title">Manage User Accounts</h1>
-    </a>
-    <a href="/employee-accounts" class="portal-box">
-      <h1 class="portal-title">Manage Employee Accounts</h1>
-    </a>
-    <a href="/flagged-accounts" class="portal-box">
-      <h1 class="portal-title">Flagged Accounts</h1>
-    </a>
-    <a href="/order-management/administrator" class="portal-box">
-      <h1 class="portal-title">Admin Order Management</h1>
-    </a>
+    <p class="portal-section-label">Administration</p>
+    <div class="portal-grid">
+      <a href="/manage-accounts" class="portal-tile">
+        <p class="portal-tile-label">User Accounts</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/employee-accounts" class="portal-tile">
+        <p class="portal-tile-label">Employee Accounts</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/flagged-accounts" class="portal-tile">
+        <p class="portal-tile-label">Flagged Accounts</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/order-management/administrator" class="portal-tile">
+        <p class="portal-tile-label">Admin Orders</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/database-status" class="portal-tile">
+        <p class="portal-tile-label">Database Controls</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
   <% end %>
 </div>
