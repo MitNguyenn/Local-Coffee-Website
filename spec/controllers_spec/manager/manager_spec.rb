@@ -47,6 +47,12 @@ RSpec.describe "ManagerController", type: :feature do
         expect(current_path).to eq("/manage-discounts")
         expect(page).to have_content("Manage Store Discounts")
       end
+
+      it "can access the edit drink details page" do
+        visit "/edit-drink-details"
+        expect(current_path).to eq("/edit-drink-details")
+        expect(page).to have_content("Drink Details")
+      end
     end
 
     describe "Inventory Component Management Flows" do
@@ -115,6 +121,20 @@ RSpec.describe "ManagerController", type: :feature do
 
         expect(current_path).to eq("/manage-discounts")
         expect(DB[:Discounts].where(discount_id: discount_id).first).to be_nil
+      end
+    end
+
+    describe "Drink Price Editing Workflow" do
+      it "update the drink prices" do
+        puts "Hello"
+        prices =  ["1000", "100", "10", "1"]
+        new_price = DB[:Drinks].first
+        puts "World1"
+        expect(new_price[:regular_price]).to eq("1000")
+        puts "World"
+        puts last_response.status
+        puts last_response.body
+        puts "Hello world"
       end
     end
   end
