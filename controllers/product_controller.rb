@@ -2,6 +2,14 @@ before ['/checkout*', '/place-order*', '/external-payment-gateway*', '/payment-c
   redirect '/log-in' unless session[:user_id] # swapped logged_in? helper check for direct session lookup to stay robust
 end
 
+  DB.create_table? :FavouriteBeans do
+    primary_key :favourite_id
+    foreign_key :user_id, :Accounts, on_delete: :cascade
+    String :origin
+    Double :pack_weight
+    String :roast_level
+  end
+
   def finalize_stamps(user_id)
     stamps_to_add = 0
 

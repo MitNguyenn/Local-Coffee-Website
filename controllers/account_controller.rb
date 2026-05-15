@@ -4,7 +4,7 @@ before do
   protected_prefixes = [
     '/staff-portal', '/manage-', '/edit-account', '/order-management',
     '/generate-', '/update-stamps', '/flagged-accounts', '/employee-accounts',
-    '/database-status', '/loyalty-card', '/my-orders', '/account-settings',
+    '/database-status', '/loyalty-card', '/my-orders', '/my-favourites', '/account-settings',
     '/user-tickets', '/ticket/', '/refund', '/delete-account'
   ]
   
@@ -46,6 +46,22 @@ get '/my-orders' do
   erb :my_orders
 end
 
+get '/my-favourites' do
+  DB[:FavouriteBeans].where(user_id: session[:user_id], pack_weight: nil).delete
+  DB[:FavouriteBeans].where(user_id: session[:user_id], roast_level: nil).delete
+  @beans_by_origin = DB[:Beans].all.each_with_object({}) do |bean, beans|
+    beans[bean[:origin]] = bean
+  end
+  @pack_multipliers = DB[:BeansPackWeightPriceMarkupMultipliers].to_hash(:pack_weight, :markup_multiplier)
+  @favourites = DB[:FavouriteBeans].where(user_id: session[:user_id]).all.select do |fav|
+    @beans_by_origin[fav[:origin]] && @pack_multipliers[fav[:pack_weight]]
+  end
+  erb :my_favourites
+end
+
+# ==========================================
+# POST Routes
+# ==========================================
 
 post '/update-account' do
   DB[:Accounts].where(user_id: session[:user_id]).update(

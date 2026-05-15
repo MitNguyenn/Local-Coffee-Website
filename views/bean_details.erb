@@ -32,6 +32,7 @@
       </select>
 
       <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.price_per_250g) %></h2>
+      <button onclick="toggleFavourite(event)" id="favourite-button" class="fav-btn">Add to Favourites</button>
       <button onclick="addToCartOnClick(event)" id="add-to-cart-button" class="add-to-cart-button">Add to cart</button>
     </div>
   </div>
@@ -39,11 +40,24 @@
 
 <script>
   const origin = document.getElementById('origin').dataset.origin;
+  const loggedIn = <%= logged_in? ? 'true' : 'false' %>;
 
   const basePriceValue = parseFloat(document.getElementById('base-price').dataset.price);
   const displayPrice = document.getElementById('display-price');
 
   const weightSelect = document.getElementById('pack-weight-select');
+  const roastSelect = document.getElementById('roast-level-select');
+  const favouriteButton = document.getElementById('favourite-button');
+  const favouriteVariations = <%= @favourite_variations.map { |f| "#{f[:pack_weight]}_#{f[:roast_level]}" }.to_json %>;
+
+  function selectedVariationKey() {
+    return `${weightSelect.value}_${roastSelect.value}`;
+  }
+
+  function updateFavouriteButton() {
+    if (!favouriteButton) return;
+    favouriteButton.textContent = favouriteVariations.includes(selectedVariationKey()) ? 'Favourited' : 'Add to Favourites';
+  }
 
   function getPrice() {
     const packWeightSelect = weightSelect.options[weightSelect.selectedIndex];
@@ -53,10 +67,40 @@
 
   function updatePrice() {
     newPrice = getPrice();
+    updateFavouriteButton();
     displayPrice.innerText = 'Total price: £' + roundToTwoDecimalPlaces(newPrice);
   }
 
   weightSelect.addEventListener('change', updatePrice);
+  roastSelect.addEventListener('change', updateFavouriteButton);
+  updateFavouriteButton();
+
+  function toggleFavourite(event) {
+    if (!loggedIn) {
+      window.location.href = '/log-in';
+      return;
+    }
+
+    const packWeight = weightSelect.value;
+    const roastLevel = roastSelect.value;
+
+    fetch('/toggle-favourite-bean', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `origin=${encodeURIComponent(origin)}&pack_weight=${encodeURIComponent(packWeight)}&roast_level=${encodeURIComponent(roastLevel)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      const key = selectedVariationKey();
+      if (data.favourited && !favouriteVariations.includes(key)) {
+        favouriteVariations.push(key);
+      } else if (!data.favourited) {
+        const index = favouriteVariations.indexOf(key);
+        if (index >= 0) favouriteVariations.splice(index, 1);
+      }
+      updateFavouriteButton();
+    });
+  }
 
   function addToCartOnClick(event) {
     const packWeight = document.getElementById('pack-weight-select').value;
