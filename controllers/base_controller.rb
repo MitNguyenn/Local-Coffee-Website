@@ -20,6 +20,18 @@ get '/discounts' do
   erb :discounts_page
 end
 
+get '/coffee-beans' do
+    update_recent_login(session[:user_id]) if session[:user_id]
+    @beans = Bean.all
+    erb :beans
+  end
+
+  get '/drinks' do
+    update_recent_login(session[:user_id]) if session[:user_id]
+    @drinks = Drink.all
+    erb :drinks
+  end
+
 # ==============================================================================
 # POST ROUTING ENGINE
 # ==============================================================================

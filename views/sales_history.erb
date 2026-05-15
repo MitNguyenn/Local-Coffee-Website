@@ -22,18 +22,17 @@
                 <% items.each do |item| %>
                   <div>
                     <%= item[:quantity] %>x <%= item[:item_id] %>
-                    <% extras = [item[:size], item[:milk] ? "#{item[:milk]} milk" : nil].compact %>
+                    <% extras = [item[:drink_size], item[:milk_type] ? "#{item[:milk_type]} milk" : nil].compact %>
                     <%= "(#{extras.join(', ')})" unless extras.empty? %>
                   </div>
                 <% end %>
               </td>
 
-              <td><%= items.first[:order_type] %></td>
               <td><%= items.first[:created_at].strftime("%d %b %H:%M") %></td>
 
               <td>
-                <span style="color: <%= items.first[:is_completed] ? 'green' : 'orange' %>;">
-                  <%= items.first[:is_completed] ? 'Completed' : 'Pending' %>
+                <span style="color: <%= items.first[:order_is_completed] ? 'green' : 'orange' %>;">
+                  <%= items.first[:order_is_completed] ? 'Completed' : 'Pending' %>
                 </span>
               </td>
             </tr>

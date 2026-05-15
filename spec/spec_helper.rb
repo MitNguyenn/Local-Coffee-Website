@@ -43,6 +43,7 @@ require "capybara/rspec"
 require "rack/test"
 
 # CRITICAL FIX: Swap CoffeeApp class for Sinatra's global application runtime object
+require 'sinatra'
 Capybara.app = Sinatra::Application
 
 Capybara.configure do |config|

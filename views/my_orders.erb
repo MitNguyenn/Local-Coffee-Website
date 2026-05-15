@@ -56,9 +56,9 @@
                   <li>
                     <strong><%= item[:quantity] %>x</strong> 
                     <%= item[:item_id] %>
-                    <%= " (#{item[:size]})" if item[:size] %>
+                    <%= " (#{item[:drink_size]})" if item[:drink_size] %>
                     <%= " - #{item[:roast_level]} Roast" if item[:roast_level] %>
-                    <%= " [#{item[:milk]} milk]" if item[:milk] %>
+                    <%= " [#{item[:milk_type]} milk]" if item[:milk_type] %>
                   </li>
                 <% end %>
               </ul>
@@ -99,7 +99,7 @@
                   <li>
                     <strong><%= item[:quantity] %>x</strong> 
                     <%= item[:item_id] %>
-                    <%= " (#{item[:size]})" if item[:size] %>
+                    <%= " (#{item[:drink_size]})" if item[:drink_size] %>
                     <%= " - #{item[:roast_level]} Roast" if item[:roast_level] %>
                   </li>
                 <% end %>

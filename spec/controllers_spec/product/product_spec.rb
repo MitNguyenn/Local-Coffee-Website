@@ -88,7 +88,7 @@ RSpec.describe "User access product pages", type: :feature do
       order_id = DB[:Orders].insert(
         user_id: user_id,
         OrderContents: '[{"id":"1","type":"drink"}]',
-        payment_status: 'Pending',
+        payment_is_completed: false,
         order_is_completed: false
       )
 
@@ -98,7 +98,7 @@ RSpec.describe "User access product pages", type: :feature do
       expect(page).to have_current_path('/order-success')
       
       order = DB[:Orders].where(order_id: order_id).first
-      expect(order[:payment_status]).to eq('Paid')
+      expect(order[:payment_is_completed]).to eq(true)
       expect(order[:order_is_completed]).to be true
     end
   end

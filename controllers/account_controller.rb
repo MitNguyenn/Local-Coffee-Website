@@ -1,9 +1,16 @@
 require 'rqrcode'
 
 before do
-  # Skip redirect logic if the user is already on a public page
-  public_paths = ['/', '/log-in', '/register', '/log-out', '/help', '/forgot']
-  unless public_paths.include?(request.path_info) || session[:user_id]
+  protected_prefixes = [
+    '/staff-portal', '/manage-', '/edit-account', '/order-management',
+    '/generate-', '/update-stamps', '/flagged-accounts', '/employee-accounts',
+    '/database-status', '/loyalty-card', '/my-orders', '/account-settings',
+    '/user-tickets', '/ticket/', '/refund'
+  ]
+  
+  needs_auth = protected_prefixes.any? { |prefix| request.path_info.start_with?(prefix) }
+  
+  if needs_auth && !session[:user_id]
     redirect '/log-in'
   end
 end

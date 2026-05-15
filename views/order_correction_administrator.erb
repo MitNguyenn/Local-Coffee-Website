@@ -24,9 +24,8 @@
                             <td style="font-size: 0.8rem; color: #666;"><%= order[:OrderContents] %></td>
                             <td>
                                 <select name="payment_status" class="audit-select">
-                                    <option value="Pending" <%= "selected" if order[:payment_status] == "Pending" %>>Pending</option>
-                                    <option value="Paid" <%= "selected" if order[:payment_status] == "Paid" %>>Paid</option>
-                                    <option value="Unpaid" <%= "selected" if order[:payment_status] == "Unpaid" %>>Unpaid</option>
+                                    <option value="Paid" <%= "selected" if order[:payment_is_completed] == true %>>Paid</option>
+                                    <option value="Unpaid" <%= "selected" if order[:payment_is_completed] == false %>>Unpaid</option>
                                 </select>
                             </td>
                             <td>

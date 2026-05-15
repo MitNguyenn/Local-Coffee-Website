@@ -3,7 +3,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
   describe "Attempts to visit pages without valid credentials" do
     it "redirects an unauthenticated user to the login path" do
       visit "/staff-portal"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects a regular customer to the home page" do
@@ -14,7 +14,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
     it "redirects an unauthenticated user trying to access loyalty dashboards" do
       visit "/manage-loyalty-cards"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects a plain customer away from finding users for an order" do
@@ -221,7 +221,6 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
         page.driver.submit :post, '/place-order/complete', {
           order_items_json: basket_payload.to_json,
-          payment_method: 'Card'
         }
 
         expect(current_path).to eq("/order-management/barista")

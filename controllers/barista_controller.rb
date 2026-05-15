@@ -54,12 +54,11 @@ get '/order-management/barista' do
     .select(
       Sequel[:Orders][:order_id],
       Sequel[:Orders][:created_at],
-      Sequel[:Orders][:order_type],
       Sequel[:Orders][:order_is_completed],
       Sequel[:OrderItems][:item_id],
       Sequel[:OrderItems][:quantity],
-      Sequel[:OrderItems][:milk],
-      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:milk_type],
+      Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
     .all
@@ -121,12 +120,11 @@ get '/sales-history' do
     .select(
       Sequel[:Orders][:order_id],
       Sequel[:Orders][:created_at],
-      Sequel[:Orders][:order_type],
-      Sequel[:Orders][:is_completed],
+      Sequel[:Orders][:order_is_completed],
       Sequel[:OrderItems][:item_id],
       Sequel[:OrderItems][:quantity],
-      Sequel[:OrderItems][:milk],
-      Sequel[:OrderItems][:size],
+      Sequel[:OrderItems][:milk_type],
+      Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
     .all
@@ -171,7 +169,7 @@ post '/update-stamps' do
 end
 
 post '/order-management/barista' do
-  DB[:Orders].where(order_id: params[:order_id]).update(is_completed: true)
+  DB[:Orders].where(order_id: params[:order_id]).update(order_is_completed: true)
   redirect '/order-management/barista'
 end
 
@@ -232,12 +230,9 @@ post '/place-order/complete' do
 
     order_id = DB[:Orders].insert(
       user_id: customer_id.to_i,
-      order_type: 'In-Store',
-      payment_method: params[:payment_method] || 'Card',
       total_cost: 0.0,
-      location: 'In-Store',
-      is_completed: false,
-      payment_status: 'Paid',
+      order_is_completed: false,
+      payment_is_completed: true,
       created_at: Time.now
     )
 
@@ -259,8 +254,8 @@ post '/place-order/complete' do
           item_id: item_id,
           product_type: 'drink',
           quantity: quantity,
-          milk: item['milk'],
-          size: item['size']
+          milk_type: item['milk'],
+          drink_size: item['size']
         )
 
       elsif product_type == 'bean'
