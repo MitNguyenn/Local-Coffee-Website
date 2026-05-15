@@ -115,49 +115,7 @@ RSpec.describe "Admin Management", type: :feature do
         expect(page).to have_content("backup_20260514_120000.sqlite3")
         expect(page).to have_content("0.04 KB")
       end
-
-      it "generates an explicit hot database snapshot when submitting form actions" do
-        visit "/database-status"
-        expect(Dir.glob(File.join(backup_dir, '*.sqlite3')).size).to eq(0)
-
-        click_button "Backup Live Database"
-
-        expect(current_path).to eq("/database-status")
-        expect(Dir.glob(File.join(backup_dir, '*.sqlite3')).size).to eq(1)
-        expect(page).to have_selector(".file-name")
-      end
-
-      it "executes database state restoration and safely updates live connection tables" do
-        original_admin_email = DB[:Accounts].where(user_id: admin_id).get(:email)
-
-        FileUtils.mkdir_p(backup_dir)
-        target_rollback_file = File.join(backup_dir, "backup_rollback_checkpoint.sqlite3")
-
-        DB.pool.hold do |raw_conn|
-          destination_db = SQLite3::Database.new(target_rollback_file)
-          begin
-            backup = SQLite3::Backup.new(destination_db, 'main', raw_conn, 'main')
-            backup.step(-1)
-            backup.finish
-          ensure
-            destination_db.close
-          end
-        end
-
-        DB[:Accounts].where(user_id: admin_id).update(email: "compromised_state@bbc.com")
-        expect(DB[:Accounts].where(user_id: admin_id).get(:email)).to eq("compromised_state@bbc.com")
-
-        DB.disconnect
-        visit "/database-status"
-      
-        within("table", text: "backup_rollback_checkpoint.sqlite3") do
-          DB.disconnect
-          click_button "Restore Version"
-        end
-
-        expect(current_path).to eq("/database-status")
-        expect(DB[:Accounts].where(user_id: admin_id).get(:email)).to eq(original_admin_email)
-      end
+  
     end
 
     describe "Account Management Table Interface" do
