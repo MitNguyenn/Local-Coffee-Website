@@ -21,12 +21,9 @@
         <strong>Submitted on:</strong><br>
         <%= @ticket[:created_at].strftime("%d %B %Y at %H:%M") %>
       </div>
-      <form action = "/refund/<%= @ticket[:id]%>" method = "POST">
-        <button name = "resolve-refund-button" class = "btn">Resolve Ticket</button>
-      </form>
     </div>
-    <form action="/resolve-ticket/:id" method="POST">
-      <button name="resolve-button" value="">Resolve ticket</button>
+    <form action="/refund/<%= @ticket[:ticket_id] %>" method="POST">
+      <button class ="btn" name="refund-button" value="">Resolve ticket</button>
     </form>
   </div>
 </div>
