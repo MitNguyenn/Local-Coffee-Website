@@ -1,21 +1,189 @@
 <% if session[:cart] && session[:cart].any? %>
-  <div class="cart-item-list">
-    <% session[:cart].each do | key, data | %>
-      <div class="cart-item">
-        <span class="cart-item-key"><%= key %></span>
-        <div class="cart-item-quantity-controllers">
-          <span class="add-button">
-            +
-          </span>
-          <span class="cart-item-quantity"> <%= data[:quantity] %></span>
-          <span class="remove-button">
-            -
-          </span>
+  <% 
+    total_cost = 0.0 
+  %>
+  <div class="cart-page-content" id="cart-page-content" data-contains-drink="<%= session[:contains_drink] %>">
+    <div class="cart-item-list">
+      <% session[:cart].each do | key, data | %>
+        <div class="cart-item" data-item-id="<%= key %>">
+          <span class="cart-item-key"><%= key %></span>
+          <span class="cart-item-price">£<%= sprintf('%.2f', data[:price].round(2)) %> * <%= data[:quantity] %> = £<%= sprintf('%.2f', (data[:price] * data[:quantity]).round(2)) %></span>
+          <div class="cart-item-quantity-controllers">
+            <button onclick="updateQuantity(event, 1)" class="add-button">+</button>
+            <span class="cart-item-quantity-display"><%= data[:quantity] %></span>
+            <button onclick="updateQuantity(event, -1)" class="remove-button">-</button>
+            <button onclick="removeFromCart(event)">🗑</button>
+          </div>
         </div>
-
+        <% total_cost += data[:quantity] * data[:price] %>
+      <% end %>
+      <div class="total-cost">
+          <h2 id="display-total-cost" data-total-cost="<%= total_cost %>">Total cost: £<%= sprintf('%.2f', total_cost.round(2)) %></h2>
       </div>
-    <% end %>
+    </div>
+
+    <div class="cart-page-checkout-column">
+      <%
+        if session[:user_id] 
+        user = DB[:Accounts].where(user_id: session[:user_id]).first
+        puts user
+      %>
+          <label for="order-delivery-select"><b>Select your delivery option</b></label>
+          <select name="order-delivery-select" id="order-delivery-select">
+            <option value="collect-in-store" data-address="1 Coffee Lane" data-postcode="S1 1AA">Collect in store</option>
+            <option value="account-address" data-address="<%= user[:address] %>" data-postcode="<%= user[:postcode] %>">Use my address</option>
+            <option value="custom-address" data-address="nil" data-postcode="">Use another address</option>
+          </select>
+
+          <label for="address-input"><b>Address line:</b></label>
+          <input type="text" class="cart-page-address-input" id="address-input" disabled>
+          <label for="postcode-input"><b>Post code:</b></label>
+          <input type="text" class="cart-page-postcode-input" id="postcode-input" disabled>
+
+          <label for="pay-select"><b>When do you want to pay?</b></label>
+          <select name="pay-select" id="pay-select">
+            <option value="pay-now">Pay now</option>
+            <option value="pay-in-store">Pay in store</option>
+          </select>
+
+          <button onclick="checkoutButtonOnClick(event)" class="checkout-button">Check Out</button>
+      <% else %>
+          <h3>Please log in to proceed</h3>
+          <button onclick="toggleDropdownUser(event)" class="cart-page-log-in-button">Log In</button>
+      <% end %>
+    </div>
   </div>
+  <script>
+    const addressInput = document.getElementById('address-input');
+    const postcodeInput = document.getElementById('postcode-input');
+    const orderDeliverySelect = document.getElementById('order-delivery-select');
+    const paySelect = document.getElementById('pay-select');
+
+    let currentOrderDeliverySelectValue = orderDeliverySelect.value;
+
+    let addressInputBuffer = addressInput.value;
+    let postcodeInputBuffer = postcodeInput.value;
+
+    const contains_drink = document.getElementById('cart-page-content').dataset.containsDrink;
+
+    if (contains_drink == "true") {
+      orderDeliverySelect.value = "collect-in-store";
+      orderDeliverySelect.disabled = true;
+      clearAndDisableInputFields();
+    } else {
+      orderDeliverySelect.disabled = false;
+    }
+
+    function orderDeliverySelectCallback() {
+      if (currentOrderDeliverySelectValue == "custom-address") {
+          addressInputBuffer = addressInput.value;
+          postcodeInputBuffer = postcodeInput.value;
+      }
+
+      const orderDeliverySelectValue = orderDeliverySelect.options[orderDeliverySelect.selectedIndex].value;
+      // force user to pay now if they choose home delivery
+      if (orderDeliverySelectValue == "account-address") {
+        paySelect.value = "pay-now";
+        paySelect.disabled = true;
+        clearAndDisableInputFields();
+      } else if (orderDeliverySelectValue == "custom-address") {
+        paySelect.value = "pay-now";
+        paySelect.disabled = true;
+
+        addressInput.value = addressInputBuffer;
+        addressInput.disabled = false;
+        postcodeInput.value = postcodeInputBuffer;
+        postcodeInput.disabled = false;
+      } else {
+        paySelect.disabled = false;
+        clearAndDisableInputFields();
+      }
+
+      currentOrderDeliverySelectValue = orderDeliverySelectValue;
+    }
+    function valid_postcode(postcode) {
+        postcode = postcode.replace(/\s/g, "");
+        var regex = /^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/i;
+        return regex.test(postcode);
+    }
+    function setDeliveryData() {
+      orderDeliverySelect.options[orderDeliverySelect.selectedIndex].dataset.address = addressInput.value;
+      orderDeliverySelect.options[orderDeliverySelect.selectedIndex].dataset.postcode = postcodeInput.value;
+    }
+    function clearAndDisableInputFields() {
+        addressInput.value = "";
+        addressInput.disabled = true;
+        postcodeInput.value = "";
+        postcodeInput.disabled = true;
+    }
+
+    orderDeliverySelect .addEventListener('change', orderDeliverySelectCallback);
+    addressInput        .addEventListener('input', setDeliveryData);       
+    postcodeInput       .addEventListener('input', setDeliveryData);
+
+    function removeFromCart(event) {
+  const button = event.currentTarget;
+  const item = button.closest('.cart-item');
+  const itemId = item.dataset.itemId;
+
+  fetch('/remove-from-cart', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `item_id=${itemId}`
+  })
+  .then(response => {
+    if (response.ok) window.location.reload();
+  });
+}
+    function updateQuantity(event, change) {
+      const button = event.currentTarget;
+      const item = button.closest('.cart-item');
+      const itemId = item.dataset.itemId;
+      console.log("Updating item ID:", itemId);
+      console.log("", change);
+
+      let action = "";
+
+      if (change == 1) action = "add";
+      else action = "remove";
+      
+      fetch('/update-cart-item-quantity', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=${action}&item_id=${itemId}`
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.reload(); // Reloads the current page
+        }
+      });
+    }
+    function checkoutButtonOnClick(event) {
+      const address   = orderDeliverySelect.options[orderDeliverySelect.selectedIndex].dataset.address.trim();
+      const postcode  = orderDeliverySelect.options[orderDeliverySelect.selectedIndex].dataset.postcode.trim();
+
+      if (!valid_postcode(postcode) || address == "") {
+        postcodeInput.value = "";
+        console.log("postcode and/or address are/is invalid");
+        setDeliveryData();
+        return;
+      } else {
+        console.log("postcode and address are valid");
+      }
+
+      const payment = paySelect.value;
+      const totalCost = document.getElementById('display-total-cost').dataset.totalCost;
+
+      fetch('/place-order', {  // ✅
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `payment=${payment}&address=${address}&postcode=${postcode}&total_cost=${totalCost}`
+      })
+      .then(response => {
+        window.location.href = response.url  // ✅ follow server redirect
+      });
+    }
+  </script>  
 <% elsif %>
-  You have 0 items in your cart
+  <h2>You haven't added any items to the cart yet</h2>
 <% end %>

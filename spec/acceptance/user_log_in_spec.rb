@@ -42,5 +42,11 @@ RSpec.describe 'Authentication process', type: :feature do
         expect(page).to have_content('Log in')
       end
     end
+
+    it 'User attempts to travel to forgot password page' do
+      visit '/forgot'
+
+      expect(current_path).to eq('/forgot')
+      expect(page).to have_contents("Forgot Password")
   end
 end

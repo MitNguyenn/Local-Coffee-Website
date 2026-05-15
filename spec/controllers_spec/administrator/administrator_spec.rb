@@ -1,21 +1,39 @@
+require 'spec_helper'
+require 'fileutils'
+require 'sqlite3'
+
 RSpec.describe "Admin Management", type: :feature do
   let(:admin_id)    { 4 }
   let(:customer_id) { 1 }
+  let(:backup_dir)  { File.expand_path('../../../db/backups', __dir__) }
+
+  before(:each) do
+    FileUtils.rm_rf(backup_dir)
+  end
+
+  after(:each) do
+    FileUtils.rm_rf(backup_dir)
+  end
 
   describe "Attempts to visit pages without valid credentials" do
     it "redirects an unauthenticated user away from manage-accounts" do
       visit "/manage-accounts"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects an unauthenticated user away from flagged-accounts" do
       visit "/flagged-accounts"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects an unauthenticated user away from employee-accounts" do
       visit "/employee-accounts"
-      expect(current_path).to eq("/")
+      expect(current_path).to eq("/log-in")
+    end
+
+    it "redirects an unauthenticated user away from database-status" do
+      visit "/database-status"
+      expect(current_path).to eq("/log-in")
     end
 
     it "redirects a barista away from manage-accounts" do
@@ -24,9 +42,21 @@ RSpec.describe "Admin Management", type: :feature do
       expect(current_path).to eq("/")
     end
 
+    it "redirects a barista away from database-status" do
+      log_in_as('testbarista@bbc.com', 'testpass')
+      visit "/database-status"
+      expect(current_path).to eq("/")
+    end
+
     it "redirects a customer away from manage-accounts" do
       log_in_as('testcust@bbc.com', 'testpass')
       visit "/manage-accounts"
+      expect(current_path).to eq("/")
+    end
+
+    it "redirects a customer away from database-status" do
+      log_in_as('testcust@bbc.com', 'testpass')
+      visit "/database-status"
       expect(current_path).to eq("/")
     end
   end
@@ -55,6 +85,78 @@ RSpec.describe "Admin Management", type: :feature do
       it "can access the employee-accounts page" do
         visit "/employee-accounts"
         expect(current_path).to eq("/employee-accounts")
+      end
+
+      it "can access the database-status panel" do
+        visit "/database-status"
+        expect(current_path).to eq("/database-status")
+      end
+    end
+
+    describe "Database Control Panel Interface (GET & POST)" do
+      it "loads the layout container and handles empty directories cleanly" do
+        visit "/database-status"
+        expect(page).to have_selector("#db-status-dashboard-panel")
+        expect(page).to have_content("No active save point archives found on disk.")
+      end
+
+      it "exposes a link pointing back to master account administration" do
+        visit "/database-status"
+        click_link "Return to Admin Dashboard"
+        expect(current_path).to eq("/manage-accounts")
+      end
+
+      it "renders attributes of existing file saves dynamically" do
+        FileUtils.mkdir_p(backup_dir)
+        test_file = File.join(backup_dir, "backup_20260514_120000.sqlite3")
+        File.write(test_file, "mock data payload string structure footprint")
+
+        visit "/database-status"
+        expect(page).to have_content("backup_20260514_120000.sqlite3")
+        expect(page).to have_content("0.04 KB")
+      end
+
+      it "generates an explicit hot database snapshot when submitting form actions" do
+        visit "/database-status"
+        expect(Dir.glob(File.join(backup_dir, '*.sqlite3')).size).to eq(0)
+
+        click_button "Backup Live Database"
+
+        expect(current_path).to eq("/database-status")
+        expect(Dir.glob(File.join(backup_dir, '*.sqlite3')).size).to eq(1)
+        expect(page).to have_selector(".file-name")
+      end
+
+      it "executes database state restoration and safely updates live connection tables" do
+        original_admin_email = DB[:Accounts].where(user_id: admin_id).get(:email)
+
+        FileUtils.mkdir_p(backup_dir)
+        target_rollback_file = File.join(backup_dir, "backup_rollback_checkpoint.sqlite3")
+
+        DB.pool.hold do |raw_conn|
+          destination_db = SQLite3::Database.new(target_rollback_file)
+          begin
+            backup = SQLite3::Backup.new(destination_db, 'main', raw_conn, 'main')
+            backup.step(-1)
+            backup.finish
+          ensure
+            destination_db.close
+          end
+        end
+
+        DB[:Accounts].where(user_id: admin_id).update(email: "compromised_state@bbc.com")
+        expect(DB[:Accounts].where(user_id: admin_id).get(:email)).to eq("compromised_state@bbc.com")
+
+        DB.disconnect
+        visit "/database-status"
+      
+        within("table", text: "backup_rollback_checkpoint.sqlite3") do
+          DB.disconnect
+          click_button "Restore Version"
+        end
+
+        expect(current_path).to eq("/database-status")
+        expect(DB[:Accounts].where(user_id: admin_id).get(:email)).to eq(original_admin_email)
       end
     end
 
@@ -183,11 +285,8 @@ RSpec.describe "Admin Management", type: :feature do
       end
 
       it "deletes an employee account successfully via post form action" do
-        # Targeted deletion of the test barista profile (user_id: 2)
         visit "/employee-accounts"
         
-        # Fixed: Match row selector to actual template class configuration (.acc-view__row)
-        # Fixed: Match target locator string to exact case-sensitive button label ("Delete")
         within(".acc-view__row", text: "testbarista@bbc.com") do
           click_button "Delete"
         end

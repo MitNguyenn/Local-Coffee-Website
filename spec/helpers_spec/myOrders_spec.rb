@@ -11,7 +11,7 @@ RSpec.describe MyOrders, type: :helper do
 
       expected_current_orders = DB[:Orders]
         .join(:OrderItems, order_id: :order_id)
-        .where(user_id: user_id, is_completed: false)
+        .where(user_id: user_id, order_is_completed: false)
         .all
 
       expect(current_orders).to eq(expected_current_orders)
@@ -24,7 +24,7 @@ RSpec.describe MyOrders, type: :helper do
 
       expected_past_orders = DB[:Orders]
         .join(:OrderItems, order_id: :order_id)
-        .where(user_id: user_id, is_completed: true)
+        .where(user_id: user_id, order_is_completed: true)
         .all
 
       expect(past_orders).to eq(expected_past_orders)

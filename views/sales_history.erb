@@ -1,0 +1,44 @@
+<div class="audit-page-body">
+  <div class="audit-container">
+    <h1 class="audit-title">Sales History</h1>
+
+    <div class="audit-table-wrapper">
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Items</th>
+            <th>Type</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order_id, items| %>
+            <tr>
+              <td><strong>#<%= order_id %></strong></td>
+
+              <td style="font-size: 0.8rem; color: #666;">
+                <% items.each do |item| %>
+                  <div>
+                    <%= item[:quantity] %>x <%= item[:item_id] %>
+                    <% extras = [item[:drink_size], item[:milk_type] ? "#{item[:milk_type]} milk" : nil].compact %>
+                    <%= "(#{extras.join(', ')})" unless extras.empty? %>
+                  </div>
+                <% end %>
+              </td>
+
+              <td><%= items.first[:created_at].strftime("%d %b %H:%M") %></td>
+
+              <td>
+                <span style="color: <%= items.first[:order_is_completed] ? 'green' : 'orange' %>;">
+                  <%= items.first[:order_is_completed] ? 'Completed' : 'Pending' %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
