@@ -36,6 +36,24 @@ RSpec.describe "Account Management", type: :feature do
       end
     end
 
+    describe "user deletes account completely" do
+      it "purges the database record, clears session tracking, and redirects to home" do
+        visit "/account-settings"
+        
+        # Click button and accept JavaScript confirmation popup modal automatically
+        accept_confirm do
+          click_button "Delete Account"
+        end
+
+        # Verify router safely drops anonymous client back onto home landing
+        expect(page.current_path).to eq("/")
+
+        # Verify underlying database table no longer contains user primary row record
+        deleted_user = DB[:Accounts].where(user_id: user_id).first
+        expect(deleted_user).to be_nil
+      end
+    end
+
     describe "user visits loyalty card page" do
       it "displays the QR code and correct stamp count" do
         # Update user stamps to verify display

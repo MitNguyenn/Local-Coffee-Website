@@ -5,7 +5,7 @@ before do
     '/staff-portal', '/manage-', '/edit-account', '/order-management',
     '/generate-', '/update-stamps', '/flagged-accounts', '/employee-accounts',
     '/database-status', '/loyalty-card', '/my-orders', '/account-settings',
-    '/user-tickets', '/ticket/', '/refund'
+    '/user-tickets', '/ticket/', '/refund', '/delete-account'
   ]
   
   needs_auth = protected_prefixes.any? { |prefix| request.path_info.start_with?(prefix) }
@@ -60,5 +60,19 @@ post '/update-account' do
     last_name: params[:last_name],
     postcode: params[:postcode],
   )
+  redirect '/'
+end
+
+post '/delete-account' do
+  # 1. Enforce authentication security checkpoint
+  if session[:user_id]
+    # 2. Purge record matching active session identifier
+    DB[:Accounts].where(user_id: session[:user_id]).delete
+    
+    # 3. Clear session data completely to log out user
+    session.clear
+  end
+  
+  # 4. Return user back to homepage
   redirect '/'
 end
