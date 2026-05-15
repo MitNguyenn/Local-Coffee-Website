@@ -785,6 +785,35 @@ footer {
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 }
 
+.fav-btn {
+  background-color: #a67458;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  margin: 6px;
+  padding: 8px 12px;
+}
+
+.favourite-actions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  width: 100%;
+}
+
+.fav-remove-link {
+  background: none;
+  border: none;
+  color: #7a2f2f;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
 .product-card img {
   width: 100%;
   height: auto;

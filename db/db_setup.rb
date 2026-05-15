@@ -41,6 +41,14 @@ module DatabaseInitializer
       String :roast_level, primary_key: true 
     end
 
+    db_connection.create_table? :FavouriteBeans do
+      primary_key :favourite_id
+      foreign_key :user_id, :Accounts, on_delete: :cascade
+      String :origin
+      Double :pack_weight
+      String :roast_level
+    end
+
     db_connection.create_table? :Drinks do
       String    :beverage, primary_key: true
       TrueClass :contains_milk

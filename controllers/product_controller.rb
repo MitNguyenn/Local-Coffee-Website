@@ -2,6 +2,14 @@ before ['/place-order*', '/external-payment-gateway*', '/payment-callback*', '/o
   redirect '/log-in' unless session[:user_id]
 end
 
+DB.create_table? :FavouriteBeans do
+  primary_key :favourite_id
+  foreign_key :user_id, :Accounts, on_delete: :cascade
+  String :origin
+  Double :pack_weight
+  String :roast_level
+end
+
 def finalize_stamps_from_order(user_id, order_id)
   items = DB[:OrderItems].where(order_id: order_id).all
   stamps = items.sum do |item|
@@ -26,6 +34,7 @@ get '/product/' do
     @item = Bean[params[:origin]]
     @bean_packs = DB[:BeansPackWeightPriceMarkupMultipliers].all
     @bean_roast_levels = DB[:BeanRoastLevels].all
+    @favourite_variations = session[:user_id] ? DB[:FavouriteBeans].where(user_id: session[:user_id], origin: @item.origin).exclude(pack_weight: nil).all : []
     @template = :bean_details
   elsif @type == 'drink'
     @item = Drink[params[:beverage]]
@@ -36,6 +45,36 @@ get '/product/' do
     halt 404, "Product type not found."
   end
   erb @template
+end
+
+put '/toggle-favourite-bean' do
+  redirect '/log-in' unless session[:user_id]
+
+  origin = params[:origin]
+  halt 400, "Missing favourite options" if params[:pack_weight].to_s.empty? || params[:roast_level].to_s.empty?
+
+  pack_weight = params[:pack_weight].to_f
+  roast_level = params[:roast_level]
+
+  favourite = DB[:FavouriteBeans].where(
+    user_id: session[:user_id],
+    origin: origin,
+    pack_weight: pack_weight,
+    roast_level: roast_level
+  )
+
+  if favourite.count > 0
+    favourite.delete
+    { favourited: false }.to_json
+  else
+    DB[:FavouriteBeans].insert(
+      user_id: session[:user_id],
+      origin: origin,
+      pack_weight: pack_weight,
+      roast_level: roast_level
+    )
+    { favourited: true }.to_json
+  end
 end
 
 post '/place-order' do
