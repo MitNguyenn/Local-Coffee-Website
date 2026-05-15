@@ -63,7 +63,7 @@ RSpec.describe "Admin Management", type: :feature do
 
   context "Logged in as administrator" do
     before(:each) do
-      log_in_as('testadmin@bbc.com', 'testpass')
+      log_in_as('testadmin@bbc.com', 'testadmin@bbc.com')
     end
 
     describe "Admin visits all pages" do

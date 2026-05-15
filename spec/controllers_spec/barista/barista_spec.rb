@@ -32,7 +32,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
   context "As a logged-in barista" do
     before(:each) do
-      log_in_as('testbarista@bbc.com', 'testpass')
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
     end
 
     describe "Portal Navigation Boundaries" do

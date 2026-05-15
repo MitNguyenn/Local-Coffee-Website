@@ -10,7 +10,7 @@ RSpec.describe "Account Management", type: :feature do
 
   context "when logged in" do
     before (:each) do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
     end
 
     describe "user visits accounts page" do
