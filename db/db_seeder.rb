@@ -6,10 +6,14 @@ require 'date'
 
 module DatabaseSeeder
   def self.seed_data(db_connection)
+    # Clear existing tables before population to prevent stale data conflicts
     db_connection.tables.each do |table|
       db_connection[table].delete if db_connection.table_exists?(table)
     end
 
+    # =========================================================================
+    # 1. SEED ACCOUNTS
+    # =========================================================================
     puts "Seeding Accounts table..."
     password_hash = BCrypt::Password.create("password123")
 
@@ -34,10 +38,7 @@ module DatabaseSeeder
       )
     end
 
-    # ACCOUNTS USED IN TESTING ARE BELOW!
-
-    # Test customer
-
+    # Test Accounts
     test_password_hash = BCrypt::Password.create("testpass")
 
     db_connection[:Accounts].insert(
@@ -46,7 +47,7 @@ module DatabaseSeeder
       last_name: "Test",
       stamp_count: 4,
       email: "testcust@bbc.com",
-      hashed_password: BCrypt::Password.create("testcust@bbc.com""),
+      hashed_password: BCrypt::Password.create("testcust@bbc.com"),
       phone_number: "07395456261",
       postcode: "S3 6RL",
       address: "1 Street Road, Sheffield",
@@ -66,7 +67,6 @@ module DatabaseSeeder
       account_type: "customer",
       recent_login: Time.now - (31 * 24 * 60 * 60)
     )
-    # Test barista
 
     db_connection[:Accounts].insert(
       user_id: 2,
@@ -81,8 +81,6 @@ module DatabaseSeeder
       account_type: "barista"
     )
 
-    # Test manager
-
     db_connection[:Accounts].insert(
       user_id: 3,
       first_name: "Manager",
@@ -95,8 +93,6 @@ module DatabaseSeeder
       address: "5 Manager Street, Sheffield",
       account_type: "manager"
     )
-
-    # Test administrator
 
     db_connection[:Accounts].insert(
       user_id: 4,
@@ -139,6 +135,7 @@ module DatabaseSeeder
       flagged: true
     )
 
+    # Random Customers
     15.times do |i|
       db_connection[:Accounts].insert(
         user_id: 200000 + i,
@@ -150,10 +147,11 @@ module DatabaseSeeder
         phone_number: "07#{rand(100000000..999999999)}",
         postcode: "S#{rand(1..10)} 2BB",
         address: "#{rand(1..100)} Residence Rd, Sheffield",
-        account_type: "customer",
+        account_type: "customer"
       )
     end
 
+    # Specific Developer Accounts
     finn_password = BCrypt::Password.create("testpassword?!")
     db_connection[:Accounts].insert(
       user_id: 23242526, 
@@ -183,18 +181,20 @@ module DatabaseSeeder
     )
     puts "Done"
 
+    # =========================================================================
+    # 2. SEED INVENTORY & RULES
+    # =========================================================================
     puts "Seeding beans..."
     bean_list = [
-      ["Ethiopian",   25.0, 8.20],
-      ["Brazillian",  17.0, 6.35],
-      ["Arabic",      13.0, 4.75]
+      ["Ethiopian",   150.0, 8.20],
+      ["Brazillian",  150.0, 6.35],
+      ["Arabic",      200.0, 4.75]
     ]
 
-    bean_list.each do |origin, mass, price |
-      puts "inserting: #{origin} #{mass} #{price}"
+    bean_list.each do |origin, mass, price|
       db_connection[:Beans].insert(
         origin: origin,
-        stock_mass: mass, # mass in kg
+        stock_mass: mass,
         price_per_250g: price
       )
     end
@@ -206,7 +206,7 @@ module DatabaseSeeder
       [ 500.0,  1.7 ],
       [ 1000.0, 3.3 ]
     ]
-    beans_pack_weight_price_markup_multipliers.each do | weight, markup_multiplier |
+    beans_pack_weight_price_markup_multipliers.each do |weight, markup_multiplier|
       db_connection[:BeansPackWeightPriceMarkupMultipliers].insert(
         pack_weight: weight,
         markup_multiplier: markup_multiplier
@@ -215,26 +215,22 @@ module DatabaseSeeder
     puts "Done"
 
     puts "Seeding roasts..."
-    bean_roasts = [ "Light", "Medium", "Dark"]
-    bean_roasts.each do | roast |
-      puts "inserting: #{roast}"
-      db_connection[:BeanRoastLevels].insert(
-        roast_level: roast
-      )
+    bean_roasts = ["Light", "Medium", "Dark"]
+    bean_roasts.each do |roast|
+      db_connection[:BeanRoastLevels].insert(roast_level: roast)
     end
     puts "Done"
 
     puts "Seeding drinks..."
     drinks = [
       ["Latte",      4.40, true,   "Smooth espresso with steamed milk"],
-      ["Americano",  3.8,  false,  "A rich, double-shot of espresso diluted with hot water for a smooth, bold finish."], 
-      ["Cappuccino", 4.4,  true,   "Equal parts espresso, steamed milk, and a thick layer of silky foam, topped with a dusting of cocoa."], 
-      ["Flat white", 4.35, true,   "Velvety micro-foam poured over a double-shot of ristretto for a creamy yet coffee-forward experience."],
-      ["Cortado",    3.7,  true,   "A perfectly balanced 1:1 ratio of espresso and warm milk to reduce acidity without the volume of a latte."]
+      ["Americano",  3.80, false,  "A rich, double-shot of espresso diluted with hot water for a bold finish."], 
+      ["Cappuccino", 4.40, true,   "Equal parts espresso, steamed milk, and a thick layer of silky foam."], 
+      ["Flat white", 4.35, true,   "Velvety micro-foam poured over a double-shot of ristretto."],
+      ["Cortado",    3.70, true,   "A perfectly balanced 1:1 ratio of espresso and warm milk."]
     ]
 
-    drinks.each do | bev, price, contains_milk, description|
-      puts "inserting: #{bev} #{price} #{description}"
+    drinks.each do |bev, price, contains_milk, description|
       db_connection[:Drinks].insert(
         beverage: bev,
         contains_milk: contains_milk,
@@ -249,8 +245,7 @@ module DatabaseSeeder
       ["Regular", 1.0],
       ["Large",   1.2]
     ]
-    drink_size_price_markup_mutlipliers.each do | size, markup_multiplier | 
-      puts "inserting: #{size} #{markup_multiplier}"
+    drink_size_price_markup_mutlipliers.each do |size, markup_multiplier| 
       db_connection[:DrinkSizePriceMarkupMultipliers].insert(
         drink_size: size,
         markup_multiplier: markup_multiplier
@@ -259,13 +254,12 @@ module DatabaseSeeder
     puts "Done"
 
     puts "Seeding milkTypes table..."
-    milk_types = [
+    milk_types_data = [
       ["Whole", 0.1],
       ["Oat",   0.3],
       ["Soy",   0.2]
     ]
-    milk_types.each do | type, price |
-      puts "inserting: #{type} #{price}"
+    milk_types_data.each do |type, price|
       db_connection[:MilkTypes].insert(
         milk_type: type, 
         price: price
@@ -273,64 +267,144 @@ module DatabaseSeeder
     end
     puts "Done"
 
-    puts "Seeding orders and orderItems tables..."
-    grams_beans_bought = 250.0
-    kg_bought = grams_beans_bought / 1000.0
+    # =========================================================================
+    # 3. SEED BULK HISTORICAL ORDERS & ITEMS (Unique Composite Key Logic)
+    # =========================================================================
+    puts "Seeding orders and orderItems tables with extensive history..."
     
-    db_connection[:Beans].where(origin: "Arabic").update(
-      stock_mass: Sequel[:stock_mass] - kg_bought
-    )
+    # Pre-map datasets to optimize seeding performance
+    drinks_map   = db_connection[:Drinks].to_hash(:beverage, :regular_price)
+    sizes_map    = db_connection[:DrinkSizePriceMarkupMultipliers].to_hash(:drink_size, :markup_multiplier)
+    milks_map    = db_connection[:MilkTypes].to_hash(:milk_type, :price)
+    beans_map    = db_connection[:Beans].to_hash(:origin, :price_per_250g)
+    packs_map    = db_connection[:BeansPackWeightPriceMarkupMultipliers].to_hash(:pack_weight, :markup_multiplier)
 
-    puts "Creating an order for collection, with in-store payment"
-    order_id_1 = db_connection[:Orders].insert(
-      # order_id is created automatically by sequel
-      user_id: 23242526,
+    customer_ids = db_connection[:Accounts].where(account_type: "customer").map(:user_id)
+    drink_names  = drinks_map.keys
+    bean_origins = beans_map.keys
+    milk_options = milks_map.keys
+    roast_opts   = db_connection[:BeanRoastLevels].map(:roast_level)
+    pack_weights = [250.0, 500.0, 1000.0]
 
-      created_at: Time.now,
+    stock_deductions = Hash.new(0.0)
 
-      address: "221b Baker St",
-      postcode:    "NW1 6XE",
+    # Generate 150 unique historical transactions
+    150.times do |i|
+      user_id = customer_ids.sample
+      days_ago = rand(0..30)
+      hours_ago = rand(1..23)
+      created_time = Time.now - (days_ago * 86400) - (hours_ago * 3600)
 
-      total_cost: 5.58,
-      payment_is_completed: false,
-
-      order_is_completed: false,
-    )
-
-    db_connection[:OrderItems].insert(
-      order_id: order_id_1,
-      item_id: "Latte", 
-      product_type: "drink",
-      quantity: 1,
-      milk_type: "Oat",
-      drink_size: "Large"
-    )
-
-    puts "Creating an order for delivery, with completed payment"
-    order_id_2 = db_connection[:Orders].insert(
-      user_id: 23242526,
-
-      created_at: Time.now-86400,
-
-      address: "1 Coffee Lane",
-      postcode: "S1 1AA",
+      is_delivery = [true, false].sample
+      address     = is_delivery ? "#{rand(1..120)} Delivery Lane, Sheffield" : "221b Baker St"
+      postcode    = is_delivery ? "S#{rand(1..11)} #{rand(1..9)}XX" : "NW1 6XE"
       
-      total_cost: 4.75,
-      payment_is_completed: true,
+      payment_done = days_ago > 2 ? [true, true, false].sample : [true, false].sample
+      order_done   = days_ago > 1 ? payment_done : false
 
-      order_is_completed: false,
-    )
+      # Create order record shell
+      order_id = db_connection[:Orders].insert(
+        user_id: user_id,
+        created_at: created_time,
+        address: address,
+        postcode: postcode,
+        total_cost: 0.0,
+        payment_is_completed: payment_done,
+        order_is_completed: order_done
+      )
 
-    db_connection[:OrderItems].insert(
-      order_id: order_id_2,
-      item_id: "Arabic",
-      product_type: "bean",
-      quantity: 1,
-      pack_weight: 250,
-      roast_level: "Light"
-    )
+      order_total = 0.0
+      items_count = rand(1..3)
+      
+      # Buffer items in memory to guarantee distinct item_id modifications per order_id
+      order_items_buffer = {}
+
+      items_count.times do
+        product_type = ["drink", "bean"].sample
+        quantity     = rand(1..2)
+
+        if product_type == "drink"
+          item_id    = drink_names.sample
+          drink_size = ["Regular", "Large"].sample
+          milk       = milk_options.sample
+          
+          base_price = drinks_map[item_id] || 4.00
+          size_mult  = sizes_map[drink_size] || 1.0
+          milk_add   = milks_map[milk] || 0.0
+          item_cost  = ((base_price * size_mult) + milk_add) * quantity
+          
+          if order_items_buffer[item_id]
+            order_items_buffer[item_id][:quantity] += quantity
+            order_items_buffer[item_id][:calculated_cost] += item_cost
+          else
+            order_items_buffer[item_id] = {
+              product_type: "drink",
+              quantity: quantity,
+              milk_type: milk,
+              drink_size: drink_size,
+              pack_weight: nil,
+              roast_level: nil,
+              calculated_cost: item_cost
+            }
+          end
+        else
+          item_id     = bean_origins.sample
+          pack_weight = pack_weights.sample
+          roast       = roast_opts.sample
+          
+          base_price_250 = beans_map[item_id] || 5.00
+          weight_mult    = packs_map[pack_weight] || 1.0
+          item_cost      = (base_price_250 * weight_mult) * quantity
+          
+          stock_deductions[item_id] += (pack_weight / 1000.0) * quantity
+
+          if order_items_buffer[item_id]
+            order_items_buffer[item_id][:quantity] += quantity
+            order_items_buffer[item_id][:calculated_cost] += item_cost
+          else
+            order_items_buffer[item_id] = {
+              product_type: "bean",
+              quantity: quantity,
+              milk_type: nil,
+              drink_size: nil,
+              pack_weight: pack_weight,
+              roast_level: roast,
+              calculated_cost: item_cost
+            }
+          end
+        end
+      end
+
+      # Safely write memory buffered records to OrderItems table
+      order_items_buffer.each do |item_id, details|
+        db_connection[:OrderItems].insert(
+          order_id: order_id,
+          item_id: item_id,
+          product_type: details[:product_type],
+          quantity: details[:quantity],
+          milk_type: details[:milk_type],
+          drink_size: details[:drink_size],
+          pack_weight: details[:pack_weight],
+          roast_level: details[:roast_level]
+        )
+        order_total += details[:calculated_cost]
+      end
+
+      # Update parent transaction record with complete financial tracking data
+      db_connection[:Orders].where(order_id: order_id).update(total_cost: order_total.round(2))
+    end
+
+    # Apply global batch stock mass modifications
+    stock_deductions.each do |origin, kg_bought|
+      db_connection[:Beans].where(origin: origin).update(
+        stock_mass: Sequel[:stock_mass] - kg_bought
+      )
+    end
     puts "Done"
 
+    # =========================================================================
+    # 4. SEED TICKETS, AUDITS & DISCOUNTS
+    # =========================================================================
     complaint_samples = [
       "My coffee was cold.",
       "The delivery driver couldn't find my flat.",
@@ -346,8 +420,6 @@ module DatabaseSeeder
       "I don't like coffee",
       "The packaging was heavily damaged on arrival"
     ]
-
-    customer_ids = db_connection[:Accounts].where(account_type: "customer").map(:user_id)
 
     puts "Seeding tickets table..."
     20.times do
@@ -368,7 +440,8 @@ module DatabaseSeeder
     end
     puts "Done"
 
-    10.times do
+    puts "Seeding audits table..."
+    30.times do
       order_row = db_connection[:Orders].select(:order_id).order(Sequel.lit('RANDOM()')).first
       if order_row
         db_connection[:Audits].insert(
@@ -379,14 +452,16 @@ module DatabaseSeeder
         )
       end
     end
+    puts "Done"
 
-    # DISCOUNTS
+    puts "Seeding discounts table..."
     db_connection[:Discounts].insert(discount_name: "discount1", discount_multiplier: 0.9)
     db_connection[:Discounts].insert(discount_name: "discount2", discount_multiplier: 0.8)
     db_connection[:Discounts].insert(discount_name: "discount3", discount_multiplier: 0.5)
+    puts "Done"
 
-    puts "#{db_connection.tables.count} tables populated:"
-    db_connection.tables.each { |table| printf(" %s ", table) }
+    puts "\n#{db_connection.tables.count} tables populated:"
+    db_connection.tables.each { |table| printf(" [%s] ", table) }
     puts "\n"
   end
 end
