@@ -2,7 +2,7 @@ RSpec.describe 'Staff Portal', type: :feature do
 
     context "when logged in as a barista" do
         before(:each) {
-            log_in_as('testbarista@bbc.com', 'testpass')
+            log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
             visit '/staff-portal'
         }
 
@@ -41,7 +41,7 @@ RSpec.describe 'Staff Portal', type: :feature do
 
     context "when logged in as a manager" do
         before(:each) {
-            log_in_as('testmanager@bbc.com', 'testpass')
+            log_in_as('testmanager@bbc.com', 'testmanager@bbc.com')
             visit '/staff-portal'
         }
 
@@ -102,7 +102,7 @@ RSpec.describe 'Staff Portal', type: :feature do
 
     context "when logged in as an admin" do
         before(:each) {
-            log_in_as('testadmin@bbc.com', 'testpass')
+            log_in_as('testadmin@bbc.com', 'testadmin@bbc.com')
             visit '/staff-portal'
         }
 
@@ -175,7 +175,7 @@ RSpec.describe 'Staff Portal', type: :feature do
             expect(page).to have_content('Flagged Accounts')
         end
         it 'shows  link and clicks through to correct page' do
-            click_link 'Order Management'
+            click_link 'Admin Orders'
             expect(current_path).to eq('/order-management/administrator')
             expect(page).to have_content('Admin Order Controls')
         end

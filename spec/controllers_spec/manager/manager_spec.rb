@@ -8,13 +8,13 @@ RSpec.describe "ManagerController", type: :feature do
     end
 
     it "redirects a plain customer away from bean stock management" do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       visit "/bean-stock-management"
       expect(current_path).to eq("/")
     end
 
     it "redirects a barista away from discount management" do
-      log_in_as('testbarista@bbc.com', 'testpass')
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
       visit "/manage-discounts"
       expect(current_path).to eq("/")
     end

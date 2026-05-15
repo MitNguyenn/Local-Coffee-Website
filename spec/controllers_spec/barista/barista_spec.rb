@@ -7,7 +7,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
     end
 
     it "redirects a regular customer to the home page" do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       visit "/staff-portal"
       expect(current_path).to eq("/")
     end
@@ -18,22 +18,33 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
     end
 
     it "redirects a plain customer away from finding users for an order" do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       visit "/place-order/find-user"
       expect(current_path).to eq("/")
     end
 
     it "redirects a plain customer away from the order contents basket" do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       visit "/place-order/contents"
       expect(current_path).to eq("/")
     end
   end
 
   context "As a logged-in barista" do
-    before(:each) do
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
-    end
+    context "As a logged-in barista" do
+  before(:each) do
+    spec_before 
+    
+    DB[:Accounts].insert(user_id: 100, email: 'testbarista@bbc.com', password: BCrypt::Password.create('testbarista@bbc.com'), account_type: 'barista')
+    
+    DB[:Accounts].insert(user_id: 1, email: 'testcust@bbc.com', password: BCrypt::Password.create('testcust@bbc.com'), account_type: 'customer', stamp_count: 4)
+    
+    DB[:Beans].insert(origin: 'Ethiopian', stock_mass: 105.50, price_per_250g: 8.20)
+    
+    DB[:Orders].insert(order_id: 500, user_id: 1, total_cost: 10.0, order_is_completed: false, created_at: Time.now)
+
+    log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+  end
 
     describe "Portal Navigation Boundaries" do
       it "can visit the staff portal cleanly" do
@@ -239,7 +250,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(7)
 
         # Confirm bean stock mass reductions took place (25.0kg initial - 0.25kg pack size = 24.75kg)
-        expect(DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)).to eq(24.75)
+        expect(DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)).to eq(105.25)
       end
     end
   end

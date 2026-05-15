@@ -41,9 +41,8 @@ RSpec.describe "Account Management", type: :feature do
         visit "/account-settings"
         
         # Click button and accept JavaScript confirmation popup modal automatically
-        accept_confirm do
-          click_button "Delete Account"
-        end
+        click_button "Delete Account"
+        
 
         # Verify router safely drops anonymous client back onto home landing
         expect(page.current_path).to eq("/")
@@ -68,7 +67,7 @@ RSpec.describe "Account Management", type: :feature do
     describe "user visits my orders page" do
       it "shows current and past orders correctly" do
 
-        log_in_as('finn@mail.com', 'testpassword?!')
+        log_in_as('testcust@bbc.com', 'testcust@bbc.com')
 
         visit "/my-orders"
         expect(page).to have_content("Latte")
