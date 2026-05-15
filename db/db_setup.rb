@@ -61,13 +61,16 @@ module DatabaseInitializer
     db_connection.create_table? :Orders do
       primary_key :order_id
       foreign_key :user_id, :Accounts, on_delete: :cascade
-      String      :order_type
-      String      :payment_method
-      Double      :total_cost, size: [10, 2]
+
       DateTime    :created_at, default: Sequel::CURRENT_TIMESTAMP
-      String      :location, default: 'In-Store'
-      TrueClass   :is_completed, default: false
-      String      :payment_status, default: 'Pending'
+
+      String      :address, default:  '1 Coffee Lane'
+      String      :postcode, default:  'S1 1AA'
+      
+      Double      :total_cost, size: [10, 2]
+      TrueClass   :payment_is_completed, default: false
+
+      TrueClass   :order_is_completed, default: false
     end
 
     db_connection.create_table? :OrderItems do
@@ -77,8 +80,8 @@ module DatabaseInitializer
       Integer :quantity, default: 1
       Double :pack_weight, default: nil
       String :roast_level, default: nil
-      String  :milk, default: nil  
-      String  :size, default: nil
+      String  :milk_type, default: nil  
+      String  :drink_size, default: nil
       primary_key [:order_id, :item_id]
     end
 

@@ -84,8 +84,8 @@
               <button type="button" class="bo-btn-fast-add" 
                       data-id="<%= frequent[:item_id] %>"
                       data-type="<%= frequent[:product_type] %>"
-                      data-milk="<%= frequent[:specifications][:milk] %>"
-                      data-size="<%= frequent[:specifications][:size] %>"
+                      data-milk="<%= frequent[:specifications][:milk_type] %>"
+                      data-size="<%= frequent[:specifications][:drink_size] %>"
                       data-weight="<%= frequent[:specifications][:pack_weight] %>"
                       data-roast="<%= frequent[:specifications][:roast_level] %>"
                       data-display="<%= frequent[:display_name] %>"
@@ -138,7 +138,7 @@
     let id = document.getElementById('cat-drink-id').value;
     let size = document.getElementById('cat-drink-size').value;
     let milk = document.getElementById('cat-drink-milk').value;
-    appendCartRow({ item_id: id, product_type: 'drink', quantity: 1, size: size, milk: milk, display_name: `${size} ${id} (${milk})` });
+    appendCartRow({ item_id: id, product_type: 'drink', quantity: 1, drink_size: size, milk_type: milk, display_name: `${size} ${id} (${milk})` });
   }
 
   function addBeanFromCatalog() {

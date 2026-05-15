@@ -63,7 +63,7 @@ RSpec.describe 'Home page', type: :feature do
       it 'sends the user to the homepage' do
         visit '/'
         click_link 'Staff Portal'
-        expect(current_path).to eq('/')
+        expect(current_path).to eq('/log-in')
       end
     end
     

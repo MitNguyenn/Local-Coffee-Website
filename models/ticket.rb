@@ -8,7 +8,4 @@ class Ticket < Sequel::Model(:Tickets)
     errors.add(:ticket_content, "cannot be blank") if !self.ticket_content || self.ticket_content.strip.empty?
   end
 
-  def resolved?
-    self.ticket_resolved == true
-  end
 end

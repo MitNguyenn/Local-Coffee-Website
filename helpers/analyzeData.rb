@@ -24,10 +24,10 @@ module AnalyzeData
     top_products = recent_items
       .select(
         Sequel.lit("CASE 
-          WHEN product_type = 'Drink' AND size IS NOT NULL THEN item_id || ' (' || size || ')'
-          WHEN product_type = 'Bean' AND roast_level IS NOT NULL THEN item_id || ' ' || roast_level || ' Roast'
-          ELSE item_id 
-        END AS product_name"),
+        WHEN product_type = 'Drink' AND drink_size IS NOT NULL THEN item_id || ' (' || drink_size || ')'
+        WHEN product_type = 'Bean' AND roast_level IS NOT NULL THEN item_id || ' ' || roast_level || ' Roast'
+        ELSE item_id 
+      END AS product_name"),
         Sequel.function(:sum, :quantity).as(:total_units)
       )
       .group(:product_name)
@@ -64,13 +64,13 @@ module AnalyzeData
       .select(
         :item_id,
         :product_type,
-        :milk,
-        :size,
+        :milk_type,
+        :drink_size,
         :pack_weight,
         :roast_level,
         Sequel.function(:count, :order_id).as(:frequency_count)
       )
-      .group(:item_id, :product_type, :milk, :size, :pack_weight, :roast_level)
+      .group(:item_id, :product_type, :milk_type, :drink_size, :pack_weight, :roast_level)
       .order(Sequel.desc(:frequency_count))
       .limit(limit_count)
       .all
@@ -80,7 +80,7 @@ module AnalyzeData
       # Format descriptive title names based strictly on the production category properties
       display_title = case row[:product_type]&.downcase
                       when 'drink'
-                        "#{row[:size]} #{row[:item_id]} (#{row[:milk]} Milk)"
+                        "#{row[:drink_size]} #{row[:item_id]} (#{row[:milk_type]} Milk)"
                       when 'bean'
                         "#{row[:item_id]} #{row[:roast_level]} Roast [#{row[:pack_weight].to_i}g]"
                       else
@@ -91,8 +91,8 @@ module AnalyzeData
         item_id: row[:item_id],
         product_type: row[:product_type],
         specifications: {
-          milk: row[:milk],
-          size: row[:size],
+          milk: row[:milk_type],
+          size: row[:drink_size],
           pack_weight: row[:pack_weight],
           roast_level: row[:roast_level]
         },

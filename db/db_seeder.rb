@@ -48,7 +48,7 @@ module DatabaseSeeder
       email: "testcust@bbc.com",
       hashed_password: test_password_hash,
       phone_number: "07395456261",
-      postcode: "S2 08L",
+      postcode: "S3 6RL",
       address: "1 Street Road, Sheffield",
       account_type: "customer"
     )
@@ -61,7 +61,7 @@ module DatabaseSeeder
       email: "testflag@bbc.com",
       hashed_password: test_password_hash,
       phone_number: "07395456261",
-      postcode: "S2 08L",
+      postcode: "S3 6RL",
       address: "1 Street Road, Sheffield",
       account_type: "customer",
       recent_login: Time.now - (31 * 24 * 60 * 60)
@@ -125,6 +125,20 @@ module DatabaseSeeder
       suspended: true
     )
 
+    db_connection[:Accounts].insert(
+      user_id: 8,
+      first_name: "Flaggy",
+      last_name: "Boy",
+      stamp_count: 52,
+      email: "testflagged@bbc.com",
+      hashed_password: test_password_hash,
+      phone_number: "07027536552",
+      postcode: "S13 HS9",
+      address: "67 Flagdown Street, Sheffield",
+      account_type: "customer",
+      flagged: true
+    )
+
     15.times do |i|
       db_connection[:Accounts].insert(
         user_id: 200000 + i,
@@ -180,7 +194,7 @@ module DatabaseSeeder
       puts "inserting: #{origin} #{mass} #{price}"
       db_connection[:Beans].insert(
         origin: origin,
-        stock_mass: mass,
+        stock_mass: mass, # mass in kg
         price_per_250g: price
       )
     end
@@ -267,15 +281,20 @@ module DatabaseSeeder
       stock_mass: Sequel[:stock_mass] - kg_bought
     )
 
+    puts "Creating an order for collection, with in-store payment"
     order_id_1 = db_connection[:Orders].insert(
+      # order_id is created automatically by sequel
       user_id: 23242526,
-      order_type: "In-Person",
-      payment_method: "Card",
+
       created_at: Time.now,
-      location: "In-Store",
-      is_completed: true,
-      payment_status: 'Paid',
-      total_cost: 10.33 
+
+      address: "221b Baker St",
+      postcode:    "NW1 6XE",
+
+      total_cost: 5.58,
+      payment_is_completed: false,
+
+      order_is_completed: false,
     )
 
     db_connection[:OrderItems].insert(
@@ -283,12 +302,27 @@ module DatabaseSeeder
       item_id: "Latte", 
       product_type: "drink",
       quantity: 1,
-      milk: "Oat",
-      size: "Large"
+      milk_type: "Oat",
+      drink_size: "Large"
+    )
+
+    puts "Creating an order for delivery, with completed payment"
+    order_id_2 = db_connection[:Orders].insert(
+      user_id: 23242526,
+
+      created_at: Time.now-86400,
+
+      address: "1 Coffee Lane",
+      postcode: "S1 1AA",
+      
+      total_cost: 4.75,
+      payment_is_completed: true,
+
+      order_is_completed: false,
     )
 
     db_connection[:OrderItems].insert(
-      order_id: order_id_1,
+      order_id: order_id_2,
       item_id: "Arabic",
       product_type: "bean",
       quantity: 1,
@@ -296,35 +330,6 @@ module DatabaseSeeder
       roast_level: "Light"
     )
     puts "Done"
-
-    order_id_2 = db_connection[:Orders].insert(
-      user_id: 23242526,
-      order_type: "In-Person",
-      payment_method: "Card",
-      created_at: Time.now-86400,
-      location: "In-Store",
-      is_completed: false,
-      payment_status: 'Paid',
-      total_cost: 10.33 
-    )
-
-    db_connection[:OrderItems].insert(
-      order_id: order_id_2,
-      item_id: "Latte", 
-      product_type: "drink",
-      quantity: 1,
-      milk: "Oat",
-      size: "Large"
-    )
-
-    db_connection[:OrderItems].insert(
-      order_id: order_id_2,
-      item_id: "Arabic",
-      product_type: "bean",
-      quantity: 1,
-      pack_weight: 250,
-      roast_level: "Light"
-    )
 
     complaint_samples = [
       "My coffee was cold.",

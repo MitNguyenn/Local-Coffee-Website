@@ -2,14 +2,14 @@ module MyOrders
   def fetch_current_orders(user_id)
     DB[:Orders]
       .join(:OrderItems, order_id: :order_id)
-      .where(user_id: user_id, is_completed: false)
+      .where(user_id: user_id, order_is_completed: false)
       .all
   end
 
   def fetch_past_orders(user_id)
     DB[:Orders]
       .join(:OrderItems, order_id: :order_id)
-      .where(user_id: user_id, is_completed: true)
+      .where(user_id: user_id, order_is_completed: true)
       .all
   end
   

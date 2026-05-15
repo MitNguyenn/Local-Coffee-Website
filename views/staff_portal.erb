@@ -1,64 +1,85 @@
-<% if session[:account_type] == 'barista' %>
-<h1 class = "sp-page-title">Barista Portal</h1>
-  <div class = "sp-page-box">
-    <a href="/order-management/barista" class="sp-page-hyperlink">View Orders</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
-  </div>
-<% elsif session[:account_type] == 'manager' %>
-<h1 class = "sp-page-title">Manager Portal</h1>
-  <div class = "sp-page-box">
-    <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/stock-management" class="sp-page-hyperlink">Manage Stock</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
-  </div>
-  <div class = "sp-page-box">
-  <div class = "sp-page-box">
-    <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/edit-drink-details" class="sp-page-hyperlink">Edit Drink Details</a>
-  </div>
+<div class="portal-page-wrapper">
+  <h1 class="portal-page-title">Staff Portal</h1>
 
-<% elsif session[:account_type] == 'administrator' %>
-<h1 class = "sp-page-title">Administrator Portal</h1>
-  <div class = "sp-page-box">
-    <a href="/metrics" class="sp-page-hyperlink">View Metrics</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/manage-accounts" class="sp-page-hyperlink">Manage Accounts</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/user-tickets" class="sp-page-hyperlink">View User Tickets</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/refund-tickets" class="sp-page-hyperlink">View Refund Requests</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/stock-management" class="sp-page-hyperlink">Manage Stock</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/order-management/administrator" class="sp-page-hyperlink">Manage Orders</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/flagged-accounts" class="sp-page-hyperlink">flagged Accounts</a>
-  </div>
-  <div class = "sp-page-box">
-    <a href="/manage-loyalty-cards" class="sp-page-hyperlink">Manage Loyalty Cards</a>
-  </div>
-  
-<% end %>
+  <% if ["administrator", "manager", "barista"].include?(session[:account_type]) %>
+    <p class="portal-section-label">Operations</p>
+    <div class="portal-grid">
+      <a href="/place-order/find-user" class="portal-tile">
+        <p class="portal-tile-label">Place User Order</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/order-management/barista" class="portal-tile">
+        <p class="portal-tile-label">Order Management</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/manage-loyalty-cards" class="portal-tile">
+        <p class="portal-tile-label">Loyalty Cards</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/daily-summary" class="portal-tile">
+        <p class="portal-tile-label">Daily Summary</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/sales-history" class="portal-tile">
+        <p class="portal-tile-label">Sales History</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
+
+    <p class="portal-section-label">Support</p>
+    <div class="portal-grid">
+      <a href="/user-tickets" class="portal-tile">
+        <p class="portal-tile-label">User Tickets</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/refund-tickets" class="portal-tile">
+        <p class="portal-tile-label">Refunds</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
+  <% end %>
+
+  <% if ["administrator", "manager"].include?(session[:account_type]) %>
+    <p class="portal-section-label">Management</p>
+    <div class="portal-grid">
+      <a href="/metrics" class="portal-tile">
+        <p class="portal-tile-label">Metrics</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/manage-discounts" class="portal-tile">
+        <p class="portal-tile-label">Discount Management</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/bean-stock-management" class="portal-tile">
+        <p class="portal-tile-label">Bean Stocks</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
+  <% end %>
+
+  <% if session[:account_type] == "administrator" %>
+    <p class="portal-section-label">Administration</p>
+    <div class="portal-grid">
+      <a href="/manage-accounts" class="portal-tile">
+        <p class="portal-tile-label">User Accounts</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/employee-accounts" class="portal-tile">
+        <p class="portal-tile-label">Employee Accounts</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/flagged-accounts" class="portal-tile">
+        <p class="portal-tile-label">Flagged Accounts</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/order-management/administrator" class="portal-tile">
+        <p class="portal-tile-label">Admin Orders</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+      <a href="/database-status" class="portal-tile">
+        <p class="portal-tile-label">Database Controls</p>
+        <span class="portal-tile-arrow">→</span>
+      </a>
+    </div>
+  <% end %>
+</div>
