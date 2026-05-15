@@ -68,8 +68,10 @@ class ManagerController < BaseController
   post '/update-drink-details' do
     new_prices = params[:prices]
     @drinks = Drink.all
+    puts new_prices.class
     
     @drinks.each_with_index do |drink, i|
+      puts new_prices[i].class
       drink.update(regular_price: new_prices[i].to_f)
     end
     redirect '/edit-drink-details'
