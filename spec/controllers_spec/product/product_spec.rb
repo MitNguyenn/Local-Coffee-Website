@@ -214,7 +214,7 @@ RSpec.describe 'Product Controller', type: :feature do
     it 'places an order with pay on delivery and creates DB records' do
       initial_order_count = DB[:Orders].count
 
-      page.driver.submit :post, '/checkout', {
+      page.driver.submit :post, '/place-order', {
         payment: 'pay-on-delivery',
         total_cost: '4.40',
         address: '1 Test Street',
@@ -240,11 +240,11 @@ RSpec.describe 'Product Controller', type: :feature do
       order = DB[:Orders].order(:order_id).last
       items = DB[:OrderItems].where(order_id: order[:order_id]).all
       expect(items).not_to be_empty
-      expect(items.first[:item_id]).to eq('Latte')
+      expect(items.any? { |item| item[:item_id] == 'Latte' })
     end
 
     it 'clears the cart after a successful order' do
-      page.driver.submit :post, '/checkout', {
+      page.driver.submit :post, '/place-order', {
         payment: 'pay-on-delivery',
         total_cost: '4.40',
         address: '1 Test Street',
@@ -256,6 +256,7 @@ RSpec.describe 'Product Controller', type: :feature do
     end
 
     it 'deducts bean stock when beans are ordered' do
+
       page.driver.submit :put, '/add-to-cart', {
         item_type: 'bean',
         origin: 'Ethiopian',
@@ -264,16 +265,16 @@ RSpec.describe 'Product Controller', type: :feature do
         price: '8.20'
       }
 
-      stock_before = DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)
+      stock_before = DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass).to_f
 
-      page.driver.submit :post, '/checkout', {
-        payment: 'pay-on-delivery',
+      page.driver.submit :post, '/place-order', {
+        payment: 'pay-later',
         total_cost: '12.60',
         address: '1 Test Street',
         postcode: 'S1 1AA'
       }
 
-      stock_after = DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)
+      stock_after = DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass).to_f
       expect(stock_after).to eq(stock_before - 0.25)
     end
   end

@@ -1,4 +1,4 @@
-before ['/place-order*', '/external-payment-gateway*', '/payment-callback*', '/order-success*'] do
+before ['/place-order*', '/external-payment-gateway*', '/payment-callback*', '/order-success*', '/checkout'] do
   redirect '/log-in' unless session[:user_id]
 end
 

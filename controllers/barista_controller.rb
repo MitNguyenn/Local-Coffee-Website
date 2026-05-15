@@ -17,7 +17,8 @@ before [
   '/refund-tickets*', 
   '/refund*', 
   '/daily-summary*', 
-  '/sales-history*'
+  '/sales-history*',
+  '/place-order/*'
 ] do
   unless session[:user_id]
     redirect '/log-in'
