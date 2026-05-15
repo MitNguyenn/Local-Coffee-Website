@@ -94,6 +94,7 @@ end
 
 get '/external-payment-gateway' do
   @order_id = params[:order_id]
+  @payment_status = flip_coin ? 'success' : 'failure'
   erb :mock_gateway, layout: false
 end
 
