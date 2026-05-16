@@ -82,7 +82,7 @@ module DatabaseInitializer
       String :roast_level, default: nil
       String  :milk_type, default: nil  
       String  :drink_size, default: nil
-      primary_key [:order_id, :item_id]
+      primary_key [ :order_id, :item_id ]
     end
 
     db_connection.create_table? :Tickets do

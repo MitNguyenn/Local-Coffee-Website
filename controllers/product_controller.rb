@@ -9,9 +9,10 @@ end
 # CORE WORKER MODULE METHODS (No Class Context)
 # ==============================================================================
 
-  def finalize_stamps(user_id, cart)
+  def finalize_stamps(user_id)
     stamps_to_add = 0
-    cart.each do |key, data|
+
+    session[:cart].each do |key, data|
       if [data[:item_type]] == 'bean'
         stamps_to_add += 3*data[:quantity]
       elsif data[:item_type] == 'drink'
@@ -82,49 +83,47 @@ end
     redirect '/log-in' unless logged_in?
     user = DB[:Accounts].where(user_id: session[:user_id]).first
 
-    p 
-    p params[:payment]
-    p "=================="
     total_cost = params[:total_cost].to_f.round(2)
-    payment_successful    = nil
+    @payment_successful    = nil
     payment_is_completed = false
 
     if params[:payment] == "pay-now"
       p "checking if payment is successful"
-      payment_successful = flip_coin()
-      payment_is_completed = payment_successful
+      @payment_successful = flip_coin()
+      payment_is_completed = @payment_successful
     end
 
     address = params[:address]
     postcode = params[:postcode]
 
-    p "payment_successful = #{payment_successful}"
-    p "user_id = #{user[:user_id]}"
-    p "address = #{address}"
-    p "postcode = #{postcode}" 
-    p "total_cost = #{total_cost}"
-    p "payment_is_completed = #{payment_is_completed}"
+    # ===========Debugging messages=================
+    # p "payment_successful = #{payment_successful}"
+    # p "user_id = #{user[:user_id]}"
+    # p "address = #{address}"
+    # p "postcode = #{postcode}" 
+    # p "total_cost = #{total_cost}"
+    # p "payment_is_completed = #{payment_is_completed}"
 
-    session[:cart].each do | key, data |
-      p data
-      if data[:item_type] == "bean"
-        p data[:item_type]
-        p data[:origin]
-        p data[:quantity]
-        p data[:pack_weight]
-        p data[:roast_level]
-      else
-        p data[:item_data]
-        p data[:beverage]
-        p data[:quantity]
-        p data[:milk_type]
-        p data[:drink_size]
-      end
-    end
-    p "=================="
-    p
+    # session[:cart].each do | key, data |
+    #   p data
+    #   if data[:item_type] == "bean"
+    #     p data[:item_type]
+    #     p data[:origin]
+    #     p data[:quantity]
+    #     p data[:pack_weight]
+    #     p data[:roast_level]
+    #   else
+    #     p data[:item_data]
+    #     p data[:beverage]
+    #     p data[:quantity]
+    #     p data[:milk_type]
+    #     p data[:drink_size]
+    #   end
+    # end
+    # p "=================="
+    # p
 
-    if payment_successful == true || payment_successful == nil
+    if @payment_successful == true || @payment_successful == nil
       begin 
         order_id = DB[:Orders].insert(
           user_id: user[:user_id],
@@ -182,14 +181,12 @@ end
       end
 
       p "Successfully placed order"
+      finalize_stamps(session[:user_id])
       session[:cart].clear
       session[:contains_drink] = false
-      { status: :ok }.to_json
-    elsif payment_successful == false
-      p "Payment failed"
-      status 422
-      { status: :unprocessable_entity }.to_json
     end
+
+    erb :mock_gateway, layout: false
   end
 
   get '/order-fail' do
@@ -227,6 +224,21 @@ end
 
     "Success".to_json
   end
+
+  get '/external-payment-gateway' do
+    erb :mock_gateway, layout: false
+  end
+
+  get '/payment-callback' do
+    status  = params[:status]
+    if status == "true"
+      erb :order_success
+    elsif status == "false"
+      erb :order_fail
+    else p "status = #{status}"
+    end
+  end
+    
 
   put '/add-to-cart' do
     session[:cart] ||= { }
