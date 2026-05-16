@@ -61,8 +61,10 @@ get '/order-management/barista' do
       Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
+    .order(Sequel.desc(Sequel[:Orders][:order_id])) # <-- Add this line here
     .all
     .group_by { |row| row[:order_id] }
+    
   erb :order_management_barista
 end
 
