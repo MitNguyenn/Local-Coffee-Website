@@ -63,7 +63,7 @@ post '/update-account' do
   redirect '/'
 end
 
-post '/delete-account' do
+post '/delete-my-account' do
   # 1. Enforce authentication security checkpoint
   if session[:user_id]
     # 2. Purge record matching active session identifier

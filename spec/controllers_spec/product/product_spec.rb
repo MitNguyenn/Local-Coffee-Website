@@ -52,7 +52,7 @@ RSpec.describe 'Product Controller', type: :feature do
     end
 
     context 'when logged in as a customer' do
-      before(:each) { log_in_as('testcust@bbc.com', 'testpass') }
+      before(:each) { log_in_as('testcust@bbc.com', 'testcust@bbc.com') }
 
       it 'allows access to checkout page' do
         visit '/checkout'
@@ -68,7 +68,7 @@ RSpec.describe 'Product Controller', type: :feature do
 
 
   describe 'Cart management' do
-    before(:each) { log_in_as('testcust@bbc.com', 'testpass') }
+    before(:each) { log_in_as('testcust@bbc.com', 'testcust@bbc.com') }
 
     describe 'Adding items' do
       it 'adds a bean to the cart' do
@@ -200,7 +200,7 @@ RSpec.describe 'Product Controller', type: :feature do
 
   describe 'Checkout and order placement' do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       # Add a drink to cart
       page.driver.submit :put, '/add-to-cart', {
         item_type: 'drink',
@@ -214,7 +214,7 @@ RSpec.describe 'Product Controller', type: :feature do
     it 'places an order with pay on delivery and creates DB records' do
       initial_order_count = DB[:Orders].count
 
-      page.driver.submit :post, '/place-order', {
+      page.driver.submit :post, '/checkout', {
         payment: 'pay-on-delivery',
         total_cost: '4.40',
         address: '1 Test Street',
@@ -267,7 +267,7 @@ RSpec.describe 'Product Controller', type: :feature do
 
       stock_before = DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass).to_f
 
-      page.driver.submit :post, '/place-order', {
+      page.driver.submit :post, '/checkout', {
         payment: 'pay-later',
         total_cost: '12.60',
         address: '1 Test Street',
@@ -281,7 +281,7 @@ RSpec.describe 'Product Controller', type: :feature do
 
 
   describe 'Order fail page' do
-    before(:each) { log_in_as('testcust@bbc.com', 'testpass') }
+    before(:each) { log_in_as('testcust@bbc.com', 'testcust@bbc.com') }
 
     it 'displays the order fail page' do
       visit '/order-fail'

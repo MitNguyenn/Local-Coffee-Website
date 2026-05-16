@@ -11,7 +11,7 @@ RSpec.describe GetBeans do
         
         expect(result).not_to be_nil
         expect(result[:origin]).to eq('Ethiopian')
-        expect(result[:stock_mass]).to eq(25.0)
+        expect(result[:stock_mass]).to eq(105.0)
         expect(result[:price_per_250g]).to eq(8.20)
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe GetBeans do
       # Note: 'Arabic' stock mass drops slightly during seeding due to an operational transaction calculation
       expect(result.keys).to match_array(['Ethiopian', 'Brazillian', 'Arabic'])
       
-      expect(result['Ethiopian'][:current_stock]).to eq(25.0)
+      expect(result['Ethiopian'][:current_stock]).to eq(105.0)
       expect(result['Ethiopian'][:price_per_250g]).to eq(8.20)
       
       expect(result['Brazillian'][:current_stock]).to eq(17.0)

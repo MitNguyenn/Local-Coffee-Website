@@ -35,7 +35,7 @@ RSpec.describe 'Home page', type: :feature do
   end
 
   context 'when logged in as user' do 
-    before(:each) { log_in_as('testcust@bbc.com', 'testpass')}
+    before(:each) { log_in_as('testcust@bbc.com', 'testcust@bbc.com')}
     it 'opens the loyalty card page' do
       visit '/'
       click_link 'Loyalty Card'
@@ -68,7 +68,7 @@ RSpec.describe 'Home page', type: :feature do
     end
     
     context 'when logged in as a customer' do
-      before (:each) {log_in_as('testcust@bbc.com', 'testpass')}
+      before (:each) {log_in_as('testcust@bbc.com', 'testcust@bbc.com')}
       
       it 'sends customer back to homepage' do
         visit '/'
@@ -78,7 +78,7 @@ RSpec.describe 'Home page', type: :feature do
     end
 
     context 'when logged in as an admin' do
-      before(:each) { log_in_as('testadmin@bbc.com', 'testpass') }
+      before(:each) { log_in_as('testadmin@bbc.com', 'testadmin@bbc.com') }
 
       it 'shows the staff portal for admins' do
         visit '/'
@@ -89,7 +89,7 @@ RSpec.describe 'Home page', type: :feature do
     end
 
     context 'when logged in as a barista' do
-      before(:each) { log_in_as('testbarista@bbc.com', 'testpass') }
+      before(:each) { log_in_as('testbarista@bbc.com', 'testbarista@bbc.com') }
 
       it 'shows the staff portal for baristas' do
         visit '/'
@@ -100,7 +100,7 @@ RSpec.describe 'Home page', type: :feature do
     end
 
     context 'when logged in as a manager' do
-      before(:each) { log_in_as('testmanager@bbc.com', 'testpass') }
+      before(:each) { log_in_as('testmanager@bbc.com', 'testmanager@bbc.com') }
 
       it 'shows the staff portal for managers' do
         visit '/'

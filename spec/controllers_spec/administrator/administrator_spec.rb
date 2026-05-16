@@ -37,25 +37,25 @@ RSpec.describe "Admin Management", type: :feature do
     end
 
     it "redirects a barista away from manage-accounts" do
-      log_in_as('testbarista@bbc.com', 'testpass')
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
       visit "/manage-accounts"
       expect(current_path).to eq("/")
     end
 
     it "redirects a barista away from database-status" do
-      log_in_as('testbarista@bbc.com', 'testpass')
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
       visit "/database-status"
       expect(current_path).to eq("/")
     end
 
     it "redirects a customer away from manage-accounts" do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       visit "/manage-accounts"
       expect(current_path).to eq("/")
     end
 
     it "redirects a customer away from database-status" do
-      log_in_as('testcust@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
       visit "/database-status"
       expect(current_path).to eq("/")
     end
