@@ -61,7 +61,7 @@ get '/order-management/barista' do
       Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
-    .order(Sequel.desc(Sequel[:Orders][:order_id])) # <-- Add this line here
+    .order(Sequel.desc(Sequel[:Orders][:order_id])) 
     .all
     .group_by { |row| row[:order_id] }
     
@@ -120,7 +120,7 @@ get '/sales-history' do
   @orders = DB[:Orders]
     .join(:OrderItems, order_id: :order_id)
     .select(
-      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:order_id].as(:order_id),  
       Sequel[:Orders][:created_at],
       Sequel[:Orders][:order_is_completed],
       Sequel[:OrderItems][:item_id],
@@ -129,9 +129,10 @@ get '/sales-history' do
       Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
+    .order(Sequel.desc(Sequel[:Orders][:order_id])) 
     .all
+    .group_by { |row| row[:order_id] }
   
-  @orders = @orders.group_by { |row| row[:order_id] } if @orders
   erb :sales_history
 end
 
