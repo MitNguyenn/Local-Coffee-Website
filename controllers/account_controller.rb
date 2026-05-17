@@ -65,8 +65,8 @@ end
 
 post '/update-account' do
   existing = DB[:Accounts].where(email: params[:email]).exclude(user_id: session[:user_id]).first
-  halt 400, "Email already in use" if existing
-  
+  redirect '/account-settings?error=email_taken' if existing
+
   DB[:Accounts].where(user_id: session[:user_id]).update(
     first_name: params[:first_name],
     last_name: params[:last_name],
