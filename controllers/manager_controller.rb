@@ -1,3 +1,5 @@
+# Manager dashboard, bean stock, discounts, and metrics routes.
+
 before %r{/(metrics|bean-stock-management|bean-update|update-bean-stock|manage-discounts|update-discount|create-discount|delete-discount|edit-drink-details|update-drink-details)} do
   unless session[:user_id] && (session[:account_type] == 'manager' || session[:account_type] == 'administrator')
     redirect '/'

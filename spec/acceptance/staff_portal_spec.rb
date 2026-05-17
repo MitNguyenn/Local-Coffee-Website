@@ -1,3 +1,5 @@
+# Staff Portal Spec file.
+
 require 'spec_helper'
 
 RSpec.describe 'Staff Portal', type: :feature do

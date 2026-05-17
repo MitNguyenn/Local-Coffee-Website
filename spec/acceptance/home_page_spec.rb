@@ -1,3 +1,5 @@
+# Home Page Spec file.
+
 RSpec.describe 'Home page', type: :feature do
 
   context "Given an anonymous visitor on the application" do

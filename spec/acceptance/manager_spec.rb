@@ -1,3 +1,5 @@
+# Manager Spec file.
+
 require 'spec_helper'
 
 RSpec.describe "ManagerController", type: :feature do

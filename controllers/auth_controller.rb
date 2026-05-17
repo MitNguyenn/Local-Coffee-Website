@@ -1,3 +1,5 @@
+# Authentication routes and account registration.
+
 get '/log-in' do
   @email = ""
   @password = ""

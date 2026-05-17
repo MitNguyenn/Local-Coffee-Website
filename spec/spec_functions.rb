@@ -1,3 +1,5 @@
+# Shared test helpers and helper functions used by specs.
+
 require 'bcrypt'
 require 'json'
 require 'sequel'

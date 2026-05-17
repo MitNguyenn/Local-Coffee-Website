@@ -1,3 +1,5 @@
+# Helper methods for checking and formatting database health.
+
 require 'fileutils'
 module DatabaseStatus
   def list_available_backups

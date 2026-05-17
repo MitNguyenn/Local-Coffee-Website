@@ -1,3 +1,5 @@
+# Barista Spec file.
+
 require 'spec_helper'
 
 RSpec.describe "Barista Access Controls and Actions", type: :feature do

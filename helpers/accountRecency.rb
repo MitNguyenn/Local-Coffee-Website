@@ -1,3 +1,5 @@
+# Helper methods for tracking account recency and login behavior.
+
 module AccountRecency
   def attempt_flag_account(user_id)
     account = DB[:Accounts].where(user_id: user_id).first

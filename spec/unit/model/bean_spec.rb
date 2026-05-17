@@ -1,3 +1,5 @@
+# Bean Spec file.
+
 RSpec.describe Bean, type: :model do 
   let(:bean) { Bean.new }
 

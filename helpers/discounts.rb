@@ -1,3 +1,5 @@
+# Helper methods for managing discounts and loyalty pricing.
+
 module Discounts
   def get_current_discounts
     current_discounts = {}

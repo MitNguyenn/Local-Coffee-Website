@@ -1,3 +1,5 @@
+# Administrator dashboard, refund, and ticket management routes.
+
 require 'wicked_pdf'
 require 'sqlite3'
 require 'fileutils'

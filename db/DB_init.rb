@@ -1,3 +1,5 @@
+# Database initialization script that loads setup and seeding logic.
+
 require_relative 'db_setup'
 require_relative 'db_seeder'
 require 'sqlite3'

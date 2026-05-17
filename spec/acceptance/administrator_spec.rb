@@ -1,3 +1,5 @@
+# Administrator Spec file.
+
 require 'spec_helper'
 require 'fileutils'
 require 'sqlite3'

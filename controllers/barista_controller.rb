@@ -1,3 +1,5 @@
+# Barista order processing and ticket handling routes.
+
 require 'wicked_pdf'
 require 'json'
 

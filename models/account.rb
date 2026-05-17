@@ -1,3 +1,5 @@
+# Account model with validation and password hashing logic.
+
 require "bcrypt"
 
 class Account < Sequel::Model(:Accounts)

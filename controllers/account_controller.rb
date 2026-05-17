@@ -1,3 +1,5 @@
+# Authentication and account management routes.
+
 require 'rqrcode'
 
 before do

@@ -1,3 +1,5 @@
+# Helper functions for retrieving current coffee bean inventory.
+
 module GetBeans
   # Fixed: Removed the invalid 'do' syntax from the method definition
   def get_bean_data(origin)

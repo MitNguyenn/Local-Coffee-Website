@@ -1,3 +1,5 @@
+# Passwordcheck Spec file.
+
 RSpec.describe PasswordCheck, type: :helper do
   include described_class
 

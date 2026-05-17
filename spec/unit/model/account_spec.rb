@@ -1,3 +1,5 @@
+# Account Spec file.
+
 RSpec.describe Account, type: :model do
   let(:account) { Account.new(email: "testemail123@gmail.com", account_type: "Admin") }  
   

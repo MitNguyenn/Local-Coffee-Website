@@ -1,3 +1,5 @@
+# User Log In Spec file.
+
 require 'spec_helper'
 
 RSpec.describe 'Authentication process', type: :feature do

@@ -1,3 +1,5 @@
+# Helper methods for validating passwords and account security.
+
 require 'bcrypt'
 
 module PasswordCheck

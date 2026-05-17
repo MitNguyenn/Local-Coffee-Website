@@ -1,3 +1,5 @@
+# Account Settings Spec file.
+
 RSpec.describe "Account Management", type: :feature do
   let(:user_id) { 1 }
 

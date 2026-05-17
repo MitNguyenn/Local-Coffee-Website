@@ -1,3 +1,5 @@
+# Public routes and default landing page.
+
 get '/' do
   update_recent_login(session[:user_id]) if session[:user_id]
   erb :home

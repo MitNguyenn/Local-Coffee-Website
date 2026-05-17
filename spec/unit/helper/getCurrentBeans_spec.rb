@@ -1,3 +1,5 @@
+# Getcurrentbeans Spec file.
+
 require 'spec_helper'
 
 RSpec.describe GetBeans do

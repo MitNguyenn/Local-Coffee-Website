@@ -1,3 +1,5 @@
+# Accountrecency Spec file.
+
 require 'spec_helper'
 
 RSpec.describe AccountRecency, type: :helper do

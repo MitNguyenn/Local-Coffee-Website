@@ -1,3 +1,5 @@
+# Sinatra app configuration, route loading, and backup automation.
+
 require "dotenv/load"
 require "require_all"
 require "sinatra"        # Changed from "sinatra/base" to use classic, top-level DSL

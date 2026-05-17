@@ -1,3 +1,5 @@
+# Ticket Spec file.
+
 require 'spec_helper'
 
 RSpec.describe "Help page and ticket submission", type: :feature do

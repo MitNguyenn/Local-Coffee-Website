@@ -1,3 +1,5 @@
+# Seed data loader for initial application database population.
+
 require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
