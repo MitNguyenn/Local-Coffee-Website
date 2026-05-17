@@ -69,6 +69,8 @@
       <% if params[:success] %>
         <p style="color: green;">Profile updated successfully!</p>
       <% end %>
+      <% if params[:error] == 'email_taken' %>
+        <p style="color: red;">The email address is already in use by another account.</p>
      </div>
   </main>
   </body>
