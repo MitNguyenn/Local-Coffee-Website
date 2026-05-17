@@ -25,11 +25,6 @@ before [
   end
 end
 
-
-# ==========================================
-# GET Routes
-# ==========================================
-
 get '/manage-accounts' do
   @accounts = DB[:Accounts].all
   erb :account_management
@@ -96,10 +91,6 @@ get '/database-status' do
   @backups = list_available_backups
   erb :database_status
 end
-
-# ==========================================
-# POST Routes
-# ==========================================
 
 post '/edit-account/:id' do
   resetPassword = params[:reset_password] == "on"

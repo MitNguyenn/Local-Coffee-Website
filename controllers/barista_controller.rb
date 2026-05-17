@@ -1,9 +1,6 @@
 require 'wicked_pdf'
 require 'json'
 
-# ==============================================================================
-# STAFF BOUNDARY WALL (TARGETED REGEX FILTER)
-# ==============================================================================
 before [
   '/staff-portal*', 
   '/manage-loyalty-cards*', 
@@ -32,11 +29,6 @@ before [
     redirect '/'
   end
 end
-
-
-# ==============================================================================
-# GET ROUTING ENGINE
-# ==============================================================================
 
 get '/staff-portal' do
   erb :staff_portal
@@ -159,10 +151,6 @@ get '/place-order/contents' do
 
   erb :place_order_contents
 end
-
-# ==========================================
-# POST ROUTING ENGINE
-# ==========================================
 
 post '/update-stamps' do
   target_user_id = params[:user_id]

@@ -1,13 +1,6 @@
-# ==============================================================================
-# SECURE CHECKOUT & ORDERING PATH PROTECTION (TARGETED FILTER)
-# ==============================================================================
 before ['/checkout*', '/place-order*', '/external-payment-gateway*', '/payment-callback*', '/order-success*'] do
   redirect '/log-in' unless session[:user_id] # swapped logged_in? helper check for direct session lookup to stay robust
 end
-
-# ==============================================================================
-# CORE WORKER MODULE METHODS (No Class Context)
-# ==============================================================================
 
   def finalize_stamps(user_id)
     stamps_to_add = 0

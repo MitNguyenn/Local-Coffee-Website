@@ -15,10 +15,6 @@ before do
   end
 end
 
-# ==========================================
-# GET Routes
-# ==========================================
-
 get '/account-settings' do
   @user = DB[:Accounts].where(user_id: session[:user_id]).first
   @account_flagged = @user[:flagged]
@@ -50,9 +46,6 @@ get '/my-orders' do
   erb :my_orders
 end
 
-# ==========================================
-# POST Routes
-# ==========================================
 
 post '/update-account' do
   DB[:Accounts].where(user_id: session[:user_id]).update(

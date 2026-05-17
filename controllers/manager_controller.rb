@@ -1,16 +1,8 @@
-# ==============================================================================
-# MANAGEMENT SPACE GUARDIAN (TARGETED REGEX FILTER)
-# ==============================================================================
 before %r{/(metrics|bean-stock-management|bean-update|update-bean-stock|manage-discounts|update-discount|create-discount|delete-discount|edit-drink-details|update-drink-details)} do
   unless session[:user_id] && (session[:account_type] == 'manager' || session[:account_type] == 'administrator')
     redirect '/'
   end
 end
-
-# ==============================================================================
-# GET ROUTING ENGINE
-# ==============================================================================
-
 get '/metrics' do
   @metrics = analyze_sales_data
   erb :metrics_page
@@ -35,10 +27,6 @@ get '/edit-drink-details' do
   @drinks = Drink.all
   erb :edit_drink_details
 end
-
-# ==============================================================================
-# POST ROUTING ENGINE
-# ==============================================================================
 
 post '/update-bean-stock/:origin' do
   new_data = {
