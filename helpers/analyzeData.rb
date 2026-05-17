@@ -58,8 +58,7 @@ module AnalyzeData
     }
   end
 
-    def get_common_orders(limit_count = 5)
-    # 1. Pull the most recurrent groupings of exact customer selections
+  def get_common_orders(limit_count = 5)
     frequent_combinations = DB[:OrderItems]
       .select(
         :item_id,
@@ -75,9 +74,7 @@ module AnalyzeData
       .limit(limit_count)
       .all
 
-    # 2. Map payload arrays into legible, presentation-ready structural hash entries
     frequent_combinations.map do |row|
-      # Format descriptive title names based strictly on the production category properties
       display_title = case row[:product_type]&.downcase
                       when 'drink'
                         "#{row[:drink_size]} #{row[:item_id]} (#{row[:milk_type]} Milk)"

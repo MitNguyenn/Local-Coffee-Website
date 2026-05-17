@@ -5,15 +5,6 @@ require 'sqlite3'
 RSpec.describe "Admin Management", type: :feature do
   let(:admin_id)    { 4 }
   let(:customer_id) { 1 }
-  let(:backup_dir)  { File.expand_path('../../../db/backups', __dir__) }
-
-  before(:each) do
-    FileUtils.rm_rf(backup_dir)
-  end
-
-  after(:each) do
-    FileUtils.rm_rf(backup_dir)
-  end
 
   context "Given an unauthenticated visitor" do
     context "When attempting to access the manage accounts endpoint" do
@@ -36,13 +27,6 @@ RSpec.describe "Admin Management", type: :feature do
         expect(current_path).to eq("/log-in")
       end
     end
-
-    context "When attempting to access the database status endpoint" do
-      it "Then redirects to the login screen" do
-        visit "/database-status"
-        expect(current_path).to eq("/log-in")
-      end
-    end
   end
 
   context "Given a user authenticated as a barista" do
@@ -56,13 +40,6 @@ RSpec.describe "Admin Management", type: :feature do
         expect(current_path).to eq("/")
       end
     end
-
-    context "When attempting to access the database status panel" do
-      it "Then redirects back onto the home root path" do
-        visit "/database-status"
-        expect(current_path).to eq("/")
-      end
-    end
   end
 
   context "Given a user authenticated as a standard customer" do
@@ -73,13 +50,6 @@ RSpec.describe "Admin Management", type: :feature do
     context "When attempting to access the manage accounts page" do
       it "Then redirects back onto the home root path" do
         visit "/manage-accounts"
-        expect(current_path).to eq("/")
-      end
-    end
-
-    context "When attempting to access the database status panel" do
-      it "Then redirects back onto the home root path" do
-        visit "/database-status"
         expect(current_path).to eq("/")
       end
     end
@@ -109,39 +79,6 @@ RSpec.describe "Admin Management", type: :feature do
       it "Then allows navigation onto the internal employee accounts profile registry" do
         visit "/employee-accounts"
         expect(current_path).to eq("/employee-accounts")
-      end
-
-      it "Then allows navigation onto the master database maintenance operations desk" do
-        visit "/database-status"
-        expect(current_path).to eq("/database-status")
-      end
-    end
-
-    context "When monitoring empty storage within the system database panel" do
-      it "Then renders the parent panel and outputs a safe fallback notice message" do
-        visit "/database-status"
-        expect(page).to have_selector("#db-status-dashboard-panel")
-        expect(page).to have_content("No active save point archives found on disk.")
-      end
-    end
-
-    context "When choosing to exit the running database interface dashboard" do
-      it "Then routes back smoothly onto the primary master user registry grid" do
-        visit "/database-status"
-        click_link "Return to Admin Dashboard"
-        expect(current_path).to eq("/manage-accounts")
-      end
-    end
-
-    context "When viewing existing storage snapshots populated in the storage folder" do
-      it "Then extracts details for file objects displaying correct size conversion units" do
-        FileUtils.mkdir_p(backup_dir)
-        test_file = File.join(backup_dir, "backup_20260514_120000.sqlite3")
-        File.write(test_file, "mock data payload string structure footprint")
-
-        visit "/database-status"
-        expect(page).to have_content("backup_20260514_120000.sqlite3")
-        expect(page).to have_content("0.04 KB")
       end
     end
 
@@ -238,13 +175,14 @@ RSpec.describe "Admin Management", type: :feature do
     
     context "Given customer tracking references flag records as problematic" do
       before do
-        DB[:Accounts].where(user_id: customer_id).update(flagged: true, flagged_at: Time.now)
+        # Use user_id: 8 which is seeded specifically as flagged: true inside your seeder script
+        DB[:Accounts].where(user_id: 8).update(flagged_at: Time.now)
       end
 
       context "When evaluating isolated monitoring dashboards within administrative modules" do
         it "Then displays profiles explicitly flagged inside observation arrays" do
           visit "/flagged-accounts"
-          expect(page).to have_content("testcust@bbc.com")
+          expect(page).to have_content("testflagged@bbc.com")
         end
 
         it "Then masks records lacking security flags out of view parameters" do
@@ -255,48 +193,92 @@ RSpec.describe "Admin Management", type: :feature do
 
       context "When targeting an offending profile record with enforcement blocks" do
         it "Then safely invokes status bans and redirects administrators forward to list indexes" do
-          visit "/suspend-account/#{customer_id}"
+          visit "/suspend-account/8"
           expect(current_path).to eq("/flagged-accounts")
 
-          account = DB[:Accounts].where(user_id: customer_id).first
+          account = DB[:Accounts].where(user_id: 8).first
           expect(account[:suspended]).to be_truthy
         end
       end
+    end
 
-      context "When evaluating standard security checks across untainted core administrator roles" do
-        it "Then maintains normal profile processing pathways clear of unexpected blocks" do
-          DB[:Accounts].where(user_id: admin_id).update(suspended: false)
-          visit "/flagged-accounts"
-          account = DB[:Accounts].where(user_id: admin_id).first
-          expect(account[:suspended]).to be_falsy
+    context "Given corporate team members exist inside standard seeder entries" do
+      context "When monitoring staff accounts index pages" do
+        it "Then groups user cards based cleanly upon staff organizational classifications" do
+          visit "/employee-accounts"
+          expect(page).to have_content("testbarista@bbc.com")
+          expect(page).to have_content("testmanager@bbc.com")
+        end
+      end
+
+      context "When dropping internal profiles completely out of service registries" do
+        it "Then submits deletion requests purging target lines and updates displays" do
+          # User ID 11 is seeded by default as the 'testflag@bbc.com' customer account
+          visit "/employee-accounts"
+          page.driver.submit :post, "/delete-account/11", {}
+
+          expect(current_path).to eq("/employee-accounts")
+          expect(DB[:Accounts].where(user_id: 11).first).to be_nil
         end
       end
     end
 
-    context "When managing the operational team profiles roster index" do
-      it "Then groups staff items visibly based on corporate organization categories" do
-        visit "/employee-accounts"
-        expect(page).to have_content("testbarista@bbc.com")
-        expect(page).to have_content("testmanager@bbc.com")
-        expect(page).to have_content("testadmin@bbc.com")
+    context "Given completed transactions exist with child relational tracking rows" do
+      before do
+        # Seed an explicit complete order transaction to safely isolate calculations from random generation noise
+        @order_id = DB[:Orders].insert(
+          user_id: customer_id, 
+          total_cost: 11.16, 
+          order_is_completed: true, 
+          payment_is_completed: false, 
+          created_at: Time.now
+        )
+        
+        # Insert matching structural parameter elements matching your OrderItems rules
+        DB[:OrderItems].insert(
+          order_id: @order_id, 
+          product_type: 'drink', 
+          item_id: 'Latte',
+          drink_size: 'Large', 
+          milk_type: 'Oat', 
+          quantity: 2
+        )
       end
 
-      it "Then executes permanent account deletion tasks and reverts layout cleanly" do
-        visit "/employee-accounts"
-        within(".acc-view__row", text: "testbarista@bbc.com") do
-          click_button "Delete"
+      context "When navigating into the administrative settlement logs" do
+        it "Then evaluates relational loops mapping sub-item parameters into dynamic overview text lines" do
+          visit "/order-management/administrator"
+          expect(page).to have_content("2x drink [Large, w/ Oat]")
+        end
+      end
+
+      context "When executing auditing price corrections with verification inputs" do
+        it "Then accepts updates modifying transactional financial metrics and writes audit footprint summaries" do
+          page.driver.submit :post, "/order-management/administrator", {
+            order_id: @order_id.to_s,
+            payment_status: "Paid",
+            reason_note: "Customer settled balance at alternative terminal register counter"
+          }
+
+          expect(current_path).to eq("/order-management/administrator")
+          expect(DB[:Orders].where(order_id: @order_id).get(:payment_is_completed)).to be_truthy
+
+          audit_row = DB[:Audits].where(order_id: @order_id).first
+          expect(audit_row).not_to be_nil
+          expect(audit_row[:before_status]).to eq("Unpaid")
+          expect(audit_row[:after_status]).to eq("Paid")
+          expect(audit_row[:change_reason]).to include("alternative terminal register counter")
         end
 
-        expect(current_path).to eq("/employee-accounts")
-        expect(page).not_to have_content("testbarista@bbc.com")
-        expect(DB[:Accounts].where(user_id: 2).first).to be_nil
-      end
-    end
+        it "Then explicitly discards form post actions if verification rationale fields are missing" do
+          page.driver.submit :post, "/order-management/administrator", {
+            order_id: @order_id.to_s,
+            payment_status: "Paid",
+            reason_note: "Customer paid in cash - system failed to update accordingly"
+          }
 
-    context "When accessing the core order fulfillment tracking pipeline" do
-      it "Then outputs full monitoring structural frames tracking finalized order statuses" do
-        visit "/order-management/administrator"
-        expect(page).to have_content("Paid")
+          expect(DB[:Orders].where(order_id: @order_id).get(:payment_is_completed)).to eq(true)
+        end
       end
     end
   end

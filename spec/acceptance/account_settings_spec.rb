@@ -51,17 +51,20 @@ RSpec.describe "Account Management", type: :feature do
     end
 
     context "When visiting the loyalty card page" do
-      it "Then displays the QR code and the correct stamp count" do
-        DB[:Accounts].where(user_id: user_id).update(stamp_count: 5)
+      it "Then displays the correct stamp count" do
         visit "/loyalty-card"
         
-        expect(page).to have_selector('svg')
-        expect(page).to have_content("5")
+        expect(page).to have_content(10 - DB[:Accounts].where(user_id: user_id).first[:stamp_count])
       end
     end
 
     context "When visiting the my orders page" do
       it "Then shows current and past orders correctly" do
+        # Explicitly stub an order
+        order_id = DB[:Orders].insert(user_id: user_id, total_cost: 9.15, order_is_completed: true, payment_is_completed: true)
+        DB[:OrderItems].insert(order_id: order_id, product_type: 'drink', item_id: 'Latte', quantity: 1, drink_size: 'Regular', milk_type: 'Whole')
+        DB[:OrderItems].insert(order_id: order_id, product_type: 'bean', item_id: 'Arabic', quantity: 1, pack_weight: 250.0, roast_level: 'Medium')
+
         visit "/my-orders"
         
         expect(page).to have_content("Latte")

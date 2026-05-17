@@ -31,18 +31,15 @@ require_relative "../helpers/analyzeData"
 require_relative "../helpers/myOrders"
 require_relative "../helpers/accountRecency"
 
-# Load specific test functions definitions profile wrapper
 require_relative "spec_functions"
 
 ENV["APP_ENV"] = "test"
 
-# Load the new class-free global application architecture
 require_relative "../app"
 
 require "capybara/rspec"
 require "rack/test"
 
-# CRITICAL FIX: Swap CoffeeApp class for Sinatra's global application runtime object
 require 'sinatra'
 Capybara.app = Sinatra::Application
 
@@ -54,12 +51,10 @@ RSpec.configure do |config|
   config.include Capybara::DSL
   config.include Rack::Test::Methods
 
-  # Expose Sinatra's application context hook to Rack::Test framework loops
   def app
     Sinatra::Application
   end
 
-  # This runs EXACTLY ONCE at the start to clean tables and insert baseline seeds
   config.before(:suite) do
     spec_before 
   end
