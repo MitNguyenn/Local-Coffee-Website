@@ -1,79 +1,89 @@
+require 'spec_helper'
+
 RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
-  describe "Attempts to visit pages without valid credentials" do
-    it "redirects an unauthenticated user to the login path" do
-      visit "/staff-portal"
-      expect(current_path).to eq("/log-in")
+  context "Given an unauthenticated visitor" do
+    context "When attempting to access the staff portal" do
+      it "Then redirects to the login path" do
+        visit "/staff-portal"
+        expect(current_path).to eq("/log-in")
+      end
     end
 
-    it "redirects a regular customer to the home page" do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
-      visit "/staff-portal"
-      expect(current_path).to eq("/")
-    end
-
-    it "redirects an unauthenticated user trying to access loyalty dashboards" do
-      visit "/manage-loyalty-cards"
-      expect(current_path).to eq("/log-in")
-    end
-
-    it "redirects a plain customer away from finding users for an order" do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
-      visit "/place-order/find-user"
-      expect(current_path).to eq("/")
-    end
-
-    it "redirects a plain customer away from the order contents basket" do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
-      visit "/place-order/contents"
-      expect(current_path).to eq("/")
+    context "When attempting to access the loyalty management dashboard" do
+      it "Then redirects to the login path" do
+        visit "/manage-loyalty-cards"
+        expect(current_path).to eq("/log-in")
+      end
     end
   end
 
-  context "As a logged-in barista" do
-    context "As a logged-in barista" do
-  before(:each) do
-    spec_before 
-    
-    DB[:Accounts].insert(user_id: 100, email: 'testbarista@bbc.com', password: BCrypt::Password.create('testbarista@bbc.com'), account_type: 'barista')
-    
-    DB[:Accounts].insert(user_id: 1, email: 'testcust@bbc.com', password: BCrypt::Password.create('testcust@bbc.com'), account_type: 'customer', stamp_count: 4)
-    
-    DB[:Beans].insert(origin: 'Ethiopian', stock_mass: 105.50, price_per_250g: 8.20)
-    
-    DB[:Orders].insert(order_id: 500, user_id: 1, total_cost: 10.0, order_is_completed: false, created_at: Time.now)
+  context "Given a user authenticated as a regular customer" do
+    before(:each) do
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+    end
 
-    log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+    context "When trying to access the staff portal" do
+      it "Then redirects back onto the home root path" do
+        visit "/staff-portal"
+        expect(current_path).to eq("/")
+      end
+    end
+
+    context "When trying to isolate customer lookup indices for ordering" do
+      it "Then redirects back onto the home root path" do
+        visit "/place-order/find-user"
+        expect(current_path).to eq("/")
+      end
+    end
+
+    context "When trying to view the ordering cart contents" do
+      it "Then redirects back onto the home root path" do
+        visit "/place-order/contents"
+        expect(current_path).to eq("/")
+      end
+    end
   end
 
-    describe "Portal Navigation Boundaries" do
-      it "can visit the staff portal cleanly" do
+  context "Given a user authenticated as a barista" do
+    before(:each) do
+      spec_before 
+      
+      DB[:Accounts].insert(user_id: 100, email: 'testbarista@bbc.com', password: BCrypt::Password.create('testbarista@bbc.com'), account_type: 'barista')
+      DB[:Accounts].insert(user_id: 1, email: 'testcust@bbc.com', password: BCrypt::Password.create('testcust@bbc.com'), account_type: 'customer', stamp_count: 4)
+      DB[:Beans].insert(origin: 'Ethiopian', stock_mass: 105.50, price_per_250g: 8.20)
+      DB[:Orders].insert(order_id: 500, user_id: 1, total_cost: 10.0, order_is_completed: false, created_at: Time.now)
+
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+    end
+
+    context "When routing through core dashboard environments" do
+      it "Then loads the staff portal index cleanly" do
         visit "/staff-portal"
         expect(current_path).to eq("/staff-portal")
       end
 
-      it "can view live customer records inside the loyalty management dashboard" do
+      it "Then displays active consumer references within the loyalty grid layout" do
         visit "/manage-loyalty-cards"
         expect(current_path).to eq("/manage-loyalty-cards")
         expect(page).to have_css("#form-user-1")
       end
 
-      it "hides administrative or staff profile structures from loyalty lists" do
+      it "Then ensures privileged staff records remain hidden out of consumer tracking arrays" do
         visit "/manage-loyalty-cards"
         expect(page).not_to have_css("#form-user-2")
         expect(page).not_to have_css("#form-user-4")
       end
 
-      it "can view the daily summary sales panel" do
+      it "Then accesses the summary turnover records tracking panel" do
         visit "/daily-summary"
         expect(current_path).to eq("/daily-summary")
       end
     end
 
-    describe "Loyalty Stamp Operations" do
-      it "updates a customer's total stamp balance using the input form properties" do
+    context "When processing updates through the customer reward card tools" do
+      it "Then saves new stamp quantities utilizing layout input field parameters" do
         visit "/manage-loyalty-cards"
-
         within("#form-user-1") do
           fill_in "stamp_count", with: 9
           click_button "Save"
@@ -85,9 +95,8 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         end
       end
 
-      it "persists updated loyalty indicators transparently inside the account records" do
+      it "Then stores structural counter data fields securely inside core dataset rows" do
         visit "/manage-loyalty-cards"
-
         within("#form-user-1") do
           fill_in "stamp_count", with: 7
           click_button "Save"
@@ -96,9 +105,8 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(7)
       end
 
-      it "allows baristas to explicitly strip stamp counters down to zero" do
+      it "Then provides workflows to zero out metrics tracking consumer rewards" do
         visit "/manage-loyalty-cards"
-
         within("#form-user-1") do
           fill_in "stamp_count", with: 0
           click_button "Save"
@@ -108,13 +116,13 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
       end
     end
 
-    describe "Order Queue and Documentation Generation" do
-      it "displays tracking data within the drink management queue layout" do
+    context "When interacting with order progression pipelines and printing metrics" do
+      it "Then surfaces correct tracking line items inside the production workspace" do
         visit "/order-management/barista"
         expect(current_path).to eq("/order-management/barista")
       end
 
-      it "marks an order as completed via POST action and redirects" do
+      it "Then marks an item complete via automated form submission and returns to origin" do
         order_id = DB[:Orders].first[:order_id]
         page.driver.submit :post, '/order-management/barista', { order_id: order_id }
         
@@ -122,7 +130,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(DB[:Orders].where(order_id: order_id).get(:order_is_completed)).to be true
       end
 
-      it "generates a shipping documentation PDF successfully via inline browser calls" do
+      it "Then outputs dispatch documentation headers targeting PDF format structures" do
         order_id = DB[:Orders].first[:order_id]
         visit "/generate-label/#{order_id}"
         
@@ -130,7 +138,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(page.driver.response.headers['Content-Disposition']).to include("attachment; filename=\"Label_#{order_id}.pdf\"")
       end
 
-      it "generates a return validation PDF from post request submissions" do
+      it "Then streams return validation data sets built off matching post actions" do
         order_id = DB[:Orders].first[:order_id]
         page.driver.submit :post, "/generate-return/#{order_id}", {}
         
@@ -139,58 +147,59 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
       end
     end
 
-    describe "Ticket and Refund Management Panels" do
+    context "Given client communication threads exist inside tracking stores" do
       before do
         DB[:Tickets].insert(user_id: 1, ticket_type: 'General', ticket_content: 'Issue', ticket_resolved: false)
         DB[:Tickets].insert(user_id: 1, ticket_type: 'Refund', ticket_content: 'Money back', ticket_resolved: false)
       end
 
-      it "can access the core ticketing interface dashboards" do
-        visit "/user-tickets"
-        expect(current_path).to eq("/user-tickets")
-      end
+      context "When reviewing active inquiry collections across support tables" do
+        it "Then enters the overarching help desk layout successfully" do
+          visit "/user-tickets"
+          expect(current_path).to eq("/user-tickets")
+        end
 
-      it "can access an individual ticket layout profile" do
-        ticket_id = DB[:Tickets].where(ticket_type: 'General').first[:ticket_id]
-        visit "/ticket/#{ticket_id}"
-        expect(current_path).to eq("/ticket/#{ticket_id}")
-      end
+        it "Then steps through to isolate specific ticket content details" do
+          ticket_id = DB[:Tickets].where(ticket_type: 'General').first[:ticket_id]
+          visit "/ticket/#{ticket_id}"
+          expect(current_path).to eq("/ticket/#{ticket_id}")
+        end
 
-      it "resolves a ticket via POST submission and redirects" do
-        ticket_id = DB[:Tickets].where(ticket_type: 'General').first[:ticket_id]
-        page.driver.submit :post, "/resolve-ticket/#{ticket_id}", {}
-        
-        expect(current_path).to eq("/user-tickets")
-        expect(DB[:Tickets].where(ticket_id: ticket_id).get(:ticket_resolved)).to be true
-      end
+        it "Then writes state updates marking tickets complete and updates views" do
+          ticket_id = DB[:Tickets].where(ticket_type: 'General').first[:ticket_id]
+          page.driver.submit :post, "/resolve-ticket/#{ticket_id}", {}
+          
+          expect(current_path).to eq("/user-tickets")
+          expect(DB[:Tickets].where(ticket_id: ticket_id).get(:ticket_resolved)).to be true
+        end
 
-      it "can access specialized financial refund workflow dashboards" do
-        visit "/refund-tickets"
-        expect(current_path).to eq("/refund-tickets")
-      end
+        it "Then navigates directly to specialized refund operation consoles" do
+          visit "/refund-tickets"
+          expect(current_path).to eq("/refund-tickets")
+        end
 
-      it "can access individual refund resolve profiles" do
-        ticket_id = DB[:Tickets].where(ticket_type: 'Refund').first[:ticket_id]
-        visit "/refund/#{ticket_id}"
-        expect(current_path).to eq("/refund/#{ticket_id}")
-      end
+        it "Then inspects specific claim requests via isolated profile workspaces" do
+          ticket_id = DB[:Tickets].where(ticket_type: 'Refund').first[:ticket_id]
+          visit "/refund/#{ticket_id}"
+          expect(current_path).to eq("/refund/#{ticket_id}")
+        end
 
-      it "resolves a refund ticket via POST submission and redirects" do
-        ticket_id = DB[:Tickets].where(ticket_type: 'Refund').first[:ticket_id]
-        page.driver.submit :post, "/refund/#{ticket_id}", {}
-        
-        expect(current_path).to eq("/refund-tickets")
-        expect(DB[:Tickets].where(ticket_id: ticket_id).get(:ticket_resolved)).to be true
+        it "Then approves transactional adjustments moving records over into finalized collections" do
+          ticket_id = DB[:Tickets].where(ticket_type: 'Refund').first[:ticket_id]
+          page.driver.submit :post, "/refund/#{ticket_id}", {}
+          
+          expect(current_path).to eq("/refund-tickets")
+          expect(DB[:Tickets].where(ticket_id: ticket_id).get(:ticket_resolved)).to be true
+        end
       end
     end
 
-    describe "Three-Stage In-Store Ordering Workflow" do
-      it "searches the customer table grid and sets up account order contexts" do
+    context "When walking through the in-store ordering workflow steps" do
+      it "Then isolates targets via lookup parameters and transfers contexts to the basket" do
         visit "/place-order/find-user"
         expect(page).to have_content("Place Order - Select Customer")
         expect(page).to have_content("Customer Test")
 
-        # Select customer row mapping using new select button layout structure
         within(".acc-view__row", text: "testcust@bbc.com") do
           click_button "Select Customer"
         end
@@ -199,7 +208,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(page).to have_content("Customer Test")
       end
 
-      it "can explicitly remove assigned customer scope parameters" do
+      it "Then removes tracking parameters explicitly discarding temporary customer state" do
         visit "/place-order/find-user"
         within(".acc-view__row", text: "testcust@bbc.com") do
           click_button "Select Customer"
@@ -210,13 +219,10 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(current_path).to eq("/place-order/find-user")
         expect(page).not_to have_content("Continue to Basket")
       end
+    end
 
-      it "redirects a user from step 2 menu systems back to step 1 if session profiles drop out" do
-        visit "/place-order/contents"
-        expect(current_path).to eq("/place-order/find-user")
-      end
-
-      it "compiles shopping basket json contents and saves the order details inside storage layers" do
+    context "When completing a multi-item transaction through the store register" do
+      it "Then compiles the basket payload, executes mathematical tracking formulas, and updates inventories" do
         visit "/place-order/find-user"
         within(".acc-view__row", text: "testcust@bbc.com") do
           click_button "Select Customer"
@@ -224,7 +230,6 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
         expect(current_path).to eq("/place-order/contents")
 
-        # Mock items matching structural parameter math parsing expectations
         basket_payload = [
           { 'item_id' => 'Latte', 'product_type' => 'drink', 'quantity' => 2, 'size' => 'Large', 'milk' => 'Oat' },
           { 'item_id' => 'Ethiopian', 'product_type' => 'bean', 'quantity' => 1, 'pack_weight' => 250.0, 'roast_level' => 'Medium' }
@@ -236,20 +241,12 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
         expect(current_path).to eq("/order-management/barista")
 
-        # Verify underlying database table calculation state logic matches formulas
         new_order = DB[:Orders].order(:order_id).last
         expect(new_order[:user_id]).to eq(1)
         expect(new_order[:order_is_completed]).to be false
-        
-        # Calculation formula logic verification check targets:
-        # Latte: (4.40 base * 1.2 markup multiplier + 0.30 oat price) * 2 qty = 11.16
-        # Ethiopian: (8.20 price base * 1.0 multiplier markup) * 1 qty = 8.20. Total: 19.36
         expect(new_order[:total_cost].to_f).to eq(19.36)
 
-        # Confirm relational user stamp growth tracking checks (4 baseline + 3 items bought = 7 total stamps)
         expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(7)
-
-        # Confirm bean stock mass reductions took place (25.0kg initial - 0.25kg pack size = 24.75kg)
         expect(DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)).to eq(105.25)
       end
     end

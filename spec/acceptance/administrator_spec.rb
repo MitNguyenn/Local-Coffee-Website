@@ -15,98 +15,126 @@ RSpec.describe "Admin Management", type: :feature do
     FileUtils.rm_rf(backup_dir)
   end
 
-  describe "Attempts to visit pages without valid credentials" do
-    it "redirects an unauthenticated user away from manage-accounts" do
-      visit "/manage-accounts"
-      expect(current_path).to eq("/log-in")
+  context "Given an unauthenticated visitor" do
+    context "When attempting to access the manage accounts endpoint" do
+      it "Then redirects to the login screen" do
+        visit "/manage-accounts"
+        expect(current_path).to eq("/log-in")
+      end
     end
 
-    it "redirects an unauthenticated user away from flagged-accounts" do
-      visit "/flagged-accounts"
-      expect(current_path).to eq("/log-in")
+    context "When attempting to access the flagged accounts endpoint" do
+      it "Then redirects to the login screen" do
+        visit "/flagged-accounts"
+        expect(current_path).to eq("/log-in")
+      end
     end
 
-    it "redirects an unauthenticated user away from employee-accounts" do
-      visit "/employee-accounts"
-      expect(current_path).to eq("/log-in")
+    context "When attempting to access the employee accounts endpoint" do
+      it "Then redirects to the login screen" do
+        visit "/employee-accounts"
+        expect(current_path).to eq("/log-in")
+      end
     end
 
-    it "redirects an unauthenticated user away from database-status" do
-      visit "/database-status"
-      expect(current_path).to eq("/log-in")
-    end
-
-    it "redirects a barista away from manage-accounts" do
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
-      visit "/manage-accounts"
-      expect(current_path).to eq("/")
-    end
-
-    it "redirects a barista away from database-status" do
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
-      visit "/database-status"
-      expect(current_path).to eq("/")
-    end
-
-    it "redirects a customer away from manage-accounts" do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
-      visit "/manage-accounts"
-      expect(current_path).to eq("/")
-    end
-
-    it "redirects a customer away from database-status" do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
-      visit "/database-status"
-      expect(current_path).to eq("/")
+    context "When attempting to access the database status endpoint" do
+      it "Then redirects to the login screen" do
+        visit "/database-status"
+        expect(current_path).to eq("/log-in")
+      end
     end
   end
 
-  context "Logged in as administrator" do
+  context "Given a user authenticated as a barista" do
+    before(:each) do
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+    end
+
+    context "When attempting to access the manage accounts page" do
+      it "Then redirects back onto the home root path" do
+        visit "/manage-accounts"
+        expect(current_path).to eq("/")
+      end
+    end
+
+    context "When attempting to access the database status panel" do
+      it "Then redirects back onto the home root path" do
+        visit "/database-status"
+        expect(current_path).to eq("/")
+      end
+    end
+  end
+
+  context "Given a user authenticated as a standard customer" do
+    before(:each) do
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+    end
+
+    context "When attempting to access the manage accounts page" do
+      it "Then redirects back onto the home root path" do
+        visit "/manage-accounts"
+        expect(current_path).to eq("/")
+      end
+    end
+
+    context "When attempting to access the database status panel" do
+      it "Then redirects back onto the home root path" do
+        visit "/database-status"
+        expect(current_path).to eq("/")
+      end
+    end
+  end
+
+  context "Given a user authenticated as an administrator" do
     before(:each) do
       log_in_as('testadmin@bbc.com', 'testadmin@bbc.com')
     end
 
-    describe "Admin visits all pages" do
-      it "can access the manage-accounts page" do
+    context "When requesting administrative route domains" do
+      it "Then allows navigation onto the manage accounts portal dashboard" do
         visit "/manage-accounts"
         expect(current_path).to eq("/manage-accounts")
       end
 
-      it "can access the flagged-accounts page" do
+      it "Then allows navigation onto the flagged accounts registry tracking interface" do
         visit "/flagged-accounts"
         expect(current_path).to eq("/flagged-accounts")
       end
 
-      it "can access the order-management page" do
+      it "Then allows navigation onto the specific administrator view order path" do
         visit "/order-management/administrator"
         expect(current_path).to eq("/order-management/administrator")
       end
 
-      it "can access the employee-accounts page" do
+      it "Then allows navigation onto the internal employee accounts profile registry" do
         visit "/employee-accounts"
         expect(current_path).to eq("/employee-accounts")
       end
 
-      it "can access the database-status panel" do
+      it "Then allows navigation onto the master database maintenance operations desk" do
         visit "/database-status"
         expect(current_path).to eq("/database-status")
       end
     end
 
-    describe "Database Control Panel Interface (GET & POST)" do
-      it "loads the layout container and handles empty directories cleanly" do
+    context "When monitoring empty storage within the system database panel" do
+      it "Then renders the parent panel and outputs a safe fallback notice message" do
         visit "/database-status"
         expect(page).to have_selector("#db-status-dashboard-panel")
         expect(page).to have_content("No active save point archives found on disk.")
       end
+    end
 
-      it "exposes a link pointing back to master account administration" do
+    context "When choosing to exit the running database interface dashboard" do
+      it "Then routes back smoothly onto the primary master user registry grid" do
         visit "/database-status"
         click_link "Return to Admin Dashboard"
         expect(current_path).to eq("/manage-accounts")
       end
+    end
 
-      it "renders attributes of existing file saves dynamically" do
+    context "When viewing existing storage snapshots populated in the storage folder" do
+      it "Then extracts details for file objects displaying correct size conversion units" do
         FileUtils.mkdir_p(backup_dir)
         test_file = File.join(backup_dir, "backup_20260514_120000.sqlite3")
         File.write(test_file, "mock data payload string structure footprint")
@@ -115,23 +143,24 @@ RSpec.describe "Admin Management", type: :feature do
         expect(page).to have_content("backup_20260514_120000.sqlite3")
         expect(page).to have_content("0.04 KB")
       end
-  
     end
 
-    describe "Account Management Table Interface" do
-      it "displays all seeded accounts with correct IDs" do
+    context "When viewing active registration metrics via the core dashboard grid" do
+      it "Then lists primary database row entries together alongside identity values" do
         visit "/manage-accounts"
         expect(page).to have_content("1")
         expect(page).to have_content("Customer")
         expect(page).to have_content("Test")
       end
 
-      it "has a functional search input field" do
+      it "Then provides an input field targeting specific client queries text search" do
         visit "/manage-accounts"
         expect(page).to have_field("accountSearch")
       end
+    end
 
-      it "navigates to the edit page via the table button" do
+    context "When opting to isolate a particular row inside the account overview block" do
+      it "Then safely transfers user focal point over to target edit entry pages" do
         visit "/manage-accounts"
         within(".acc-view__row", text: "testcust@bbc.com") do
           click_link "Edit Account"
@@ -140,15 +169,17 @@ RSpec.describe "Admin Management", type: :feature do
       end
     end
 
-    describe "Edit Account Interface Elements" do
-      it "renders the edit form pre-populated with the account's data" do
+    context "When executing review requests targeting editing windows for clients" do
+      it "Then serves pre-populated inputs mirroring original model attribute state data" do
         visit "/edit-account/#{customer_id}"
         expect(find_field("first_name").value).to eq("Customer")
         expect(find_field("last_name").value).to  eq("Test")
         expect(find_field("email").value).to       eq("testcust@bbc.com")
       end
+    end
 
-      it "updates first name, last name, phone, postcode, and redirects to manage-accounts" do
+    context "When updating profile records inside the account alteration suite" do
+      it "Then writes basic metadata field properties and redirects back to grid view" do
         visit "/edit-account/#{customer_id}"
         fill_in "first_name",   with: "Jane"
         fill_in "last_name",    with: "Smith"
@@ -164,7 +195,7 @@ RSpec.describe "Admin Management", type: :feature do
         expect(account[:postcode]).to     eq("S10 2TN")
       end
 
-      it "updates the email address" do
+      it "Then successfully alters target email string attributes in persistence" do
         visit "/edit-account/#{customer_id}"
         fill_in "email", with: "newemail@example.com"
         click_button "Save Changes"
@@ -173,7 +204,7 @@ RSpec.describe "Admin Management", type: :feature do
         expect(account[:email]).to eq("newemail@example.com")
       end
 
-      it "updates the account type" do
+      it "Then adjusts system tracking role levels mapping down directly to persistent layer" do
         visit "/edit-account/#{customer_id}"
         select "Barista", from: "account_type"
         click_button "Save Changes"
@@ -181,8 +212,10 @@ RSpec.describe "Admin Management", type: :feature do
         account = DB[:Accounts].where(user_id: customer_id).first
         expect(account[:account_type]).to eq("barista")
       end
+    end
 
-      it "resets the password to 'password123' when the reset checkbox is ticked" do
+    context "When using the automated security configuration tools" do
+      it "Then resets authentication hashes back to baseline value targets via confirmation" do
         visit "/edit-account/#{customer_id}"
         check "reset_password"
         click_button "Save Changes"
@@ -191,7 +224,7 @@ RSpec.describe "Admin Management", type: :feature do
         expect(BCrypt::Password.new(account[:hashed_password])).to eq("password123")
       end
 
-      it "does not change the password when reset checkbox is not ticked" do
+      it "Then guarantees persistence integrity stands fast when bypass flag left blank" do
         original_hash = DB[:Accounts].where(user_id: customer_id).get(:hashed_password)
 
         visit "/edit-account/#{customer_id}"
@@ -203,48 +236,53 @@ RSpec.describe "Admin Management", type: :feature do
       end
     end
     
-    describe "Flagged Accounts Handling" do
+    context "Given customer tracking references flag records as problematic" do
       before do
         DB[:Accounts].where(user_id: customer_id).update(flagged: true, flagged_at: Time.now)
       end
 
-      it "displays accounts that are flagged" do
-        visit "/flagged-accounts"
-        expect(page).to have_content("testcust@bbc.com")
+      context "When evaluating isolated monitoring dashboards within administrative modules" do
+        it "Then displays profiles explicitly flagged inside observation arrays" do
+          visit "/flagged-accounts"
+          expect(page).to have_content("testcust@bbc.com")
+        end
+
+        it "Then masks records lacking security flags out of view parameters" do
+          visit "/flagged-accounts"
+          expect(page).not_to have_content("testadmin@bbc.com")
+        end
       end
 
-      it "does not display unflagged accounts" do
-        visit "/flagged-accounts"
-        expect(page).not_to have_content("testadmin@bbc.com")
+      context "When targeting an offending profile record with enforcement blocks" do
+        it "Then safely invokes status bans and redirects administrators forward to list indexes" do
+          visit "/suspend-account/#{customer_id}"
+          expect(current_path).to eq("/flagged-accounts")
+
+          account = DB[:Accounts].where(user_id: customer_id).first
+          expect(account[:suspended]).to be_truthy
+        end
       end
 
-      it "suspends an account and redirects to flagged-accounts" do
-        visit "/suspend-account/#{customer_id}"
-        expect(current_path).to eq("/flagged-accounts")
-
-        account = DB[:Accounts].where(user_id: customer_id).first
-        expect(account[:suspended]).to be_truthy
-      end
-
-      it "does not suspend an already-clean account unintentionally" do
-        DB[:Accounts].where(user_id: admin_id).update(suspended: false)
-        visit "/flagged-accounts"
-        account = DB[:Accounts].where(user_id: admin_id).first
-        expect(account[:suspended]).to be_falsy
+      context "When evaluating standard security checks across untainted core administrator roles" do
+        it "Then maintains normal profile processing pathways clear of unexpected blocks" do
+          DB[:Accounts].where(user_id: admin_id).update(suspended: false)
+          visit "/flagged-accounts"
+          account = DB[:Accounts].where(user_id: admin_id).first
+          expect(account[:suspended]).to be_falsy
+        end
       end
     end
 
-    describe "Employee Accounts Management" do
-      it "displays categorized groups of employee accounts" do
+    context "When managing the operational team profiles roster index" do
+      it "Then groups staff items visibly based on corporate organization categories" do
         visit "/employee-accounts"
         expect(page).to have_content("testbarista@bbc.com")
         expect(page).to have_content("testmanager@bbc.com")
         expect(page).to have_content("testadmin@bbc.com")
       end
 
-      it "deletes an employee account successfully via post form action" do
+      it "Then executes permanent account deletion tasks and reverts layout cleanly" do
         visit "/employee-accounts"
-        
         within(".acc-view__row", text: "testbarista@bbc.com") do
           click_button "Delete"
         end
@@ -255,8 +293,8 @@ RSpec.describe "Admin Management", type: :feature do
       end
     end
 
-    describe "Order Management Subsystem" do
-      it "displays the completed orders tracking frame" do
+    context "When accessing the core order fulfillment tracking pipeline" do
+      it "Then outputs full monitoring structural frames tracking finalized order statuses" do
         visit "/order-management/administrator"
         expect(page).to have_content("Paid")
       end
