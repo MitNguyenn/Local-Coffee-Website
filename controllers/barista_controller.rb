@@ -21,10 +21,6 @@ before [
     redirect '/log-in'
   end
 
-  if session[:account_type] == 'customer'
-    redirect '/'
-  end
-
   unless ['barista', 'manager', 'administrator'].include?(session[:account_type])
     redirect '/'
   end
