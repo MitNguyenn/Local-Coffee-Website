@@ -50,8 +50,35 @@ get '/suspend-account/:id' do
   redirect '/flagged-accounts'
 end
 
-get '/order-management/administrator' do 
-  @completed_orders = DB[:Orders].all
+get '/order-management/administrator' do
+  # 1. Fetch orders marked as completed in the system
+  orders = DB[:Orders]
+    .where(order_is_completed: true)
+    .order(Sequel.desc(:order_id))
+    .all
+
+  # 2. Map orders to include aggregated string summaries of their items
+  @completed_orders = orders.map do |order|
+    # Query items for this specific order
+    items = DB[:OrderItems].where(order_id: order[:order_id]).all
+    
+    # Format each item into a clean, human-readable string snippet
+    item_descriptions = items.map do |item|
+      details = []
+      details << "#{item[:drink_size]}" if item[:drink_size]
+      details << "#{item[:roast_level]} roast" if item[:roast_level]
+      details << "w/ #{item[:milk_type]}" if item[:milk_type]
+      details << "(#{item[:pack_weight]}g)" if item[:pack_weight]
+      
+      spec = details.empty? ? "" : " [#{details.join(', ')}]"
+      "#{item[:quantity]}x #{item[:product_type]}#{spec}"
+    end
+
+    # Attach the built text to match your ERB's order[:OrderContents]
+    order[:OrderContents] = item_descriptions.empty? ? "No items" : item_descriptions.join(", ")
+    order
+  end
+
   erb :order_correction_administrator
 end
 
@@ -96,6 +123,42 @@ end
 post '/delete-account/:id' do
   DB[:Accounts].where(user_id: params[:id].to_i).delete
   redirect '/employee-accounts'
+end
+
+post '/order-management/administrator' do
+  order_id       = params[:order_id].to_i
+  new_status_str = params[:payment_status] # "Paid" or "Unpaid"
+  reason         = params[:reason_note].to_s.strip
+
+  # Basic validation check
+  redirect '/order-management/administrator' if reason.empty?
+
+  # Convert string back to database boolean representation
+  new_payment_bool = (new_status_str == 'Paid')
+
+  DB.transaction do
+    # 1. Fetch current status for historical audit records
+    target_order = DB[:Orders].where(order_id: order_id).first
+    if target_order
+      old_status_str = target_order[:payment_is_completed] ? 'Paid' : 'Unpaid'
+
+      # 2. Only update and audit if an actual status change occurred
+      if target_order[:payment_is_completed] != new_payment_bool
+        DB[:Orders].where(order_id: order_id).update(payment_is_completed: new_payment_bool)
+
+        # 3. Log structural footprint into the Audits table
+        DB[:Audits].insert(
+          order_id:      order_id,
+          before_status: old_status_str,
+          after_status:  new_status_str,
+          change_reason: reason
+        )
+      end
+    end
+  end
+
+  # Flash messages could be integrated here before returning
+  redirect '/order-management/administrator'
 end
 
 post '/database-status/backup' do
