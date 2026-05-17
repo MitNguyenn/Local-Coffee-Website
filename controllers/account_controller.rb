@@ -71,9 +71,12 @@ post '/update-account' do
   DB[:Accounts].where(user_id: session[:user_id]).update(
     first_name: params[:first_name],
     last_name: params[:last_name],
-    postcode: params[:postcode],
+    email: params[:email],
+    address: params[:address],
+    postcode: params[:postcode]
   )
-  redirect '/'
+
+  redirect '/account-settings?success=true'
 end
 
 post '/delete-account' do
