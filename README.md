@@ -29,18 +29,22 @@ ruby db/DB__init.rb
 
 ---
 
-## Running the Application
-
+## Running and Visiting the Website
+In Codio:
 ```bash
 sinatra
 ```
 
-Then open your browser and navigate to:
+Then click on the link seen in the terminal window
 
+OR 
+```bash
+ruby app.rb
 ```
-http://localhost:4567
+and visit the link 
+```bash
+127.0.0.1:4567
 ```
-
 ---
 
 ## Running the Tests
