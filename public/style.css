@@ -785,17 +785,6 @@ footer {
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 }
 
-.fav-btn {
-  background-color: #a67458;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  font-family: inherit;
-  margin: 6px;
-  padding: 8px 12px;
-}
-
 .favourite-actions {
   align-items: center;
   display: flex;
@@ -1251,10 +1240,10 @@ footer {
 .btn,
 .view-menu-btn,
 .buy-button,
-.add-to-cart-button,
 .purchase-btn,
 .submit-btn,
-.change-btn {
+.change-btn,
+.fav-button{
   background:
     linear-gradient(
       180deg,
@@ -1288,7 +1277,8 @@ footer {
 .view-menu-btn:hover,
 .buy-button:hover,
 .submit-btn:hover,
-.btn:hover {
+.btn:hover,
+.fav-button:hover {
   transform: scale(1.03) translateY(-2px);
   filter: brightness(1.15) saturate(1.2);
   box-shadow: 0 10px 25px rgba(75, 44, 32, 0.4);
@@ -1656,7 +1646,8 @@ button:active {
 .add-to-cart-button,
 .btn,
 .view-menu-btn,
-.submit-btn {
+.submit-btn,
+.fav-button {
   background:
     linear-gradient(
       180deg,
@@ -1689,6 +1680,7 @@ button:active {
 .view-menu-btn:hover,
 .buy-button:hover,
 .submit-btn:hover,
+.fav-button:hover,
 .btn:hover {
   transform: scale(1.03) translateY(-2px);
   filter: brightness(1.15) saturate(1.2);
