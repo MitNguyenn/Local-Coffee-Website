@@ -6,7 +6,7 @@ before do
   protected_prefixes = [
     '/staff-portal', '/manage-', '/edit-account', '/order-management',
     '/generate-', '/update-stamps', '/flagged-accounts', '/employee-accounts',
-    '/database-status', '/loyalty-card', '/my-orders', '/account-settings',
+    '/database-status', '/loyalty-card', '/my-orders', '/my-favourites', '/account-settings',
     '/user-tickets', '/ticket/', '/refund', '/delete-account'
   ]
   
@@ -48,26 +48,40 @@ get '/my-orders' do
   erb :my_orders
 end
 
+get '/my-favourites' do
+  DB[:FavouriteBeans].where(user_id: session[:user_id], pack_weight: nil).delete
+  DB[:FavouriteBeans].where(user_id: session[:user_id], roast_level: nil).delete
+  @beans_by_origin = DB[:Beans].all.each_with_object({}) do |bean, beans|
+    beans[bean[:origin]] = bean
+  end
+  @pack_multipliers = DB[:BeansPackWeightPriceMarkupMultipliers].to_hash(:pack_weight, :markup_multiplier)
+  @favourites = DB[:FavouriteBeans].where(user_id: session[:user_id]).all.select do |fav|
+    @beans_by_origin[fav[:origin]] && @pack_multipliers[fav[:pack_weight]]
+  end
+  erb :my_favourites
+end
 
 post '/update-account' do
+  existing = DB[:Accounts].where(email: params[:email]).exclude(user_id: session[:user_id]).first
+  redirect '/account-settings?error=email_taken' if existing
+  
   DB[:Accounts].where(user_id: session[:user_id]).update(
     first_name: params[:first_name],
     last_name: params[:last_name],
-    postcode: params[:postcode],
+    email: params[:email],
+    address: params[:address],
+    postcode: params[:postcode]
   )
-  redirect '/'
+
+  redirect '/account-settings?success=true'
 end
 
 post '/delete-my-account' do
-  # 1. Enforce authentication security checkpoint
   if session[:user_id]
-    # 2. Purge record matching active session identifier
     DB[:Accounts].where(user_id: session[:user_id]).delete
     
-    # 3. Clear session data completely to log out user
     session.clear
   end
   
-  # 4. Return user back to homepage
   redirect '/'
 end

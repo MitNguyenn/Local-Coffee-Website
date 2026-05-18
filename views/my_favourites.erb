@@ -1,0 +1,83 @@
+<div class="page-title">
+  <h2>My Favourite Beans</h2>
+</div>
+
+<div class="my-orders-container">
+  <% if @favourites.empty? %>
+    <p>You have no favourite beans yet.</p>
+  <% else %>
+    <% @favourites.each do |fav| %>
+      <% bean = @beans_by_origin[fav[:origin]] %>
+      <% price = bean[:price_per_250g].to_f * @pack_multipliers[fav[:pack_weight]].to_f %>
+      <div class="my-orders-card favourite-card">
+        <div class="my-orders-header">
+          <span class="my-orders-title"><%= fav[:origin] %></span>
+          <a href="/product/?type=bean&origin=<%= fav[:origin] %>" class="back-link">View bean</a>
+        </div>
+
+        <p><strong>Pack weight:</strong> <%= fav[:pack_weight].to_i %>g</p>
+        <p><strong>Roast level:</strong> <%= fav[:roast_level] %></p>
+        <p><strong>Price:</strong> £<%= sprintf('%.2f', price) %></p>
+        <div class="favourite-actions">
+          <button
+            class="add-to-cart-button"
+            onclick="addFavouriteToCart(event)"
+            data-origin="<%= fav[:origin] %>"
+            data-pack-weight="<%= fav[:pack_weight] %>"
+            data-roast-level="<%= fav[:roast_level] %>"
+            data-price="<%= price %>"
+          >
+            Add to cart
+          </button>
+          <button
+            class="back-link fav-remove-link"
+            onclick="removeFavourite(event)"
+            data-origin="<%= fav[:origin] %>"
+            data-pack-weight="<%= fav[:pack_weight] %>"
+            data-roast-level="<%= fav[:roast_level] %>"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<script>
+  function addFavouriteToCart(event) {
+    const button = event.currentTarget;
+
+    fetch('/add-to-cart', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `item_type=bean&origin=${encodeURIComponent(button.dataset.origin)}&pack_weight=${encodeURIComponent(button.dataset.packWeight)}&roast_level=${encodeURIComponent(button.dataset.roastLevel)}&price=${encodeURIComponent(button.dataset.price)}`
+    })
+    .then(response => {
+      if (!response.ok) return;
+
+      const indicator = document.getElementById('cart-indicator');
+      if (indicator) {
+        indicator.classList.remove('hidden');
+      }
+
+      button.textContent = 'Added!';
+      setTimeout(() => { button.textContent = 'Add to cart'; }, 1000);
+    });
+  }
+
+  function removeFavourite(event) {
+    const button = event.currentTarget;
+    const card = button.closest('.favourite-card');
+
+    fetch('/toggle-favourite-bean', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `origin=${encodeURIComponent(button.dataset.origin)}&pack_weight=${encodeURIComponent(button.dataset.packWeight)}&roast_level=${encodeURIComponent(button.dataset.roastLevel)}`
+    })
+    .then(response => {
+      if (!response.ok) return;
+      card.remove();
+    });
+  }
+</script>

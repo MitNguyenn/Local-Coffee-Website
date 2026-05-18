@@ -46,7 +46,7 @@
           <a href="/change-password">Change password</a>
         </div>
 
-        <h3 class="detail-header">address Details</h3>
+        <h3 class="detail-header">Address Details</h3>
         
         <div class="input-wrapper">
         <label for="address">address</label>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="input-wrapper">
-        <label for="postcode">postcode</label>
+        <label for="postcode">Postcode</label>
           <input type="text" name = "postcode" value="<%= @user[:postcode] %>" class="account-input">
         </div>
         <br>
@@ -67,8 +67,11 @@
       </form>
 
       <% if params[:success] %>
-  <p style="color: green;">Profile updated successfully!</p>
-<% end %>
+        <p style="color: green;">Profile updated successfully!</p>
+      <% end %>
+      <% if params[:error] == 'email_taken' %>
+        <p style="color: red;">The email address is already in use by another account.</p>
+      <% end %>
      </div>
   </main>
   </body>
