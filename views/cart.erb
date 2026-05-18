@@ -25,7 +25,7 @@
     <div class="cart-page-checkout-column">
       <%
         if session[:user_id] 
-        user = DB[:Accounts].where(user_id: session[:user_id]).firsts
+        user = DB[:Accounts].where(user_id: session[:user_id]).first
       %>
           <label for="order-delivery-select"><b>Select your delivery option</b></label>
           <select name="order-delivery-select" id="order-delivery-select">

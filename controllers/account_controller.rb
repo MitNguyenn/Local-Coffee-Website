@@ -32,7 +32,7 @@ get '/my-orders' do
   user = DB[:Accounts].where(user_id: session[:user_id]).first
   @stats = {
     'stamp_count' => user[:stamp_count] || 0,
-    'until_next_discount' => 10 - (user[:stamp_count] || 0),
+    'until_next_discount' => abs(10 - (user[:stamp_count] || 0)),
     'total_num_coffee' => 0, 
     'total_num_beans' => 0
   }
