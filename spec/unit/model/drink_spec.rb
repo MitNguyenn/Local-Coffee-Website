@@ -1,5 +1,5 @@
 # Drink Spec file.
 
 RSpec.describe Drink, type: :model do
-  puts "idk man"
+  puts""
 end

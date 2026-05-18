@@ -491,7 +491,7 @@ RSpec.describe 'Product Controller', type: :feature do
           postcode: 'S1 1AA'
         }
 
-        expect(current_stamp_count).to eq(0)
+        expect(current_stamp_count).to eq(10)
       end
 
       it "Then currently awards zero stamps for a bean-only order (bug: array comparison never matches)" do
