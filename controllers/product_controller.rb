@@ -60,7 +60,6 @@ end
 
 put '/cart/apply-discount-code' do
   discount_code_input = params[:discount_code]
-  p discount_code_input
   get_current_discounts.each do | discount_name, data | 
     if discount_code_input == discount_name
       session[:discount_multiplier] = data[:multiplier]
@@ -129,19 +128,13 @@ end
     user = DB[:Accounts].where(user_id: session[:user_id]).first
 
     total_cost = params[:total_cost]
-    p session[:discount_multiplier]
-    p total_cost
     if session[:discount_multiplier] <= 1.0
-      p "Discount code applied. updating the cost..."
       total_cost = (total_cost.to_f * session[:discount_multiplier]).round(2)
-      p total_cost
     end
-    p total_cost
     @payment_successful    = nil
     payment_is_completed = false
 
     if params[:payment] == "pay-now"
-      p "checking if payment is successful"
       @payment_successful = flip_coin()
       payment_is_completed = @payment_successful
     end
@@ -164,7 +157,6 @@ end
           order_is_completed: false
         )
       rescue StandardError => e
-        p "Failed to create order in db"
         puts "Caught an error: #{e.message}"
         puts "Error class: #{e.class}"
         return "Failed".to_json
@@ -199,7 +191,6 @@ end
             )
           end
         rescue StandardError => e
-          p "Failed to add order items to db"
           puts "Caught an error: #{e.message}"
           puts "Error class: #{e.class}"
           return "Failed".to_json
@@ -210,7 +201,6 @@ end
       session[:cart].clear
       session[:contains_drink] = false
       session[:discount_multiplier] = 1.0
-      p "Successfully placed order"
     end
 
     if @payment_successful != nil
