@@ -23,13 +23,9 @@ end
 
 get '/loyalty-card' do
   @user = DB[:Accounts].where(user_id: session[:user_id]).first
-  if @user
-    qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:user_id]}")
-    @qr_svg = qrcode.as_svg(color: "4b2c20", module_size: 6, standalone: true, viewbox: true)
-    erb :loyalty_card
-  else
-    "Error: Account not found."
-  end
+  qrcode = RQRCode::QRCode.new("LoyaltyNum:#{@user[:user_id]}")
+  @qr_svg = qrcode.as_svg(color: "4b2c20", module_size: 6, standalone: true, viewbox: true)
+  erb :loyalty_card
 end
 
 get '/my-orders' do

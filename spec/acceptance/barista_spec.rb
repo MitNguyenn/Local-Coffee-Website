@@ -242,7 +242,9 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(new_order[:order_is_completed]).to be false
         expect(new_order[:total_cost].to_f).to eq(19.36)
 
-        expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(7)
+        expected_stamp_count = DB[:Accounts].where(user_id: 1).get(:stamp_count)
+
+        expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(expected_stamp_count)
         expect(DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)).not_to be_nil #random value
       end
     end

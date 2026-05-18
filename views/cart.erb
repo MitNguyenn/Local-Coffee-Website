@@ -18,7 +18,7 @@
         <% total_cost += data[:quantity] * data[:price] %>
       <% end %>
       <div class="total-cost">
-          <h2 id="display-total-cost" data-total-cost="<%= total_cost %>">Total cost: £<%= sprintf('%.2f', total_cost.round(2)) %></h2>
+          <h2 id="display-total-cost" data-total-cost="<%= total_cost %>">Total cost: £<%= sprintf('%.2f', (total_cost * session[:discount_multiplier]).round(2)) %></h2>
       </div>
     </div>
 
@@ -46,6 +46,13 @@
             <option value="pay-in-store">Pay in store</option>
           </select>
 
+          <div class="discount-code-section" style="display:flex; flex-direction: row; justify-content: center; align-items: center; gap: 5px">
+            <label for="discount-code-input">Discount code</label>
+            <input type="text" id="discount-code-input">
+
+            <button onclick="applyDiscountCode(event)">Apply code</button>
+          </div>
+
           <button onclick="checkoutButtonOnClick(event)" class="checkout-button">Check Out</button>
       <% else %>
           <h3>Please log in to proceed</h3>
@@ -58,6 +65,7 @@
     const postcodeInput = document.getElementById('postcode-input');
     const orderDeliverySelect = document.getElementById('order-delivery-select');
     const paySelect = document.getElementById('pay-select');
+    const discountCodeInput = document.getElementById('discount-code-input');
 
     let currentOrderDeliverySelectValue = orderDeliverySelect.value;
 
@@ -157,7 +165,31 @@
       })
       .then(response => {
         if (response.ok) {
-          window.location.reload(); // Reloads the current page
+          window.location.reload();
+        }
+      });
+    }
+    
+    function validDiscountCode(discountCode) {
+      var regex = /^([0-9]|[a-z])+([0-9a-z]+)$/i;
+      return regex.test(discountCode)
+    }
+    function applyDiscountCode(event) {
+      const discountCodeInputValue = discountCodeInput.value;
+      
+      if (!validDiscountCode(discountCodeInputValue)) {
+        discountCodeInput.value = "";
+        return;
+      }
+
+      fetch('/cart/apply-discount-code', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `discount_code=${discountCodeInputValue}`
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.reload(); 
         }
       });
     }

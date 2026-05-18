@@ -11,6 +11,7 @@ module Discounts
         multiplier: row[:discount_multiplier].to_f # Aligned with schema change
       }
     end
+
     current_discounts
   end
 
