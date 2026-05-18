@@ -17,7 +17,6 @@ before [
   '/suspend-account*', 
   '/order-management/administrator*', 
   '/employee-accounts*', 
-  '/delete-account*', 
   '/database-status*'
 ] do
   unless session[:user_id] && session[:account_type] == 'administrator'
