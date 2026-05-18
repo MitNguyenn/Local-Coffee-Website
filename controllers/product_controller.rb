@@ -45,10 +45,6 @@ def cart_contains_drink()
   return false
 end
 
-def flip_coin
-  rand(0.0..1.0) > 0.05
-end
-
 get '/product/' do
   @type = params[:type]
   if @type == 'bean'
@@ -227,7 +223,11 @@ end
       session[:contains_drink] = false
     end
 
-    erb :mock_gateway, layout: false
+    if @payment_successful != nil
+      erb :mock_gateway, layout: false
+    else 
+      erb :order_success
+    end
   end
 
   get '/order-fail' do
