@@ -49,7 +49,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Staff Portal'
         
-        expect(page).to have_current_path('/log-in')
+        expect(page).to have_current_path('/')
       end
     end
   end

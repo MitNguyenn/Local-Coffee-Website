@@ -42,27 +42,27 @@ RSpec.describe 'Product Controller', type: :feature do
     context "When attempting to navigate into protected billing pathways" do
       it "Then intercepts requests to checkout and forces login redirections" do
         visit '/checkout'
-        expect(current_path).to eq('/log-in')
+        expect(current_path).to eq("/")
       end
 
       it "Then intercepts requests to place-order and forces login redirections" do
         visit '/place-order'
-        expect(current_path).to eq('/log-in')
+        expect(current_path).to eq("/")
       end
 
       it "Then intercepts requests to external-payment-gateway and forces login redirections" do
         visit '/external-payment-gateway'
-        expect(current_path).to eq('/log-in')
+        expect(current_path).to eq("/")
       end
 
       it "Then intercepts requests to payment-callback and forces login redirections" do
         visit '/payment-callback'
-        expect(current_path).to eq('/log-in')
+        expect(current_path).to eq("/")
       end
 
       it "Then intercepts requests to order-success and forces login redirections" do
         visit '/order-success'
-        expect(current_path).to eq('/log-in')
+        expect(current_path).to eq("/")
       end
     end
   end

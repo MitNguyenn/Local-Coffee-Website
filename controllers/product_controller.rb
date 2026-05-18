@@ -4,7 +4,8 @@ before [
   '/checkout*', 
   '/place-order*', 
   '/external-payment-gateway*', 
-  '/order-success*'
+  '/order-success*',
+  '/payment-callback'
 ] do
   redirect '/' unless session[:user_id]
 end
