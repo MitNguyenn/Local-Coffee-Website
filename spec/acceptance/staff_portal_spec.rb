@@ -6,7 +6,7 @@ RSpec.describe 'Staff Portal', type: :feature do
 
   context "Given a user authenticated as a barista employee" do
     before(:each) do
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+      log_in_as('testbarista', 'testbarista')
       visit '/staff-portal'
     end
 
@@ -52,7 +52,7 @@ RSpec.describe 'Staff Portal', type: :feature do
 
   context "Given a user authenticated as a store manager" do
     before(:each) do
-      log_in_as('testmanager@bbc.com', 'testmanager@bbc.com')
+      log_in_as('testmanager', 'testmanager')
       visit '/staff-portal'
     end
 
@@ -120,7 +120,7 @@ RSpec.describe 'Staff Portal', type: :feature do
 
   context "Given a user authenticated as an administrator" do
     before(:each) do
-      log_in_as('testadmin@bbc.com', 'testadmin@bbc.com')
+      log_in_as('testadmin', 'testadmin')
       visit '/staff-portal'
     end
 

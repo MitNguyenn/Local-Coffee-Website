@@ -33,7 +33,7 @@ RSpec.describe "Admin Management", type: :feature do
 
   context "Given a user authenticated as a barista" do
     before(:each) do
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+      log_in_as('testbarista', 'testbarista')
     end
 
     context "When attempting to access the manage accounts page" do
@@ -46,7 +46,7 @@ RSpec.describe "Admin Management", type: :feature do
 
   context "Given a user authenticated as a standard customer" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When attempting to access the manage accounts page" do
@@ -59,7 +59,7 @@ RSpec.describe "Admin Management", type: :feature do
 
   context "Given a user authenticated as an administrator" do
     before(:each) do
-      log_in_as('testadmin@bbc.com', 'testadmin@bbc.com')
+      log_in_as('testadmin', 'testadmin')
     end
 
     context "When requesting administrative route domains" do
@@ -101,7 +101,7 @@ RSpec.describe "Admin Management", type: :feature do
     context "When opting to isolate a particular row inside the account overview block" do
       it "Then safely transfers user focal point over to target edit entry pages" do
         visit "/manage-accounts"
-        within(".acc-view__row", text: "testcust@bbc.com") do
+        within(".acc-view__row", text: "testcust") do
           click_link "Edit Account"
         end
         expect(current_path).to eq("/edit-account/1")
@@ -113,7 +113,7 @@ RSpec.describe "Admin Management", type: :feature do
         visit "/edit-account/#{customer_id}"
         expect(find_field("first_name").value).to eq("Customer")
         expect(find_field("last_name").value).to  eq("Test")
-        expect(find_field("email").value).to       eq("testcust@bbc.com")
+        expect(find_field("email").value).to       eq("testcust")
       end
     end
 
@@ -189,7 +189,7 @@ RSpec.describe "Admin Management", type: :feature do
 
         it "Then masks records lacking security flags out of view parameters" do
           visit "/flagged-accounts"
-          expect(page).not_to have_content("testadmin@bbc.com")
+          expect(page).not_to have_content("testadmin")
         end
       end
 
@@ -208,8 +208,8 @@ RSpec.describe "Admin Management", type: :feature do
       context "When monitoring staff accounts index pages" do
         it "Then groups user cards based cleanly upon staff organizational classifications" do
           visit "/employee-accounts"
-          expect(page).to have_content("testbarista@bbc.com")
-          expect(page).to have_content("testmanager@bbc.com")
+          expect(page).to have_content("testbarista")
+          expect(page).to have_content("testmanager")
         end
       end
 

@@ -69,7 +69,7 @@ RSpec.describe 'Product Controller', type: :feature do
 
   context "Given a user authenticated as a regular customer" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When routing directly onto final confirmation screens" do

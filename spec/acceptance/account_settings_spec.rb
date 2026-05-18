@@ -15,7 +15,7 @@ RSpec.describe "Account Management", type: :feature do
 
   context "Given a user is logged into the application" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When visiting the account settings page" do

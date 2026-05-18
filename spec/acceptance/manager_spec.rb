@@ -15,7 +15,7 @@ RSpec.describe "ManagerController", type: :feature do
 
   context "Given a user authenticated as a regular customer" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When trying to access the bean stock management desk" do
@@ -28,7 +28,7 @@ RSpec.describe "ManagerController", type: :feature do
 
   context "Given a user authenticated as a barista staff employee" do
     before(:each) do
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+      log_in_as('testbarista', 'testbarista')
     end
 
     context "When trying to open the corporate discount settings panel" do
@@ -41,7 +41,7 @@ RSpec.describe "ManagerController", type: :feature do
 
   context "Given a user authenticated as a store manager" do
     before(:each) do
-      log_in_as('testmanager@bbc.com', 'testmanager@bbc.com')
+      log_in_as('testmanager', 'testmanager')
     end
 
     context "When requesting core manager interface domains" do

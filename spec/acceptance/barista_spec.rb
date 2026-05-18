@@ -22,7 +22,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
   context "Given a user authenticated as a regular customer" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When trying to access the staff portal" do
@@ -50,7 +50,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
   context "Given a user authenticated as a barista" do
 
     before(:each) do
-      log_in_as("testbarista@bbc.com", "testbarista@bbc.com")
+      log_in_as("testbarista", "testbarista")
     end
 
     context "When routing through core dashboard environments" do
@@ -196,7 +196,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(page).to have_content("Place Order - Select Customer")
         expect(page).to have_content("Customer Test")
 
-        within(".acc-view__row", text: "testcust@bbc.com") do
+        within(".acc-view__row", text: "testcust") do
           click_button "Select Customer"
         end
 
@@ -206,7 +206,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
       it "Then removes tracking parameters explicitly discarding temporary customer state" do
         visit "/place-order/find-user"
-        within(".acc-view__row", text: "testcust@bbc.com") do
+        within(".acc-view__row", text: "testcust") do
           click_button "Select Customer"
         end
 
@@ -220,7 +220,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
     context "When completing a multi-item transaction through the store register" do
       it "Then compiles the basket payload, executes mathematical tracking formulas, and updates inventories" do
         visit "/place-order/find-user"
-        within(".acc-view__row", text: "testcust@bbc.com") do
+        within(".acc-view__row", text: "testcust") do
           click_button "Select Customer"
         end
 

@@ -7,7 +7,7 @@ RSpec.describe 'Authentication process', type: :feature do
   context "Given a user wants to log in" do
     context "When valid credentials are provided" do
       it "Then authenticates successfully and redirects to home" do
-        log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+        log_in_as('testcust', 'testcust')
 
         expect(current_path).to eq('/')
         expect(page).to have_content('Log out')
@@ -16,7 +16,7 @@ RSpec.describe 'Authentication process', type: :feature do
 
     context "When wrong credentials are provided" do
       it "Then displays a login error message and keeps them on the login page" do
-        log_in_as('testcust@bbc.com', 'password124')                       
+        log_in_as('testcust', 'password124')                       
 
         expect(page).to have_content('Log in')
         expect(current_path).to eq('/log-in')
@@ -35,7 +35,7 @@ RSpec.describe 'Authentication process', type: :feature do
 
   context "Given a user is logged into the application" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When the logout action is executed" do

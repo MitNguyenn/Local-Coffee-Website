@@ -56,7 +56,7 @@ RSpec.describe 'Home page', type: :feature do
 
   context 'Given a user authenticated as a regular customer' do 
     before(:each) do 
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When exploring customer portal links from the main index" do
@@ -95,7 +95,7 @@ RSpec.describe 'Home page', type: :feature do
 
   context 'Given a user authenticated as an administrator' do
     before(:each) do 
-      log_in_as('testadmin@bbc.com', 'testadmin@bbc.com') 
+      log_in_as('testadmin', 'testadmin') 
     end
 
     context 'When requesting access to the staff operations node link' do
@@ -111,7 +111,7 @@ RSpec.describe 'Home page', type: :feature do
 
   context 'Given a user authenticated as a barista staff employee' do
     before(:each) do 
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com') 
+      log_in_as('testbarista', 'testbarista') 
     end
 
     context 'When requesting access to the staff operations node link' do
@@ -127,7 +127,7 @@ RSpec.describe 'Home page', type: :feature do
 
   context 'Given a user authenticated as a store manager' do
     before(:each) do 
-      log_in_as('testmanager@bbc.com', 'testmanager@bbc.com') 
+      log_in_as('testmanager', 'testmanager') 
     end
 
     context 'When requesting access to the staff operations node link' do
