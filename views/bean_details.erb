@@ -32,7 +32,7 @@
       </select>
 
       <h2 id="display-price">Total price: £<%= sprintf("%.2f", @item.price_per_250g) %></h2>
-      <button onclick="toggleFavourite(event)" id="favourite-button" class="fav-btn">Add to Favourites</button>
+      <button onclick="toggleFavourite(event)" id="favourite-button" class="fav-button" style="margin-bottom: 10px;">Add to Favourites</button>
       <button onclick="addToCartOnClick(event)" id="add-to-cart-button" class="add-to-cart-button">Add to cart</button>
     </div>
   </div>
