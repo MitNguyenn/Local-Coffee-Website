@@ -56,9 +56,37 @@ RSpec.describe "Account Management", type: :feature do
       it "Then displays the correct stamp count" do
         visit "/loyalty-card"
         
-        expect(page).to have_content(10 - DB[:Accounts].where(user_id: user_id).first[:stamp_count])
+        expect(page).to have_content(10 - (DB[:Accounts].where(user_id: user_id).first[:stamp_count] % 10))
       end
     end
+
+    describe "Favouriting beans" do
+  before(:each) { log_in_as('testcust@bbc.com', 'testpass') }
+
+  it "displays a favourited bean on the favourites page" do
+    DB[:FavouriteBeans].insert(
+      user_id:     1,
+      origin:      'Ethiopian',
+      pack_weight: 250.0,
+      roast_level: 'Light'
+    )
+
+    visit '/my-favourites'
+    expect(current_path).to eq('/my-favourites')
+    expect(page).to have_content('Ethiopian')
+  end
+
+  it "toggles a favourite via the route" do
+    page.driver.submit :put, '/toggle-favourite-bean', {
+      origin:      'Ethiopian',
+      pack_weight: '250.0',
+      roast_level: 'Light'
+    }
+
+    visit '/my-favourites'
+    expect(page).to have_content('Ethiopian')
+  end
+end
 
     context "When visiting the my orders page" do
       it "Then shows current and past orders correctly" do

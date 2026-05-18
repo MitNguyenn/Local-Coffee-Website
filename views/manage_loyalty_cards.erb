@@ -16,7 +16,7 @@
             <!-- Unique ID added here for easier testing -->
             <form id="form-user-<%= account[:user_id] %>" action="/update-stamps" method="POST">
               <input type="hidden" name="user_id" value="<%= account[:user_id] %>">
-              <input type="number" name="stamp_count" value="<%= account[:stamp_count] %>" min="0" max="10">
+              <input type="number" name="stamp_count" value="<%= account[:stamp_count] %>" min="0">
               <button type="submit" class="acc-view__update-btn">Save</button>
             </form>
           </td>
