@@ -1,7 +1,12 @@
 # Product browsing, checkout, and payment callback routes.
 
-before ['/checkout*', '/place-order*', '/external-payment-gateway*', '/payment-callback*', '/order-success*'] do
-  redirect '/log-in' unless session[:user_id] # swapped logged_in? helper check for direct session lookup to stay robust
+before [
+  '/checkout*', 
+  '/place-order*', 
+  '/external-payment-gateway*', 
+  '/order-success*'
+] do
+  redirect '/' unless session[:user_id]
 end
 
 DB.create_table? :FavouriteBeans do

@@ -2,18 +2,16 @@
 
 require 'rqrcode'
 
-before do
-  protected_prefixes = [
-    '/staff-portal', '/manage-', '/edit-account', '/order-management',
-    '/generate-', '/update-stamps', '/flagged-accounts', '/employee-accounts',
-    '/database-status', '/loyalty-card', '/my-orders', '/my-favourites', '/account-settings',
-    '/user-tickets', '/ticket/', '/refund', '/delete-account'
-  ]
-  
-  needs_auth = protected_prefixes.any? { |prefix| request.path_info.start_with?(prefix) }
-  
-  if needs_auth && !session[:user_id]
-    redirect '/log-in'
+before [
+  '/account-settings*', 
+  '/loyalty-card*', 
+  '/my-orders*', 
+  '/my-favourites*', 
+  '/update-account*', 
+  '/delete-my-account*'
+] do
+  unless session[:user_id]
+    redirect '/'
   end
 end
 
