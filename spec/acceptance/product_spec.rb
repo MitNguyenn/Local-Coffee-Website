@@ -632,7 +632,62 @@ RSpec.describe 'Product Controller', type: :feature do
 
     it "Then handles non-boolean callback routes gracefully without matching template output criteria" do
       visit '/payment-callback?status=corrupted_string'
-      expect(page.driver.response.status).to eq(200) # Ensure it does not crash or raise exceptions
+      expect(page.driver.response.status).to eq(200) 
     end
   end
+
+  describe 'Discount codes' do
+  before(:each) { log_in_as('testcust@bbc.com', 'testpass') }
+
+  before(:each) do
+    page.driver.submit :put, '/add-to-cart', {
+      item_type: 'drink',
+      beverage: 'Latte',
+      drink_size: 'Regular',
+      milk_type: 'Oat',
+      price: '4.40'
+    }
+  end
+
+  it 'applies a valid discount code and reduces the displayed price' do
+    page.driver.submit :put, '/cart/apply-discount-code', {
+      discount_code: 'discount1'
+    }
+
+    visit '/cart'
+    expect(page).to have_content('3.96')
+  end
+
+  it 'applies no discount for an invalid code' do
+    page.driver.submit :put, '/cart/apply-discount-code', {
+      discount_code: 'notacode'
+    }
+
+    visit '/cart'
+    expect(page).to have_content('4.40')
+  end
+
+  it 'returns success for a valid code' do
+    page.driver.submit :put, '/cart/apply-discount-code', {
+      discount_code: 'discount1'
+    }
+    expect(page.driver.response.body).to include('Success')
+  end
+
+  it 'returns success even for an invalid code' do
+    page.driver.submit :put, '/cart/apply-discount-code', {
+      discount_code: 'notacode'
+    }
+    expect(page.driver.response.body).to include('Success')
+  end
+
+  it 'applies a higher discount with discount2' do
+    page.driver.submit :put, '/cart/apply-discount-code', {
+      discount_code: 'discount2'
+    }
+
+    visit '/cart'
+    expect(page).to have_content('3.52')
+  end
+end
 end
