@@ -44,7 +44,7 @@ module DatabaseSeeder
       user_id: 1,
       first_name: "Customer",
       last_name: "Test",
-      stamp_count: 4,
+      stamp_count: 7,
       email: "testcust",
       hashed_password: BCrypt::Password.create("testcust"),
       phone_number: "07395456261",
