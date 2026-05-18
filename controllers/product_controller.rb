@@ -2,61 +2,93 @@ before ['/checkout*', '/place-order*', '/external-payment-gateway*', '/payment-c
   redirect '/log-in' unless session[:user_id] # swapped logged_in? helper check for direct session lookup to stay robust
 end
 
-  DB.create_table? :FavouriteBeans do
-    primary_key :favourite_id
-    foreign_key :user_id, :Accounts, on_delete: :cascade
-    String :origin
-    Double :pack_weight
-    String :roast_level
-  end
+DB.create_table? :FavouriteBeans do
+  primary_key :favourite_id
+  foreign_key :user_id, :Accounts, on_delete: :cascade
+  String :origin
+  Double :pack_weight
+  String :roast_level
+end
 
-  def finalize_stamps(user_id)
-    stamps_to_add = 0
+def finalize_stamps(user_id)
+  stamps_to_add = 0
 
-    session[:cart].each do |key, data|
-      if [data[:item_type]] == 'bean'
-        stamps_to_add += 3*data[:quantity]
-      elsif data[:item_type] == 'drink'
-        stamps_to_add += data[:quantity]
-      end
+  session[:cart].each do |key, data|
+    if [data[:item_type]] == 'bean'
+      stamps_to_add += 3*data[:quantity]
+    elsif data[:item_type] == 'drink'
+      stamps_to_add += data[:quantity]
     end
-
-    current_stamps = DB[:Accounts].where(user_id: user_id).get(:stamp_count) || 0
-    final_count = (current_stamps + stamps_to_add) % 10
-
-    DB[:Accounts].where(user_id: user_id).update(stamp_count: final_count)
   end
 
-  def cart_contains_drink() 
-    session[:cart].each do | key, data |
-      if data[:item_type] == "drink"
-        return true
-      end
+  current_stamps = DB[:Accounts].where(user_id: user_id).get(:stamp_count) || 0
+  final_count = (current_stamps + stamps_to_add) % 10
+
+  DB[:Accounts].where(user_id: user_id).update(stamp_count: final_count)
+end
+
+def cart_contains_drink() 
+  session[:cart].each do | key, data |
+    if data[:item_type] == "drink"
+      return true
     end
-    
-    return false
   end
+  
+  return false
+end
 
-  # product page
-  get '/product/' do
-    @type = params[:type]
+def flip_coin
+  rand(0.0..1.0) > 0.05
+end
 
-    if @type == 'bean'
-      @item = Bean[params[:origin]]
-      @bean_packs = DB[:BeansPackWeightPriceMarkupMultipliers].all
-      @bean_roast_levels = DB[:BeanRoastLevels].all
-      @template = :bean_details
-    elsif @type == 'drink'
-      @item = Drink[params[:beverage]]
-      @drink_sizes = DB[:DrinkSizePriceMarkupMultipliers].all
-      @milk_types = DB[:MilkTypes].all
-      @template = :drink_details
-    else 
-      halt 404, "Product type not found."
-    end
-
-    erb @template
+get '/product/' do
+  @type = params[:type]
+  if @type == 'bean'
+    @item = Bean[params[:origin]]
+    @bean_packs = DB[:BeansPackWeightPriceMarkupMultipliers].all
+    @bean_roast_levels = DB[:BeanRoastLevels].all
+    @favourite_variations = session[:user_id] ? DB[:FavouriteBeans].where(user_id: session[:user_id], origin: @item.origin).exclude(pack_weight: nil).all : []
+    @template = :bean_details
+  elsif @type == 'drink'
+    @item = Drink[params[:beverage]]
+    @drink_sizes = DB[:DrinkSizePriceMarkupMultipliers].all
+    @milk_types = DB[:MilkTypes].all
+    @template = :drink_details
+  else
+    halt 404, "Product type not found."
   end
+  erb @template
+end
+
+put '/toggle-favourite-bean' do
+  redirect '/log-in' unless session[:user_id]
+
+  origin = params[:origin]
+  halt 400, "Missing favourite options" if params[:pack_weight].to_s.empty? || params[:roast_level].to_s.empty?
+
+  pack_weight = params[:pack_weight].to_f
+  roast_level = params[:roast_level]
+
+  favourite = DB[:FavouriteBeans].where(
+    user_id: session[:user_id],
+    origin: origin,
+    pack_weight: pack_weight,
+    roast_level: roast_level
+  )
+
+  if favourite.count > 0
+    favourite.delete
+    { favourited: false }.to_json
+  else
+    DB[:FavouriteBeans].insert(
+      user_id: session[:user_id],
+      origin: origin,
+      pack_weight: pack_weight,
+      roast_level: roast_level
+    )
+    { favourited: true }.to_json
+  end
+end
 
   get '/coffee-beans' do
     update_recent_login(session[:user_id]) if session[:user_id]

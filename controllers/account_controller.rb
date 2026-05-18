@@ -77,6 +77,7 @@ end
 post '/delete-my-account' do
   if session[:user_id]
     DB[:Accounts].where(user_id: session[:user_id]).delete
+    
     session.clear
   end
   
