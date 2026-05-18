@@ -1,3 +1,5 @@
+# User Creates Account Spec file.
+
 require 'spec_helper'
 require 'bcrypt'
 

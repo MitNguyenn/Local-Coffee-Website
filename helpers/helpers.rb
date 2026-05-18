@@ -1,4 +1,6 @@
 
+# Global helper methods loaded into Sinatra views and controllers.
+
 require_relative "../helpers/validation"
 require_relative "../helpers/passwordCheck"
 require_relative "../helpers/analyzeData"

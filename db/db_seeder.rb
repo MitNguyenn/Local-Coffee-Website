@@ -1,3 +1,5 @@
+# Seed data loader for initial application database population.
+
 require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
@@ -43,8 +45,8 @@ module DatabaseSeeder
       first_name: "Customer",
       last_name: "Test",
       stamp_count: 4,
-      email: "testcust@bbc.com",
-      hashed_password: BCrypt::Password.create("testcust@bbc.com"),
+      email: "testcust",
+      hashed_password: BCrypt::Password.create("testcust"),
       phone_number: "07395456261",
       postcode: "S3 6RL",
       address: "1 Street Road, Sheffield",
@@ -70,8 +72,8 @@ module DatabaseSeeder
       first_name: "Barista",
       last_name: "Test",
       stamp_count: 0,
-      email: "testbarista@bbc.com",
-      hashed_password: BCrypt::Password.create("testbarista@bbc.com"),
+      email: "testbarista",
+      hashed_password: BCrypt::Password.create("testbarista"),
       phone_number: "07526472935",
       postcode: "S10 3AJ",
       address: "3 Barista Street, Sheffield",
@@ -83,8 +85,8 @@ module DatabaseSeeder
       first_name: "Manager",
       last_name: "Test",
       stamp_count: 0,
-      email: "testmanager@bbc.com",
-      hashed_password: BCrypt::Password.create("testmanager@bbc.com"),
+      email: "testmanager",
+      hashed_password: BCrypt::Password.create("testmanager"),
       phone_number: "07738456253",
       postcode: "S3 JS6",
       address: "5 Manager Street, Sheffield",
@@ -96,8 +98,8 @@ module DatabaseSeeder
       first_name: "Admin",
       last_name: "Test",
       stamp_count: 0,
-      email: "testadmin@bbc.com",
-      hashed_password: BCrypt::Password.create("testadmin@bbc.com"),
+      email: "testadmin",
+      hashed_password: BCrypt::Password.create("testadmin"),
       phone_number: "07027662738",
       postcode: "S11 32P",
       address: "21 Admin Street, Sheffield",
@@ -281,8 +283,8 @@ module DatabaseSeeder
 
     stock_deductions = Hash.new(0.0)
 
-    # Generate 150 unique historical transactions
-    150.times do |i|
+    # Generate 20 unique historical transactions
+    20.times do |i|
       user_id = customer_ids.sample
       days_ago = rand(0..30)
       hours_ago = rand(1..23)

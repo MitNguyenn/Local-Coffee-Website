@@ -1,3 +1,5 @@
+# Databasestatus Spec file.
+
 require 'spec_helper'
 require 'fileutils'
 

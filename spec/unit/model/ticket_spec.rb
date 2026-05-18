@@ -1,3 +1,5 @@
+# Ticket Spec file.
+
 RSpec.describe Ticket, type: :model do
   describe "#validate" do
     it "is valid with valid attributes" do

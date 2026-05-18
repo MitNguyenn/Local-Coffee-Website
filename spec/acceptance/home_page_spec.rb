@@ -1,3 +1,5 @@
+# Home Page Spec file.
+
 RSpec.describe 'Home page', type: :feature do
 
   context "Given an anonymous visitor on the application" do
@@ -5,7 +7,7 @@ RSpec.describe 'Home page', type: :feature do
       it "Then loads the login path showing welcoming messages" do
         visit '/log-in'
         
-        expect(current_path).to eq('/log-in')
+        expect(page).to have_current_path('/log-in')
         expect(page).to have_content('Welcome Back')
       end
     end
@@ -15,7 +17,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         find('.pill-half.left').click
         
-        expect(current_path).to eq('/coffee-beans')
+        expect(page).to have_current_path('/coffee-beans')
         expect(page).to have_content('Our Coffee Beans')
       end
 
@@ -23,7 +25,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         find('.pill-half.right').click
         
-        expect(current_path).to eq('/drinks')
+        expect(page).to have_current_path('/drinks')
         expect(page).to have_content('Our Hot Drinks')
       end
 
@@ -31,7 +33,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Help'
         
-        expect(current_path).to eq('/help')
+        expect(page).to have_current_path('/help')
         expect(page).to have_content('Request description')
       end
 
@@ -39,7 +41,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Discounts'
         
-        expect(current_path).to eq('/discounts')
+        expect(page).to have_current_path('/discounts')
         expect(page).to have_content('Our Current Discounts!')
       end
 
@@ -47,14 +49,14 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Staff Portal'
         
-        expect(current_path).to eq('/log-in')
+        expect(page).to have_current_path('/')
       end
     end
   end
 
   context 'Given a user authenticated as a regular customer' do 
     before(:each) do 
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When exploring customer portal links from the main index" do
@@ -62,7 +64,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Loyalty Card'
         
-        expect(current_path).to eq('/loyalty-card')
+        expect(page).to have_current_path('/loyalty-card')
         expect(page).to have_content('Scan this QR code in store!')
       end
 
@@ -70,7 +72,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'My Orders'
         
-        expect(current_path).to eq('/my-orders')
+        expect(page).to have_current_path('/my-orders')
         expect(page).to have_content('Live Orders')
       end
 
@@ -78,7 +80,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Account settings'
         
-        expect(current_path).to eq('/account-settings')
+        expect(page).to have_current_path('/account-settings')
         expect(page).to have_content('Personal Details')
       end
 
@@ -86,14 +88,14 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Staff Portal'
         
-        expect(current_path).to eq('/')
+        expect(page).to have_current_path('/')
       end
     end
   end
 
   context 'Given a user authenticated as an administrator' do
     before(:each) do 
-      log_in_as('testadmin@bbc.com', 'testadmin@bbc.com') 
+      log_in_as('testadmin', 'testadmin') 
     end
 
     context 'When requesting access to the staff operations node link' do
@@ -101,7 +103,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Staff Portal'
         
-        expect(current_path).to eq('/staff-portal')
+        expect(page).to have_current_path('/staff-portal')
         expect(page).to have_content('Staff Portal')
       end
     end
@@ -109,7 +111,7 @@ RSpec.describe 'Home page', type: :feature do
 
   context 'Given a user authenticated as a barista staff employee' do
     before(:each) do 
-      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com') 
+      log_in_as('testbarista', 'testbarista') 
     end
 
     context 'When requesting access to the staff operations node link' do
@@ -117,7 +119,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Staff Portal'
         
-        expect(current_path).to eq('/staff-portal')
+        expect(page).to have_current_path('/staff-portal')
         expect(page).to have_content('Staff Portal')
       end
     end
@@ -125,7 +127,7 @@ RSpec.describe 'Home page', type: :feature do
 
   context 'Given a user authenticated as a store manager' do
     before(:each) do 
-      log_in_as('testmanager@bbc.com', 'testmanager@bbc.com') 
+      log_in_as('testmanager', 'testmanager') 
     end
 
     context 'When requesting access to the staff operations node link' do
@@ -133,7 +135,7 @@ RSpec.describe 'Home page', type: :feature do
         visit '/'
         click_link 'Staff Portal'
         
-        expect(current_path).to eq('/staff-portal')
+        expect(page).to have_current_path('/staff-portal')
         expect(page).to have_content('Staff Portal')
       end
     end

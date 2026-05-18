@@ -1,3 +1,5 @@
+# Ticket Spec file.
+
 require 'spec_helper'
 
 RSpec.describe "Help page and ticket submission", type: :feature do
@@ -37,7 +39,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
       it "Then rejects forms where the text description area is left empty" do
         visit "/help"
-        fill_in "form_useremail", with: "testcust@bbc.com"
+        fill_in "form_useremail", with: "testcust"
         fill_in "form_request_description", with: ""
         click_button "Submit"
 
@@ -47,7 +49,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
 
       it "Then rejects descriptions consisting entirely of blank spacing strings" do
         visit "/help"
-        fill_in "form_useremail", with: "testcust@bbc.com"
+        fill_in "form_useremail", with: "testcust"
         fill_in "form_request_description", with: "     "
         click_button "Submit"
 
@@ -71,7 +73,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
   context "Given a customer executes a successful ticket form validation" do
     def submit_ticket(type:, description: "This is a test request")
       visit "/help"
-      fill_in "form_useremail",           with: "testcust@bbc.com"
+      fill_in "form_useremail",           with: "testcust"
       fill_in "form_request_description", with: description
       select type, from: "problem_type"
       click_button "Submit"

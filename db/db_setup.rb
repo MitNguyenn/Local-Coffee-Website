@@ -1,3 +1,5 @@
+# Database setup logic and connection helper definitions.
+
 require 'sequel'
 require 'sqlite3'
 require 'json'

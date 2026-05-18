@@ -1,3 +1,5 @@
+# Discount Spec file.
+
 require 'spec_helper'
 
 RSpec.describe Discounts do

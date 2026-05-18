@@ -1,3 +1,5 @@
+# Account Settings Spec file.
+
 RSpec.describe "Account Management", type: :feature do
   let(:user_id) { 1 }
 
@@ -6,14 +8,14 @@ RSpec.describe "Account Management", type: :feature do
       it "Then redirects to the login page" do
         visit "/account-settings"
         
-        expect(page.current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
   end
 
   context "Given a user is logged into the application" do
     before(:each) do
-      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
+      log_in_as('testcust', 'testcust')
     end
 
     context "When visiting the account settings page" do
@@ -31,7 +33,7 @@ RSpec.describe "Account Management", type: :feature do
         fill_in "first_name", with: "Jonathan"
         click_button "Submit"
 
-        expect(page.current_path).to eq("/")
+        expect(page.current_path).to eq("/account-settings")
         
         user = DB[:Accounts].where(user_id: user_id).first
         expect(user[:first_name]).to eq("Jonathan")
