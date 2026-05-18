@@ -18,13 +18,16 @@ def finalize_stamps(user_id)
   session[:cart].each do |key, data|
     if data[:item_type] == 'bean'       
       stamps_to_add += 3 * data[:quantity]
+      p "adding #{stamps_to_add} stamps"      
     elsif data[:item_type] == 'drink'
       stamps_to_add += data[:quantity]
+      p "adding #{stamps_to_add} stamps"
     end
   end
 
   current_stamps = DB[:Accounts].where(user_id: user_id).get(:stamp_count) || 0
-  final_count = (current_stamps + stamps_to_add) % 10
+  final_count = current_stamps + stamps_to_add
+
   DB[:Accounts].where(user_id: user_id).update(stamp_count: final_count)
 end
 
@@ -55,6 +58,20 @@ get '/product/' do
     halt 404, "Product type not found."
   end
   erb @template
+end
+
+put '/cart/apply-discount-code' do
+  discount_code_input = params[:discount_code]
+  p discount_code_input
+  get_current_discounts.each do | discount_name, data | 
+    if discount_code_input == discount_name
+      session[:discount_multiplier] = data[:multiplier]
+      return "Success".to_json
+    end
+  end
+
+  session[:discount_multiplier] = 1.0
+  return "Success".to_json
 end
 
 put '/toggle-favourite-bean' do
@@ -113,7 +130,15 @@ end
     redirect '/log-in' unless logged_in?
     user = DB[:Accounts].where(user_id: session[:user_id]).first
 
-    total_cost = params[:total_cost].to_f.round(2)
+    total_cost = params[:total_cost]
+    p session[:discount_multiplier]
+    p total_cost
+    if session[:discount_multiplier] <= 1.0
+      p "Discount code applied. updating the cost..."
+      total_cost = (total_cost.to_f * session[:discount_multiplier]).round(2)
+      p total_cost
+    end
+    p total_cost
     @payment_successful    = nil
     payment_is_completed = false
 
@@ -186,6 +211,7 @@ end
       finalize_stamps(session[:user_id])
       session[:cart].clear
       session[:contains_drink] = false
+      session[:discount_multiplier] = 1.0
     end
 
     if @payment_successful != nil
@@ -249,6 +275,7 @@ end
   put '/add-to-cart' do
     session[:cart] ||= { }
     session[:contains_drink] ||= false
+    session[:discount_multiplier] ||= 1.0
 
     item_type = params[:item_type]
 
