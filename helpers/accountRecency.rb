@@ -15,10 +15,6 @@ module AccountRecency
     end
   end
 
-#Suspend Logic is:
-#Account flagged if not logged in for 6 months
-#Account suspended if flagged for > 5 days 
-
   def attempt_suspend_account(user_id)
     account = DB[:Accounts].where(user_id: user_id).first
     if account

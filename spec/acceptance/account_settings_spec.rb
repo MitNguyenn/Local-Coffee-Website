@@ -1,5 +1,4 @@
 # Account Settings Spec file.
-
 RSpec.describe "Account Management", type: :feature do
   let(:user_id) { 1 }
 
@@ -90,7 +89,6 @@ end
 
     context "When visiting the my orders page" do
       it "Then shows current and past orders correctly" do
-        # Explicitly stub an order
         order_id = DB[:Orders].insert(user_id: user_id, total_cost: 9.15, order_is_completed: true, payment_is_completed: true)
         DB[:OrderItems].insert(order_id: order_id, product_type: 'drink', item_id: 'Latte', quantity: 1, drink_size: 'Regular', milk_type: 'Whole')
         DB[:OrderItems].insert(order_id: order_id, product_type: 'bean', item_id: 'Arabic', quantity: 1, pack_weight: 250.0, roast_level: 'Medium')

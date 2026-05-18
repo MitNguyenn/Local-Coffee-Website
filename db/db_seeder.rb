@@ -8,7 +8,6 @@ require 'date'
 
 module DatabaseSeeder
   def self.seed_data(db_connection)
-    # Clear existing tables before population to prevent stale data conflicts
     db_connection.tables.each do |table|
       db_connection[table].delete if db_connection.table_exists?(table)
     end
@@ -37,7 +36,6 @@ module DatabaseSeeder
       )
     end
 
-    # Test Accounts
     test_password_hash = BCrypt::Password.create("testpass")
 
     db_connection[:Accounts].insert(
@@ -267,7 +265,6 @@ module DatabaseSeeder
 
     puts "Seeding orders and orderItems tables with extensive history..."
     
-    # Pre-map datasets to optimize seeding performance
     drinks_map   = db_connection[:Drinks].to_hash(:beverage, :regular_price)
     sizes_map    = db_connection[:DrinkSizePriceMarkupMultipliers].to_hash(:drink_size, :markup_multiplier)
     milks_map    = db_connection[:MilkTypes].to_hash(:milk_type, :price)
@@ -283,7 +280,6 @@ module DatabaseSeeder
 
     stock_deductions = Hash.new(0.0)
 
-    # Generate 20 unique historical transactions
     20.times do |i|
       user_id = customer_ids.sample
       days_ago = rand(0..30)
@@ -297,7 +293,6 @@ module DatabaseSeeder
       payment_done = days_ago > 2 ? [true, true, false].sample : [true, false].sample
       order_done   = days_ago > 1 ? payment_done : false
 
-      # Create order record shell
       order_id = db_connection[:Orders].insert(
         user_id: user_id,
         created_at: created_time,
@@ -311,7 +306,6 @@ module DatabaseSeeder
       order_total = 0.0
       items_count = rand(1..3)
       
-      # Buffer items in memory to guarantee distinct item_id modifications per order_id
       order_items_buffer = {}
 
       items_count.times do
@@ -370,7 +364,6 @@ module DatabaseSeeder
         end
       end
 
-      # Safely write memory buffered records to OrderItems table
       order_items_buffer.each do |item_id, details|
         db_connection[:OrderItems].insert(
           order_id: order_id,
@@ -385,11 +378,9 @@ module DatabaseSeeder
         order_total += details[:calculated_cost]
       end
 
-      # Update parent transaction record with complete financial tracking data
       db_connection[:Orders].where(order_id: order_id).update(total_cost: order_total.round(2))
     end
 
-    # Apply global batch stock mass modifications
     stock_deductions.each do |origin, kg_bought|
       db_connection[:Beans].where(origin: origin).update(
         stock_mass: Sequel[:stock_mass] - kg_bought

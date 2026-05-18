@@ -10,13 +10,7 @@ before [
   redirect '/' unless session[:user_id]
 end
 
-DB.create_table? :FavouriteBeans do
-  primary_key :favourite_id
-  foreign_key :user_id, :Accounts, on_delete: :cascade
-  String :origin
-  Double :pack_weight
-  String :roast_level
-end
+
 
 def finalize_stamps(user_id)
   stamps_to_add = 0
@@ -132,33 +126,6 @@ end
 
     address = params[:address]
     postcode = params[:postcode]
-
-    # ===========Debugging messages=================
-    # p "payment_successful = #{payment_successful}"
-    # p "user_id = #{user[:user_id]}"
-    # p "address = #{address}"
-    # p "postcode = #{postcode}" 
-    # p "total_cost = #{total_cost}"
-    # p "payment_is_completed = #{payment_is_completed}"
-
-    # session[:cart].each do | key, data |
-    #   p data
-    #   if data[:item_type] == "bean"
-    #     p data[:item_type]
-    #     p data[:origin]
-    #     p data[:quantity]
-    #     p data[:pack_weight]
-    #     p data[:roast_level]
-    #   else
-    #     p data[:item_data]
-    #     p data[:beverage]
-    #     p data[:quantity]
-    #     p data[:milk_type]
-    #     p data[:drink_size]
-    #   end
-    # end
-    # p "=================="
-    # p
 
     if @payment_successful == true || @payment_successful == nil
       begin 
@@ -285,11 +252,6 @@ end
     session[:cart] ||= { }
     session[:contains_drink] ||= false
 
-    # for bean item key is:
-    # item_key = origin_[pack_weight]_roast
-    # for drink item its:
-    # item_key = beverage_size_
-
     item_type = params[:item_type]
 
     begin
@@ -299,7 +261,7 @@ end
         roast_level = params[:roast_level]
         item_key = "#{origin}_#{pack_weight}_#{roast_level}"
 
-        if session[:cart][item_key] # item is in the basket, so just incrementing the quantity
+        if session[:cart][item_key] 
           session[:cart][item_key][:quantity] += 1
         else
           session[:cart][item_key] = {
@@ -317,7 +279,7 @@ end
         drink_size = params[:drink_size]
         milk_type = params[:milk_type]
         item_key = "#{beverage}_#{drink_size}_#{milk_type}"
-        if session[:cart][item_key] # same item exists, so just incrementing the quantity
+        if session[:cart][item_key] 
           session[:cart][item_key][:quantity] += 1
         else
           session[:cart][item_key] = { 
