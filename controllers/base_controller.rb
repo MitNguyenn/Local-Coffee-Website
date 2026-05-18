@@ -1,4 +1,6 @@
-# Public routes and default landing page.
+# ==============================================================================
+# GENERAL / CORE ROUTES (No Class Wrapper)
+# ==============================================================================
 
 get '/' do
   update_recent_login(session[:user_id]) if session[:user_id]
@@ -10,13 +12,6 @@ get '/help' do
 end
 
 get '/cart' do 
-  redirect '/log-in' unless session[:user_id]
-  @user = DB[:Accounts].where(user_id: session[:user_id]).first#
-  if session[:cart].nil? || session[:cart].empty?
-    @subtotal = 0
-  else
-    @subtotal = session[:cart].sum { |_, data| data[:price] * data[:quantity] }
-  end
   erb :cart
 end
 
@@ -25,17 +20,9 @@ get '/discounts' do
   erb :discounts_page
 end
 
-get '/coffee-beans' do
-    update_recent_login(session[:user_id]) if session[:user_id]
-    @beans = Bean.all
-    erb :beans
-  end
-
-  get '/drinks' do
-    update_recent_login(session[:user_id]) if session[:user_id]
-    @drinks = Drink.all
-    erb :drinks
-  end
+# ==============================================================================
+# POST ROUTING ENGINE
+# ==============================================================================
 
 post '/help' do
   userid = DB[:Accounts].where(email: params[:form_useremail]).get(:user_id)
