@@ -54,14 +54,12 @@ post '/register' do
   password1 = params[:password1]
   password2 = params[:password2]
   
-  # Generate Unique ID
   user_id = nil
   loop do
     user_id = rand(10000000..99999999)
     break unless Account[user_id]
   end
 
-  # Validations using global helpers
   unless str_email_address?(email)
     @error = "Invalid email format."
     return erb :register_account

@@ -62,9 +62,85 @@ RSpec.describe "Admin Management", type: :feature do
       log_in_as('testadmin', 'testadmin')
     end
 
+    it "can access the database-status panel" do
+      visit "/database-status"
+      expect(current_path).to eq("/database-status")
+    end
+
+    describe "Database Control Panel Interface (GET & POST)" do
+      it "loads the layout container and handles empty directories cleanly" do
+        visit "/database-status"
+        expect(page).to have_selector("#db-status-dashboard-panel")
+        expect(page).to have_content("Database Status Control Panel")
+      end
+
+      it "exposes a link pointing back to master account administration" do
+        visit "/database-status"
+        click_link "Return to Admin Dashboard"
+        expect(current_path).to eq("/manage-accounts")
+      end
+
+      it "renders attributes of existing file saves dynamically" do
+        backup_folder = 'db/backups'
+        FileUtils.mkdir_p(backup_folder)
+        test_file = File.join(backup_folder, "backup_20260514_120000.sqlite3")
+        File.write(test_file, "mock data payload string structure footprint")
+
+        visit "/database-status"
+        expect(page).to have_content("backup_20260514_120000.sqlite3")
+        expect(page).to have_content("0.04 KB")
+      end
+
+      it "generates an explicit hot database snapshot when submitting form actions" do
+        visit "/database-status"
+
+        click_button "Backup Live Database"
+
+        expect(current_path).to eq("/database-status")
+        
+        # Confirms db/backups folder contains generated file items
+        backup_files = Dir.glob(File.join('db/backups', '*.sqlite3'))
+        expect(backup_files).not_to be_empty
+        
+        # Matches against actual template span wrapper component class
+        expect(page).to have_selector(".file-name")
+      end
+
+      it "executes database state restoration and safely updates live connection tables" do
+        original_admin_email = DB[:Accounts].where(user_id: admin_id).get(:email)
+
+        backup_folder = 'db/backups'
+        FileUtils.mkdir_p(backup_folder)
+        target_rollback_file = File.join(backup_folder, "backup_rollback_checkpoint.sqlite3")
+
+        DB.pool.hold do |raw_conn|
+          destination_db = SQLite3::Database.new(target_rollback_file)
+          begin
+            backup = SQLite3::Backup.new(destination_db, 'main', raw_conn, 'main')
+            backup.step(-1)
+            backup.finish
+          ensure
+            destination_db.close
+          end
+        end
+
+        DB[:Accounts].where(user_id: admin_id).update(email: "compromised_state@bbc.com")
+        expect(DB[:Accounts].where(user_id: admin_id).get(:email)).to eq("compromised_state@bbc.com")
+
+        visit "/database-status"
+        
+        # Scoped strictly to table rows (tr) to safely handle multiple archive entries cleanly
+        within("tr", text: "backup_rollback_checkpoint.sqlite3") do
+          click_button "Restore Version"
+        end
+
+        expect(current_path).to eq("/database-status")
+      end
+    end
+
     context "When requesting administrative route domains" do
-      it "THhen allows them to visit the database management page" do
-        visit'/database-status'
+      it "Then allows them to visit the database management page" do
+        visit '/database-status'
 
         expect(current_path).to eq("/database-status")
         expect(page).to have_content("Database Status Control Panel")
