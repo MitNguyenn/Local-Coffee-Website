@@ -210,6 +210,7 @@ end
       session[:cart].clear
       session[:contains_drink] = false
       session[:discount_multiplier] = 1.0
+      p "Successfully placed order"
     end
 
     if @payment_successful != nil
