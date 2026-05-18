@@ -119,7 +119,7 @@ module DatabaseInitializer
       Double :discount_multiplier, default: 1.0
     end
     
-    DB.create_table? :FavouriteBeans do
+    db_connection.create_table? :FavouriteBeans do
       primary_key :favourite_id
       foreign_key :user_id, :Accounts, on_delete: :cascade
       String :origin
