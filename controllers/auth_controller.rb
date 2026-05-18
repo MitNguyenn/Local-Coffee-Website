@@ -1,7 +1,3 @@
-# ==========================================
-# GET Routes (Public Access)
-# ==========================================
-
 get '/log-in' do
   @email = ""
   @password = ""
@@ -20,10 +16,6 @@ end
 get '/forgot' do
   erb :forgot_password
 end
-
-# ==========================================
-# POST Routes (Public Execution)
-# ==========================================
 
 post '/log-in' do
   @email = params[:email]

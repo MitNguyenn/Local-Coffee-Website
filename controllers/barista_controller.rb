@@ -1,9 +1,6 @@
 require 'wicked_pdf'
 require 'json'
 
-# ==============================================================================
-# STAFF BOUNDARY WALL (TARGETED REGEX FILTER)
-# ==============================================================================
 before [
   '/staff-portal*', 
   '/manage-loyalty-cards*', 
@@ -24,19 +21,10 @@ before [
     redirect '/log-in'
   end
 
-  if session[:account_type] == 'customer'
-    redirect '/'
-  end
-
   unless ['barista', 'manager', 'administrator'].include?(session[:account_type])
     redirect '/'
   end
 end
-
-
-# ==============================================================================
-# GET ROUTING ENGINE
-# ==============================================================================
 
 get '/staff-portal' do
   erb :staff_portal
@@ -61,8 +49,10 @@ get '/order-management/barista' do
       Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
+    .order(Sequel.desc(Sequel[:Orders][:order_id])) 
     .all
     .group_by { |row| row[:order_id] }
+    
   erb :order_management_barista
 end
 
@@ -118,7 +108,7 @@ get '/sales-history' do
   @orders = DB[:Orders]
     .join(:OrderItems, order_id: :order_id)
     .select(
-      Sequel[:Orders][:order_id],
+      Sequel[:Orders][:order_id].as(:order_id),  
       Sequel[:Orders][:created_at],
       Sequel[:Orders][:order_is_completed],
       Sequel[:OrderItems][:item_id],
@@ -127,9 +117,10 @@ get '/sales-history' do
       Sequel[:OrderItems][:drink_size],
       Sequel[:OrderItems][:product_type]
     )
+    .order(Sequel.desc(Sequel[:Orders][:order_id])) 
     .all
+    .group_by { |row| row[:order_id] }
   
-  @orders = @orders.group_by { |row| row[:order_id] } if @orders
   erb :sales_history
 end
 
@@ -156,10 +147,6 @@ get '/place-order/contents' do
 
   erb :place_order_contents
 end
-
-# ==========================================
-# POST ROUTING ENGINE
-# ==========================================
 
 post '/update-stamps' do
   target_user_id = params[:user_id]

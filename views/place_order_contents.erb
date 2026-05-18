@@ -9,8 +9,8 @@
   <div>
     <div class="bo-section-card">
       <div class="bo-tabs-row">
-        <button type="button" id="toggle-standard" class="bo-tab-toggle bo-active" onclick="switchMenuTab('standard-catalog', 'toggle-standard')">☕ Full Menu Catalog</button>
-        <button type="button" id="toggle-frequent" class="bo-tab-toggle" onclick="switchMenuTab('frequent-catalog', 'toggle-frequent')">🔥 Most Common Items</button>
+        <button type="button" id="toggle-standard" class="bo-tab-toggle bo-active" onclick="switchMenuTab('standard-catalog', 'toggle-standard')"> Full Menu Catalog</button>
+        <button type="button" id="toggle-frequent" class="bo-tab-toggle" onclick="switchMenuTab('frequent-catalog', 'toggle-frequent')"> Most Common Items</button>
       </div>
 
       <!-- PANEL 1: FULL STANDARD MENU -->
@@ -90,7 +90,7 @@
                       data-roast="<%= frequent[:specifications][:roast_level] %>"
                       data-display="<%= frequent[:display_name] %>"
                       onclick="addFrequentItem(this)">
-                ⚡ Quick Add
+                Quick Add
               </button>
             </div>
           <% end %>
@@ -101,7 +101,7 @@
 
   <!-- RIGHT: STICKY BASKET FRAME -->
   <div class="bo-sidebar-checkout">
-    <h3 class="bo-section-title" style="border-bottom: 1px solid #ebdcd0; padding-bottom: 10px;">🛒 Active Checkout Basket</h3>
+    <h3 class="bo-section-title" style="border-bottom: 1px solid #ebdcd0; padding-bottom: 10px;"> Active Checkout Basket</h3>
     
     <div id="cart-items-container" class="bo-cart-items-list">
       <p class="bo-cart-empty-msg">No entries compiled inside checkout state.</p>

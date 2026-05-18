@@ -11,9 +11,6 @@ module DatabaseSeeder
       db_connection[table].delete if db_connection.table_exists?(table)
     end
 
-    # =========================================================================
-    # 1. SEED ACCOUNTS
-    # =========================================================================
     puts "Seeding Accounts table..."
     password_hash = BCrypt::Password.create("password123")
 
@@ -181,9 +178,7 @@ module DatabaseSeeder
     )
     puts "Done"
 
-    # =========================================================================
-    # 2. SEED INVENTORY & RULES
-    # =========================================================================
+
     puts "Seeding beans..."
     bean_list = [
       ["Ethiopian",   150.0, 8.20],
@@ -267,9 +262,7 @@ module DatabaseSeeder
     end
     puts "Done"
 
-    # =========================================================================
-    # 3. SEED BULK HISTORICAL ORDERS & ITEMS (Unique Composite Key Logic)
-    # =========================================================================
+
     puts "Seeding orders and orderItems tables with extensive history..."
     
     # Pre-map datasets to optimize seeding performance
@@ -402,9 +395,7 @@ module DatabaseSeeder
     end
     puts "Done"
 
-    # =========================================================================
-    # 4. SEED TICKETS, AUDITS & DISCOUNTS
-    # =========================================================================
+
     complaint_samples = [
       "My coffee was cold.",
       "The delivery driver couldn't find my flat.",

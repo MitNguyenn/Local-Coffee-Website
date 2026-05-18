@@ -3512,3 +3512,105 @@ button:active {
     width: 100%;
   }
 }
+
+.acc-view__main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  min-height: calc(100vh - 180px);
+}
+
+.acc-view__main {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.acc-view__title {
+  font-size: 2.5rem;
+  color: #4b2c20;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: "Lilita One", sans-serif;
+}
+
+.acc-view__board {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.acc-view__table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.acc-view__table th {
+  background-color: #4b2c20;
+  color: #fdf5e6;
+  padding: 15px;
+  text-align: left;
+  font-family: "Lilita One", sans-serif;
+  font-size: 0.9rem;
+}
+
+.acc-view__table td {
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+  font-family: sans-serif;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.acc-view__row td:first-child {
+  font-weight: bold;
+}
+
+.acc-view__table form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.acc-view__table input[type="number"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  width: 70px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.acc-view__update-btn {
+  background-color: #a67458;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: "Lilita One", sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+.acc-view__update-btn:hover {
+  background-color: #4b2c20;
+}
+
+.acc-view__update-btn:active {
+  transform: scale(0.98);
+}

@@ -1,7 +1,3 @@
-# ==============================================================================
-# GENERAL / CORE ROUTES (No Class Wrapper)
-# ==============================================================================
-
 get '/' do
   update_recent_login(session[:user_id]) if session[:user_id]
   erb :home
@@ -34,10 +30,6 @@ get '/coffee-beans' do
     @drinks = Drink.all
     erb :drinks
   end
-
-# ==============================================================================
-# POST ROUTING ENGINE
-# ==============================================================================
 
 post '/help' do
   userid = DB[:Accounts].where(email: params[:form_useremail]).get(:user_id)

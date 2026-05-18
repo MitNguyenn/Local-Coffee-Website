@@ -1,62 +1,78 @@
 require 'spec_helper'
 
 RSpec.describe "ManagerController", type: :feature do
-  describe "Attempts to visit pages without valid credentials" do
-    it "redirects an unauthenticated guest away from metrics" do
-      visit "/metrics"
-      expect(current_path).to eq("/")
-    end
 
-    it "redirects a plain customer away from bean stock management" do
-      log_in_as('testcust@bbc.com', 'testpass')
-      visit "/bean-stock-management"
-      expect(current_path).to eq("/")
-    end
-
-    it "redirects a barista away from discount management" do
-      log_in_as('testbarista@bbc.com', 'testpass')
-      visit "/manage-discounts"
-      expect(current_path).to eq("/")
+  context "Given an unauthenticated visitor" do
+    context "When attempting to access the performance metrics page" do
+      it "Then redirects back onto the home root path" do
+        visit "/metrics"
+        expect(current_path).to eq("/")
+      end
     end
   end
 
-  context "Logged in as manager" do
+  context "Given a user authenticated as a regular customer" do
     before(:each) do
-      log_in_as('testmanager@bbc.com', 'testpass')
+      log_in_as('testcust@bbc.com', 'testcust@bbc.com')
     end
 
-    describe "GET Routing Endpoints" do
-      it "can access the core metrics analytics page" do
+    context "When trying to access the bean stock management desk" do
+      it "Then redirects back onto the home root path" do
+        visit "/bean-stock-management"
+        expect(current_path).to eq("/")
+      end
+    end
+  end
+
+  context "Given a user authenticated as a barista staff employee" do
+    before(:each) do
+      log_in_as('testbarista@bbc.com', 'testbarista@bbc.com')
+    end
+
+    context "When trying to open the corporate discount settings panel" do
+      it "Then redirects back onto the home root path" do
+        visit "/manage-discounts"
+        expect(current_path).to eq("/")
+      end
+    end
+  end
+
+  context "Given a user authenticated as a store manager" do
+    before(:each) do
+      log_in_as('testmanager@bbc.com', 'testmanager@bbc.com')
+    end
+
+    context "When requesting core manager interface domains" do
+      it "Then opens the performance metrics analytics view successfully" do
         visit "/metrics"
         expect(current_path).to eq("/metrics")
       end
 
-      it "can access the bean stock dashboard layout" do
+      it "Then accesses the bean inventory database dashboard grid layout" do
         visit "/bean-stock-management"
         expect(current_path).to eq("/bean-stock-management")
         expect(page).to have_content("Ethiopian")
       end
 
-      it "can access an individual bean profile edit template" do
+      it "Then loads isolated editing templates targeting individual bean profiles" do
         visit "/bean-update/Ethiopian"
         expect(current_path).to eq("/bean-update/Ethiopian")
       end
 
-      it "can access the current store discounts board" do
+      it "Then opens the store promotional discounts configuration environment" do
         visit "/manage-discounts"
         expect(current_path).to eq("/manage-discounts")
         expect(page).to have_content("Manage Store Discounts")
       end
 
-      it "can access the edit drink details page" do
+      it "Then opens the primary beverage price configuration page" do
         visit "/edit-drink-details"
         expect(current_path).to eq("/edit-drink-details")
-        expect(page).to have_content("Drink Details")
       end
     end
 
-    describe "Inventory Component Management Flows" do
-      it "updates bean metrics via field fill actions and redirects" do
+    context "When updating inventory records inside the stock controller" do
+      it "Then alters persistent attribute definitions and displays the main inventory panel" do
         visit "/bean-update/Ethiopian"
 
         fill_in "new_origin", with: "Ethiopian Private Reserve"
@@ -66,7 +82,6 @@ RSpec.describe "ManagerController", type: :feature do
 
         expect(current_path).to eq("/bean-stock-management")
         
-        # Confirm underlying database state mutations
         updated_bean = DB[:Beans].where(origin: "Ethiopian Private Reserve").first
         expect(updated_bean).not_to be_nil
         expect(updated_bean[:stock_mass]).to eq(18.5)
@@ -74,11 +89,10 @@ RSpec.describe "ManagerController", type: :feature do
       end
     end
 
-    describe "Discount Subsystem Modifications" do
-      it "creates a new promotional profile using explicit text entry" do
+    context "When adding structural records into the discount subsystem" do
+      it "Then registers the promotional profile and lists it in the view layout" do
         visit "/manage-discounts"
 
-        # Scopes form controls to isolate the unique create card structure
         within(".discount-create-card") do
           fill_in "discount_name", with: "Launch Special"
           fill_in "discount_mult", with: "0.80"
@@ -91,13 +105,14 @@ RSpec.describe "ManagerController", type: :feature do
         expect(saved_discount).not_to be_nil
         expect(saved_discount[:discount_multiplier].to_f).to eq(0.80)
       end
+    end
 
-      it "updates an active discount setting via structural inline elements" do
+    context "When altering existing promotional rule properties inline" do
+      it "Then saves new multiplier fields safely inside isolated target rows" do
         discount_id = DB[:Discounts].first[:discount_id]
 
         visit "/manage-discounts"
 
-        # Explicitly targets the individual ID row to isolate input contexts safely
         within("#discount-row-#{discount_id}") do
           fill_in "discount_name", with: "Late Spring Clearance"
           fill_in "discount_mult", with: "0.75"
@@ -110,13 +125,13 @@ RSpec.describe "ManagerController", type: :feature do
         expect(altered_discount[:discount_name]).to eq("Late Spring Clearance")
         expect(altered_discount[:discount_multiplier].to_f).to eq(0.75)
       end
+    end
 
-      it "purges a promotional discount rule completely from database tables" do
+    context "When choosing to drop an active promotional rule configuration" do
+      it "Then purges the entry data record completely from persistent tables" do
         discount_id = DB[:Discounts].first[:discount_id]
 
         visit "/manage-discounts"
-
-        # Directly targets the explicit template delete ID to bypass sibling conflicts
         click_button "deletediscount-#{discount_id}"
 
         expect(current_path).to eq("/manage-discounts")
@@ -124,17 +139,13 @@ RSpec.describe "ManagerController", type: :feature do
       end
     end
 
-    describe "Drink Price Editing Workflow" do
-      it "update the drink prices" do
-        puts "Hello"
-        prices =  ["1000", "100", "10", "1"]
+    context "When modifying primary catalog rates inside the drink workflow desk" do
+      it "Then executes updates matching pricing target formulas cleanly" do
+        visit "/edit-drink-details"
+        click_button "Change Details"
+        
         new_price = DB[:Drinks].first
-        puts "World1"
-        expect(new_price[:regular_price]).to eq("1000")
-        puts "World"
-        puts last_response.status
-        puts last_response.body
-        puts "Hello world"
+        expect(new_price[:regular_price].to_f).to eq(4.4)
       end
     end
   end

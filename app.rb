@@ -23,9 +23,6 @@ set :public_folder, File.join(settings.root, "public")
 # Ensure files inside your controllers folder use raw 'get' and 'post' blocks (no classes)
 require_all "controllers"
 
-# ==========================================
-# Automated Backup Boot Hook
-# ==========================================
 configure do
   # 1. Resolve paths securely relative to this app layout
   backup_dir = File.expand_path('db/backups', settings.root)

@@ -15,10 +15,6 @@ before do
   end
 end
 
-# ==========================================
-# GET Routes
-# ==========================================
-
 get '/account-settings' do
   @user = DB[:Accounts].where(user_id: session[:user_id]).first
   @account_flagged = @user[:flagged]
@@ -50,6 +46,7 @@ get '/my-orders' do
   erb :my_orders
 end
 
+<<<<<<< HEAD
 get '/my-favourites' do
   DB[:FavouriteBeans].where(user_id: session[:user_id], pack_weight: nil).delete
   DB[:FavouriteBeans].where(user_id: session[:user_id], roast_level: nil).delete
@@ -66,6 +63,8 @@ end
 # ==========================================
 # POST Routes
 # ==========================================
+=======
+>>>>>>> master
 
 post '/update-account' do
   existing = DB[:Accounts].where(email: params[:email]).exclude(user_id: session[:user_id]).first
@@ -82,7 +81,7 @@ post '/update-account' do
   redirect '/account-settings?success=true'
 end
 
-post '/delete-account' do
+post '/delete-my-account' do
   # 1. Enforce authentication security checkpoint
   if session[:user_id]
     # 2. Purge record matching active session identifier
