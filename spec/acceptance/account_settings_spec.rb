@@ -8,7 +8,7 @@ RSpec.describe "Account Management", type: :feature do
       it "Then redirects to the login page" do
         visit "/account-settings"
         
-        expect(page.current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
   end
@@ -33,7 +33,7 @@ RSpec.describe "Account Management", type: :feature do
         fill_in "first_name", with: "Jonathan"
         click_button "Submit"
 
-        expect(page.current_path).to eq("/")
+        expect(page.current_path).to eq("/account-settings")
         
         user = DB[:Accounts].where(user_id: user_id).first
         expect(user[:first_name]).to eq("Jonathan")

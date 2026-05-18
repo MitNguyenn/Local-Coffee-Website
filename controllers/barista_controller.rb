@@ -20,7 +20,7 @@ before [
   '/place-order/*'
 ] do
   unless session[:user_id]
-    redirect '/log-in'
+    redirect '/'
   end
 
   unless ['barista', 'manager', 'administrator'].include?(session[:account_type])

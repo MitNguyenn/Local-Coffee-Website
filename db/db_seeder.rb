@@ -86,7 +86,7 @@ module DatabaseSeeder
       last_name: "Test",
       stamp_count: 0,
       email: "testmanager",
-      hashed_password: BCrypt::Password.create("testmanage"),
+      hashed_password: BCrypt::Password.create("testmanager"),
       phone_number: "07738456253",
       postcode: "S3 JS6",
       address: "5 Manager Street, Sheffield",

@@ -12,21 +12,21 @@ RSpec.describe "Admin Management", type: :feature do
     context "When attempting to access the manage accounts endpoint" do
       it "Then redirects to the login screen" do
         visit "/manage-accounts"
-        expect(current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
 
     context "When attempting to access the flagged accounts endpoint" do
       it "Then redirects to the login screen" do
         visit "/flagged-accounts"
-        expect(current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
 
     context "When attempting to access the employee accounts endpoint" do
       it "Then redirects to the login screen" do
         visit "/employee-accounts"
-        expect(current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
   end

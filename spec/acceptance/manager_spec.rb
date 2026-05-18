@@ -8,7 +8,7 @@ RSpec.describe "ManagerController", type: :feature do
     context "When attempting to access the performance metrics page" do
       it "Then redirects back onto the home root path" do
         visit "/metrics"
-        expect(current_path).to eq("/")
+        expect(page).to have_current_path("/")
       end
     end
   end
@@ -21,7 +21,7 @@ RSpec.describe "ManagerController", type: :feature do
     context "When trying to access the bean stock management desk" do
       it "Then redirects back onto the home root path" do
         visit "/bean-stock-management"
-        expect(current_path).to eq("/")
+        expect(page).to have_current_path("/")
       end
     end
   end
@@ -34,7 +34,7 @@ RSpec.describe "ManagerController", type: :feature do
     context "When trying to open the corporate discount settings panel" do
       it "Then redirects back onto the home root path" do
         visit "/manage-discounts"
-        expect(current_path).to eq("/")
+        expect(page).to have_current_path("/")
       end
     end
   end
@@ -47,29 +47,29 @@ RSpec.describe "ManagerController", type: :feature do
     context "When requesting core manager interface domains" do
       it "Then opens the performance metrics analytics view successfully" do
         visit "/metrics"
-        expect(current_path).to eq("/metrics")
+        expect(page).to have_current_path("/metrics")
       end
 
       it "Then accesses the bean inventory database dashboard grid layout" do
         visit "/bean-stock-management"
-        expect(current_path).to eq("/bean-stock-management")
+        expect(page).to have_current_path("/bean-stock-management")
         expect(page).to have_content("Ethiopian")
       end
 
       it "Then loads isolated editing templates targeting individual bean profiles" do
         visit "/bean-update/Ethiopian"
-        expect(current_path).to eq("/bean-update/Ethiopian")
+        expect(page).to have_current_path("/bean-update/Ethiopian")
       end
 
       it "Then opens the store promotional discounts configuration environment" do
         visit "/manage-discounts"
-        expect(current_path).to eq("/manage-discounts")
+        expect(page).to have_current_path("/manage-discounts")
         expect(page).to have_content("Manage Store Discounts")
       end
 
       it "Then opens the primary beverage price configuration page" do
         visit "/edit-drink-details"
-        expect(current_path).to eq("/edit-drink-details")
+        expect(page).to have_current_path("/edit-drink-details")
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe "ManagerController", type: :feature do
         fill_in "new_price_per_250g", with: "9.45"
         click_button "Save Inventory Changes"
 
-        expect(current_path).to eq("/bean-stock-management")
+        expect(page).to have_current_path("/bean-stock-management")
         
         updated_bean = DB[:Beans].where(origin: "Ethiopian Private Reserve").first
         expect(updated_bean).not_to be_nil
@@ -101,7 +101,7 @@ RSpec.describe "ManagerController", type: :feature do
           click_button "Create Discount"
         end
 
-        expect(current_path).to eq("/manage-discounts")
+        expect(page).to have_current_path("/manage-discounts")
         
         saved_discount = DB[:Discounts].where(discount_name: "Launch Special").first
         expect(saved_discount).not_to be_nil
@@ -121,7 +121,7 @@ RSpec.describe "ManagerController", type: :feature do
           click_button "Save Changes"
         end
 
-        expect(current_path).to eq("/manage-discounts")
+        expect(page).to have_current_path("/manage-discounts")
         
         altered_discount = DB[:Discounts].where(discount_id: discount_id).first
         expect(altered_discount[:discount_name]).to eq("Late Spring Clearance")
@@ -136,7 +136,7 @@ RSpec.describe "ManagerController", type: :feature do
         visit "/manage-discounts"
         click_button "deletediscount-#{discount_id}"
 
-        expect(current_path).to eq("/manage-discounts")
+        expect(page).to have_current_path("/manage-discounts")
         expect(DB[:Discounts].where(discount_id: discount_id).first).to be_nil
       end
     end
@@ -146,6 +146,7 @@ RSpec.describe "ManagerController", type: :feature do
         visit "/edit-drink-details"
         click_button "Change Details"
         
+        expect(page).to have_current_path("/edit-drink-details")
         new_price = DB[:Drinks].first
         expect(new_price[:regular_price].to_f).to eq(4.4)
       end

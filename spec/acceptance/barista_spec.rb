@@ -8,14 +8,14 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
     context "When attempting to access the staff portal" do
       it "Then redirects to the login path" do
         visit "/staff-portal"
-        expect(current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
 
     context "When attempting to access the loyalty management dashboard" do
       it "Then redirects to the login path" do
         visit "/manage-loyalty-cards"
-        expect(current_path).to eq("/log-in")
+        expect(current_path).to eq("/")
       end
     end
   end
