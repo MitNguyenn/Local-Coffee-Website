@@ -142,13 +142,23 @@ RSpec.describe "ManagerController", type: :feature do
     end
 
     context "When modifying primary catalog rates inside the drink workflow desk" do
+      before do
+        DB[:Drinks].update(regular_price: 0.0)
+      end
+
       it "Then executes updates matching pricing target formulas cleanly" do
-        visit "/edit-drink-details"
-        click_button "Change Details"
-        
+        form_payload = { "prices[]" => DB[:Drinks].map.with_index { |_, i| (5.40 + i).to_s } }
+
+        page.driver.post "/update-drink-details", form_payload
+
+        visit page.driver.response.headers['Location']
+
         expect(page).to have_current_path("/edit-drink-details")
-        new_price = DB[:Drinks].first
-        expect(new_price[:regular_price].to_f).to eq(4.4)
+
+        drinks = DB[:Drinks].all
+        drinks.each_with_index do |drink, i|
+          expect(drink[:regular_price].to_f).to eq(5.40 + i)
+        end
       end
     end
   end
