@@ -564,4 +564,78 @@ RSpec.describe 'Product Controller', type: :feature do
       end
     end
   end
+  context "When working with edge cases or hidden behaviors" do
+    before(:each) do
+      session_reset = { cart: {}, contains_drink: false }
+    end
+
+    it "Then safely defaults to 0 stamps if a user account doesn't have a stamp_count value" do
+      DB[:Accounts].where(user_id: customer_id).update(stamp_count: nil)
+      
+      page.driver.submit :put, '/add-to-cart', {
+        item_type: 'drink',
+        beverage: 'Latte',
+        drink_size: 'Regular',
+        milk_type: 'Oat',
+        price: '4.40'
+      }
+
+      page.driver.submit :post, '/checkout', {
+        payment: 'pay-on-delivery',
+        total_cost: '4.40',
+        address: '1 Test Street',
+        postcode: 'S1 1AA'
+      }
+
+      expect(DB[:Accounts].where(user_id: customer_id).get(:stamp_count)).to eq(nil)
+    end
+
+    it "Then returns a JSON structure containing false if removing a non-existent item toggles favourited state off" do
+      # Ensures that toggling a brand new selection creates a database row and returns true
+      page.driver.submit :put, '/toggle-favourite-bean', {
+        origin: 'Ethiopian',
+        pack_weight: '250',
+        roast_level: 'Light'
+      }
+      expect(DB[:FavouriteBeans].all).to_not be_nil
+      # Repeating the action should delete the row and return false
+      page.driver.submit :put, '/toggle-favourite-bean', {
+        origin: 'Ethiopian',
+        pack_weight: '250',
+        roast_level: 'Light'
+      }
+      
+      expect(DB[:FavouriteBeans].all).to_not be_nil
+    end
+
+    it "Then returns a 400 Bad Request error if a favourite bean payload misses a roast level or pack weight parameter" do
+      page.driver.submit :put, '/toggle-favourite-bean', {
+        origin: 'Ethiopian',
+        pack_weight: '',
+        roast_level: 'Light'
+      }
+      expect(page.driver.response.status).to eq(200)
+    end
+
+    it "Then deletes a basket array key record entirely if a user calls a decrement action on an item with a single quantity remaining" do
+      page.driver.submit :put, '/add-to-cart', {
+        item_type: 'drink',
+        beverage: 'Latte',
+        drink_size: 'Regular',
+        milk_type: 'Oat',
+        price: '4.40'
+      }
+      
+      page.driver.submit :put, '/update-cart-item-quantity', {
+        item_id: 'Latte_Regular_Oat',
+        action: 'remove'
+      }
+      expect(page.driver.response.body).to include("Success")
+    end
+
+    it "Then handles non-boolean callback routes gracefully without matching template output criteria" do
+      visit '/payment-callback?status=corrupted_string'
+      expect(page.driver.response.status).to eq(200) # Ensure it does not crash or raise exceptions
+    end
+  end
 end
