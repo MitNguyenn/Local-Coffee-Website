@@ -12,7 +12,6 @@ module DatabaseSeeder
       db_connection[table].delete if db_connection.table_exists?(table)
     end
 
-    puts "Seeding Accounts table..."
     password_hash = BCrypt::Password.create("password123")
 
     staff_data = [
@@ -176,10 +175,8 @@ module DatabaseSeeder
       address: "58 Endcliffe Vale Road",
       account_type: "administrator"
     )
-    puts "Done"
 
 
-    puts "Seeding beans..."
     bean_list = [
       ["Ethiopian",   150.0, 8.20],
       ["Brazillian",  150.0, 6.35],
@@ -193,9 +190,6 @@ module DatabaseSeeder
         price_per_250g: price
       )
     end
-    puts "Done"
-
-    puts "Seeding beans pack prices..."
     beans_pack_weight_price_markup_multipliers = [
       [ 250.0,  1.0 ],
       [ 500.0,  1.7 ],
@@ -207,16 +201,12 @@ module DatabaseSeeder
         markup_multiplier: markup_multiplier
       )
     end
-    puts "Done"
 
-    puts "Seeding roasts..."
     bean_roasts = ["Light", "Medium", "Dark"]
     bean_roasts.each do |roast|
       db_connection[:BeanRoastLevels].insert(roast_level: roast)
     end
-    puts "Done"
 
-    puts "Seeding drinks..."
     drinks = [
       ["Latte",      4.40, true,   "Smooth espresso with steamed milk"],
       ["Americano",  3.80, false,  "A rich, double-shot of espresso diluted with hot water for a bold finish."], 
@@ -233,9 +223,7 @@ module DatabaseSeeder
         description: description
       )
     end
-    puts "Done"
 
-    puts "Seeding drink-size price markup mutlipliers..."
     drink_size_price_markup_mutlipliers = [
       ["Regular", 1.0],
       ["Large",   1.2]
