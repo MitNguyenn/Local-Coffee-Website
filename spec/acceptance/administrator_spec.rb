@@ -63,6 +63,13 @@ RSpec.describe "Admin Management", type: :feature do
     end
 
     context "When requesting administrative route domains" do
+      it "THhen allows them to visit the database management page" do
+        visit'/database-status'
+
+        expect(current_path).to eq("/database-status")
+        expect(page).to have_content("Database Status Control Panel")
+      end
+
       it "Then allows navigation onto the manage accounts portal dashboard" do
         visit "/manage-accounts"
         expect(current_path).to eq("/manage-accounts")
