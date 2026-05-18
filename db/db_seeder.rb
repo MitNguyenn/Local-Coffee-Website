@@ -39,7 +39,7 @@ module DatabaseSeeder
     test_password_hash = BCrypt::Password.create("testpass")
 
     db_connection[:Accounts].insert(
-      user_id: 1,
+      user_id: 10000001,
       first_name: "Customer",
       last_name: "Test",
       stamp_count: 7,
@@ -52,7 +52,7 @@ module DatabaseSeeder
     )
 
     db_connection[:Accounts].insert(
-      user_id: 11,
+      user_id: 10000011,
       first_name: "toBeFlagged",
       last_name: "Customer",
       stamp_count: 50000,
@@ -66,7 +66,7 @@ module DatabaseSeeder
     )
 
     db_connection[:Accounts].insert(
-      user_id: 2,
+      user_id: 10000002,
       first_name: "Barista",
       last_name: "Test",
       stamp_count: 0,
@@ -79,7 +79,7 @@ module DatabaseSeeder
     )
 
     db_connection[:Accounts].insert(
-      user_id: 3,
+      user_id: 10000003,
       first_name: "Manager",
       last_name: "Test",
       stamp_count: 0,
@@ -92,7 +92,7 @@ module DatabaseSeeder
     )
 
     db_connection[:Accounts].insert(
-      user_id: 4,
+      user_id: 10000004,
       first_name: "Admin",
       last_name: "Test",
       stamp_count: 0,
@@ -105,7 +105,7 @@ module DatabaseSeeder
     )
 
     db_connection[:Accounts].insert(
-      user_id: 5,
+      user_id: 10000005,
       first_name: "Sussy",
       last_name: "Acca",
       stamp_count: 52,
@@ -119,7 +119,7 @@ module DatabaseSeeder
     )
 
     db_connection[:Accounts].insert(
-      user_id: 8,
+      user_id: 10000008,
       first_name: "Flaggy",
       last_name: "Boy",
       stamp_count: 52,

@@ -6,7 +6,7 @@ RSpec.describe AccountRecency, type: :helper do
   include described_class
 
   # We use the user_id 10000001 seeded in spec_functions.rb
-  let(:user_id) { 11 }
+  let(:user_id) { 10000011 }
 
   describe "#check_account_recency" do
     it "flags accounts that haven't logged in for 30 days" do

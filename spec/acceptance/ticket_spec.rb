@@ -91,7 +91,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         
         expect(ticket[:ticket_type]).to eq("query")
         expect(ticket[:ticket_content]).to eq("When does my order arrive?")
-        expect(ticket[:user_id]).to eq(1)
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -107,7 +107,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         
         expect(ticket[:ticket_type]).to eq("technical")
         expect(ticket[:ticket_content]).to eq("The site won't load on Safari")
-        expect(ticket[:user_id]).to eq(1)
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -123,7 +123,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         
         expect(ticket[:ticket_type]).to eq("complaint")
         expect(ticket[:ticket_content]).to eq("My beans arrived crushed")
-        expect(ticket[:user_id]).to eq(1)
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe "Help page and ticket submission", type: :feature do
         
         expect(ticket[:ticket_type]).to eq("other")
         expect(ticket[:ticket_content]).to eq("I have a general enquiry")
-        expect(ticket[:user_id]).to eq(1)
+        expect(ticket[:user_id]).to eq(10000001)
       end
     end
 
