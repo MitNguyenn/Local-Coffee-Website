@@ -62,7 +62,7 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
       it "Then displays active consumer references within the loyalty grid layout" do
         visit "/manage-loyalty-cards"
         expect(current_path).to eq("/manage-loyalty-cards")
-        expect(page).to have_css("#form-user-1")
+        expect(page).to have_css("#form-user-10000001")
       end
 
       it "Then ensures privileged staff records remain hidden out of consumer tracking arrays" do
@@ -80,35 +80,35 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
     context "When processing updates through the customer reward card tools" do
       it "Then saves new stamp quantities utilizing layout input field parameters" do
         visit "/manage-loyalty-cards"
-        within("#form-user-1") do
+        within("#form-user-10000001") do
           fill_in "stamp_count", with: 9
           click_button "Save"
         end
 
         expect(current_path).to eq("/manage-loyalty-cards")
-        within("#form-user-1") do
+        within("#form-user-10000001") do
           expect(find_field('stamp_count').value).to eq("9")
         end
       end
 
       it "Then stores structural counter data fields securely inside core dataset rows" do
         visit "/manage-loyalty-cards"
-        within("#form-user-1") do
+        within("#form-user-10000001") do
           fill_in "stamp_count", with: 7
           click_button "Save"
         end
 
-        expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(7)
+        expect(DB[:Accounts].where(user_id: 10000001).get(:stamp_count)).to eq(7)
       end
 
       it "Then provides workflows to zero out metrics tracking consumer rewards" do
         visit "/manage-loyalty-cards"
-        within("#form-user-1") do
+        within("#form-user-10000001") do
           fill_in "stamp_count", with: 0
           click_button "Save"
         end
 
-        expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(0)
+        expect(DB[:Accounts].where(user_id: 10000001).get(:stamp_count)).to eq(0)
       end
     end
 
@@ -145,8 +145,8 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
 
     context "Given client communication threads exist inside tracking stores" do
       before do
-        DB[:Tickets].insert(user_id: 1, ticket_type: 'General', ticket_content: 'Issue', ticket_resolved: false)
-        DB[:Tickets].insert(user_id: 1, ticket_type: 'Refund', ticket_content: 'Money back', ticket_resolved: false)
+        DB[:Tickets].insert(user_id: 10000001, ticket_type: 'General', ticket_content: 'Issue', ticket_resolved: false)
+        DB[:Tickets].insert(user_id: 10000001, ticket_type: 'Refund', ticket_content: 'Money back', ticket_resolved: false)
       end
 
       context "When reviewing active inquiry collections across support tables" do
@@ -238,11 +238,11 @@ RSpec.describe "Barista Access Controls and Actions", type: :feature do
         expect(current_path).to eq("/order-management/barista")
 
         new_order = DB[:Orders].order(:order_id).last
-        expect(new_order[:user_id]).to eq(1)
+        expect(new_order[:user_id]).to eq(10000001)
         expect(new_order[:order_is_completed]).to be false
         expect(new_order[:total_cost].to_f).to eq(19.36)
 
-        expect(DB[:Accounts].where(user_id: 1).get(:stamp_count)).to eq(7)
+        expect(DB[:Accounts].where(user_id: 10000001).get(:stamp_count)).to eq(10)
         expect(DB[:Beans].where(origin: 'Ethiopian').get(:stock_mass)).not_to be_nil #random value
       end
     end

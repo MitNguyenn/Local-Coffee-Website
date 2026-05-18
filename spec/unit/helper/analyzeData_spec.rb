@@ -55,7 +55,7 @@ RSpec.describe AnalyzeData do
       DB[:OrderItems].delete
       DB[:Orders].delete
 
-      @customer_id = 1
+      @customer_id = 10000001
       @order_id_1 = DB[:Orders].insert(user_id: @customer_id, total_cost: 4.70, created_at: Time.now)
       @order_id_2 = DB[:Orders].insert(user_id: @customer_id, total_cost: 4.70, created_at: Time.now)
 
