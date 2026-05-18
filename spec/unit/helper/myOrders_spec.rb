@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MyOrders, type: :helper do
   include described_class
 
-  let(:user_id) { 1 }
+  let(:user_id) { 10000001 }
 
   describe "#fetch_current_orders" do
     it "returns active uncompleted orders matching relational item profiles" do

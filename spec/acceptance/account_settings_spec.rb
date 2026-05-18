@@ -1,6 +1,6 @@
 # Account Settings Spec file.
 RSpec.describe "Account Management", type: :feature do
-  let(:user_id) { 1 }
+  let(:user_id) { 10000001 }
 
   context "Given an unauthenticated visitor" do
     context "When attempting to access account settings" do
@@ -64,7 +64,7 @@ RSpec.describe "Account Management", type: :feature do
 
   it "displays a favourited bean on the favourites page" do
     DB[:FavouriteBeans].insert(
-      user_id:     1,
+      user_id:     10000001,
       origin:      'Ethiopian',
       pack_weight: 250.0,
       roast_level: 'Light'

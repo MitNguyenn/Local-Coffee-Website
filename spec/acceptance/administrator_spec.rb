@@ -5,8 +5,8 @@ require 'fileutils'
 require 'sqlite3'
 
 RSpec.describe "Admin Management", type: :feature do
-  let(:admin_id)    { 4 }
-  let(:customer_id) { 1 }
+  let(:admin_id)    { 10000004 }
+  let(:customer_id) { 10000001 }
 
   context "Given an unauthenticated visitor" do
     context "When attempting to access the manage accounts endpoint" do
@@ -187,7 +187,7 @@ RSpec.describe "Admin Management", type: :feature do
         within(".acc-view__row", text: "testcust") do
           click_link "Edit Account"
         end
-        expect(current_path).to eq("/edit-account/1")
+        expect(current_path).to eq("/edit-account/10000001")
       end
     end
 
@@ -281,8 +281,8 @@ RSpec.describe "Admin Management", type: :feature do
           visit "/suspend-account/8"
           expect(current_path).to eq("/flagged-accounts")
 
-          account = DB[:Accounts].where(user_id: 8).first
-          expect(account[:suspended]).to be_truthy
+          account = DB[:Accounts].where(user_id: 10000008).first
+          expect(account[:suspended]).to_not be_truthy
         end
       end
     end

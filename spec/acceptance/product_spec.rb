@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Product Controller', type: :feature do
-  let(:customer_id) { 1 }
+  let(:customer_id) { 10000001 }
 
   before(:each) do
     session_reset = { cart: {}, contains_drink: false }
