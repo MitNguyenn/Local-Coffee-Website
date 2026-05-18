@@ -46,7 +46,6 @@ get '/my-orders' do
   erb :my_orders
 end
 
-<<<<<<< HEAD
 get '/my-favourites' do
   DB[:FavouriteBeans].where(user_id: session[:user_id], pack_weight: nil).delete
   DB[:FavouriteBeans].where(user_id: session[:user_id], roast_level: nil).delete
@@ -59,12 +58,6 @@ get '/my-favourites' do
   end
   erb :my_favourites
 end
-
-# ==========================================
-# POST Routes
-# ==========================================
-=======
->>>>>>> master
 
 post '/update-account' do
   existing = DB[:Accounts].where(email: params[:email]).exclude(user_id: session[:user_id]).first
@@ -82,15 +75,11 @@ post '/update-account' do
 end
 
 post '/delete-my-account' do
-  # 1. Enforce authentication security checkpoint
   if session[:user_id]
-    # 2. Purge record matching active session identifier
     DB[:Accounts].where(user_id: session[:user_id]).delete
     
-    # 3. Clear session data completely to log out user
     session.clear
   end
   
-  # 4. Return user back to homepage
   redirect '/'
 end
