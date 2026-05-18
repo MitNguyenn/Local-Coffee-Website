@@ -16,8 +16,8 @@ def finalize_stamps(user_id)
   stamps_to_add = 0
 
   session[:cart].each do |key, data|
-    if [data[:item_type]] == 'bean'
-      stamps_to_add += 3*data[:quantity]
+    if data[:item_type] == 'bean'       
+      stamps_to_add += 3 * data[:quantity]
     elsif data[:item_type] == 'drink'
       stamps_to_add += data[:quantity]
     end
@@ -25,7 +25,6 @@ def finalize_stamps(user_id)
 
   current_stamps = DB[:Accounts].where(user_id: user_id).get(:stamp_count) || 0
   final_count = (current_stamps + stamps_to_add) % 10
-
   DB[:Accounts].where(user_id: user_id).update(stamp_count: final_count)
 end
 
@@ -184,7 +183,6 @@ end
         end
       end
 
-      p "Successfully placed order"
       finalize_stamps(session[:user_id])
       session[:cart].clear
       session[:contains_drink] = false

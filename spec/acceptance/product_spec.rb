@@ -494,8 +494,6 @@ RSpec.describe 'Product Controller', type: :feature do
         expect(current_stamp_count).to eq(0)
       end
 
-      # Documents the current buggy behaviour: beans award 0 stamps due to the
-      # [data[:item_type]] == 'bean' array-wrapping mistake.
       it "Then currently awards zero stamps for a bean-only order (bug: array comparison never matches)" do
         page.driver.submit :put, '/add-to-cart', {
           item_type: 'bean',
@@ -512,8 +510,7 @@ RSpec.describe 'Product Controller', type: :feature do
           postcode: 'S1 1AA'
         }
 
-        # BUG: should be 3, but array-wrapping causes 0
-        expect(current_stamp_count).to eq(0)
+        expect(current_stamp_count).to eq(3)
       end
 
       it "Then awards only drink stamps when a mixed bean-and-drink order is placed" do
@@ -539,7 +536,7 @@ RSpec.describe 'Product Controller', type: :feature do
           postcode: 'S1 1AA'
         }
 
-        expect(current_stamp_count).to eq(1)
+        expect(current_stamp_count).to eq(4)
       end
 
       it "Then does not update stamps when payment is declined" do
