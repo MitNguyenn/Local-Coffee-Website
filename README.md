@@ -7,8 +7,8 @@ A web-based coffee shop management system built with Sinatra and Ruby, supportin
 ### 1. Clone the repository
 
 ```bash
-git clone <git@git.shefcompsci.org.uk:com1001-2025-26/team35/project.git>
-cd <project>
+git clone git@git.shefcompsci.org.uk:com1001-2025-26/team35/project.gits
+cd project
 ```
 
 ### 2. Install dependencies
