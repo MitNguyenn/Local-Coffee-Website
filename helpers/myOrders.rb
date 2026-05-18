@@ -26,7 +26,7 @@ module MyOrders
 
     total_num_coffee = orders.select { |item| item[:product_type] == 'drink' }.sum { |item| item[:quantity] }
     total_num_beans  = orders.select { |item| item[:product_type] == 'bean' }.sum { |item| item[:quantity] }
-    until_next_discount = 10 - stamp_count
+    until_next_discount = stamp_count - 10
 
     stats = {
       "stamp_count" => stamp_count,
